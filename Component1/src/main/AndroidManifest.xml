@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ehi.component1">
+
+    <application>
+
+        <activity
+            android:name=".Component1Act"
+            android:launchMode="singleTop" />
+        <activity android:name=".Component1TestAct"/>
+
+    </application>
+
+</manifest>

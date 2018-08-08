@@ -1,0 +1,7 @@
+include ':app',
+        ':Component1',
+        ':Component2',
+        ':BaseModule',
+        ':ComponentApi',
+        ':ComponentApiCompiler',
+        ':ComponentApiImpl'

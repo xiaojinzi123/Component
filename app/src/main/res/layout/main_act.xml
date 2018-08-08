@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainAct">
+
+    <Button
+        android:layout_width="match_parent"
+        android:onClick="registerComponent1"
+        android:layout_height="wrap_content"
+        android:text="注册组件1" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:onClick="unregisterComponent1"
+        android:layout_height="wrap_content"
+        android:text="卸载组件1" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:onClick="goToComponent1MainView"
+        android:layout_height="wrap_content"
+        android:text="去业务组件1的主界面" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:onClick="registerComponent2"
+        android:layout_height="wrap_content"
+        android:text="注册组件2" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:onClick="unregisterComponent2"
+        android:layout_height="wrap_content"
+        android:text="卸载组件2" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:onClick="loadComponent1Fragment"
+        android:layout_height="wrap_content"
+        android:text="加载component1服务提供的fragment" />
+
+    <FrameLayout
+        android:id="@+id/fl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
