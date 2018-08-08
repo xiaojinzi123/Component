@@ -1,4 +1,5 @@
 apply plugin: 'java-library'
+apply plugin: 'maven'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -6,3 +7,44 @@ dependencies {
 
 sourceCompatibility = "7"
 targetCompatibility = "7"
+
+group 'com.ehi'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+
+            repository(url: "http://192.168.5.105:8081/repository/maven-releases/") {
+                authentication(userName: "admin", password: "admin123")
+            }
+
+//            repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
+//                authentication(userName: "admin", password: "admin123")
+//            }
+
+            pom.groupId = 'com.ehi'
+            pom.artifactId = 'component-api'
+            pom.version = '1.0'
+
+            pom.project {
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+
+artifacts {
+    archives jar
+}

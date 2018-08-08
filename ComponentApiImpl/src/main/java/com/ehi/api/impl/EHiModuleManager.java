@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 这个类必须放在 {@link com.ehi.api.EHIComponentUtil#IMPL_OUTPUT_PKG} 包下面
+ * 这个类必须放在 {@link EHIComponentUtil#IMPL_OUTPUT_PKG} 包下面
  */
 public class EHiModuleManager implements IComponentModuleApplication {
 

@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 这个类必须放在 {@link com.ehi.api.EHIComponentUtil#IMPL_OUTPUT_PKG} 包下面
+ * 这个类必须放在 {@link EHIComponentUtil#IMPL_OUTPUT_PKG} 包下面
  * <p>
  * time   : 2018/07/26
  *
@@ -29,10 +29,6 @@ public class EHiUiRouter {
 
     public static void init(boolean isDebug) {
         EHiUiRouter.isDebug = isDebug;
-    }
-
-    public static Builder with(@NonNull Context context) {
-        return new Builder(context);
     }
 
     public static void register(IComponentHostRouter router) {
@@ -51,15 +47,31 @@ public class EHiUiRouter {
         EHiUiRouterCenter.getInstance().unregister(host);
     }
 
+    public static Builder with(@NonNull Context context) {
+        return new Builder(context, null);
+    }
+
+    public static boolean open(@NonNull Context context, @NonNull String url) {
+        return new Builder(context, url).navigate();
+    }
+
+    public static boolean open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode) {
+        return new Builder(context, url)
+                .requestCode(requestCode)
+                .navigate();
+    }
+
     public static class Builder {
 
-        private Builder(@NonNull Context context) {
+        private Builder(@NonNull Context context, String url) {
             this.context = context;
+            this.url = url;
             checkNullPointer(context, "context");
         }
 
         @NonNull
         private Context context;
+        private String url;
         private Integer requestCode;
         private String host;
         private String path;
@@ -67,7 +79,7 @@ public class EHiUiRouter {
 
         private Bundle bundle = new Bundle();
 
-        public Builder requestCode(@NonNull int requestCode) {
+        public Builder requestCode(@Nullable Integer requestCode) {
             this.requestCode = requestCode;
             return this;
         }
@@ -108,28 +120,41 @@ public class EHiUiRouter {
             }
         }
 
-        public void navigate() {
+        public boolean navigate() {
 
             try {
 
-            }catch (Exception e) {
+                Uri uri = null;
 
+                if (url == null) {
+
+                    Uri.Builder uriBuilder = new Uri.Builder();
+
+                    uriBuilder
+                            .scheme("EHi")
+                            .authority(host)
+                            .path(path);
+
+                    for (Map.Entry<String, String> entry : queryMap.entrySet()) {
+                        uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
+                    }
+
+                    uri = uriBuilder.build();
+
+                } else {
+
+                    uri = Uri.parse(url);
+
+                }
+
+                return EHiUiRouterCenter.getInstance().openUri(context, uri, bundle, requestCode);
+
+            } catch (Exception ignore) {
+                return false;
+            } finally {
+                context = null;
+                queryMap = null;
             }
-
-            Uri.Builder uriBuilder = new Uri.Builder();
-
-            uriBuilder
-                    .scheme("EHi")
-                    .authority(host)
-                    .path(path);
-
-            for (Map.Entry<String, String> entry: queryMap.entrySet()) {
-                uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
-            }
-
-            Uri uri = uriBuilder.build();
-
-            EHiUiRouterCenter.getInstance().openUri(context, uri, bundle, requestCode);
 
         }
 
@@ -176,27 +201,32 @@ public class EHiUiRouter {
 
                 Log.e(tag, "the '" + host + "' module is not exist");
 
-            }
-
-            for (String key: routerMap.keySet()) {
-
-                IComponentHostRouter router = routerMap.get(key);
-
-                if (router.isMatchUri(uri)) {
-
-                    router.openUri(context, uri, bundle, requestCode);
-
-                }
+                return false;
 
             }
 
-            return false;
+            IComponentHostRouter router = routerMap.get(host);
+
+            return router.openUri(context, uri, bundle, requestCode);
+
+//            for (String key: routerMap.keySet()) {
+//
+//                IComponentHostRouter router = routerMap.get(key);
+//
+//                if (router.isMatchUri(uri)) {
+//
+//                    router.openUri(context, uri, bundle, requestCode);
+//
+//                }
+//
+//            }
+
         }
 
         @Override
         public boolean isMatchUri(@NonNull Uri uri) {
 
-            for (String key: routerMap.keySet()) {
+            for (String key : routerMap.keySet()) {
 
                 IComponentHostRouter router = routerMap.get(key);
 

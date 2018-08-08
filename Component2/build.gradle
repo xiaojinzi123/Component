@@ -33,14 +33,17 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.support}"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api project(":BaseModule")
-    kapt project(':ComponentApiCompiler')
+    if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
+        kapt "com.ehi:component-api-compiler:${rootProject.ext.component_api_compiler}"
+    }else {
+        kapt project(':ComponentApiCompiler')
+    }
 
 }

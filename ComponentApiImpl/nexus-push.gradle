@@ -1,31 +1,13 @@
-apply plugin: 'java-library'
 apply plugin: 'maven'
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
 }
 
-sourceCompatibility = "7"
-targetCompatibility = "7"
 
-
-dependencies{
-    compile 'com.google.auto.service:auto-service:1.0-rc2'
-    compile 'com.squareup:javapoet:1.9.0'
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'org.apache.commons:commons-collections4:4.1'
-    if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
-        compile "com.ehi:component-api:${rootProject.ext.component_api}"
-    }else {
-        compile project(':ComponentApi')
-    }
-}
-
-group 'com.ehi'
-version '1.0'
-
-repositories {
-    mavenCentral()
+artifacts {
+    archives androidSourcesJar
 }
 
 uploadArchives {
@@ -39,11 +21,9 @@ uploadArchives {
 //            repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
 //                authentication(userName: "admin", password: "admin123")
 //            }
-
             pom.groupId = 'com.ehi'
-            pom.artifactId = 'component-api-compiler'
-            pom.version = '1.0'
-
+            pom.artifactId = 'component-impl'
+            pom.version = '1.0.2'
             pom.project {
                 licenses {
                     license {
@@ -55,9 +35,4 @@ uploadArchives {
 
         }
     }
-}
-
-
-artifacts {
-    archives jar
 }

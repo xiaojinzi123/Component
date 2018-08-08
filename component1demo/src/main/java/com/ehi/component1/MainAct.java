@@ -1,8 +1,8 @@
 package com.ehi.component1;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainAct extends AppCompatActivity {
 

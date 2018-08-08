@@ -3,16 +3,11 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 27
 
-
-
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -26,12 +21,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.support}"
 
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    api project(':ComponentApi')
-    api project(':ComponentApiImpl')
+    if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
+        api "com.ehi:component-api:${rootProject.ext.component_api}"
+        api 'com.ehi:component-impl:1.0.2'
+    }else {
+        api project(':ComponentApi')
+        api project(':ComponentApiImpl')
+    }
 
 }

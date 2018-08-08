@@ -56,11 +56,13 @@ public class MainAct extends AppCompatActivity {
 
     public void goToComponent1MainView(View view) {
 
-        EHiUiRouter.with(this)
-                .host("component1")
-                .path("component3")
-                .requestCode(123)
-                .navigate();
+//        EHiUiRouter.with(this)
+//                .host("component1")
+//                .path("component3")
+//                .requestCode(123)
+//                .navigate();
+
+        EHiUiRouter.open(this, "//component1/component3", 123);
 
     }
 
