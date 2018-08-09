@@ -2,16 +2,28 @@ package com.ehi.component1;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
-import com.ehi.api.anno.EHiRouter;
+import com.ehi.component.anno.EHiRouter;
+import com.ehi.component.support.EHiParameterSupport;
 
-@EHiRouter(value = "component3",desc = "业务组件1的主界面")
+@EHiRouter(host = "xxxComponent", value = "component1", desc = "业务组件1的主界面")
 public class Component1Act extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.component1_act);
+
+        TextView tv_name = findViewById(R.id.tv_name);
+        TextView tv_pass = findViewById(R.id.tv_pass);
+
+        String name = EHiParameterSupport.getString(getIntent(), "name", null);
+        String pass = EHiParameterSupport.getString(getIntent(), "pass", null);
+
+        tv_name.setText(name);
+        tv_pass.setText(pass);
+
     }
 
 }

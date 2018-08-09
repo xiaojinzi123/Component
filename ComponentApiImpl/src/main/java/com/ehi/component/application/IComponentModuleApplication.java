@@ -1,4 +1,4 @@
-package com.ehi.api.application;
+package com.ehi.component.application;
 
 import android.support.annotation.NonNull;
 

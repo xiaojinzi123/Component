@@ -1,21 +1,21 @@
-package com.ehi.api.impl;
+package com.ehi.component.impl;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.ehi.api.EHIComponentUtil;
-import com.ehi.api.router.IComponentHostRouter;
-import com.ehi.api.router.IComponentModuleRouter;
+import com.ehi.component.Config;
+import com.ehi.component.EHIComponentUtil;
+import com.ehi.component.router.IComponentHostRouter;
+import com.ehi.component.router.IComponentModuleRouter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 这个类必须放在 {@link EHIComponentUtil#IMPL_OUTPUT_PKG} 包下面
+ * 这个类必须放在 {@link com.ehi.component.EHIComponentUtil#IMPL_OUTPUT_PKG} 包下面
  * <p>
  * time   : 2018/07/26
  *
@@ -24,12 +24,6 @@ import java.util.Map;
 public class EHiUiRouter {
 
     private static String tag = "EHiUiRouter";
-
-    private static boolean isDebug = false;
-
-    public static void init(boolean isDebug) {
-        EHiUiRouter.isDebug = isDebug;
-    }
 
     public static void register(IComponentHostRouter router) {
         EHiUiRouterCenter.getInstance().register(router);
@@ -109,21 +103,21 @@ public class EHiUiRouter {
         }
 
         private static String checkStringNullPointer(String value, @NonNull String parameterName) {
-            if (EHiUiRouter.isDebug && (value == null || "".equals(value))) {
+            if (Config.isDebug() && (value == null || "".equals(value))) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null");
             }
             return value;
         }
 
         private static String checkStringNullPointer(String value, @NonNull String parameterName, @Nullable String desc) {
-            if (EHiUiRouter.isDebug && (value == null || "".equals(value))) {
+            if (Config.isDebug() && (value == null || "".equals(value))) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null" + (desc == null ? "" : "," + desc));
             }
             return value;
         }
 
         private static <T> T checkNullPointer(T value, @NonNull String parameterName) {
-            if (EHiUiRouter.isDebug && value == null) {
+            if (Config.isDebug() && value == null) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null");
             }
             return value;
@@ -157,7 +151,7 @@ public class EHiUiRouter {
                 return EHiUiRouterCenter.getInstance().openUri(context, uri, bundle, requestCode);
 
             } catch (Exception ignore) {
-                if (isDebug) {
+                if (Config.isDebug()) {
                     throw ignore;
                 }
                 return false;
@@ -205,19 +199,13 @@ public class EHiUiRouter {
         @Override
         public boolean openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
 
-            String host = uri.getHost();
-
-            if (!routerMap.containsKey(host)) {
-
-                Log.e(tag, "the '" + host + "' module is not exist");
-
-                return false;
-
+            for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
+                if (entry.getValue().openUri(context, uri, bundle, requestCode)) {
+                    return true;
+                }
             }
 
-            IComponentHostRouter router = routerMap.get(host);
-
-            return router.openUri(context, uri, bundle, requestCode);
+            return false;
 
         }
 

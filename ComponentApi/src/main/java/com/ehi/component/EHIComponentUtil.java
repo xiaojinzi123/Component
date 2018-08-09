@@ -1,4 +1,4 @@
-package com.ehi.api;
+package com.ehi.component;
 
 /**
  * time   : 2018/07/26
@@ -12,7 +12,7 @@ public class EHIComponentUtil {
      * 2.这也是一些写好的实现类的包名字,不要轻易更改,如果要更改,请仔细比对
      * ComponentApiImpl 模块的实现类的位置
      */
-    public static final String IMPL_OUTPUT_PKG = "com.ehi.api.impl";
+    public static final String IMPL_OUTPUT_PKG = "com.ehi.component.impl";
 
     /**
      * 点

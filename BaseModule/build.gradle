@@ -24,10 +24,8 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${rootProject.ext.support}"
 
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
-        api "com.ehi:component-api:${rootProject.ext.component_api}"
-        api "com.ehi:component-impl:${rootProject.ext.component_impl}"
+        api "com.ehi:component-impl:${rootProject.ext.component_version}"
     }else {
-        api project(':ComponentApi')
         api project(':ComponentApiImpl')
     }
 

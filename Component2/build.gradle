@@ -41,7 +41,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api project(":BaseModule")
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
-        kapt "com.ehi:component-api-compiler:${rootProject.ext.component_api_compiler}"
+        kapt "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
     }else {
         kapt project(':ComponentApiCompiler')
     }

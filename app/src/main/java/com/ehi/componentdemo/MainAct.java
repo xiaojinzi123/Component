@@ -7,9 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.ehi.api.anno.EHiRouter;
-import com.ehi.api.impl.EHiModuleManager;
-import com.ehi.api.impl.EHiUiRouter;
+import com.ehi.component.Config;
+import com.ehi.component.anno.EHiRouter;
+import com.ehi.component.impl.EHiModuleManager;
+import com.ehi.component.impl.EHiUiRouter;
 import com.ehi.base.ComponentEnum;
 import com.ehi.base.EHiServiceContainer;
 import com.ehi.base.service.component1.Component1Service;
@@ -22,7 +23,7 @@ public class MainAct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_act);
 
-        EHiUiRouter.init(true);
+        Config.init(true);
 
         EHiModuleManager.getInstance().register(ComponentEnum.App.getModuleName());
         EHiModuleManager.getInstance().register(ComponentEnum.Component1.getModuleName());
@@ -58,13 +59,13 @@ public class MainAct extends AppCompatActivity {
 
     public void goToComponent1MainView(View view) {
 
-        EHiUiRouter.with(this)
-                .host("component1")
-                //.path("component3")
-                .requestCode(123)
-                .navigate();
+//        EHiUiRouter.with(this)
+//                .host("component1")
+//                //.path("component3")
+//                .requestCode(123)
+//                .navigate();
 
-        //EHiUiRouter.open(this, "//component1/component3", 123);
+        EHiUiRouter.open(this, "//xxxComponent/component1?name=xiaojinzi&pass=123", 123);
 
     }
 

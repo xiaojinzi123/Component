@@ -1,4 +1,4 @@
-package com.ehi.api.application;
+package com.ehi.component.application;
 
 public interface IComponentHostApplication extends IComponentApplication {
 

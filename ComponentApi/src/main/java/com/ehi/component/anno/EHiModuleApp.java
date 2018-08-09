@@ -1,4 +1,4 @@
-package com.ehi.api.anno;
+package com.ehi.component.anno;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package com.ehi.api.router;
+package com.ehi.component.router;
 
 import android.content.Context;
 import android.net.Uri;

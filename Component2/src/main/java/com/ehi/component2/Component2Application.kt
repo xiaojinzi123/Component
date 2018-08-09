@@ -1,15 +1,15 @@
 package com.ehi.component2
 
-import android.app.Application
-import com.ehi.api.application.IComponentApplication
-import com.ehi.api.anno.EHiModuleApp
-import com.ehi.api.impl.EHiUiRouter
+import android.content.Context
 import com.ehi.base.ComponentEnum
+import com.ehi.component.anno.EHiModuleApp
+import com.ehi.component.application.IComponentApplication
+import com.ehi.component.impl.EHiUiRouter
 
 @EHiModuleApp()
 class Component2Application : IComponentApplication {
 
-    override fun onCreate(app: Application) {
+    override fun onCreate(app: Context) {
         EHiUiRouter.register(ComponentEnum.Component2.moduleName)
     }
 

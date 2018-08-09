@@ -1,18 +1,18 @@
-package com.ehi.api.impl;
+package com.ehi.component.impl;
 
-import android.app.Application;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.ehi.api.EHIComponentUtil;
-import com.ehi.api.application.IComponentHostApplication;
-import com.ehi.api.application.IComponentModuleApplication;
+import com.ehi.component.EHIComponentUtil;
+import com.ehi.component.application.IComponentHostApplication;
+import com.ehi.component.application.IComponentModuleApplication;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 这个类必须放在 {@link EHIComponentUtil#IMPL_OUTPUT_PKG} 包下面
+ * 这个类必须放在 {@link com.ehi.component.EHIComponentUtil#IMPL_OUTPUT_PKG} 包下面
  */
 public class EHiModuleManager implements IComponentModuleApplication {
 
@@ -21,9 +21,9 @@ public class EHiModuleManager implements IComponentModuleApplication {
     private static Map<String, IComponentHostApplication> moduleApplicationMap = new HashMap<>();
 
     @NonNull
-    private static Application mApplication;
+    private static Context mApplication;
 
-    public static void init(Application application) {
+    public static void init(Context application) {
         mApplication = application;
         if (mApplication == null) {
             throw new NullPointerException("parameter 'Application' is null");

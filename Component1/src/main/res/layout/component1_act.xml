@@ -6,11 +6,33 @@
     tools:context=".Component1Act">
 
     <TextView
+        android:id="@+id/tv_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:text="component1"
         android:textColor="#FF0000"
         android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_desc"
+        android:layout_centerHorizontal="true"
+        android:text="name"
+        android:textColor="#FF0000"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/tv_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_centerHorizontal="true"
+        android:text="name"
+        android:textColor="#FF0000"
+        android:textSize="30dp" />
+
 
 </RelativeLayout>

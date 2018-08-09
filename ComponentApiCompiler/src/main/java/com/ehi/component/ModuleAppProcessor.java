@@ -1,7 +1,6 @@
-package com.ehi.api;
+package com.ehi.component;
 
-import com.ehi.api.anno.EHiRouter;
-import com.ehi.api.bean.RouterBean;
+import com.ehi.component.anno.EHiModuleApp;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -12,10 +11,11 @@ import com.squareup.javapoet.TypeSpec;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -35,16 +35,11 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-import static javax.lang.model.element.Modifier.DEFAULT;
-import static javax.lang.model.element.Modifier.PRIVATE;
-import static javax.lang.model.element.Modifier.PROTECTED;
-import static javax.lang.model.element.Modifier.PUBLIC;
-
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedAnnotationTypes({"com.ehi.api.anno.EHiRouter"})
-public class RouterProcessor extends AbstractProcessor {
+@SupportedAnnotationTypes({"com.ehi.component.anno.EHiModuleApp"})
+public class ModuleAppProcessor extends AbstractProcessor {
 
     private TypeMirror typeString;
 
@@ -72,44 +67,37 @@ public class RouterProcessor extends AbstractProcessor {
             componentHost = options.get("HOST");
         }
 
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "RouterProcessor.componentHost = " + componentHost);
+        mMessager.printMessage(Diagnostic.Kind.NOTE, "ModuleAppProcessor.componentHost = " + componentHost);
 
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-
         if (CollectionUtils.isNotEmpty(set)) {
 
-            Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(EHiRouter.class);
+            Set<? extends Element> moduleAppElements = roundEnvironment.getElementsAnnotatedWith(EHiModuleApp.class);
 
-            mMessager.printMessage(Diagnostic.Kind.NOTE, " >>> size = " + (routeElements == null ? 0 : routeElements.size()));
+            mMessager.printMessage(Diagnostic.Kind.NOTE, " moduleApp.size = " + (moduleAppElements == null ? 0 : moduleAppElements.size()));
 
-            parseRouterAnno(routeElements);
+            parseAnnotation(moduleAppElements);
 
-            createRouterImpl();
+            createImpl();
 
             return true;
         }
 
         return false;
-
     }
 
-    private Map<String, RouterBean> routerMap = new HashMap<>();
+    private List<Element> applicationList = new ArrayList<>();
 
-    /**
-     * 解析注解
-     *
-     * @param routeElements
-     */
-    private void parseRouterAnno(Set<? extends Element> routeElements) {
+    private void parseAnnotation(Set<? extends Element> moduleAppElements) {
 
-        TypeMirror typeActivity = mElements.getTypeElement(EHiConstants.ACTIVITY).asType();
+        applicationList.clear();
 
-        for (Element element : routeElements) {
+        TypeMirror typeApplication = mElements.getTypeElement(EHiConstants.EHIAPPLCATON).asType();
 
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "element == " + element.toString());
+        for (Element element : moduleAppElements) {
 
             TypeMirror tm = element.asType();
 
@@ -121,7 +109,7 @@ public class RouterProcessor extends AbstractProcessor {
 
             }
 
-            if (!mTypes.isSubtype(tm, typeActivity)) {
+            if (!mTypes.isSubtype(tm, typeApplication)) {
 
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'EHiRouter' annotation");
 
@@ -129,50 +117,26 @@ public class RouterProcessor extends AbstractProcessor {
 
             }
 
-            // 如果是一个Activity
+            // 如果是一个 Application
 
-            EHiRouter router = element.getAnnotation(EHiRouter.class);
+            EHiModuleApp moduleApp = element.getAnnotation(EHiModuleApp.class);
 
-            if (router == null) {
+            if (moduleApp == null) {
 
                 continue;
 
             }
 
-            if (router.value() == null || "".equals(router.value())) {
+            applicationList.add(element);
 
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouter'value can;t be null or empty string");
-                continue;
-
-            }
-
-            if (routerMap.containsKey(router.value())) {
-
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouter'value is alreay exist");
-                continue;
-
-            }
-
-            RouterBean routerBean = new RouterBean();
-            routerBean.setDesc(router.desc());
-            routerBean.setPath(router.value());
-            routerBean.setPriority(router.priority());
-            routerBean.setRawType(element);
-
-            routerMap.put(router.value(), routerBean);
-
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "router.value() = " + router.value() + ",Activity = " + element);
+            mMessager.printMessage(Diagnostic.Kind.NOTE, "moduleApplication = " + element);
 
         }
-
     }
 
-    /**
-     * 生成路由
-     */
-    private void createRouterImpl() {
+    private void createImpl() {
 
-        String claName = EHIComponentUtil.genHostUIRouterClassName(componentHost);
+        String claName = com.ehi.component.EHIComponentUtil.genHostModuleApplicationClassName(componentHost);
 
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf("."));
@@ -181,7 +145,7 @@ public class RouterProcessor extends AbstractProcessor {
         String cn = claName.substring(claName.lastIndexOf(".") + 1);
 
         // superClassName
-        ClassName superClass = ClassName.get(mElements.getTypeElement(EHIComponentUtil.UIROUTER_IMPL_CLASS_NAME));
+        ClassName superClass = ClassName.get(mElements.getTypeElement(EHIComponentUtil.MODULE_APPLICATION_IMPL_CLASS_NAME));
 
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();
@@ -199,26 +163,26 @@ public class RouterProcessor extends AbstractProcessor {
             e.printStackTrace();
         }
 
+
     }
 
     private MethodSpec generateInitMapMethod() {
         TypeName returnType = TypeName.VOID;
 
-        final MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("initMap")
+        final MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("initList")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
 
-        openUriMethodSpecBuilder.addStatement("super.initMap()");
+        openUriMethodSpecBuilder.addStatement("super.initList()");
 
-        routerMap.forEach(new BiConsumer<String, RouterBean>() {
+        applicationList.forEach(new Consumer<Element>() {
             @Override
-            public void accept(String key, RouterBean routerBean) {
-
+            public void accept(Element element) {
                 openUriMethodSpecBuilder.addStatement(
-                        "routerMap" + ".put($S,$T.class)", key,
-                        ClassName.get((TypeElement) routerBean.getRawType()));
-
+                        "moduleAppList" + ".add(new $T())",
+                        ClassName.get((TypeElement) element)
+                );
             }
         });
 
@@ -238,6 +202,5 @@ public class RouterProcessor extends AbstractProcessor {
 
         return openUriMethodSpecBuilder.build();
     }
-
 
 }

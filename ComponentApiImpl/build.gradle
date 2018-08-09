@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
 
 android {
     compileSdkVersion 27
@@ -23,10 +24,45 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.support}"
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
-        implementation "com.ehi:component-api:${rootProject.ext.component_api}"
-    }else {
-        implementation project(':ComponentApi')
+        api "com.ehi:component-api:${rootProject.ext.component_version}"
+    } else {
+        api project(':ComponentApi')
     }
 }
 
-apply from: './nexus-push.gradle'
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+
+artifacts {
+    archives androidSourcesJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+
+//            repository(url: "http://192.168.5.105:8081/repository/maven-releases/") {
+//                authentication(userName: "admin", password: "admin123")
+//            }
+            repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
+                authentication(userName: "admin", password: "admin123")
+            }
+
+            pom.groupId = 'com.ehi'
+            pom.artifactId = 'component-impl'
+            pom.version = "${rootProject.ext.component_version}"
+            pom.project {
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+            }
+
+        }
+    }
+}

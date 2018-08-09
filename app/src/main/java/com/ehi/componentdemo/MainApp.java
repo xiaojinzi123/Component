@@ -2,7 +2,7 @@ package com.ehi.componentdemo;
 
 import android.app.Application;
 
-import com.ehi.api.impl.EHiModuleManager;
+import com.ehi.component.impl.EHiModuleManager;
 
 public class MainApp extends Application {
 

@@ -1,18 +1,18 @@
-package com.ehi.api.impl;
+package com.ehi.component.impl;
 
-import android.app.Application;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.ehi.api.EHIComponentUtil;
-import com.ehi.api.application.IComponentApplication;
-import com.ehi.api.application.IComponentHostApplication;
+import com.ehi.component.EHIComponentUtil;
+import com.ehi.component.application.IComponentApplication;
+import com.ehi.component.application.IComponentHostApplication;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 这个类是生成的 Module Application 类的父类
- * 如果名称更改了,请配置到 {@link EHIComponentUtil#IMPL_OUTPUT_PKG} 和 {@link EHIComponentUtil#MODULE_APPLICATION_IMPL_CLASS_NAME} 上
+ * 如果名称更改了,请配置到 {@link com.ehi.component.EHIComponentUtil#IMPL_OUTPUT_PKG} 和 {@link EHIComponentUtil#MODULE_APPLICATION_IMPL_CLASS_NAME} 上
  */
 public abstract class EHiModuleApplicationImpl implements IComponentHostApplication {
 
@@ -31,7 +31,7 @@ public abstract class EHiModuleApplicationImpl implements IComponentHostApplicat
     }
 
     @Override
-    public void onCreate(@NonNull Application app) {
+    public void onCreate(@NonNull Context app) {
 
         if (!hasInitList) {
             initList();

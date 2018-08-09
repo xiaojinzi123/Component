@@ -1,4 +1,4 @@
-package com.ehi.api.anno;
+package com.ehi.component.anno;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,6 +11,13 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.CLASS)
 public @interface EHiRouter {
+
+    /**
+     * 定义host
+     *
+     * @return
+     */
+    String host() default "";
 
     /**
      * 路径
@@ -29,6 +36,6 @@ public @interface EHiRouter {
     /**
      * 级别,如果两个组件的路径一样,级别越高,就会先跳转
      */
-    int priority() default -1;
+    //int priority() default -1;
 
 }

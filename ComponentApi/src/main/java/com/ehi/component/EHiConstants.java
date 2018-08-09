@@ -1,4 +1,4 @@
-package com.ehi.api;
+package com.ehi.component;
 
 /**
  * time   : 2018/07/26
@@ -16,6 +16,6 @@ public interface EHiConstants {
     String PARCELABLE = "android.os.Parcelable";
 
 
-    String EHIAPPLCATON = "com.ehi.api.application.IComponentApplication";
+    String EHIAPPLCATON = "com.ehi.component.application.IComponentApplication";
 
 }

@@ -1,4 +1,4 @@
-package com.ehi.api.router;
+package com.ehi.component.router;
 
 /**
  * 组件之间实现跳转的接口

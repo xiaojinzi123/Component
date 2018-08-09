@@ -1,4 +1,4 @@
-package com.ehi.api.bean;
+package com.ehi.component.bean;
 
 import javax.lang.model.element.Element;
 
@@ -9,10 +9,19 @@ import javax.lang.model.element.Element;
  */
 public class RouterBean {
 
+    private String host;
     private String path;
     private String desc;
-    private int priority = -1;
+    //private int priority = -1;
     private Element rawType;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
 
     public String getPath() {
         return path;
@@ -28,14 +37,6 @@ public class RouterBean {
 
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
     }
 
     public Element getRawType() {

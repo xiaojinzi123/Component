@@ -1,4 +1,4 @@
-package com.ehi.api.impl;
+package com.ehi.component.impl;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,14 +9,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.ehi.api.EHIComponentUtil;
-import com.ehi.api.router.IComponentHostRouter;
+import com.ehi.component.EHIComponentUtil;
+import com.ehi.component.router.IComponentHostRouter;
+import com.ehi.component.support.EHiParameterSupport;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 如果名称更改了,请配置到 {@link EHIComponentUtil#IMPL_OUTPUT_PKG} 和 {@link EHIComponentUtil#UIROUTER_IMPL_CLASS_NAME} 上
+ * 如果名称更改了,请配置到 {@link com.ehi.component.EHIComponentUtil#IMPL_OUTPUT_PKG} 和 {@link EHIComponentUtil#UIROUTER_IMPL_CLASS_NAME} 上
  * time   : 2018/07/26
  *
  * @author : xiaojinzi 30212
@@ -89,6 +90,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         Intent intent = new Intent(context, targetClass);
         intent.putExtras(bundle);
+        EHiParameterSupport.put(intent,uri);
 
         if (requestCode == null) {
 
@@ -129,8 +131,18 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     @Nullable
     private Class<?> getTargetClass(@NonNull Uri uri) {
 
-        // "/component1/test"
+        // "/component1/test" 不含host
         String targetPath = uri.getEncodedPath();
+
+        if (targetPath == null || "".equals(targetPath)) {
+            return null;
+        }
+
+        if (targetPath.charAt(0) != '/') {
+            targetPath = "/" + targetPath;
+        }
+
+        targetPath = uri.getHost() + targetPath;
 
         Class targetClass = null;
 
@@ -138,16 +150,21 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
             if (key == null || "".equals(key)) continue;
 
-            if (key.charAt(0) == '/') {
-                if (key.equals(targetPath)) {
-                    targetClass = routerMap.get(key);
-                    break;
-                }
-            } else {
-                if (("/" + key).equals(targetPath)) {
-                    targetClass = routerMap.get(key);
-                    break;
-                }
+//            if (key.charAt(0) == '/') {
+//                if (key.equals(targetPath)) {
+//                    targetClass = routerMap.get(key);
+//                    break;
+//                }
+//            } else {
+//                if (("/" + key).equals(targetPath)) {
+//                    targetClass = routerMap.get(key);
+//                    break;
+//                }
+//            }
+
+            if (key.equals(targetPath)) {
+                targetClass = routerMap.get(key);
+                break;
             }
 
         }

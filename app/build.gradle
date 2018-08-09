@@ -34,7 +34,7 @@ dependencies {
     implementation project(':Component1')
     implementation project(':Component2')
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
-        annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_api_compiler}"
+        annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
     }else {
         annotationProcessor project(':ComponentApiCompiler')
     }
