@@ -22,6 +22,8 @@ public class MainAct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_act);
 
+        EHiUiRouter.init(true);
+
         EHiModuleManager.getInstance().register(ComponentEnum.App.getModuleName());
         EHiModuleManager.getInstance().register(ComponentEnum.Component1.getModuleName());
         EHiModuleManager.getInstance().register(ComponentEnum.Component2.getModuleName());
@@ -56,13 +58,13 @@ public class MainAct extends AppCompatActivity {
 
     public void goToComponent1MainView(View view) {
 
-//        EHiUiRouter.with(this)
-//                .host("component1")
-//                .path("component3")
-//                .requestCode(123)
-//                .navigate();
+        EHiUiRouter.with(this)
+                .host("component1")
+                //.path("component3")
+                .requestCode(123)
+                .navigate();
 
-        EHiUiRouter.open(this, "//component1/component3", 123);
+        //EHiUiRouter.open(this, "//component1/component3", 123);
 
     }
 

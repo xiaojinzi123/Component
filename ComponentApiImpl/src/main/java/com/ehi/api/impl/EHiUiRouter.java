@@ -85,13 +85,13 @@ public class EHiUiRouter {
         }
 
         public Builder host(@NonNull String host) {
-            checkStringNullPointer(host, "host");
+            checkStringNullPointer(host, "host","do you forget call host() to set host?");
             this.host = host;
             return this;
         }
 
         public Builder path(@NonNull String path) {
-            checkStringNullPointer(path, "path");
+            checkStringNullPointer(path, "path","do you forget call path() to set path?");
             this.path = path;
             return this;
         }
@@ -108,16 +108,25 @@ public class EHiUiRouter {
             return this;
         }
 
-        private void checkStringNullPointer(String value, @NonNull String parameterName) {
+        private static String checkStringNullPointer(String value, @NonNull String parameterName) {
             if (EHiUiRouter.isDebug && (value == null || "".equals(value))) {
-                throw new NullPointerException("parameter '" + parameterName + "' can;t be null");
+                throw new NullPointerException("parameter '" + parameterName + "' can't be null");
             }
+            return value;
         }
 
-        private void checkNullPointer(Object value, @NonNull String parameterName) {
-            if (EHiUiRouter.isDebug && value == null) {
-                throw new NullPointerException("parameter '" + parameterName + "' can;t be null");
+        private static String checkStringNullPointer(String value, @NonNull String parameterName, @Nullable String desc) {
+            if (EHiUiRouter.isDebug && (value == null || "".equals(value))) {
+                throw new NullPointerException("parameter '" + parameterName + "' can't be null" + (desc == null ? "" : "," + desc));
             }
+            return value;
+        }
+
+        private static <T> T checkNullPointer(T value, @NonNull String parameterName) {
+            if (EHiUiRouter.isDebug && value == null) {
+                throw new NullPointerException("parameter '" + parameterName + "' can't be null");
+            }
+            return value;
         }
 
         public boolean navigate() {
@@ -132,8 +141,8 @@ public class EHiUiRouter {
 
                     uriBuilder
                             .scheme("EHi")
-                            .authority(host)
-                            .path(path);
+                            .authority(checkStringNullPointer(host, "host","do you forget call host() to set host?"))
+                            .path(checkStringNullPointer(path, "path","do you forget call path() to set path?"));
 
                     for (Map.Entry<String, String> entry : queryMap.entrySet()) {
                         uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
@@ -142,14 +151,15 @@ public class EHiUiRouter {
                     uri = uriBuilder.build();
 
                 } else {
-
                     uri = Uri.parse(url);
-
                 }
 
                 return EHiUiRouterCenter.getInstance().openUri(context, uri, bundle, requestCode);
 
             } catch (Exception ignore) {
+                if (isDebug) {
+                    throw ignore;
+                }
                 return false;
             } finally {
                 context = null;
@@ -208,18 +218,6 @@ public class EHiUiRouter {
             IComponentHostRouter router = routerMap.get(host);
 
             return router.openUri(context, uri, bundle, requestCode);
-
-//            for (String key: routerMap.keySet()) {
-//
-//                IComponentHostRouter router = routerMap.get(key);
-//
-//                if (router.isMatchUri(uri)) {
-//
-//                    router.openUri(context, uri, bundle, requestCode);
-//
-//                }
-//
-//            }
 
         }
 

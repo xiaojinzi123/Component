@@ -36,5 +36,6 @@ ext {
     support = "27.1.1"
     component_api = "1.0"
     component_api_compiler = "1.0"
+    component_impl = "1.0.2"
     isDependOnline = "false"
 }
