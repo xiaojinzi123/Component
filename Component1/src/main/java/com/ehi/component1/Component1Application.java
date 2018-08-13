@@ -17,12 +17,14 @@ public class Component1Application implements IComponentApplication {
 
     @Override
     public void onCreate(@NonNull Context app) {
+        // 注册路由和服务
         EHiUiRouter.register(ComponentEnum.Component1.getModuleName());
         EHiServiceContainer.register(Component1Service.class,new Component1ServiceImpl());
     }
 
     @Override
     public void onDestory() {
+        // 反注册路由和服务
         EHiUiRouter.unregister(ComponentEnum.Component1.getModuleName());
         EHiServiceContainer.unregister(Component1Service.class);
     }
