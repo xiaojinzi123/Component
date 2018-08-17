@@ -7,13 +7,13 @@ import android.widget.TextView;
 import com.ehi.component.anno.EHiRouter;
 import com.ehi.component.support.EHiParameterSupport;
 
-@EHiRouter(host = "xxxComponent", value = "component1", desc = "业务组件1的主界面")
-public class Component1Act extends AppCompatActivity {
+@EHiRouter(host = "component1", value = "main", desc = "业务组件1的主界面")
+public class Component1MainAct extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.component1_act);
+        setContentView(R.layout.component1_main_act);
 
         TextView tv_name = findViewById(R.id.tv_name);
         TextView tv_pass = findViewById(R.id.tv_pass);

@@ -5,7 +5,7 @@
     <application>
 
         <activity
-            android:name=".Component1Act"
+            android:name=".Component1MainAct"
             android:launchMode="singleTop" />
         <activity android:name=".Component1TestAct"/>
 

@@ -65,7 +65,7 @@ public class MainAct extends AppCompatActivity {
 //                .requestCode(123)
 //                .navigate();
 
-        EHiUiRouter.open(this, "//xxxComponent/component1?name=xiaojinzi&pass=123", 123);
+        EHiUiRouter.open(this, "//component1/main?name=xiaojinzi&pass=123", 123);
 
     }
 
