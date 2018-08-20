@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.ehi.component.Config;
+import com.ehi.component.ComponentConfig;
 import com.ehi.component.EHIComponentUtil;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.router.IComponentModuleRouter;
@@ -103,21 +103,21 @@ public class EHiUiRouter {
         }
 
         private static String checkStringNullPointer(String value, @NonNull String parameterName) {
-            if (Config.isDebug() && (value == null || "".equals(value))) {
+            if (ComponentConfig.isDebug() && (value == null || "".equals(value))) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null");
             }
             return value;
         }
 
         private static String checkStringNullPointer(String value, @NonNull String parameterName, @Nullable String desc) {
-            if (Config.isDebug() && (value == null || "".equals(value))) {
+            if (ComponentConfig.isDebug() && (value == null || "".equals(value))) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null" + (desc == null ? "" : "," + desc));
             }
             return value;
         }
 
         private static <T> T checkNullPointer(T value, @NonNull String parameterName) {
-            if (Config.isDebug() && value == null) {
+            if (ComponentConfig.isDebug() && value == null) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null");
             }
             return value;
@@ -151,7 +151,7 @@ public class EHiUiRouter {
                 return EHiUiRouterCenter.getInstance().openUri(context, uri, bundle, requestCode);
 
             } catch (Exception ignore) {
-                if (Config.isDebug()) {
+                if (ComponentConfig.isDebug()) {
                     throw ignore;
                 }
                 return false;

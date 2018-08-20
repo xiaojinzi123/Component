@@ -11,7 +11,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.0-alpha05'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -34,6 +33,6 @@ task clean(type: Delete) {
 
 ext {
     support = "27.1.1"
-    component_version = "1.0.2"
+    component_version = "1.0.4"
     isDependOnline = "true"
 }

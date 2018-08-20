@@ -6,12 +6,12 @@ package com.ehi.component;
  * @author : xiaojinzi 30212
  *
  */
-public class Config {
+public class ComponentConfig {
 
     private static boolean isDebug = false;
 
     public static void init(boolean isDebug) {
-        Config.isDebug = isDebug;
+        ComponentConfig.isDebug = isDebug;
     }
 
     public static boolean isDebug(){

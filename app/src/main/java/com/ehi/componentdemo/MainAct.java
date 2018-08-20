@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.ehi.component.Config;
+import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouter;
 import com.ehi.component.impl.EHiModuleManager;
 import com.ehi.component.impl.EHiUiRouter;
@@ -23,7 +23,7 @@ public class MainAct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_act);
 
-        Config.init(true);
+        ComponentConfig.init(true);
 
         EHiModuleManager.getInstance().register(ComponentEnum.App.getModuleName());
         EHiModuleManager.getInstance().register(ComponentEnum.Component1.getModuleName());

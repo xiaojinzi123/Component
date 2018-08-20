@@ -150,7 +150,7 @@ public class RouterProcessor extends AbstractProcessor {
             if (router.host() == null || "".equals(router.host())) {
             } else {
                 if (router.host().contains("/")) {
-                    mMessager.printMessage(Diagnostic.Kind.ERROR, "the host value '" + router.host() + "' can contains '/'");
+                    mMessager.printMessage(Diagnostic.Kind.ERROR, "the host value '" + router.host() + "' can't contains '/'");
                 }
             }
 

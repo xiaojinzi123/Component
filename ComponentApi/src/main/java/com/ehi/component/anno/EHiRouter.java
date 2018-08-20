@@ -33,9 +33,4 @@ public @interface EHiRouter {
      */
     String desc() default "";
 
-    /**
-     * 级别,如果两个组件的路径一样,级别越高,就会先跳转
-     */
-    //int priority() default -1;
-
 }

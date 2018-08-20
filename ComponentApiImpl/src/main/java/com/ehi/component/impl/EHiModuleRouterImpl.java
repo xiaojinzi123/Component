@@ -150,18 +150,6 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
             if (key == null || "".equals(key)) continue;
 
-//            if (key.charAt(0) == '/') {
-//                if (key.equals(targetPath)) {
-//                    targetClass = routerMap.get(key);
-//                    break;
-//                }
-//            } else {
-//                if (("/" + key).equals(targetPath)) {
-//                    targetClass = routerMap.get(key);
-//                    break;
-//                }
-//            }
-
             if (key.equals(targetPath)) {
                 targetClass = routerMap.get(key);
                 break;
