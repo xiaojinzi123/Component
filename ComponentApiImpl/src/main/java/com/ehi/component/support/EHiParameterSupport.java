@@ -19,11 +19,16 @@ public class EHiParameterSupport {
     public static final String KEY_BUNDLE = "EHiRouterBundle";
 
     @Nullable
+    public static String getString(@NonNull Intent intent, @NonNull String key) {
+        return getString(intent, key, null);
+    }
+
+    @Nullable
     public static String getString(@NonNull Intent intent, @NonNull String key, String defaultValue) {
 
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
-            return null;
+            return defaultValue;
         }
 
         // may be null
@@ -37,11 +42,16 @@ public class EHiParameterSupport {
     }
 
     @Nullable
+    public static Integer getInt(@NonNull Intent intent, @NonNull String key) {
+        return getInt(intent, key, null);
+    }
+
+    @Nullable
     public static Integer getInt(@NonNull Intent intent, @NonNull String key, Integer defaultValue) {
 
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
-            return null;
+            return defaultValue;
         }
 
         // may be null
@@ -54,8 +64,13 @@ public class EHiParameterSupport {
         try {
             return Integer.valueOf(value);
         } catch (Exception ignore) {
-            return null;
+            return defaultValue;
         }
+    }
+
+    @Nullable
+    public static Long getLong(@NonNull Intent intent, @NonNull String key) {
+        return getLong(intent, key, null);
     }
 
     @Nullable
@@ -63,7 +78,7 @@ public class EHiParameterSupport {
 
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
-            return null;
+            return defaultValue;
         }
 
         // may be null
@@ -76,9 +91,14 @@ public class EHiParameterSupport {
         try {
             return Long.valueOf(value);
         } catch (Exception ignore) {
-            return null;
+            return defaultValue;
         }
 
+    }
+
+    @Nullable
+    public static Double getDouble(@NonNull Intent intent, @NonNull String key) {
+        return getDouble(intent, key, null);
     }
 
     @Nullable
@@ -86,7 +106,7 @@ public class EHiParameterSupport {
 
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
-            return null;
+            return defaultValue;
         }
 
         // may be null
@@ -99,8 +119,13 @@ public class EHiParameterSupport {
         try {
             return Double.valueOf(value);
         } catch (Exception ignore) {
-            return null;
+            return defaultValue;
         }
+    }
+
+    @Nullable
+    public static Float getFloat(@NonNull Intent intent, @NonNull String key) {
+        return getFloat(intent, key, null);
     }
 
     @Nullable
@@ -108,7 +133,7 @@ public class EHiParameterSupport {
 
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
-            return null;
+            return defaultValue;
         }
 
         // may be null
@@ -121,8 +146,13 @@ public class EHiParameterSupport {
         try {
             return Float.valueOf(value);
         } catch (Exception ignore) {
-            return null;
+            return defaultValue;
         }
+    }
+
+    @Nullable
+    public static Boolean getBoolean(@NonNull Intent intent, @NonNull String key) {
+        return getBoolean(intent, key, null);
     }
 
     @Nullable
@@ -130,7 +160,7 @@ public class EHiParameterSupport {
 
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
-            return null;
+            return defaultValue;
         }
 
         // may be null
@@ -143,8 +173,13 @@ public class EHiParameterSupport {
         try {
             return Boolean.valueOf(value);
         } catch (Exception ignore) {
-            return null;
+            return defaultValue;
         }
+    }
+
+    @Nullable
+    public static Short getShort(@NonNull Intent intent, @NonNull String key) {
+        return getShort(intent, key, null);
     }
 
     @Nullable
@@ -152,7 +187,7 @@ public class EHiParameterSupport {
 
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
-            return null;
+            return defaultValue;
         }
 
         // may be null
@@ -165,8 +200,13 @@ public class EHiParameterSupport {
         try {
             return Short.valueOf(value);
         } catch (Exception ignore) {
-            return null;
+            return defaultValue;
         }
+    }
+
+    @Nullable
+    public static Byte getByte(@NonNull Intent intent, @NonNull String key) {
+        return getByte(intent, key, null);
     }
 
     @Nullable
@@ -174,7 +214,7 @@ public class EHiParameterSupport {
 
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
-            return null;
+            return defaultValue;
         }
 
         // may be null
@@ -187,10 +227,15 @@ public class EHiParameterSupport {
         try {
             return Byte.valueOf(value);
         } catch (Exception ignore) {
-            return null;
+            return defaultValue;
         }
     }
 
+    /**
+     * @param intent
+     * @param uri
+     * @hide
+     */
     public static void put(@NonNull Intent intent, @NonNull Uri uri) {
         Bundle routerParameterBundle = new Bundle();
         Set<String> queryParameterNames = uri.getQueryParameterNames();

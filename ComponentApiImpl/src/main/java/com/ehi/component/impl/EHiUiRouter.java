@@ -95,11 +95,37 @@ public class EHiUiRouter {
             return this;
         }
 
-        public Builder query(@NonNull String queryName, @NonNull String queryValue) {
+        public Builder query(@NonNull String queryName, @Nullable String queryValue) {
             checkStringNullPointer(queryName, "queryName");
-            checkStringNullPointer(queryValue, "queryValue");
+            if (queryValue == null) {
+                queryValue = "";
+            }
             queryMap.put(queryName, queryValue);
             return this;
+        }
+
+        public Builder query(@NonNull String queryName, boolean queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        public Builder query(@NonNull String queryName, byte queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        public Builder query(@NonNull String queryName, int queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        public Builder query(@NonNull String queryName, float queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        public Builder query(@NonNull String queryName, long queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        public Builder query(@NonNull String queryName, double queryValue) {
+            return query(queryName, String.valueOf(queryValue));
         }
 
         private static String checkStringNullPointer(String value, @NonNull String parameterName) {
