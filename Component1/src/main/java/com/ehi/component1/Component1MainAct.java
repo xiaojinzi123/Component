@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.ehi.component.anno.EHiRouter;
 import com.ehi.component.support.EHiParameterSupport;
 
-@EHiRouter(host = "component1", value = "main", desc = "业务组件1的主界面")
+@EHiRouter(host = "component1", value = "main", needLogin = true, desc = "业务组件1的主界面")
 public class Component1MainAct extends AppCompatActivity {
 
     @Override

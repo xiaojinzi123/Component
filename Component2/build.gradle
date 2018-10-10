@@ -45,5 +45,4 @@ dependencies {
     }else {
         kapt project(':ComponentApiCompiler')
     }
-
 }

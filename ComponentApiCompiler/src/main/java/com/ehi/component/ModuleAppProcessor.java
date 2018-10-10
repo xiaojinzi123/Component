@@ -150,15 +150,17 @@ public class ModuleAppProcessor extends AbstractProcessor {
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();
 
+        TypeSpec typeSpec = TypeSpec.classBuilder(cn)
+                //.addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.FINAL)
+                .superclass(superClass)
+                .addMethod(initHostMethod)
+                .addMethod(initMapMethod)
+                .build();
+
         try {
-            JavaFile.builder(pkg, TypeSpec.classBuilder(cn)
-                    //.addModifiers(Modifier.PUBLIC)
-                    .addModifiers(Modifier.FINAL)
-                    .superclass(superClass)
-                    .addMethod(initHostMethod)
-                    .addMethod(initMapMethod)
-                    .build()
-            ).build().writeTo(mFiler);
+            JavaFile.builder(pkg, typeSpec
+            ).indent("    ").build().writeTo(mFiler);
         } catch (IOException e) {
             e.printStackTrace();
         }

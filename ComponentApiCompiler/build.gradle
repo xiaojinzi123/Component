@@ -11,7 +11,7 @@ targetCompatibility = "7"
 
 dependencies{
     compile 'com.google.auto.service:auto-service:1.0-rc2'
-    compile 'com.squareup:javapoet:1.9.0'
+    compile 'com.squareup:javapoet:1.11.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'org.apache.commons:commons-collections4:4.1'
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
@@ -20,9 +20,6 @@ dependencies{
         compile project(':ComponentApi')
     }
 }
-
-group 'com.ehi'
-version '1.0'
 
 repositories {
     mavenCentral()

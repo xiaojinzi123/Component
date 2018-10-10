@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.ehi.component.EHIComponentUtil;
@@ -30,6 +31,11 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     protected Map<String, Class> routerMap = new HashMap<>();
 
     /**
+     * 记录这个Activity是否需要登录
+     */
+    protected Map<Class, Boolean> isNeedLoginMap = new HashMap<>();
+
+    /**
      * 是否初始化了map,懒加载
      */
     protected boolean hasInitMap = false;
@@ -50,8 +56,18 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     }
 
     @Override
+    public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) {
+        return fopenUri(fragment, uri, null);
+    }
+
+    @Override
     public boolean openUri(@NonNull Context context, @NonNull Uri uri) {
         return openUri(context, uri, null);
+    }
+
+    @Override
+    public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) {
+        return fopenUri(fragment, uri, null, null);
     }
 
     @Override
@@ -60,7 +76,26 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     }
 
     @Override
+    public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
+        return doOpenUri(null, fragment, uri, bundle, requestCode);
+    }
+
+    @Override
     public boolean openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
+        return doOpenUri(context, null, uri, bundle, requestCode);
+    }
+
+    /**
+     * content 参数和 fragment 参数必须有一个有值的
+     *
+     * @param context
+     * @param fragment
+     * @param uri
+     * @param bundle
+     * @param requestCode
+     * @return
+     */
+    private boolean doOpenUri(@Nullable Context context, @Nullable Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
 
         if (!hasInitMap) {
             initMap();
@@ -72,6 +107,24 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
             return false;
 
+        }
+
+        // 处理拦截的代码
+
+        EHiUiRouter.EHiUiRouterInterceptor currInterceptor = null;
+
+        for (EHiUiRouter.EHiUiRouterInterceptor interceptor : EHiUiRouter.uiRouterInterceptors) {
+
+            if (interceptor.intercept(context, fragment, uri, targetClass, bundle, requestCode, isNeedLoginMap.get(targetClass))) {
+                currInterceptor = interceptor;
+                break;
+            }
+
+        }
+
+        if (currInterceptor != null) {
+            currInterceptor = null;
+            return false;
         }
 
         // 防止重复跳转同一个界面
@@ -90,25 +143,34 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         Intent intent = new Intent(context, targetClass);
         intent.putExtras(bundle);
-        EHiParameterSupport.put(intent,uri);
+        EHiParameterSupport.put(intent, uri);
 
         if (requestCode == null) {
-
-            context.startActivity(intent);
+            if (context == null) {
+                fragment.startActivity(intent);
+            } else {
+                context.startActivity(intent);
+            }
             return true;
 
         } else {
 
-            if (context instanceof Activity) {
-                ((Activity) context).startActivityForResult(intent, requestCode);
-                return true;
+            if (context == null) {
+
+                fragment.startActivityForResult(intent, requestCode);
+
+            } else {
+
+                if (context instanceof Activity) {
+                    ((Activity) context).startActivityForResult(intent, requestCode);
+                    return true;
+                }
+
             }
 
         }
 
         return false;
-
-
     }
 
     @Override
@@ -118,13 +180,20 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             initMap();
         }
 
-        boolean isHostEqual = getHost().equals(uri.getHost());
+        return getTargetClass(uri) == null ? false : true;
 
-        if (!isHostEqual) {
-            return false;
+    }
+
+    @Override
+    public boolean isNeedLogin(@NonNull Uri uri) {
+
+        if (!hasInitMap) {
+            initMap();
         }
 
-        return getTargetClass(uri) == null ? false : true;
+        Class<?> targetClass = getTargetClass(uri);
+
+        return targetClass == null ? false : isNeedLoginMap.get(targetClass);
 
     }
 

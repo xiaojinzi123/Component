@@ -11,6 +11,7 @@ public class RouterBean {
 
     private String host;
     private String path;
+    private boolean needLogin;
     private String desc;
     //private int priority = -1;
     private Element rawType;
@@ -29,6 +30,14 @@ public class RouterBean {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public boolean isNeedLogin() {
+        return needLogin;
+    }
+
+    public void setNeedLogin(boolean needLogin) {
+        this.needLogin = needLogin;
     }
 
     public String getDesc() {

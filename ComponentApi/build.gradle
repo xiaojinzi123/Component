@@ -8,9 +8,6 @@ dependencies {
 sourceCompatibility = "7"
 targetCompatibility = "7"
 
-group 'com.ehi'
-version '1.0'
-
 repositories {
     mavenCentral()
 }

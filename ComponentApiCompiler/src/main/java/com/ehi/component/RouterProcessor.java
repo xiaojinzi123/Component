@@ -113,6 +113,7 @@ public class RouterProcessor extends AbstractProcessor {
 
             TypeMirror tm = element.asType();
 
+            // 必须标记的是一种类型的元素
             if (!(element instanceof TypeElement)) {
 
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
@@ -121,6 +122,7 @@ public class RouterProcessor extends AbstractProcessor {
 
             }
 
+            // 必须标记在 Activity 上
             if (!mTypes.isSubtype(tm, typeActivity)) {
 
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'EHiRouter' annotation");
@@ -129,7 +131,7 @@ public class RouterProcessor extends AbstractProcessor {
 
             }
 
-            // 如果是一个Activity
+            // 如果是一个Activity 才会走到这里
 
             EHiRouter router = element.getAnnotation(EHiRouter.class);
 
@@ -164,6 +166,7 @@ public class RouterProcessor extends AbstractProcessor {
             com.ehi.component.bean.RouterBean routerBean = new com.ehi.component.bean.RouterBean();
             routerBean.setHost(router.host());
             routerBean.setPath(router.value());
+            routerBean.setNeedLogin(router.needLogin());
             routerBean.setDesc(router.desc());
             //routerBean.setPriority(router.priority());
             routerBean.setRawType(element);
@@ -195,15 +198,18 @@ public class RouterProcessor extends AbstractProcessor {
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();
 
+        TypeSpec typeSpec = TypeSpec.classBuilder(cn)
+                //.addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.FINAL)
+                .superclass(superClass)
+                .addMethod(initHostMethod)
+                .addMethod(initMapMethod)
+                .build();
+
         try {
-            JavaFile.builder(pkg, TypeSpec.classBuilder(cn)
-                    //.addModifiers(Modifier.PUBLIC)
-                    .addModifiers(Modifier.FINAL)
-                    .superclass(superClass)
-                    .addMethod(initHostMethod)
-                    .addMethod(initMapMethod)
-                    .build()
-            ).build().writeTo(mFiler);
+            JavaFile.builder(pkg,typeSpec)
+                    .indent("    ")
+                    .build().writeTo(mFiler);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -224,9 +230,8 @@ public class RouterProcessor extends AbstractProcessor {
             @Override
             public void accept(String key, RouterBean routerBean) {
 
-                openUriMethodSpecBuilder.addStatement(
-                        "routerMap" + ".put($S,$T.class)", key,
-                        ClassName.get((TypeElement) routerBean.getRawType()));
+                openUriMethodSpecBuilder.addStatement("routerMap" + ".put($S,$T.class)", key, ClassName.get((TypeElement) routerBean.getRawType()));
+                openUriMethodSpecBuilder.addStatement("isNeedLoginMap" + ".put($T.class,$L)", ClassName.get((TypeElement) routerBean.getRawType()), routerBean.isNeedLogin());
 
             }
         });
