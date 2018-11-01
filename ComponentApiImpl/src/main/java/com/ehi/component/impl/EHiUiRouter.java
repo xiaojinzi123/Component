@@ -31,6 +31,8 @@ public class EHiUiRouter {
 
     static Collection<EHiUiRouterInterceptor> uiRouterInterceptors = Collections.synchronizedCollection(new ArrayList<EHiUiRouterInterceptor>(0));
 
+    static Collection<EHiErrorRouterInterceptor> errorRouterInterceptors = Collections.synchronizedCollection(new ArrayList<EHiErrorRouterInterceptor>(0));
+
     public static void clearUiRouterInterceptor() {
         uiRouterInterceptors.clear();
     }
@@ -41,6 +43,19 @@ public class EHiUiRouter {
             return;
         }
         uiRouterInterceptors.add(interceptor);
+
+    }
+
+    public static void clearErrorRouterInterceptor() {
+        errorRouterInterceptors.clear();
+    }
+
+    public static void addErrorRouterInterceptor(@NonNull EHiErrorRouterInterceptor interceptor) {
+
+        if (errorRouterInterceptors.contains(interceptor)) {
+            return;
+        }
+        errorRouterInterceptors.add(interceptor);
 
     }
 
@@ -106,6 +121,7 @@ public class EHiUiRouter {
                 .bundle(bundle == null ? new Bundle() : bundle)
                 .navigate();
     }
+
     public static boolean fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle, @Nullable Integer requestCode) {
         return new Builder(fragment, url)
                 .bundle(bundle == null ? new Bundle() : bundle)
@@ -267,7 +283,6 @@ public class EHiUiRouter {
                 holder.fragment = fragment;
                 holder.uri = uri;
                 holder.requestCode = requestCode;
-                holder.queryMap = queryMap;
                 holder.bundle = bundle;
 
                 for (EHiUiRouterInterceptor interceptor : uiRouterInterceptors) {
@@ -280,14 +295,34 @@ public class EHiUiRouter {
                     return EHiUiRouterCenter.getInstance().openUri(holder.context, holder.uri, holder.bundle, holder.requestCode);
                 }
 
-            } catch (Exception ignore) {
+            } catch (Exception e) { // 发生路由错误的时候
+
+                for (EHiErrorRouterInterceptor interceptor : errorRouterInterceptors) {
+                    try {
+                        interceptor.onRouterError(e);
+                    } catch (Exception ignore) {
+                        // do nothing
+                    }
+                }
+
                 if (ComponentConfig.isDebug()) {
-                    throw ignore;
+                    throw e;
                 }
                 return false;
+
             } finally {
+
+                // 释放资源
+
+                url = null;
+                host = null;
+                path = null;
+                requestCode = null;
                 context = null;
+                fragment = null;
                 queryMap = null;
+                bundle = null;
+
             }
 
         }
@@ -307,9 +342,6 @@ public class EHiUiRouter {
 
         @Nullable
         public Integer requestCode;
-
-        @NonNull
-        public Map<String, String> queryMap = new HashMap<>();
 
         @NonNull
         public Bundle bundle = new Bundle();
@@ -467,11 +499,6 @@ public class EHiUiRouter {
 
     }
 
-    public interface EHiUiRouterPreInterceptor {
-
-
-    }
-
     /**
      * 路由跳转的拦截器
      */
@@ -496,6 +523,20 @@ public class EHiUiRouter {
                 @NonNull Class targetActivityClass, @Nullable Bundle bundle,
                 @Nullable Integer requestCode, boolean isNeedLogin
         );
+
+    }
+
+    /**
+     * 当发生错误的时候的错误拦截器
+     */
+    public interface EHiErrorRouterInterceptor {
+
+        /**
+         * 发生错误的时候的回调
+         *
+         * @param e
+         */
+        void onRouterError(Exception e);
 
     }
 

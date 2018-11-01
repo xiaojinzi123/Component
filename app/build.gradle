@@ -32,8 +32,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     api project(":BaseModule")
 
-    implementation project(':Component1')
-    implementation project(':Component2')
+//    implementation project(':Component1')
+//    implementation project(':Component2')
 
 
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
