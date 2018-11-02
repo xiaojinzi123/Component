@@ -8,9 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.ehi.component.ComponentConfig;
-import com.ehi.component.EHIComponentUtil;
 import com.ehi.component.router.IComponentHostRouter;
-import com.ehi.component.router.IComponentModuleRouter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,14 +18,18 @@ import java.util.Map;
 
 /**
  * 这个类必须放在 {@link com.ehi.component.EHIComponentUtil#IMPL_OUTPUT_PKG} 包下面
+ * 这个类作为框架对外的一个使用的类,里面会很多易用的方法
  * <p>
  * time   : 2018/07/26
  *
  * @author : xiaojinzi 30212
  */
-public class EHiUiRouter {
+public class EHiRouter {
 
-    private static String tag = "EHiUiRouter";
+    /**
+     * 类的标志
+     */
+    private static String TAG = "EHiRouter";
 
     static Collection<EHiUiRouterInterceptor> uiRouterInterceptors = Collections.synchronizedCollection(new ArrayList<EHiUiRouterInterceptor>(0));
 
@@ -130,11 +132,11 @@ public class EHiUiRouter {
     }
 
     public static boolean isMatchUri(@NonNull Uri uri) {
-        return EHiUiRouterCenter.instance.isMatchUri(uri);
+        return EHiUiRouterCenter.getInstance().isMatchUri(uri);
     }
 
     public static boolean isNeedLogin(@NonNull Uri uri) {
-        return EHiUiRouterCenter.instance.isNeedLogin(uri);
+        return EHiUiRouterCenter.getInstance().isNeedLogin(uri);
     }
 
     public static class Builder {
@@ -329,6 +331,9 @@ public class EHiUiRouter {
 
     }
 
+    /**
+     * 当发起一个路由的时候,这个类会持有所有的信息,拦截器中可以拿到这个参数
+     */
     public static class RouterHolder {
 
         @Nullable
@@ -345,157 +350,6 @@ public class EHiUiRouter {
 
         @NonNull
         public Bundle bundle = new Bundle();
-
-    }
-
-    private static class EHiUiRouterCenter implements IComponentModuleRouter {
-
-        private static String tag = "EHiUiRouterCenter";
-
-        private static volatile EHiUiRouterCenter instance;
-
-        private static Map<String, IComponentHostRouter> routerMap = new HashMap<>();
-
-        private EHiUiRouterCenter() {
-        }
-
-        public static EHiUiRouterCenter getInstance() {
-            if (instance == null) {
-                synchronized (EHiUiRouterCenter.class) {
-                    if (instance == null) {
-                        instance = new EHiUiRouterCenter();
-                    }
-                }
-            }
-            return instance;
-        }
-
-        @Override
-        public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) {
-            return fopenUri(fragment, uri, null);
-        }
-
-        @Override
-        public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) {
-            return fopenUri(fragment, uri, null, null);
-        }
-
-        @Override
-        public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
-
-            for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
-                if (entry.getValue().fopenUri(fragment, uri, bundle, requestCode)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        @Override
-        public boolean openUri(@NonNull Context context, @NonNull Uri uri) {
-            return openUri(context, uri, null);
-        }
-
-        @Override
-        public boolean openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) {
-            return openUri(context, uri, null, null);
-        }
-
-        @Override
-        public boolean openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
-
-            for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
-                if (entry.getValue().openUri(context, uri, bundle, requestCode)) {
-                    return true;
-                }
-            }
-
-            return false;
-
-        }
-
-        @Override
-        public boolean isMatchUri(@NonNull Uri uri) {
-
-            for (String key : routerMap.keySet()) {
-
-                IComponentHostRouter router = routerMap.get(key);
-
-                if (router.isMatchUri(uri)) {
-                    return true;
-                }
-
-            }
-
-            return false;
-
-        }
-
-        @Override
-        public boolean isNeedLogin(@NonNull Uri uri) {
-
-            for (String key : routerMap.keySet()) {
-
-                IComponentHostRouter router = routerMap.get(key);
-
-                if (router.isNeedLogin(uri)) {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-
-        @Override
-        public void register(@NonNull IComponentHostRouter router) {
-
-            if (router == null) {
-                return;
-            }
-
-            routerMap.put(router.getHost(), router);
-
-        }
-
-        @Override
-        public void register(@NonNull String host) {
-            IComponentHostRouter router = findUiRouter(host);
-            register(router);
-        }
-
-        @Override
-        public void unregister(IComponentHostRouter router) {
-            routerMap.remove(router.getHost());
-        }
-
-        @Override
-        public void unregister(@NonNull String host) {
-            routerMap.remove(host);
-        }
-
-        @Nullable
-        private IComponentHostRouter findUiRouter(String host) {
-
-            String className = EHIComponentUtil.genHostUIRouterClassName(host);
-
-            try {
-                Class<?> clazz = Class.forName(className);
-
-                IComponentHostRouter instance = (IComponentHostRouter) clazz.newInstance();
-
-                return instance;
-
-            } catch (ClassNotFoundException e) {
-            } catch (IllegalAccessException e) {
-                System.out.println("qweqwe");
-            } catch (InstantiationException e) {
-            }
-
-            return null;
-
-        }
 
     }
 

@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.ehi.component.impl.EHiUiRouter;
+import com.ehi.component.impl.EHiRouter;
 
 public class Component1Fragment extends Fragment {
 
@@ -28,7 +28,7 @@ public class Component1Fragment extends Fragment {
 
                 Bundle b = new Bundle();
 
-                EHiUiRouter.with(getContext())
+                EHiRouter.with(getContext())
                         .host("component2")
                         .path("component2")
                         .bundle(b)

@@ -4,17 +4,17 @@ import android.content.Context
 import com.ehi.base.ComponentEnum
 import com.ehi.component.anno.EHiModuleApp
 import com.ehi.component.application.IComponentApplication
-import com.ehi.component.impl.EHiUiRouter
+import com.ehi.component.impl.EHiRouter
 
 @EHiModuleApp()
 class Component2Application : IComponentApplication {
 
     override fun onCreate(app: Context) {
-        EHiUiRouter.register(ComponentEnum.Component2.moduleName)
+        EHiRouter.register(ComponentEnum.Component2.moduleName)
     }
 
     override fun onDestory() {
-        EHiUiRouter.unregister(ComponentEnum.Component2.moduleName)
+        EHiRouter.unregister(ComponentEnum.Component2.moduleName)
     }
 
 }

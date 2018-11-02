@@ -34,5 +34,11 @@
         android:textColor="#FF0000"
         android:textSize="30dp" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:text="点我崩溃"
+        android:layout_below="@+id/tv_pass"
+        android:onClick="testCrash"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

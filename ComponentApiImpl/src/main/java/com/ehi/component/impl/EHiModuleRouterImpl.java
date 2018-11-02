@@ -19,6 +19,8 @@ import java.util.Map;
 
 /**
  * 如果名称更改了,请配置到 {@link com.ehi.component.EHIComponentUtil#IMPL_OUTPUT_PKG} 和 {@link EHIComponentUtil#UIROUTER_IMPL_CLASS_NAME} 上
+ * 因为这个类是生成的子路由需要继承的类,所以这个类的包的名字的更改或者类名更改都会引起源码或者配置常量的更改
+ *
  * time   : 2018/07/26
  *
  * @author : xiaojinzi 30212
@@ -111,9 +113,9 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         // 处理拦截的代码
 
-        EHiUiRouter.EHiUiRouterInterceptor currInterceptor = null;
+        EHiRouter.EHiUiRouterInterceptor currInterceptor = null;
 
-        for (EHiUiRouter.EHiUiRouterInterceptor interceptor : EHiUiRouter.uiRouterInterceptors) {
+        for (EHiRouter.EHiUiRouterInterceptor interceptor : EHiRouter.uiRouterInterceptors) {
 
             if (interceptor.intercept(context, fragment, uri, targetClass, bundle, requestCode, isNeedLoginMap.get(targetClass))) {
                 currInterceptor = interceptor;

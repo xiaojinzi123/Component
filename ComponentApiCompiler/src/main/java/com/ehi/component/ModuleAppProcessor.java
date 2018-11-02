@@ -111,7 +111,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
             if (!mTypes.isSubtype(tm, typeApplication)) {
 
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'EHiRouter' annotation");
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'EHiRouterAnno' annotation");
 
                 continue;
 

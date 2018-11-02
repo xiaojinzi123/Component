@@ -8,14 +8,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.ehi.component.ComponentConfig;
-import com.ehi.component.anno.EHiRouter;
+import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiModuleManager;
-import com.ehi.component.impl.EHiUiRouter;
+import com.ehi.component.impl.EHiRouter;
 import com.ehi.base.ComponentEnum;
 import com.ehi.base.EHiServiceContainer;
 import com.ehi.base.service.component1.Component1Service;
 
-@EHiRouter(value = "main", desc = "主界面")
+@EHiRouterAnno(value = "main", desc = "主界面")
 public class MainAct extends AppCompatActivity {
 
     @Override
@@ -59,13 +59,7 @@ public class MainAct extends AppCompatActivity {
 
     public void goToComponent1MainView(View view) {
 
-//        EHiUiRouter.with(this)
-//                .host("component1")
-//                //.path("component3")
-//                .requestCode(123)
-//                .navigate();
-
-        EHiUiRouter.open(this, "//component1/main?name=xiaojinzi&pass=123", 123);
+        EHiRouter.open(this, "//component1/main?name=xiaojinzi&pass=123", 123);
 
     }
 

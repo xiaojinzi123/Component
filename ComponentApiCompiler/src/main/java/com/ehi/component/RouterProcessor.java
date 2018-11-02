@@ -1,6 +1,6 @@
 package com.ehi.component;
 
-import com.ehi.component.anno.EHiRouter;
+import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.bean.RouterBean;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
@@ -38,7 +38,7 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedAnnotationTypes({"com.ehi.component.anno.EHiRouter"})
+@SupportedAnnotationTypes({"com.ehi.component.anno.EHiRouterAnno"})
 public class RouterProcessor extends AbstractProcessor {
 
     private TypeMirror typeString;
@@ -81,7 +81,7 @@ public class RouterProcessor extends AbstractProcessor {
 
         if (CollectionUtils.isNotEmpty(set)) {
 
-            Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(EHiRouter.class);
+            Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(EHiRouterAnno.class);
 
             mMessager.printMessage(Diagnostic.Kind.NOTE, " >>> size = " + (routeElements == null ? 0 : routeElements.size()));
 
@@ -125,7 +125,7 @@ public class RouterProcessor extends AbstractProcessor {
             // 必须标记在 Activity 上
             if (!mTypes.isSubtype(tm, typeActivity)) {
 
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'EHiRouter' annotation");
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'EHiRouterAnno' annotation");
 
                 continue;
 
@@ -133,7 +133,7 @@ public class RouterProcessor extends AbstractProcessor {
 
             // 如果是一个Activity 才会走到这里
 
-            EHiRouter router = element.getAnnotation(EHiRouter.class);
+            EHiRouterAnno router = element.getAnnotation(EHiRouterAnno.class);
 
             if (router == null) {
 
@@ -143,7 +143,7 @@ public class RouterProcessor extends AbstractProcessor {
 
             if (router.value() == null || "".equals(router.value())) {
 
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouter'value can;t be null or empty string");
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value can;t be null or empty string");
                 continue;
 
             }
@@ -158,7 +158,7 @@ public class RouterProcessor extends AbstractProcessor {
 
             if (routerMap.containsKey(getHostAndPath(router.host(), router.value()))) {
 
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouter'value is alreay exist");
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value is alreay exist");
                 continue;
 
             }

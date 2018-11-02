@@ -31,8 +31,9 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+apply from: "dependencies.gradle"
+
 ext {
-    support = "27.1.1"
     component_version = "1.2.3"
-    isDependOnline = "true"
+    isDependOnline = "false"
 }
