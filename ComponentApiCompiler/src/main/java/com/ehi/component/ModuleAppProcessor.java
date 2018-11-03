@@ -136,7 +136,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
     private void createImpl() {
 
-        String claName = com.ehi.component.EHIComponentUtil.genHostModuleApplicationClassName(componentHost);
+        String claName = EHiComponentUtil.genHostModuleApplicationClassName(componentHost);
 
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf("."));
@@ -145,7 +145,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
         String cn = claName.substring(claName.lastIndexOf(".") + 1);
 
         // superClassName
-        ClassName superClass = ClassName.get(mElements.getTypeElement(EHIComponentUtil.MODULE_APPLICATION_IMPL_CLASS_NAME));
+        ClassName superClass = ClassName.get(mElements.getTypeElement(EHiComponentUtil.MODULE_APPLICATION_IMPL_CLASS_NAME));
 
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();

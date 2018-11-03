@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
-import com.ehi.component.EHIComponentUtil;
+import com.ehi.component.EHiComponentUtil;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.EHiParameterSupport;
 
@@ -18,9 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 如果名称更改了,请配置到 {@link com.ehi.component.EHIComponentUtil#IMPL_OUTPUT_PKG} 和 {@link EHIComponentUtil#UIROUTER_IMPL_CLASS_NAME} 上
+ * 如果名称更改了,请配置到 {@link EHiComponentUtil#IMPL_OUTPUT_PKG} 和 {@link EHiComponentUtil#UIROUTER_IMPL_CLASS_NAME} 上
  * 因为这个类是生成的子路由需要继承的类,所以这个类的包的名字的更改或者类名更改都会引起源码或者配置常量的更改
- *
+ * <p>
  * time   : 2018/07/26
  *
  * @author : xiaojinzi 30212
@@ -147,32 +149,40 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         intent.putExtras(bundle);
         EHiParameterSupport.put(intent, uri);
 
+        boolean isNavigationSuccess = false;
+
         if (requestCode == null) {
             if (context == null) {
                 fragment.startActivity(intent);
             } else {
                 context.startActivity(intent);
             }
-            return true;
-
+            isNavigationSuccess = true;
         } else {
-
             if (context == null) {
-
-                fragment.startActivityForResult(intent, requestCode);
-
+                Fragment rxFragment = findFragment(fragment);
+                if (rxFragment == null) {
+                    fragment.startActivityForResult(intent, requestCode);
+                } else {
+                    rxFragment.startActivityForResult(intent, requestCode);
+                }
+                isNavigationSuccess = true;
             } else {
 
-                if (context instanceof Activity) {
-                    ((Activity) context).startActivityForResult(intent, requestCode);
-                    return true;
+                Fragment rxFragment = findFragment(context);
+                if (rxFragment == null) {
+                    if (context instanceof Activity) {
+                        ((Activity) context).startActivityForResult(intent, requestCode);
+                        isNavigationSuccess = true;
+                    }
+                } else {
+                    rxFragment.startActivityForResult(intent, requestCode);
+                    isNavigationSuccess = true;
                 }
-
             }
-
         }
 
-        return false;
+        return isNavigationSuccess;
     }
 
     @Override
@@ -229,6 +239,22 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         }
         return targetClass;
 
+    }
+
+    @Nullable
+    private Fragment findFragment(@NonNull Context context) {
+        Fragment result = null;
+        if (context instanceof FragmentActivity) {
+            FragmentManager ft = ((FragmentActivity) context).getSupportFragmentManager();
+            result = ft.findFragmentByTag(EHiComponentUtil.FRAGMENT_TAG);
+        }
+        return result;
+    }
+
+    @Nullable
+    private Fragment findFragment(@NonNull Fragment fragment) {
+        Fragment result = fragment.getChildFragmentManager().findFragmentByTag(EHiComponentUtil.FRAGMENT_TAG);
+        return result;
     }
 
 }

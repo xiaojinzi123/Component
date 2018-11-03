@@ -1,12 +1,13 @@
 package com.ehi.component1;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.ehi.component.anno.EHiRouterAnno;
 
-@EHiRouterAnno(value = "component1/test",desc = "业务组件1的测试界面")
+@EHiRouterAnno(host = "component1", value = "test", desc = "业务组件1的测试界面")
 public class Component1TestAct extends AppCompatActivity {
 
     @Override
@@ -16,7 +17,9 @@ public class Component1TestAct extends AppCompatActivity {
     }
 
     public void returnData(View view) {
-        setResult(RESULT_OK);
+        Intent intent = new Intent();
+        intent.putExtra("data", "这是返回的数据");
+        setResult(RESULT_OK, intent);
         finish();
     }
 

@@ -24,9 +24,9 @@ dependencies {
     implementation libs.appcompat_v7
 
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
-        api "com.ehi:component-impl:${rootProject.ext.component_version}"
+        api "com.ehi:component-impl-rx:${rootProject.ext.component_version}"
     }else {
-        api project(':ComponentApiImpl')
+        api project(':ComponentRxImpl')
     }
 
 }

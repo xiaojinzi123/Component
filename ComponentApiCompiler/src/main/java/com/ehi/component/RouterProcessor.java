@@ -184,7 +184,7 @@ public class RouterProcessor extends AbstractProcessor {
      */
     private void createRouterImpl() {
 
-        String claName = EHIComponentUtil.genHostUIRouterClassName(componentHost);
+        String claName = EHiComponentUtil.genHostUIRouterClassName(componentHost);
 
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf("."));
@@ -193,7 +193,7 @@ public class RouterProcessor extends AbstractProcessor {
         String cn = claName.substring(claName.lastIndexOf(".") + 1);
 
         // superClassName
-        ClassName superClass = ClassName.get(mElements.getTypeElement(EHIComponentUtil.UIROUTER_IMPL_CLASS_NAME));
+        ClassName superClass = ClassName.get(mElements.getTypeElement(EHiComponentUtil.UIROUTER_IMPL_CLASS_NAME));
 
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();

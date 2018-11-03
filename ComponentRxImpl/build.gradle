@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
 android {
-    compileSdkVersion 27
 
+    compileSdkVersion 27
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 27
@@ -23,10 +23,11 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.appcompat_v7
+    api libs.rxjava
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
-        api "com.ehi:component-api:${rootProject.ext.component_version}"
+        api "com.ehi:component-impl:${rootProject.ext.component_version}"
     } else {
-        api project(':ComponentApi')
+        api project(':ComponentApiImpl')
     }
 }
 
@@ -44,16 +45,12 @@ uploadArchives {
     repositories {
         mavenDeployer {
 
-//            repository(url: "http://192.168.5.105:8081/repository/maven-releases/") {
-//                authentication(userName: "admin", password: "admin123")
-//            }
-
             repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
                 authentication(userName: "admin", password: "admin123")
             }
 
             pom.groupId = 'com.ehi'
-            pom.artifactId = 'component-impl'
+            pom.artifactId = 'component-impl-rx'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {
                 licenses {

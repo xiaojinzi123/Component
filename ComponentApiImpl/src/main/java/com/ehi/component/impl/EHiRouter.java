@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.ehi.component.ComponentConfig;
+import com.ehi.component.EHiComponentUtil;
 import com.ehi.component.router.IComponentHostRouter;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 这个类必须放在 {@link com.ehi.component.EHIComponentUtil#IMPL_OUTPUT_PKG} 包下面
+ * 这个类必须放在 {@link EHiComponentUtil#IMPL_OUTPUT_PKG} 包下面
  * 这个类作为框架对外的一个使用的类,里面会很多易用的方法
  * <p>
  * time   : 2018/07/26
@@ -141,40 +142,40 @@ public class EHiRouter {
 
     public static class Builder {
 
-        private Builder(@NonNull Context context, String url) {
+        protected Builder(@NonNull Context context, String url) {
             this.context = context;
             this.url = url;
             checkNullPointer(context, "context");
         }
 
-        private Builder(@NonNull Fragment fragment, String url) {
+        protected Builder(@NonNull Fragment fragment, String url) {
             this.fragment = fragment;
             this.url = url;
             checkNullPointer(fragment, "fragment");
         }
 
         @Nullable
-        private Context context;
+        protected Context context;
 
         @Nullable
-        private Fragment fragment;
+        protected Fragment fragment;
 
-        private String url;
-
-        @NonNull
-        private String host;
+        protected String url;
 
         @NonNull
-        private String path;
+        protected String host;
+
+        @NonNull
+        protected String path;
 
         @Nullable
-        private Integer requestCode;
+        protected Integer requestCode;
 
         @NonNull
-        private Map<String, String> queryMap = new HashMap<>();
+        protected Map<String, String> queryMap = new HashMap<>();
 
         @NonNull
-        private Bundle bundle = new Bundle();
+        protected Bundle bundle = new Bundle();
 
         public Builder requestCode(@Nullable Integer requestCode) {
             this.requestCode = requestCode;
@@ -233,72 +234,80 @@ public class EHiRouter {
             return query(queryName, String.valueOf(queryValue));
         }
 
-        private static String checkStringNullPointer(String value, @NonNull String parameterName) {
+        protected static String checkStringNullPointer(String value, @NonNull String parameterName) {
             if (ComponentConfig.isDebug() && (value == null || "".equals(value))) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null");
             }
             return value;
         }
 
-        private static String checkStringNullPointer(String value, @NonNull String parameterName, @Nullable String desc) {
+        protected static String checkStringNullPointer(String value, @NonNull String parameterName, @Nullable String desc) {
             if (ComponentConfig.isDebug() && (value == null || "".equals(value))) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null" + (desc == null ? "" : "," + desc));
             }
             return value;
         }
 
-        private static <T> T checkNullPointer(T value, @NonNull String parameterName) {
+        protected static <T> T checkNullPointer(T value, @NonNull String parameterName) {
             if (ComponentConfig.isDebug() && value == null) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null");
             }
             return value;
         }
 
-        public boolean navigate() {
+        @NonNull
+        protected RouterHolder generateHolder() {
 
-            try {
+            Uri uri = null;
 
-                Uri uri = null;
+            if (url == null) {
 
-                if (url == null) {
+                Uri.Builder uriBuilder = new Uri.Builder();
 
-                    Uri.Builder uriBuilder = new Uri.Builder();
+                uriBuilder
+                        .scheme("EHi")
+                        .authority(checkStringNullPointer(host, "host", "do you forget call host() to set host?"))
+                        .path(checkStringNullPointer(path, "path", "do you forget call path() to set path?"));
 
-                    uriBuilder
-                            .scheme("EHi")
-                            .authority(checkStringNullPointer(host, "host", "do you forget call host() to set host?"))
-                            .path(checkStringNullPointer(path, "path", "do you forget call path() to set path?"));
-
-                    for (Map.Entry<String, String> entry : queryMap.entrySet()) {
-                        uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
-                    }
-
-                    uri = uriBuilder.build();
-
-                } else {
-                    uri = Uri.parse(url);
+                for (Map.Entry<String, String> entry : queryMap.entrySet()) {
+                    uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
                 }
 
-                RouterHolder holder = new RouterHolder();
+                uri = uriBuilder.build();
 
-                holder.context = context;
-                holder.fragment = fragment;
-                holder.uri = uri;
-                holder.requestCode = requestCode;
-                holder.bundle = bundle;
+            } else {
+                uri = Uri.parse(url);
+            }
 
+            RouterHolder holder = new RouterHolder();
+
+            holder.context = context;
+            holder.fragment = fragment;
+            holder.uri = uri;
+            holder.requestCode = requestCode;
+            holder.bundle = bundle;
+
+            return holder;
+
+        }
+
+        /**
+         * 执行跳转的具体逻辑
+         *
+         * @return
+         */
+        public boolean navigate() {
+            try {
+                RouterHolder holder = generateHolder();
                 for (EHiUiRouterInterceptor interceptor : uiRouterInterceptors) {
                     interceptor.preIntercept(holder);
                 }
-
                 if (holder.context == null) {
                     return EHiUiRouterCenter.getInstance().fopenUri(holder.fragment, holder.uri, holder.bundle, holder.requestCode);
                 } else {
                     return EHiUiRouterCenter.getInstance().openUri(holder.context, holder.uri, holder.bundle, holder.requestCode);
                 }
-
             } catch (Exception e) { // 发生路由错误的时候
-
                 for (EHiErrorRouterInterceptor interceptor : errorRouterInterceptors) {
                     try {
                         interceptor.onRouterError(e);
@@ -306,16 +315,12 @@ public class EHiRouter {
                         // do nothing
                     }
                 }
-
                 if (ComponentConfig.isDebug()) {
                     throw e;
                 }
                 return false;
-
             } finally {
-
                 // 释放资源
-
                 url = null;
                 host = null;
                 path = null;
@@ -324,11 +329,8 @@ public class EHiRouter {
                 fragment = null;
                 queryMap = null;
                 bundle = null;
-
             }
-
         }
-
     }
 
     /**

@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.ehi.component.EHIComponentUtil;
+import com.ehi.component.EHiComponentUtil;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.router.IComponentModuleRouter;
 
@@ -144,7 +144,7 @@ class EHiUiRouterCenter implements IComponentModuleRouter {
         @Nullable
         private IComponentHostRouter findUiRouter(String host) {
 
-            String className = EHIComponentUtil.genHostUIRouterClassName(host);
+            String className = EHiComponentUtil.genHostUIRouterClassName(host);
 
             try {
                 Class<?> clazz = Class.forName(className);
