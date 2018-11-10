@@ -70,14 +70,15 @@ public class MainAct extends AppCompatActivity {
                 .requestCode(123)
                 .navigate();*/
 
-        EHiRxRouter
+        EHiRxRouter.Builder builder = EHiRxRouter
                 .with(this)
-                .host("component14")
+                .host("component1")
                 .path("test")
-                .query("name","xiaojinzi")
-                .query("pass","321")
-                .requestCode(123)
-                .newSingle()
+                .query("name", "xiaojinzi")
+                .query("pass", "321")
+                .requestCode(123);
+
+        builder.go()
                 .subscribe(new Consumer<Intent>() {
                     @Override
                     public void accept(Intent intent) throws Exception {
@@ -86,7 +87,20 @@ public class MainAct extends AppCompatActivity {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        System.out.println("throwable");
+                        System.out.println("result = " + throwable.getMessage());
+                    }
+                });
+
+        builder.go()
+                .subscribe(new Consumer<Intent>() {
+                    @Override
+                    public void accept(Intent intent) throws Exception {
+                        System.out.println("result = " + intent.getStringExtra("data"));
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        System.out.println("result = " + throwable.getMessage());
                     }
                 });
 

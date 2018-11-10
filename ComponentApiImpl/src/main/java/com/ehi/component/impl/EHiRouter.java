@@ -177,6 +177,11 @@ public class EHiRouter {
         @NonNull
         protected Bundle bundle = new Bundle();
 
+        /**
+         * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
+         */
+        private boolean isFinish = false;
+
         public Builder requestCode(@Nullable Integer requestCode) {
             this.requestCode = requestCode;
             return this;
@@ -296,7 +301,12 @@ public class EHiRouter {
          *
          * @return
          */
-        public boolean navigate() {
+        public synchronized boolean navigate() {
+
+            if (isFinish) {
+                return false;
+            }
+
             try {
                 RouterHolder holder = generateHolder();
                 for (EHiUiRouterInterceptor interceptor : uiRouterInterceptors) {
@@ -329,6 +339,7 @@ public class EHiRouter {
                 fragment = null;
                 queryMap = null;
                 bundle = null;
+                isFinish = true;
             }
         }
     }

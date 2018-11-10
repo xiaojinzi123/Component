@@ -3,6 +3,7 @@ package com.ehi.component.impl;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -108,7 +109,7 @@ public class EHiRxRouter {
                     return upstream.flatMap(new Function<Object, SingleSource<? extends Intent>>() {
                         @Override
                         public SingleSource<? extends Intent> apply(Object o) throws Exception {
-                            return newSingle();
+                            return go();
                         }
                     });
                 }
@@ -116,13 +117,20 @@ public class EHiRxRouter {
 
         }
 
-        public Single<Intent> newSingle() {
+        public Single<Intent> go() {
 
             return Single.create(new SingleOnSubscribe<Intent>() {
                 @Override
                 public void subscribe(SingleEmitter<Intent> emitter) throws Exception {
 
                     if (emitter.isDisposed()) {
+                        return;
+                    }
+
+                    Thread currentThread = Thread.currentThread();
+
+                    if (currentThread != Looper.getMainLooper().getThread()) {
+                        emitter.onError(new RuntimeException("EHiRxRouter must run on main thread"));
                         return;
                     }
 
@@ -157,17 +165,19 @@ public class EHiRxRouter {
                                 .commitNow();
                     }
 
-                    rxFragment.setSingleEmitter(requestCode, emitter);
-
                     final String mHost = host;
                     final String mPath = path;
+                    final Integer mRequesetCode = requestCode;
 
+                    // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
                     boolean isSuccessNavigate = navigate();
 
                     if (!isSuccessNavigate) {
                         emitter.onError(new EHiNavigationFailException("host = " + mHost + ",path = " + mPath));
                         return;
                     }
+
+                    rxFragment.setSingleEmitter(mRequesetCode, emitter);
 
                 }
             });

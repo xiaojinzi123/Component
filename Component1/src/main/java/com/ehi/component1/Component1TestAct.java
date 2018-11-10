@@ -18,7 +18,7 @@ public class Component1TestAct extends AppCompatActivity {
 
     public void returnData(View view) {
         Intent intent = new Intent();
-        intent.putExtra("data", "这是返回的数据");
+        intent.putExtra("data", "this is the return data");
         setResult(RESULT_OK, intent);
         finish();
     }
