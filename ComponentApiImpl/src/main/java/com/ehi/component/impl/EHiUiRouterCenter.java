@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.ehi.component.EHiComponentUtil;
+import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.router.IComponentModuleRouter;
 
@@ -16,7 +17,7 @@ import java.util.Map;
 
 class EHiUiRouterCenter implements IComponentModuleRouter {
 
-        private static String tag = "EHiUiRouterCenter";
+        private static final String TAG = "EHiUiRouterCenter";
 
         private static volatile EHiUiRouterCenter instance;
 
@@ -37,47 +38,50 @@ class EHiUiRouterCenter implements IComponentModuleRouter {
         }
 
         @Override
-        public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) {
-            return fopenUri(fragment, uri, null);
+        public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) throws Exception {
+            fopenUri(fragment, uri, null);
         }
 
         @Override
-        public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) {
-            return fopenUri(fragment, uri, null, null);
+        public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
+            fopenUri(fragment, uri, null, null);
         }
 
         @Override
-        public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
+        public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception {
 
             for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
-                if (entry.getValue().fopenUri(fragment, uri, bundle, requestCode)) {
-                    return true;
+                if (entry.getValue().isMatchUri(uri)) {
+                    entry.getValue().fopenUri(fragment, uri, bundle, requestCode);
+                    return;
                 }
             }
 
-            return false;
+            throw new TargetActivityNotFoundException(uri.toString());
+
         }
 
         @Override
-        public boolean openUri(@NonNull Context context, @NonNull Uri uri) {
-            return openUri(context, uri, null);
+        public void openUri(@NonNull Context context, @NonNull Uri uri) throws Exception {
+            openUri(context, uri, null);
         }
 
         @Override
-        public boolean openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) {
-            return openUri(context, uri, null, null);
+        public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
+            openUri(context, uri, null, null);
         }
 
         @Override
-        public boolean openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
+        public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception {
 
             for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
-                if (entry.getValue().openUri(context, uri, bundle, requestCode)) {
-                    return true;
+                if (entry.getValue().isMatchUri(uri)) {
+                    entry.getValue().openUri(context, uri, bundle, requestCode);
+                    return;
                 }
             }
 
-            return false;
+            throw new TargetActivityNotFoundException(uri.toString());
 
         }
 
@@ -99,19 +103,22 @@ class EHiUiRouterCenter implements IComponentModuleRouter {
         }
 
         @Override
-        public boolean isNeedLogin(@NonNull Uri uri) {
+        public Boolean isNeedLogin(@NonNull Uri uri) {
 
             for (String key : routerMap.keySet()) {
 
+                // 每一个子路由
                 IComponentHostRouter router = routerMap.get(key);
 
-                if (router.isNeedLogin(uri)) {
-                    return true;
+                Boolean isNeedLogin = null;
+
+                if ((isNeedLogin = router.isNeedLogin(uri)) != null) {
+                    return isNeedLogin;
                 }
 
             }
 
-            return false;
+            return null;
         }
 
         @Override

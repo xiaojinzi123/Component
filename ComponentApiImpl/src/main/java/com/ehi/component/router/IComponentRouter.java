@@ -19,11 +19,12 @@ public interface IComponentRouter {
     /**
      * 打开一个链接实现跳转
      *
-     * @param context
-     * @param uri
+     * @param context 上下文,一般是 Activity
+     * @param uri     目标界面的 Uri
      * @return
+     * @throws android.content.ActivityNotFoundException
      */
-    boolean openUri(@NonNull Context context, @NonNull Uri uri);
+    void openUri(@NonNull Context context, @NonNull Uri uri) throws Exception;
 
     /**
      * 打开一个链接实现跳转
@@ -31,18 +32,19 @@ public interface IComponentRouter {
      * @param fragment
      * @param uri
      * @return
+     * @throws android.content.ActivityNotFoundException
      */
-    boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri);
+    void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) throws Exception;
 
     /**
      * 打开一个链接实现跳转
      *
      * @param context
      * @param uri
-     * @param bundle
+     * @param bundle  额外的信息携带对象,系统的 {@link Bundle} 对象可以被序列化
      * @return
      */
-    boolean openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle);
+    void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception;
 
     /**
      * 打开一个链接实现跳转
@@ -52,7 +54,7 @@ public interface IComponentRouter {
      * @param bundle
      * @return
      */
-    boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle);
+    void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception;
 
     /**
      * 打开一个链接,并且有请求码
@@ -60,10 +62,10 @@ public interface IComponentRouter {
      * @param context
      * @param uri
      * @param bundle
-     * @param requestCode
+     * @param requestCode 界面的请求码
      * @return
      */
-    boolean openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode);
+    void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception;
 
     /**
      * 打开一个链接,并且有请求码
@@ -71,25 +73,27 @@ public interface IComponentRouter {
      * @param fragment
      * @param uri
      * @param bundle
-     * @param requestCode
+     * @param requestCode 界面的请求码
      * @return
      */
-    boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode);
+    void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception;
 
     /**
-     * 是否匹配uri
+     * 是否有匹配的 uri
      *
-     * @param uri
-     * @return
+     * @param uri 要打开的界面 Uri
+     * @return 返回的值表示是否路由表中有匹配的目标界面
      */
     boolean isMatchUri(@NonNull Uri uri);
 
     /**
-     * 是否需要登录
+     * 是否需要登录,如果返回null表示路由表中根本就没有匹配的目标界面
+     * 所以根本就判断不出来,所以返回一个 null
      *
-     * @param uri
-     * @return
+     * @param uri 要打开的界面 Uri
+     * @return 返回的值表示目标界面是否需要登录
      */
-    boolean isNeedLogin(@NonNull Uri uri);
+    @Nullable
+    Boolean isNeedLogin(@NonNull Uri uri);
 
 }

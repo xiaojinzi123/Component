@@ -86,46 +86,46 @@ public class EHiRouter {
         return new Builder(fragment, null);
     }
 
-    public static boolean open(@NonNull Context context, @NonNull String url) {
+    public static EHiRouterResult open(@NonNull Context context, @NonNull String url) {
         return new Builder(context, url).navigate();
     }
 
-    public static boolean open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode) {
+    public static EHiRouterResult open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode) {
         return new Builder(context, url)
                 .requestCode(requestCode)
                 .navigate();
     }
 
-    public static boolean open(@NonNull Context context, @NonNull String url, @Nullable Bundle bundle) {
+    public static EHiRouterResult open(@NonNull Context context, @NonNull String url, @Nullable Bundle bundle) {
         return new Builder(context, url)
                 .bundle(bundle == null ? new Bundle() : bundle)
                 .navigate();
     }
 
-    public static boolean open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode, @Nullable Bundle bundle) {
+    public static EHiRouterResult open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode, @Nullable Bundle bundle) {
         return new Builder(context, url)
                 .bundle(bundle == null ? new Bundle() : bundle)
                 .requestCode(requestCode)
                 .navigate();
     }
 
-    public static boolean fopen(@NonNull Fragment fragment, @NonNull String url) {
+    public static EHiRouterResult fopen(@NonNull Fragment fragment, @NonNull String url) {
         return new Builder(fragment, url).navigate();
     }
 
-    public static boolean fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Integer requestCode) {
+    public static EHiRouterResult fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Integer requestCode) {
         return new Builder(fragment, url)
                 .requestCode(requestCode)
                 .navigate();
     }
 
-    public static boolean fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle) {
+    public static EHiRouterResult fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle) {
         return new Builder(fragment, url)
                 .bundle(bundle == null ? new Bundle() : bundle)
                 .navigate();
     }
 
-    public static boolean fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle, @Nullable Integer requestCode) {
+    public static EHiRouterResult fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle, @Nullable Integer requestCode) {
         return new Builder(fragment, url)
                 .bundle(bundle == null ? new Bundle() : bundle)
                 .requestCode(requestCode)
@@ -180,7 +180,7 @@ public class EHiRouter {
         /**
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
          */
-        private boolean isFinish = false;
+        protected boolean isFinish = false;
 
         public Builder requestCode(@Nullable Integer requestCode) {
             this.requestCode = requestCode;
@@ -301,23 +301,27 @@ public class EHiRouter {
          *
          * @return
          */
-        public synchronized boolean navigate() {
+        public synchronized EHiRouterResult navigate() {
 
             if (isFinish) {
-                return false;
+                return EHiRouterResult.error(new RuntimeException("EHiRouter.Builder can't be used multiple times"));
             }
 
             try {
+
                 RouterHolder holder = generateHolder();
                 for (EHiUiRouterInterceptor interceptor : uiRouterInterceptors) {
                     interceptor.preIntercept(holder);
                 }
                 if (holder.context == null) {
-                    return EHiUiRouterCenter.getInstance().fopenUri(holder.fragment, holder.uri, holder.bundle, holder.requestCode);
+                    EHiUiRouterCenter.getInstance().fopenUri(holder.fragment, holder.uri, holder.bundle, holder.requestCode);
                 } else {
-                    return EHiUiRouterCenter.getInstance().openUri(holder.context, holder.uri, holder.bundle, holder.requestCode);
+                    EHiUiRouterCenter.getInstance().openUri(holder.context, holder.uri, holder.bundle, holder.requestCode);
                 }
+                return EHiRouterResult.success();
+
             } catch (Exception e) { // 发生路由错误的时候
+
                 for (EHiErrorRouterInterceptor interceptor : errorRouterInterceptors) {
                     try {
                         interceptor.onRouterError(e);
@@ -325,11 +329,10 @@ public class EHiRouter {
                         // do nothing
                     }
                 }
-                if (ComponentConfig.isDebug()) {
-                    throw e;
-                }
-                return false;
+                return EHiRouterResult.error(e);
+
             } finally {
+
                 // 释放资源
                 url = null;
                 host = null;
@@ -340,7 +343,10 @@ public class EHiRouter {
                 queryMap = null;
                 bundle = null;
                 isFinish = true;
+
             }
+
+
         }
     }
 

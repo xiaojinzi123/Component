@@ -109,7 +109,7 @@ public class EHiRxRouter {
                     return upstream.flatMap(new Function<Object, SingleSource<? extends Intent>>() {
                         @Override
                         public SingleSource<? extends Intent> apply(Object o) throws Exception {
-                            return go();
+                            return newCall();
                         }
                     });
                 }
@@ -117,13 +117,18 @@ public class EHiRxRouter {
 
         }
 
-        public Single<Intent> go() {
+        public Single<Intent> newCall() {
 
             return Single.create(new SingleOnSubscribe<Intent>() {
                 @Override
                 public void subscribe(SingleEmitter<Intent> emitter) throws Exception {
 
                     if (emitter.isDisposed()) {
+                        return;
+                    }
+
+                    if (isFinish) {
+                        emitter.onError(new RuntimeException("EHiRouter.Builder can't be used multiple times"));
                         return;
                     }
 
@@ -165,19 +170,26 @@ public class EHiRxRouter {
                                 .commitNow();
                     }
 
+                    // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
                     final String mHost = host;
                     final String mPath = path;
                     final Integer mRequesetCode = requestCode;
 
-                    // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
-                    boolean isSuccessNavigate = navigate();
-
-                    if (!isSuccessNavigate) {
-                        emitter.onError(new EHiNavigationFailException("host = " + mHost + ",path = " + mPath));
-                        return;
+                    try {
+                        EHiRouterResult routerResult = navigate();
+                        if (routerResult.isSuccess()) {
+                            // 设置ActivityResult回调的发射器
+                            rxFragment.setSingleEmitter(mRequesetCode, emitter);
+                        }else {
+                            if (routerResult.getError() != null) {
+                                throw routerResult.getError();
+                            }else {
+                                throw new EHiNavigationFailException("host = " + mHost + ",path = " + mPath);
+                            }
+                        }
+                    } catch (Exception e) {
+                        emitter.onError(e);
                     }
-
-                    rxFragment.setSingleEmitter(mRequesetCode, emitter);
 
                 }
             });

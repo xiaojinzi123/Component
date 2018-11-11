@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import com.ehi.component.EHiComponentUtil;
+import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.EHiParameterSupport;
 
@@ -60,33 +61,33 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     }
 
     @Override
-    public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) {
-        return fopenUri(fragment, uri, null);
+    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) throws Exception {
+        fopenUri(fragment, uri, null);
     }
 
     @Override
-    public boolean openUri(@NonNull Context context, @NonNull Uri uri) {
-        return openUri(context, uri, null);
+    public void openUri(@NonNull Context context, @NonNull Uri uri) throws Exception {
+        openUri(context, uri, null);
     }
 
     @Override
-    public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) {
-        return fopenUri(fragment, uri, null, null);
+    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
+        fopenUri(fragment, uri, null, null);
     }
 
     @Override
-    public boolean openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) {
-        return openUri(context, uri, null, null);
+    public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
+        openUri(context, uri, null, null);
     }
 
     @Override
-    public boolean fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
-        return doOpenUri(null, fragment, uri, bundle, requestCode);
+    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception {
+        doOpenUri(null, fragment, uri, bundle, requestCode);
     }
 
     @Override
-    public boolean openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
-        return doOpenUri(context, null, uri, bundle, requestCode);
+    public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception {
+        doOpenUri(context, null, uri, bundle, requestCode);
     }
 
     /**
@@ -99,7 +100,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
      * @param requestCode
      * @return
      */
-    private boolean doOpenUri(@Nullable Context context, @Nullable Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) {
+    private void doOpenUri(@Nullable Context context, @Nullable Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception {
 
         if (!hasInitMap) {
             initMap();
@@ -107,10 +108,9 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         Class targetClass = getTargetClass(uri);
 
+        // 没有找到目标界面
         if (targetClass == null) {
-
-            return false;
-
+            throw new TargetActivityNotFoundException(uri.toString());
         }
 
         // 处理拦截的代码
@@ -126,15 +126,16 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         }
 
+        // 如果不为空说明拦截下来了
         if (currInterceptor != null) {
             currInterceptor = null;
-            return false;
+            return;
         }
 
         // 防止重复跳转同一个界面
         if (preTargetClass == targetClass && (System.currentTimeMillis() - preTargetTime) < 1000) { // 如果跳转的是同一个界面
-            Log.d("UiRouter", "you can't launch same Activity '" + preTargetClass.getName() + " in one second");
-            return false;
+            Log.d("EHiRouter", "you can't launch same Activity '" + preTargetClass.getName() + " in one second");
+            throw new Exception("target activity can't launch twice In a second");
         }
 
         // 保存目前跳转过去的界面
@@ -149,40 +150,37 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         intent.putExtras(bundle);
         EHiParameterSupport.put(intent, uri);
 
-        boolean isNavigationSuccess = false;
-
         if (requestCode == null) {
-            if (context == null) {
+            if (context != null) {
+                context.startActivity(intent);
+            } else if (fragment != null) {
                 fragment.startActivity(intent);
             } else {
-                context.startActivity(intent);
+                throw new Exception("the context or fragment both are null");
             }
-            isNavigationSuccess = true;
         } else {
-            if (context == null) {
+            if (context != null) {
+                Fragment rxFragment = findFragment(context);
+                if (rxFragment == null) {
+                    if (context instanceof Activity) {
+                        ((Activity) context).startActivityForResult(intent, requestCode);
+                    }
+                } else {
+                    rxFragment.startActivityForResult(intent, requestCode);
+                }
+
+            } else if (fragment != null) {
                 Fragment rxFragment = findFragment(fragment);
                 if (rxFragment == null) {
                     fragment.startActivityForResult(intent, requestCode);
                 } else {
                     rxFragment.startActivityForResult(intent, requestCode);
                 }
-                isNavigationSuccess = true;
             } else {
-
-                Fragment rxFragment = findFragment(context);
-                if (rxFragment == null) {
-                    if (context instanceof Activity) {
-                        ((Activity) context).startActivityForResult(intent, requestCode);
-                        isNavigationSuccess = true;
-                    }
-                } else {
-                    rxFragment.startActivityForResult(intent, requestCode);
-                    isNavigationSuccess = true;
-                }
+                throw new Exception("the context or fragment both are null");
             }
         }
 
-        return isNavigationSuccess;
     }
 
     @Override
@@ -197,7 +195,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     }
 
     @Override
-    public boolean isNeedLogin(@NonNull Uri uri) {
+    public Boolean isNeedLogin(@NonNull Uri uri) {
 
         if (!hasInitMap) {
             initMap();
@@ -205,7 +203,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         Class<?> targetClass = getTargetClass(uri);
 
-        return targetClass == null ? false : isNeedLoginMap.get(targetClass);
+        return targetClass == null ? null : isNeedLoginMap.get(targetClass);
 
     }
 
@@ -241,6 +239,12 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
     }
 
+    /**
+     * 找到那个 Activity 中隐藏的一个 Fragment,如果找的到就会用这个 Fragment 拿来跳转
+     *
+     * @param context
+     * @return
+     */
     @Nullable
     private Fragment findFragment(@NonNull Context context) {
         Fragment result = null;
