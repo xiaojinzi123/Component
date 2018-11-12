@@ -160,6 +160,7 @@ public class EHiRouter {
         @Nullable
         protected Fragment fragment;
 
+        @Nullable
         protected String url;
 
         @NonNull
@@ -176,6 +177,9 @@ public class EHiRouter {
 
         @NonNull
         protected Bundle bundle = new Bundle();
+
+        @Nullable
+        private HashMap helpMap = null;
 
         /**
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
@@ -261,7 +265,7 @@ public class EHiRouter {
         }
 
         @NonNull
-        protected RouterHolder generateHolder() {
+        protected RouterHolder generateHolder() throws Exception {
 
             Uri uri = null;
 
@@ -296,12 +300,18 @@ public class EHiRouter {
 
         }
 
+        public synchronized EHiRouterResult navigate() {
+            return navigate(false);
+        }
+
         /**
          * 执行跳转的具体逻辑
          *
+         * @param isUsebuiltInFragment 是否使用 Context 或者 Fragment 内置的 Fragment 跳转
+         *                             这个 Fragment 的 TAG 为 {@link EHiComponentUtil#FRAGMENT_TAG}
          * @return
          */
-        public synchronized EHiRouterResult navigate() {
+        protected synchronized EHiRouterResult navigate(boolean isUsebuiltInFragment) {
 
             if (isFinish) {
                 return EHiRouterResult.error(new RuntimeException("EHiRouter.Builder can't be used multiple times"));
@@ -310,15 +320,23 @@ public class EHiRouter {
             try {
 
                 RouterHolder holder = generateHolder();
+
                 for (EHiUiRouterInterceptor interceptor : uiRouterInterceptors) {
                     interceptor.preIntercept(holder);
                 }
-                if (holder.context == null) {
-                    EHiUiRouterCenter.getInstance().fopenUri(holder.fragment, holder.uri, holder.bundle, holder.requestCode);
-                } else {
-                    EHiUiRouterCenter.getInstance().openUri(holder.context, holder.uri, holder.bundle, holder.requestCode);
+
+                if (isUsebuiltInFragment) {
+                    helpMap = new HashMap();
+                    helpMap.put("isUseBuildInFragment", true);
                 }
-                return EHiRouterResult.success();
+
+                if (holder.context == null) {
+                    EHiUiRouterCenter.getInstance().fopenUri(holder.fragment, holder.uri, holder.bundle, holder.requestCode, helpMap);
+                } else {
+                    EHiUiRouterCenter.getInstance().openUri(holder.context, holder.uri, holder.bundle, holder.requestCode, helpMap);
+                }
+
+                return EHiRouterResult.success(holder.uri);
 
             } catch (Exception e) { // 发生路由错误的时候
 

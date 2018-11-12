@@ -13,9 +13,7 @@ import com.ehi.base.service.component1.Component1Service;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiModuleManager;
-import com.ehi.component.impl.EHiRxRouter;
-
-import io.reactivex.functions.Consumer;
+import com.ehi.component.impl.EHiRouter;
 
 @EHiRouterAnno(value = "main", desc = "主界面")
 public class MainAct extends AppCompatActivity {
@@ -30,8 +28,6 @@ public class MainAct extends AppCompatActivity {
         EHiModuleManager.getInstance().register(ComponentEnum.App.getModuleName());
         EHiModuleManager.getInstance().register(ComponentEnum.Component1.getModuleName());
         EHiModuleManager.getInstance().register(ComponentEnum.Component2.getModuleName());
-
-        System.out.println(EHiModuleManager.getInstance());
 
     }
 
@@ -59,56 +55,13 @@ public class MainAct extends AppCompatActivity {
 
     }
 
-    public void goToComponent1MainView(View view) {
+    public void testRouter(View view) {
 
-        /*EHiRouter
+        EHiRouter
                 .with(this)
-                .host("component1")
-                .path("test")
-                .query("name","xiaojinzi")
-                .query("pass","321")
-                .requestCode(123)
-                .navigate();*/
-
-        EHiRxRouter
-                .with(this)
-                .host("component1")
-                .path("test")
-                .query("name", "xiaojinzi")
-                .query("pass", "321")
-                .requestCode(123)
-                .newCall()
-                .subscribe(new Consumer<Intent>() {
-                    @Override
-                    public void accept(Intent intent) throws Exception {
-                        System.out.println("result = " + intent.getStringExtra("data"));
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        System.out.println("result = " + throwable.getMessage());
-                    }
-                });
-
-        /*SingleTransformer<Object, Intent> transformer = EHiRxRouter.with(this).host("component1").path("test")
-                .query("name", "xiaojinzi")
-                .query("pass", "321")
-                .requestCode(123).newTransformer();
-
-        Single
-                .just(new Object())
-                .compose(transformer)
-                .subscribe(new Consumer<Intent>() {
-                    @Override
-                    public void accept(Intent intent) throws Exception {
-                        System.out.println("result = " + intent.getStringExtra("data"));
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        System.out.println("throwable");
-                    }
-                });*/
+                .host("main")
+                .path("testRouter")
+                .navigate();
 
 
     }

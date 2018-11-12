@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import java.util.HashMap;
+
 /**
  * 组件之间实现跳转的接口
  * <p>
@@ -42,6 +44,7 @@ public interface IComponentRouter {
      * @param context
      * @param uri
      * @param bundle  额外的信息携带对象,系统的 {@link Bundle} 对象可以被序列化
+     * @param helpMap 帮助传递额外的信息过去
      * @return
      */
     void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception;
@@ -65,7 +68,8 @@ public interface IComponentRouter {
      * @param requestCode 界面的请求码
      * @return
      */
-    void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception;
+    void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle
+            , @Nullable Integer requestCode, @Nullable HashMap helpMap) throws Exception;
 
     /**
      * 打开一个链接,并且有请求码
@@ -76,7 +80,8 @@ public interface IComponentRouter {
      * @param requestCode 界面的请求码
      * @return
      */
-    void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception;
+    void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle
+            , @Nullable Integer requestCode, @Nullable HashMap helpMap) throws Exception;
 
     /**
      * 是否有匹配的 uri

@@ -38,6 +38,8 @@ public class EHiRxRouter {
 
     public static class Builder extends EHiRouter.Builder {
 
+        private Integer resultCode;
+
         private Builder(@NonNull Context context, String url) {
             super(context, url);
         }
@@ -59,6 +61,11 @@ public class EHiRxRouter {
         @Override
         public Builder requestCode(@Nullable Integer requestCode) {
             return (Builder) super.requestCode(requestCode);
+        }
+
+        public Builder resultCode(@Nullable Integer resultCode) {
+            this.resultCode = resultCode;
+            return this;
         }
 
         @Override
@@ -101,15 +108,15 @@ public class EHiRxRouter {
             return (Builder) super.query(queryName, queryValue);
         }
 
-        public SingleTransformer<Object, Intent> newTransformer() {
+        public <T> SingleTransformer<T, Intent> newIntentTransformer() {
 
-            return new SingleTransformer<Object, Intent>() {
+            return new SingleTransformer<T, Intent>() {
                 @Override
-                public SingleSource<Intent> apply(Single<Object> upstream) {
-                    return upstream.flatMap(new Function<Object, SingleSource<? extends Intent>>() {
+                public SingleSource<Intent> apply(Single<T> upstream) {
+                    return upstream.flatMap(new Function<T, SingleSource<? extends Intent>>() {
                         @Override
-                        public SingleSource<? extends Intent> apply(Object o) throws Exception {
-                            return newCall();
+                        public SingleSource<Intent> apply(T t) throws Exception {
+                            return newIntentCall();
                         }
                     });
                 }
@@ -117,7 +124,7 @@ public class EHiRxRouter {
 
         }
 
-        public Single<Intent> newCall() {
+        public Single<Intent> newIntentCall() {
 
             return Single.create(new SingleOnSubscribe<Intent>() {
                 @Override
@@ -133,7 +140,6 @@ public class EHiRxRouter {
                     }
 
                     Thread currentThread = Thread.currentThread();
-
                     if (currentThread != Looper.getMainLooper().getThread()) {
                         emitter.onError(new RuntimeException("EHiRxRouter must run on main thread"));
                         return;
@@ -173,17 +179,20 @@ public class EHiRxRouter {
                     // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
                     final String mHost = host;
                     final String mPath = path;
-                    final Integer mRequesetCode = requestCode;
+                    final int mRequesetCode = requestCode;
 
                     try {
-                        EHiRouterResult routerResult = navigate();
+                        if (rxFragment.isContainsSingleEmitter(mRequesetCode)) {
+                            throw new RuntimeException("request&result code: " + requestCode + " can't be same");
+                        }
+                        EHiRouterResult routerResult = navigate(true);
                         if (routerResult.isSuccess()) {
                             // 设置ActivityResult回调的发射器
-                            rxFragment.setSingleEmitter(mRequesetCode, emitter);
-                        }else {
+                            rxFragment.setSingleEmitter(emitter, mRequesetCode);
+                        } else {
                             if (routerResult.getError() != null) {
                                 throw routerResult.getError();
-                            }else {
+                            } else {
                                 throw new EHiNavigationFailException("host = " + mHost + ",path = " + mPath);
                             }
                         }

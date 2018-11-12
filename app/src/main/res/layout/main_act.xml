@@ -21,9 +21,9 @@
 
     <Button
         android:layout_width="match_parent"
-        android:onClick="goToComponent1MainView"
+        android:onClick="testRouter"
         android:layout_height="wrap_content"
-        android:text="去业务组件1的主界面" />
+        android:text="去测试跳转" />
 
     <Button
         android:layout_width="match_parent"

@@ -10,6 +10,8 @@ import java.util.Map;
 import io.reactivex.SingleEmitter;
 
 /**
+ * 跳转界面拿数据结合 RxJava2 的 Fragment
+ * <p>
  * time   : 2018/11/03
  *
  * @author : xiaojinzi 30212
@@ -23,13 +25,14 @@ public final class EHiRxFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // 根据 requestCode 获取发射器
         SingleEmitter<Intent> singleEmitter = singleEmitterMap.get(requestCode);
 
         if (singleEmitter != null) {
             if (!singleEmitter.isDisposed()) {
                 if (data == null) {
-                    singleEmitter.onError(new IntentResultException());
-                }else {
+                    singleEmitter.onError(new IntentResultException("the result data is null"));
+                } else {
                     singleEmitter.onSuccess(data);
                 }
             }
@@ -37,14 +40,14 @@ public final class EHiRxFragment extends Fragment {
         singleEmitterMap.remove(requestCode);
     }
 
-
-    public boolean isContainsSingleEmitter(@NonNull int key) {
-        return singleEmitterMap.containsKey(key);
+    public boolean isContainsSingleEmitter(int requestCode) {
+        return singleEmitterMap.containsKey(requestCode);
     }
 
-    public void setSingleEmitter(int requestCode, @NonNull SingleEmitter<Intent> singleEmitter) {
+    public void setSingleEmitter(@NonNull SingleEmitter<Intent> singleEmitter, @NonNull int requestCode) {
+
         if (isContainsSingleEmitter(requestCode)) {
-            throw new RuntimeException("request code: " + requestCode + " can't be same");
+            throw new RuntimeException("request&result code: " + requestCode + " can't be same");
         }
         singleEmitterMap.put(requestCode, singleEmitter);
     }

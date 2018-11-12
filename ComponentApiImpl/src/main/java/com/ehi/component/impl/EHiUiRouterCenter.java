@@ -17,156 +17,158 @@ import java.util.Map;
 
 class EHiUiRouterCenter implements IComponentModuleRouter {
 
-        private static final String TAG = "EHiUiRouterCenter";
+    private static final String TAG = "EHiUiRouterCenter";
 
-        private static volatile EHiUiRouterCenter instance;
+    private static volatile EHiUiRouterCenter instance;
 
-        private static Map<String, IComponentHostRouter> routerMap = new HashMap<>();
+    private static Map<String, IComponentHostRouter> routerMap = new HashMap<>();
 
-        private EHiUiRouterCenter() {
-        }
+    private EHiUiRouterCenter() {
+    }
 
-        public static EHiUiRouterCenter getInstance() {
-            if (instance == null) {
-                synchronized (EHiUiRouterCenter.class) {
-                    if (instance == null) {
-                        instance = new EHiUiRouterCenter();
-                    }
+    public static EHiUiRouterCenter getInstance() {
+        if (instance == null) {
+            synchronized (EHiUiRouterCenter.class) {
+                if (instance == null) {
+                    instance = new EHiUiRouterCenter();
                 }
             }
-            return instance;
         }
+        return instance;
+    }
 
-        @Override
-        public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) throws Exception {
-            fopenUri(fragment, uri, null);
-        }
+    @Override
+    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) throws Exception {
+        fopenUri(fragment, uri, null);
+    }
 
-        @Override
-        public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
-            fopenUri(fragment, uri, null, null);
-        }
+    @Override
+    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
+        fopenUri(fragment, uri, null, null, null);
+    }
 
-        @Override
-        public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception {
+    @Override
+    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle
+            , @Nullable Integer requestCode, @Nullable HashMap helpMap) throws Exception {
 
-            for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
-                if (entry.getValue().isMatchUri(uri)) {
-                    entry.getValue().fopenUri(fragment, uri, bundle, requestCode);
-                    return;
-                }
-            }
-
-            throw new TargetActivityNotFoundException(uri.toString());
-
-        }
-
-        @Override
-        public void openUri(@NonNull Context context, @NonNull Uri uri) throws Exception {
-            openUri(context, uri, null);
-        }
-
-        @Override
-        public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
-            openUri(context, uri, null, null);
-        }
-
-        @Override
-        public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle, @Nullable Integer requestCode) throws Exception {
-
-            for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
-                if (entry.getValue().isMatchUri(uri)) {
-                    entry.getValue().openUri(context, uri, bundle, requestCode);
-                    return;
-                }
-            }
-
-            throw new TargetActivityNotFoundException(uri.toString());
-
-        }
-
-        @Override
-        public boolean isMatchUri(@NonNull Uri uri) {
-
-            for (String key : routerMap.keySet()) {
-
-                IComponentHostRouter router = routerMap.get(key);
-
-                if (router.isMatchUri(uri)) {
-                    return true;
-                }
-
-            }
-
-            return false;
-
-        }
-
-        @Override
-        public Boolean isNeedLogin(@NonNull Uri uri) {
-
-            for (String key : routerMap.keySet()) {
-
-                // 每一个子路由
-                IComponentHostRouter router = routerMap.get(key);
-
-                Boolean isNeedLogin = null;
-
-                if ((isNeedLogin = router.isNeedLogin(uri)) != null) {
-                    return isNeedLogin;
-                }
-
-            }
-
-            return null;
-        }
-
-        @Override
-        public void register(@NonNull IComponentHostRouter router) {
-
-            if (router == null) {
+        for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
+            if (entry.getValue().isMatchUri(uri)) {
+                entry.getValue().fopenUri(fragment, uri, bundle, requestCode, helpMap);
                 return;
             }
-
-            routerMap.put(router.getHost(), router);
-
         }
 
-        @Override
-        public void register(@NonNull String host) {
-            IComponentHostRouter router = findUiRouter(host);
-            register(router);
-        }
-
-        @Override
-        public void unregister(IComponentHostRouter router) {
-            routerMap.remove(router.getHost());
-        }
-
-        @Override
-        public void unregister(@NonNull String host) {
-            routerMap.remove(host);
-        }
-
-        @Nullable
-        private IComponentHostRouter findUiRouter(String host) {
-
-            String className = EHiComponentUtil.genHostUIRouterClassName(host);
-
-            try {
-                Class<?> clazz = Class.forName(className);
-
-                IComponentHostRouter instance = (IComponentHostRouter) clazz.newInstance();
-
-                return instance;
-
-            } catch (ClassNotFoundException e) {
-            } catch (IllegalAccessException e) {
-            } catch (InstantiationException e) {
-            }
-
-            return null;
-
-        }
+        throw new TargetActivityNotFoundException(uri.toString());
 
     }
+
+    @Override
+    public void openUri(@NonNull Context context, @NonNull Uri uri) throws Exception {
+        openUri(context, uri, null);
+    }
+
+    @Override
+    public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
+        openUri(context, uri, null, null, null);
+    }
+
+    @Override
+    public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle
+            , @Nullable Integer requestCode, @Nullable HashMap helpMap) throws Exception {
+
+        for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
+            if (entry.getValue().isMatchUri(uri)) {
+                entry.getValue().openUri(context, uri, bundle, requestCode, helpMap);
+                return;
+            }
+        }
+
+        throw new TargetActivityNotFoundException(uri.toString());
+
+    }
+
+    @Override
+    public boolean isMatchUri(@NonNull Uri uri) {
+
+        for (String key : routerMap.keySet()) {
+
+            IComponentHostRouter router = routerMap.get(key);
+
+            if (router.isMatchUri(uri)) {
+                return true;
+            }
+
+        }
+
+        return false;
+
+    }
+
+    @Override
+    public Boolean isNeedLogin(@NonNull Uri uri) {
+
+        for (String key : routerMap.keySet()) {
+
+            // 每一个子路由
+            IComponentHostRouter router = routerMap.get(key);
+
+            Boolean isNeedLogin = null;
+
+            if ((isNeedLogin = router.isNeedLogin(uri)) != null) {
+                return isNeedLogin;
+            }
+
+        }
+
+        return null;
+    }
+
+    @Override
+    public void register(@NonNull IComponentHostRouter router) {
+
+        if (router == null) {
+            return;
+        }
+
+        routerMap.put(router.getHost(), router);
+
+    }
+
+    @Override
+    public void register(@NonNull String host) {
+        IComponentHostRouter router = findUiRouter(host);
+        register(router);
+    }
+
+    @Override
+    public void unregister(IComponentHostRouter router) {
+        routerMap.remove(router.getHost());
+    }
+
+    @Override
+    public void unregister(@NonNull String host) {
+        routerMap.remove(host);
+    }
+
+    @Nullable
+    private IComponentHostRouter findUiRouter(String host) {
+
+        String className = EHiComponentUtil.genHostUIRouterClassName(host);
+
+        try {
+            Class<?> clazz = Class.forName(className);
+
+            IComponentHostRouter instance = (IComponentHostRouter) clazz.newInstance();
+
+            return instance;
+
+        } catch (ClassNotFoundException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InstantiationException e) {
+        }
+
+        return null;
+
+    }
+
+}
