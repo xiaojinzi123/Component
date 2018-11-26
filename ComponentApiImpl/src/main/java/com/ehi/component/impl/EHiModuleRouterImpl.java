@@ -15,6 +15,7 @@ import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.router.IComponentHostRouter;
+import com.ehi.component.support.Consumer;
 import com.ehi.component.support.QueryParameterSupport;
 
 import java.util.HashMap;
@@ -148,16 +149,25 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             bundle = new Bundle();
         }
 
-        Intent intent = new Intent(context, targetClass);
-        intent.putExtras(bundle);
-        QueryParameterSupport.put(intent, uri);
-
+        // 下面就是具体的跳转的代码了,针对上面的这个 Intent
+        Consumer<Intent> intentConsumer = null;
         boolean isUseBuildInFragment = false;
         if (helpMap != null) {
             if (helpMap.containsKey("isUseBuildInFragment")) {
                 isUseBuildInFragment = (boolean) helpMap.get("isUseBuildInFragment");
             }
+            if (helpMap.containsKey("intentConsumer")) {
+                intentConsumer = (Consumer<Intent>) helpMap.get("intentConsumer");
+            }
         }
+
+        Intent intent = new Intent(context, targetClass);
+        // 回调我们 Intent 个性化的方法
+        if (intentConsumer != null) {
+            intentConsumer.accept(intent);
+        }
+        intent.putExtras(bundle);
+        QueryParameterSupport.put(intent, uri);
 
         if (requestCode == null) {
             if (context != null) {
@@ -177,14 +187,13 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                     } else {
                         rxFragment.startActivityForResult(intent, requestCode);
                     }
-                }else {
+                } else {
                     if (context instanceof Activity) {
                         ((Activity) context).startActivityForResult(intent, requestCode);
-                    }else {
+                    } else {
                         throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
                     }
                 }
-
             } else if (fragment != null) { // 使用 Fragment 跳转
                 if (isUseBuildInFragment) {
                     Fragment rxFragment = findFragment(fragment);
@@ -193,7 +202,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                     } else {
                         rxFragment.startActivityForResult(intent, requestCode);
                     }
-                }else {
+                } else {
                     fragment.startActivityForResult(intent, requestCode);
                 }
             } else {

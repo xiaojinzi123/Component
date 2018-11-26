@@ -15,22 +15,22 @@ import com.ehi.component.router.IComponentModuleRouter;
 import java.util.HashMap;
 import java.util.Map;
 
-class EHiUiRouterCenter implements IComponentModuleRouter {
+class RouterCenter implements IComponentModuleRouter {
 
-    private static final String TAG = "EHiUiRouterCenter";
+    private static final String TAG = "RouterCenter";
 
-    private static volatile EHiUiRouterCenter instance;
+    private static volatile RouterCenter instance;
 
     private static Map<String, IComponentHostRouter> routerMap = new HashMap<>();
 
-    private EHiUiRouterCenter() {
+    private RouterCenter() {
     }
 
-    public static EHiUiRouterCenter getInstance() {
+    public static RouterCenter getInstance() {
         if (instance == null) {
-            synchronized (EHiUiRouterCenter.class) {
+            synchronized (RouterCenter.class) {
                 if (instance == null) {
-                    instance = new EHiUiRouterCenter();
+                    instance = new RouterCenter();
                 }
             }
         }

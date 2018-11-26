@@ -1,6 +1,7 @@
 package com.ehi.component.impl;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -14,6 +15,7 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.router.IComponentHostRouter;
+import com.ehi.component.support.Consumer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -68,19 +70,19 @@ public class EHiRouter {
     }
 
     public static void register(IComponentHostRouter router) {
-        EHiUiRouterCenter.getInstance().register(router);
+        RouterCenter.getInstance().register(router);
     }
 
     public static void register(@NonNull String host) {
-        EHiUiRouterCenter.getInstance().register(host);
+        RouterCenter.getInstance().register(host);
     }
 
     public static void unregister(IComponentHostRouter router) {
-        EHiUiRouterCenter.getInstance().unregister(router);
+        RouterCenter.getInstance().unregister(router);
     }
 
     public static void unregister(@NonNull String host) {
-        EHiUiRouterCenter.getInstance().unregister(host);
+        RouterCenter.getInstance().unregister(host);
     }
 
     public static Builder with(@NonNull Context context) {
@@ -138,11 +140,11 @@ public class EHiRouter {
     }
 
     public static boolean isMatchUri(@NonNull Uri uri) {
-        return EHiUiRouterCenter.getInstance().isMatchUri(uri);
+        return RouterCenter.getInstance().isMatchUri(uri);
     }
 
     public static boolean isNeedLogin(@NonNull Uri uri) {
-        return EHiUiRouterCenter.getInstance().isNeedLogin(uri);
+        return RouterCenter.getInstance().isNeedLogin(uri);
     }
 
     public static class Builder {
@@ -183,6 +185,9 @@ public class EHiRouter {
         @NonNull
         protected Bundle bundle = new Bundle();
 
+        @Nullable
+        private Consumer<Intent> intentConsumer = null;
+
         /**
          * 为什么会有这个东西,因为可能有时候我们传给实现的那边的东西有点多,而我们最好控制一些参数
          * 所以用这个对象来存储要传过去的额外的对象和数据
@@ -194,6 +199,18 @@ public class EHiRouter {
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
          */
         protected boolean isFinish = false;
+
+        /**
+         * 当 Intent 创建的时候调用
+         * 可以自己做一些个性化的设置
+         *
+         * @param intentConsumer
+         * @return
+         */
+        public Builder doOnIntentCreate(@Nullable Consumer<Intent> intentConsumer) {
+            this.intentConsumer = intentConsumer;
+            return this;
+        }
 
         public Builder requestCode(@Nullable Integer requestCode) {
             this.requestCode = requestCode;
@@ -491,13 +508,17 @@ public class EHiRouter {
                 }
 
                 if (isUsebuiltInFragment) {
-                    addExtraInfo("isUseBuildInFragment",true);
+                    addExtraInfo("isUseBuildInFragment", true);
+                }
+
+                if (intentConsumer != null) {
+                    addExtraInfo("intentConsumer", intentConsumer);
                 }
 
                 if (holder.context == null) {
-                    EHiUiRouterCenter.getInstance().fopenUri(holder.fragment, holder.uri, holder.bundle, holder.requestCode, helpMap);
+                    RouterCenter.getInstance().fopenUri(holder.fragment, holder.uri, holder.bundle, holder.requestCode, helpMap);
                 } else {
-                    EHiUiRouterCenter.getInstance().openUri(holder.context, holder.uri, holder.bundle, holder.requestCode, helpMap);
+                    RouterCenter.getInstance().openUri(holder.context, holder.uri, holder.bundle, holder.requestCode, helpMap);
                 }
 
                 return EHiRouterResult.success(holder.uri);
