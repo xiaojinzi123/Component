@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.support.EHiParameterSupport;
+import com.ehi.component.support.QueryParameterSupport;
 
 @EHiRouterAnno(host = "component1", value = "main", needLogin = true, desc = "业务组件1的主界面")
 public class Component1MainAct extends AppCompatActivity {
@@ -19,8 +19,8 @@ public class Component1MainAct extends AppCompatActivity {
         TextView tv_name = findViewById(R.id.tv_name);
         TextView tv_pass = findViewById(R.id.tv_pass);
 
-        String name = EHiParameterSupport.getString(getIntent(), "name", null);
-        String pass = EHiParameterSupport.getString(getIntent(), "pass", null);
+        String name = QueryParameterSupport.getString(getIntent(), "name", null);
+        String pass = QueryParameterSupport.getString(getIntent(), "pass", null);
 
         tv_name.setText(name);
         tv_pass.setText(pass);

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import com.ehi.component.impl.error.IntentResultException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +17,7 @@ import io.reactivex.SingleEmitter;
  * time   : 2018/11/03
  *
  * @author : xiaojinzi 30212
+ * @hide
  */
 public final class EHiRxFragment extends Fragment {
 
@@ -44,10 +47,10 @@ public final class EHiRxFragment extends Fragment {
         return singleEmitterMap.containsKey(requestCode);
     }
 
-    public void setSingleEmitter(@NonNull SingleEmitter<Intent> singleEmitter, @NonNull int requestCode) {
+    public void setSingleEmitter(@NonNull SingleEmitter<Intent> singleEmitter, @NonNull int requestCode) throws IntentResultException {
 
         if (isContainsSingleEmitter(requestCode)) {
-            throw new RuntimeException("request&result code: " + requestCode + " can't be same");
+            throw new IntentResultException("request&result code: " + requestCode + " can't be same");
         }
         singleEmitterMap.put(requestCode, singleEmitter);
     }

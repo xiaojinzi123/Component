@@ -11,16 +11,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
-import com.ehi.component.EHiComponentUtil;
+import com.ehi.component.ComponentUtil;
+import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.router.IComponentHostRouter;
-import com.ehi.component.support.EHiParameterSupport;
+import com.ehi.component.support.QueryParameterSupport;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 如果名称更改了,请配置到 {@link EHiComponentUtil#IMPL_OUTPUT_PKG} 和 {@link EHiComponentUtil#UIROUTER_IMPL_CLASS_NAME} 上
+ * 如果名称更改了,请配置到 {@link ComponentUtil#IMPL_OUTPUT_PKG} 和 {@link ComponentUtil#UIROUTER_IMPL_CLASS_NAME} 上
  * 因为这个类是生成的子路由需要继承的类,所以这个类的包的名字的更改或者类名更改都会引起源码或者配置常量的更改
  * <p>
  * time   : 2018/07/26
@@ -136,7 +137,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         // 防止重复跳转同一个界面
         if (preTargetClass == targetClass && (System.currentTimeMillis() - preTargetTime) < 1000) { // 如果跳转的是同一个界面
-            throw new Exception("target activity can't launch twice In a second");
+            throw new NavigationFailException("target activity can't launch twice In a second");
         }
 
         // 保存目前跳转过去的界面
@@ -149,7 +150,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         Intent intent = new Intent(context, targetClass);
         intent.putExtras(bundle);
-        EHiParameterSupport.put(intent, uri);
+        QueryParameterSupport.put(intent, uri);
 
         boolean isUseBuildInFragment = false;
         if (helpMap != null) {
@@ -164,7 +165,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             } else if (fragment != null) {
                 fragment.startActivity(intent);
             } else {
-                throw new Exception("the context or fragment both are null");
+                throw new NavigationFailException("the context or fragment both are null");
             }
         } else {
             // 使用 context 跳转
@@ -172,7 +173,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                 if (isUseBuildInFragment) {
                     Fragment rxFragment = findFragment(context);
                     if (rxFragment == null) {
-                        throw new Exception("built in 'EHiRxFragment' for Context '" + context + "' can't be found");
+                        throw new NavigationFailException("built in 'EHiRxFragment' for Context '" + context + "' can't be found");
                     } else {
                         rxFragment.startActivityForResult(intent, requestCode);
                     }
@@ -180,7 +181,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                     if (context instanceof Activity) {
                         ((Activity) context).startActivityForResult(intent, requestCode);
                     }else {
-                        throw new Exception("Context is not a Activity,so can't use 'startActivityForResult' method");
+                        throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
                     }
                 }
 
@@ -188,7 +189,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                 if (isUseBuildInFragment) {
                     Fragment rxFragment = findFragment(fragment);
                     if (rxFragment == null) {
-                        throw new Exception("built in 'EHiRxFragment' for Fragment '" + fragment + "' can't be found");
+                        throw new NavigationFailException("built in 'EHiRxFragment' for Fragment '" + fragment + "' can't be found");
                     } else {
                         rxFragment.startActivityForResult(intent, requestCode);
                     }
@@ -196,7 +197,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                     fragment.startActivityForResult(intent, requestCode);
                 }
             } else {
-                throw new Exception("the context or fragment both are null");
+                throw new NavigationFailException("the context or fragment both are null");
             }
         }
 
@@ -269,14 +270,14 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         Fragment result = null;
         if (context instanceof FragmentActivity) {
             FragmentManager ft = ((FragmentActivity) context).getSupportFragmentManager();
-            result = ft.findFragmentByTag(EHiComponentUtil.FRAGMENT_TAG);
+            result = ft.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
         }
         return result;
     }
 
     @Nullable
     private Fragment findFragment(@NonNull Fragment fragment) {
-        Fragment result = fragment.getChildFragmentManager().findFragmentByTag(EHiComponentUtil.FRAGMENT_TAG);
+        Fragment result = fragment.getChildFragmentManager().findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
         return result;
     }
 

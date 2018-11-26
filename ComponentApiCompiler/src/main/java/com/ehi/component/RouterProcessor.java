@@ -105,7 +105,7 @@ public class RouterProcessor extends AbstractProcessor {
      */
     private void parseRouterAnno(Set<? extends Element> routeElements) {
 
-        TypeMirror typeActivity = mElements.getTypeElement(EHiConstants.ACTIVITY).asType();
+        TypeMirror typeActivity = mElements.getTypeElement(ComponentConstants.ACTIVITY).asType();
 
         for (Element element : routeElements) {
 
@@ -184,7 +184,7 @@ public class RouterProcessor extends AbstractProcessor {
      */
     private void createRouterImpl() {
 
-        String claName = EHiComponentUtil.genHostUIRouterClassName(componentHost);
+        String claName = ComponentUtil.genHostUIRouterClassName(componentHost);
 
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf("."));
@@ -193,7 +193,7 @@ public class RouterProcessor extends AbstractProcessor {
         String cn = claName.substring(claName.lastIndexOf(".") + 1);
 
         // superClassName
-        ClassName superClass = ClassName.get(mElements.getTypeElement(EHiComponentUtil.UIROUTER_IMPL_CLASS_NAME));
+        ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.UIROUTER_IMPL_CLASS_NAME));
 
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();

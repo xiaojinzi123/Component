@@ -26,12 +26,9 @@ public class Component1Fragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Bundle b = new Bundle();
-
                 EHiRouter.with(getContext())
                         .host("component2")
                         .path("component2")
-                        .bundle(b)
                         .navigate();
 
             }

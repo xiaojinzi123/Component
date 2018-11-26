@@ -3,11 +3,11 @@ package com.ehi.component.application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.ehi.component.EHiConstants;
+import com.ehi.component.ComponentConstants;
 
 /**
  * 这是每一个模块中的生命周期类都需要实现的类
- * 如果这个类被移动了,一定要格外关注 {@link EHiConstants#EHIAPPLCATON} 的值
+ * 如果这个类被移动了,一定要格外关注 {@link ComponentConstants#EHIAPPLCATON} 的值
  */
 public interface IComponentApplication {
 

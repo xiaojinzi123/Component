@@ -9,11 +9,12 @@ import android.support.annotation.Nullable;
 import java.util.Set;
 
 /**
+ * Uri 中的 query 参数的获取和处理
  * time   : 2018/08/09
  *
  * @author : xiaojinzi 30212
  */
-public class EHiParameterSupport {
+public class QueryParameterSupport {
 
     public static final String PREFIX = "EHiRouterParameter";
     public static final String KEY_BUNDLE = "EHiRouterBundle";

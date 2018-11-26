@@ -1,6 +1,8 @@
-package com.ehi.component.impl;
+package com.ehi.component.impl.error;
 
 /**
+ * 表示 Intent 获取过程中发生异常
+ *
  * time   : 2018/11/03
  *
  * @author : xiaojinzi 30212

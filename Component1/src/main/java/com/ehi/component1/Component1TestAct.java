@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.support.EHiParameterSupport;
+import com.ehi.component.support.QueryParameterSupport;
 
 @EHiRouterAnno(host = "component1", value = "test", desc = "业务组件1的测试界面")
 public class Component1TestAct extends AppCompatActivity {
@@ -19,7 +19,13 @@ public class Component1TestAct extends AppCompatActivity {
         setContentView(R.layout.component1_test_act);
 
         TextView tv_data = findViewById(R.id.tv_data);
-        tv_data.setText(EHiParameterSupport.getString(getIntent(),"data"));
+        tv_data.setText(QueryParameterSupport.getString(getIntent(), "data"));
+
+        String data = getIntent().getStringExtra("data");
+
+        if (data != null) {
+            tv_data.setText(tv_data.getText() + "\n" + data);
+        }
 
     }
 

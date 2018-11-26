@@ -95,7 +95,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
         applicationList.clear();
 
-        TypeMirror typeApplication = mElements.getTypeElement(EHiConstants.EHIAPPLCATON).asType();
+        TypeMirror typeApplication = mElements.getTypeElement(ComponentConstants.EHIAPPLCATON).asType();
 
         for (Element element : moduleAppElements) {
 
@@ -136,7 +136,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
     private void createImpl() {
 
-        String claName = EHiComponentUtil.genHostModuleApplicationClassName(componentHost);
+        String claName = ComponentUtil.genHostModuleApplicationClassName(componentHost);
 
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf("."));
@@ -145,7 +145,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
         String cn = claName.substring(claName.lastIndexOf(".") + 1);
 
         // superClassName
-        ClassName superClass = ClassName.get(mElements.getTypeElement(EHiComponentUtil.MODULE_APPLICATION_IMPL_CLASS_NAME));
+        ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.MODULE_APPLICATION_IMPL_CLASS_NAME));
 
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();

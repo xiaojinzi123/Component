@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Single;
 import io.reactivex.SingleTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -97,11 +98,6 @@ public class TestRouterAct extends AppCompatActivity {
                     public void accept(Intent intent) throws Exception {
                         tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据成功啦：Data = " + intent.getStringExtra("data"));
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage());
-                    }
                 });
 
     }
@@ -112,7 +108,8 @@ public class TestRouterAct extends AppCompatActivity {
                 .with(this)
                 .host("component1")
                 .path("test")
-                .query("data", "rxJumpGetData")
+                .query("data", "rxJumpGetDataFromQuery")
+                .putString("data", "rxJumpGetDataFromBundle")
                 .requestCode(789)
                 .newIntentTransformer();
 
@@ -129,9 +126,9 @@ public class TestRouterAct extends AppCompatActivity {
                 .observeOn(Schedulers.io())
                 .delay(2, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess(new Consumer<String>() {
+                .doOnEvent(new BiConsumer<String, Throwable>() {
                     @Override
-                    public void accept(String s) throws Exception {
+                    public void accept(String s, Throwable throwable) throws Exception {
                         view.setEnabled(true);
                     }
                 })

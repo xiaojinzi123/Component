@@ -5,7 +5,7 @@ package com.ehi.component;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiComponentUtil {
+public class ComponentUtil {
 
     /**
      * 当使用 Fragment 或者 Context 中有这个 tag 的 fragment,那么就会最终用这个实现跳转

@@ -5,7 +5,7 @@ package com.ehi.component;
  *
  * @author : xiaojinzi 30212
  */
-public interface EHiConstants {
+public interface ComponentConstants {
 
     // System interface
 

@@ -14,6 +14,7 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiModuleManager;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRxRouter;
 
 @EHiRouterAnno(value = "main", desc = "主界面")
 public class MainAct extends AppCompatActivity {
@@ -24,6 +25,7 @@ public class MainAct extends AppCompatActivity {
         setContentView(R.layout.main_act);
 
         ComponentConfig.init(true);
+        EHiRxRouter.tryErrorCatch();
 
         EHiModuleManager.getInstance().register(ComponentEnum.App.getModuleName());
         EHiModuleManager.getInstance().register(ComponentEnum.Component1.getModuleName());

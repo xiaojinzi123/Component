@@ -16,7 +16,6 @@
             android:onClick="normalJump"
             android:text="普通跳转" />
 
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -3,14 +3,19 @@ package com.ehi.component.impl;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.SparseArray;
 
 import com.ehi.component.ComponentConfig;
-import com.ehi.component.EHiComponentUtil;
+import com.ehi.component.ComponentUtil;
+import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.router.IComponentHostRouter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 这个类必须放在 {@link EHiComponentUtil#IMPL_OUTPUT_PKG} 包下面
+ * 这个类必须放在 {@link ComponentUtil#IMPL_OUTPUT_PKG} 包下面
  * 这个类作为框架对外的一个使用的类,里面会很多易用的方法
  * <p>
  * time   : 2018/07/26
@@ -98,13 +103,13 @@ public class EHiRouter {
 
     public static EHiRouterResult open(@NonNull Context context, @NonNull String url, @Nullable Bundle bundle) {
         return new Builder(context, url)
-                .bundle(bundle == null ? new Bundle() : bundle)
+                .putAll(bundle == null ? new Bundle() : bundle)
                 .navigate();
     }
 
     public static EHiRouterResult open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode, @Nullable Bundle bundle) {
         return new Builder(context, url)
-                .bundle(bundle == null ? new Bundle() : bundle)
+                .putAll(bundle == null ? new Bundle() : bundle)
                 .requestCode(requestCode)
                 .navigate();
     }
@@ -121,13 +126,13 @@ public class EHiRouter {
 
     public static EHiRouterResult fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle) {
         return new Builder(fragment, url)
-                .bundle(bundle == null ? new Bundle() : bundle)
+                .putAll(bundle == null ? new Bundle() : bundle)
                 .navigate();
     }
 
     public static EHiRouterResult fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle, @Nullable Integer requestCode) {
         return new Builder(fragment, url)
-                .bundle(bundle == null ? new Bundle() : bundle)
+                .putAll(bundle == null ? new Bundle() : bundle)
                 .requestCode(requestCode)
                 .navigate();
     }
@@ -178,8 +183,12 @@ public class EHiRouter {
         @NonNull
         protected Bundle bundle = new Bundle();
 
+        /**
+         * 为什么会有这个东西,因为可能有时候我们传给实现的那边的东西有点多,而我们最好控制一些参数
+         * 所以用这个对象来存储要传过去的额外的对象和数据
+         */
         @Nullable
-        private HashMap helpMap = null;
+        private HashMap<String, Object> helpMap = null;
 
         /**
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
@@ -203,10 +212,158 @@ public class EHiRouter {
             return this;
         }
 
-        public Builder bundle(@NonNull Bundle bundle) {
-            if (bundle != null) {
-                this.bundle = bundle;
-            }
+        public Builder putBundle(@NonNull String key, @NonNull Bundle bundle) {
+            this.bundle.putBundle(key, bundle);
+            return this;
+        }
+
+        public Builder putAll(@NonNull Bundle bundle) {
+            this.bundle.putAll(bundle);
+            return this;
+        }
+
+        /*public Builder putAll(@NonNull PersistableBundle bundle) {
+            this.bundle.putAll(bundle);
+            return this;
+        }*/
+
+        public Builder putCharSequence(@NonNull String key, @Nullable CharSequence value) {
+            this.bundle.putCharSequence(key, value);
+            return this;
+        }
+
+        public Builder putCharSequenceArray(@NonNull String key, @Nullable CharSequence[] value) {
+            this.bundle.putCharSequenceArray(key, value);
+            return this;
+        }
+
+        public Builder putCharSequenceArrayList(@NonNull String key, @Nullable ArrayList<CharSequence> value) {
+            this.bundle.putCharSequenceArrayList(key, value);
+            return this;
+        }
+
+        public Builder putByte(@NonNull String key, @Nullable byte value) {
+            this.bundle.putByte(key, value);
+            return this;
+        }
+
+        public Builder putByteArray(@NonNull String key, @Nullable byte[] value) {
+            this.bundle.putByteArray(key, value);
+            return this;
+        }
+
+        public Builder putChar(@NonNull String key, @Nullable char value) {
+            this.bundle.putChar(key, value);
+            return this;
+        }
+
+        public Builder putCharArray(@NonNull String key, @Nullable char[] value) {
+            this.bundle.putCharArray(key, value);
+            return this;
+        }
+
+        public Builder putBoolean(@NonNull String key, @Nullable boolean value) {
+            this.bundle.putBoolean(key, value);
+            return this;
+        }
+
+        public Builder putBooleanArray(@NonNull String key, @Nullable boolean[] value) {
+            this.bundle.putBooleanArray(key, value);
+            return this;
+        }
+
+        public Builder putString(@NonNull String key, @Nullable String value) {
+            this.bundle.putString(key, value);
+            return this;
+        }
+
+        public Builder putStringArray(@NonNull String key, @Nullable String[] value) {
+            this.bundle.putStringArray(key, value);
+            return this;
+        }
+
+        public Builder putStringArrayList(@NonNull String key, @Nullable ArrayList<String> value) {
+            this.bundle.putStringArrayList(key, value);
+            return this;
+        }
+
+        public Builder putShort(@NonNull String key, @Nullable short value) {
+            this.bundle.putShort(key, value);
+            return this;
+        }
+
+        public Builder putShortArray(@NonNull String key, @Nullable short[] value) {
+            this.bundle.putShortArray(key, value);
+            return this;
+        }
+
+        public Builder putInt(@NonNull String key, @Nullable int value) {
+            this.bundle.putInt(key, value);
+            return this;
+        }
+
+        public Builder putIntArray(@NonNull String key, @Nullable int[] value) {
+            this.bundle.putIntArray(key, value);
+            return this;
+        }
+
+        public Builder putIntegerArrayList(@NonNull String key, @Nullable ArrayList<Integer> value) {
+            this.bundle.putIntegerArrayList(key, value);
+            return this;
+        }
+
+        public Builder putLong(@NonNull String key, @Nullable long value) {
+            this.bundle.putLong(key, value);
+            return this;
+        }
+
+        public Builder putLongArray(@NonNull String key, @Nullable long[] value) {
+            this.bundle.putLongArray(key, value);
+            return this;
+        }
+
+        public Builder putFloat(@NonNull String key, @Nullable float value) {
+            this.bundle.putFloat(key, value);
+            return this;
+        }
+
+        public Builder putFloatArray(@NonNull String key, @Nullable float[] value) {
+            this.bundle.putFloatArray(key, value);
+            return this;
+        }
+
+        public Builder putDouble(@NonNull String key, @Nullable double value) {
+            this.bundle.putDouble(key, value);
+            return this;
+        }
+
+        public Builder putDoubleArray(@NonNull String key, @Nullable double[] value) {
+            this.bundle.putDoubleArray(key, value);
+            return this;
+        }
+
+        public Builder putParcelable(@NonNull String key, @Nullable Parcelable value) {
+            this.bundle.putParcelable(key, value);
+            return this;
+        }
+
+        public Builder putParcelableArray(@NonNull String key, @Nullable Parcelable[] value) {
+            this.bundle.putParcelableArray(key, value);
+            return this;
+        }
+
+        public Builder putParcelableArrayList(@NonNull String key, @Nullable ArrayList<? extends Parcelable> value) {
+            this.bundle.putParcelableArrayList(key, value);
+            return this;
+        }
+
+        public Builder putSparseParcelableArray(@NonNull String key, @Nullable SparseArray<? extends Parcelable> value) {
+            this.bundle.putSparseParcelableArray(key, value);
+            return this;
+        }
+
+        public Builder putSerializable(@NonNull String key, @Nullable Serializable value) {
+            this.bundle.putSerializable(key, value);
             return this;
         }
 
@@ -300,6 +457,14 @@ public class EHiRouter {
 
         }
 
+        @MainThread
+        protected void addExtraInfo(@NonNull String key, @NonNull Object o) {
+            if (helpMap == null) {
+                helpMap = new HashMap();
+            }
+            helpMap.put(key, o);
+        }
+
         public synchronized EHiRouterResult navigate() {
             return navigate(false);
         }
@@ -308,13 +473,13 @@ public class EHiRouter {
          * 执行跳转的具体逻辑
          *
          * @param isUsebuiltInFragment 是否使用 Context 或者 Fragment 内置的 Fragment 跳转
-         *                             这个 Fragment 的 TAG 为 {@link EHiComponentUtil#FRAGMENT_TAG}
+         *                             这个 Fragment 的 TAG 为 {@link ComponentUtil#FRAGMENT_TAG}
          * @return
          */
         protected synchronized EHiRouterResult navigate(boolean isUsebuiltInFragment) {
 
             if (isFinish) {
-                return EHiRouterResult.error(new RuntimeException("EHiRouter.Builder can't be used multiple times"));
+                return EHiRouterResult.error(new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
             }
 
             try {
@@ -326,8 +491,7 @@ public class EHiRouter {
                 }
 
                 if (isUsebuiltInFragment) {
-                    helpMap = new HashMap();
-                    helpMap.put("isUseBuildInFragment", true);
+                    addExtraInfo("isUseBuildInFragment",true);
                 }
 
                 if (holder.context == null) {
@@ -347,6 +511,7 @@ public class EHiRouter {
                         // do nothing
                     }
                 }
+
                 return EHiRouterResult.error(e);
 
             } finally {
@@ -366,6 +531,7 @@ public class EHiRouter {
 
 
         }
+
     }
 
     /**
@@ -427,7 +593,7 @@ public class EHiRouter {
          *
          * @param e
          */
-        void onRouterError(Exception e);
+        void onRouterError(Exception e) throws Exception;
 
     }
 
