@@ -16,6 +16,7 @@ import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.impl.error.UnknowException;
+import com.ehi.component.support.EHiCallbackAdapter;
 import com.ehi.component.support.EHiRouterInterceptor;
 
 import java.io.Serializable;
@@ -293,39 +294,47 @@ public class EHiRxRouter {
 
         }
 
+        private void onErrorEmitter(@NonNull final SingleEmitter<Intent> emitter,
+                                    @NonNull Exception e) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(e);
+        }
+
         public Single<Intent> newIntentCall() {
 
             return Single.create(new SingleOnSubscribe<Intent>() {
                 @Override
-                public void subscribe(SingleEmitter<Intent> emitter) throws Exception {
+                public void subscribe(final SingleEmitter<Intent> emitter) throws Exception {
 
                     if (emitter.isDisposed()) {
                         return;
                     }
 
                     if (isFinish) {
-                        emitter.onError(new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
+                        onErrorEmitter(emitter,new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
                         return;
                     }
 
                     Thread currentThread = Thread.currentThread();
                     if (currentThread != Looper.getMainLooper().getThread()) {
-                        emitter.onError(new NavigationFailException("EHiRxRouter must run on main thread"));
+                        onErrorEmitter(emitter,new NavigationFailException("EHiRxRouter must run on main thread"));
                         return;
                     }
 
                     if (context == null && fragment == null) {
-                        emitter.onError(new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router")));
+                        onErrorEmitter(emitter,new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router")));
                         return;
                     }
 
                     if (context != null && (context instanceof FragmentActivity) == false) {
-                        emitter.onError(new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity")));
+                        onErrorEmitter(emitter,new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity")));
                         return;
                     }
 
                     if (requestCode == null) {
-                        emitter.onError(new NavigationFailException(new NullPointerException("requestCode must not be null for router")));
+                        onErrorEmitter(emitter,new NavigationFailException(new NullPointerException("requestCode must not be null for router")));
                         return;
                     }
 
@@ -339,13 +348,14 @@ public class EHiRxRouter {
                         }
 
                         // 寻找是否添加过 Fragment
-                        EHiRxFragment rxFragment = (EHiRxFragment) fm.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
-                        if (rxFragment == null) {
-                            rxFragment = new EHiRxFragment();
+                        EHiRxFragment findRxFragment = (EHiRxFragment) fm.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+                        if (findRxFragment == null) {
+                            findRxFragment = new EHiRxFragment();
                             fm.beginTransaction()
-                                    .add(rxFragment, ComponentUtil.FRAGMENT_TAG)
+                                    .add(findRxFragment, ComponentUtil.FRAGMENT_TAG)
                                     .commitNow();
                         }
+                        final EHiRxFragment rxFragment = findRxFragment;
 
                         // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
                         final String mHost = host;
@@ -355,23 +365,38 @@ public class EHiRxRouter {
                         if (rxFragment.isContainsSingleEmitter(mRequesetCode)) {
                             throw new NavigationFailException("request&result code: " + requestCode + " can't be same");
                         }
-                        EHiRouterResult routerResult = navigate();
-                        if (routerResult.isSuccess()) {
-                            // 设置ActivityResult回调的发射器
-                            rxFragment.setSingleEmitter(emitter, mRequesetCode);
-                        } else {
-                            if (routerResult.getError() != null) {
-                                throw routerResult.getError();
-                            } else {
-                                throw new NavigationFailException("host = " + mHost + ",path = " + mPath);
+
+                        navigate(new EHiCallbackAdapter() {
+                            @Override
+                            public void onEvent(@Nullable EHiRouterResult routerResult, @Nullable Exception error) {
+                                try {
+                                    if (routerResult != null) {
+                                        // 设置ActivityResult回调的发射器
+                                        rxFragment.setSingleEmitter(emitter, mRequesetCode);
+                                    }else {
+                                        if (error != null) {
+                                            throw error;
+                                        } else {
+                                            throw new NavigationFailException("host = " + mHost + ",path = " + mPath);
+                                        }
+                                    }
+                                }catch (TargetActivityNotFoundException e) {
+                                    onErrorEmitter(emitter,e);
+                                } catch (NavigationFailException e) {
+                                    onErrorEmitter(emitter,e);
+                                } catch (Exception e) {
+                                    onErrorEmitter(emitter,new UnknowException(e));
+                                }
+
                             }
-                        }
+                        });
+
                     } catch (TargetActivityNotFoundException e) {
-                        emitter.onError(e);
+                        onErrorEmitter(emitter,e);
                     } catch (NavigationFailException e) {
-                        emitter.onError(e);
+                        onErrorEmitter(emitter,e);
                     } catch (Exception e) {
-                        emitter.onError(new UnknowException(e));
+                        onErrorEmitter(emitter,new UnknowException(e));
                     }
 
                 }

@@ -7,10 +7,13 @@ import com.ehi.base.ModuleConfig;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.impl.EHiModuleManager;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRouterExecuteResult;
 import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiRouterInterceptor;
+
+import java.util.Random;
 
 public class App extends Application {
 
@@ -26,15 +29,16 @@ public class App extends Application {
 
         EHiRouter
                 .addRouterInterceptor(new EHiRouterInterceptor() {
+                    private Random r = new Random();
+
                     @Override
-                    public EHiRouterResult intercept(Chain chain) throws Exception {
-                        return chain.proceed(
-                                new EHiRouterRequest.Builder()
-                                        .context(chain.request().context)
-                                        .fragment(chain.request().fragment)
-                                        .uri(Uri.parse("EHi://component1/main"))
-                                        .build()
-                        );
+                    public EHiRouterExecuteResult intercept(Chain chain) throws Exception {
+                        String name = Thread.currentThread().getName();
+                        int seconds = r.nextInt(2) + 1;
+                        Thread.sleep(1000 * seconds);
+                        System.out.println("seconds = " + seconds + ",currentThreadName = " + name);
+                        return chain.proceed(chain.request());
+                        //return new EHiRouterExecuteResult(chain.request());
                     }
                 });
 

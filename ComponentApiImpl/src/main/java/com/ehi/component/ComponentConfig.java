@@ -1,5 +1,9 @@
 package com.ehi.component;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 /**
  * 组件化的配置类
  * time   : 2018/08/09

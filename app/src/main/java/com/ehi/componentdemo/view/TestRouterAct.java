@@ -13,6 +13,7 @@ import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
+import com.ehi.component.support.EHiCallbackAdapter;
 import com.ehi.componentdemo.R;
 
 import java.util.concurrent.TimeUnit;
@@ -33,15 +34,14 @@ public class TestRouterAct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_router_act);
-
         tv_detail = findViewById(R.id.tv_detail);
 
     }
 
 
     public void openUriTest(View view) {
-        EHiRouterResult routerResult = EHiRouter.open(this, "EHi://component1/test?data=openUriTest");
-        addInfo(routerResult, "component1/test?data=openUriTest", null);
+        EHiRouter.open(this, "EHi://component1/test?data=openUriTest");
+        //addInfo(routerResult, "component1/test?data=openUriTest", null);
     }
 
     public void jumpToAar3(View view) {
@@ -54,44 +54,51 @@ public class TestRouterAct extends AppCompatActivity {
 
     public void normalJump(View view) {
 
-        EHiRouterResult routerResult = EHiRouter
-                .with(this)
+        EHiRouter
+                .with(TestRouterAct.this)
                 .host("component1")
                 .path("test")
                 .query("data", "normalJump")
                 .putString("name", "cxj1")
                 .putInt("age", 25)
-                .navigate();
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        System.out.println("onSuccess.Thread = " + Thread.currentThread().getName());
+                    }
+                });
 
-        addInfo(routerResult, "component1/test?data=normalJump", null);
+        // addInfo(routerResult, "component1/test?data=normalJump", null);
 
     }
 
     public void normalJumpTwice(View view) {
 
-        EHiRouterResult routerResult1 = EHiRxRouter
+        EHiRxRouter
                 .with(this)
                 .host("component1")
                 .path("test")
                 .query("data", "normalJumpTwice")
                 .navigate();
 
-        EHiRouterResult routerResult2 = EHiRxRouter
+        EHiRxRouter
                 .with(this)
                 .host("component1")
                 .path("test")
                 .query("data", "normalJumpTwice")
                 .navigate();
 
-        addInfo(routerResult1, "component1/test?data=normalJumpTwice", 123);
-        addInfo(routerResult2, "component1/test?data=normalJumpTwice", 123);
+        System.out.println("normalJumpTwice");
+
+        //addInfo(routerResult1, "component1/test?data=normalJumpTwice", 123);
+        //addInfo(routerResult2, "component1/test?data=normalJumpTwice", 123);
 
 
     }
 
     public void jumpGetData(View view) {
 
-        EHiRouterResult routerResult = EHiRxRouter
+        EHiRxRouter
                 .with(this)
                 .host("component1")
                 .path("test")
@@ -99,7 +106,7 @@ public class TestRouterAct extends AppCompatActivity {
                 .requestCode(123)
                 .navigate();
 
-        addInfo(routerResult, "component1/test?data=jumpGetData", 123);
+        // addInfo(routerResult, "component1/test?data=jumpGetData", 123);
 
     }
 
@@ -181,20 +188,19 @@ public class TestRouterAct extends AppCompatActivity {
     }
 
     private void addInfo(EHiRouterResult routerResult, @NonNull String url, @Nullable Integer requestCode) {
-        if (requestCode == null) {
-            if (routerResult.isSuccess()) {
-                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转成功,目标:" + url);
-            } else {
-                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转失败,目标:" + url + ",error = " + routerResult.getError().getClass().getSimpleName() + " ,errorMsg = " + routerResult.getError().getMessage());
-            }
-        } else {
-            if (routerResult.isSuccess()) {
-                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转成功,目标:" + url);
-            } else {
-                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转失败,目标:" + url + ",error = " + routerResult.getError().getClass().getSimpleName() + " ,errorMsg = " + routerResult.getError().getMessage());
-            }
-        }
-
+//        if (requestCode == null) {
+//            if (routerResult.isSuccess()) {
+//                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转成功,目标:" + url);
+//            } else {
+//                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转失败,目标:" + url + ",error = " + routerResult.getError().getClass().getSimpleName() + " ,errorMsg = " + routerResult.getError().getMessage());
+//            }
+//        } else {
+//            if (routerResult.isSuccess()) {
+//                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转成功,目标:" + url);
+//            } else {
+//                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转失败,目标:" + url + ",error = " + routerResult.getError().getClass().getSimpleName() + " ,errorMsg = " + routerResult.getError().getMessage());
+//            }
+//        }
     }
 
 }

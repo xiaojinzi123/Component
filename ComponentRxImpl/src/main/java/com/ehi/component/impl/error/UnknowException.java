@@ -7,7 +7,7 @@ package com.ehi.component.impl.error;
  *
  * @author : xiaojinzi 30212
  */
-public class UnknowException extends Exception {
+public class UnknowException extends RuntimeException {
 
     public UnknowException() {
     }

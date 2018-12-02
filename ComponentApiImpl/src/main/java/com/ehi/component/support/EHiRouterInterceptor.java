@@ -1,14 +1,13 @@
 package com.ehi.component.support;
 
-import android.support.annotation.MainThread;
+import android.support.annotation.WorkerThread;
 
+import com.ehi.component.impl.EHiRouterExecuteResult;
 import com.ehi.component.impl.EHiRouterRequest;
-import com.ehi.component.impl.EHiRouterResult;
 
 /**
  * 路由跳转的拦截器
  */
-@MainThread
 public interface EHiRouterInterceptor {
 
     /**
@@ -16,9 +15,12 @@ public interface EHiRouterInterceptor {
      *
      * @param chain
      */
-    @MainThread
-    EHiRouterResult intercept(Chain chain) throws Exception;
+    @WorkerThread
+    EHiRouterExecuteResult intercept(Chain chain) throws Exception;
 
+    /**
+     * 执行器
+     */
     interface Chain {
 
         /**
@@ -26,7 +28,6 @@ public interface EHiRouterInterceptor {
          *
          * @return
          */
-        @MainThread
         EHiRouterRequest request();
 
         /**
@@ -34,8 +35,8 @@ public interface EHiRouterInterceptor {
          *
          * @return
          */
-        @MainThread
-        EHiRouterResult proceed(EHiRouterRequest request) throws Exception;
+        @WorkerThread
+        EHiRouterExecuteResult proceed(EHiRouterRequest request) throws Exception;
 
     }
 

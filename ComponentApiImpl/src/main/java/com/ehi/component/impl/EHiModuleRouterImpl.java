@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -60,7 +64,8 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     }
 
     @Override
-    public void openUri(@NonNull EHiRouterRequest routerRequest) throws Exception {
+    @MainThread
+    public void openUri(@NonNull final EHiRouterRequest routerRequest) throws Exception {
         doOpenUri(routerRequest);
     }
 
@@ -70,7 +75,8 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
      * @param routerRequest
      * @return
      */
-    private void doOpenUri(@NonNull EHiRouterRequest routerRequest) throws Exception {
+    @MainThread
+    private void doOpenUri(@NonNull final EHiRouterRequest routerRequest) throws Exception {
 
         if (!hasInitMap) {
             initMap();
@@ -99,6 +105,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nEHiRouter.with(Context) or EHiRouter.withFragment(Fragment)");
         }
 
+        // do startActivity
         Context context = routerRequest.context;
         if (context == null) {
             context = routerRequest.fragment.getContext();
@@ -112,13 +119,6 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         Intent intent = new Intent(context, targetClass);
         intent.putExtras(routerRequest.bundle);
         QueryParameterSupport.put(intent, routerRequest.uri);
-
-        // do startActivity
-        doStartActivity(routerRequest, intent);
-
-    }
-
-    private void doStartActivity(@NonNull EHiRouterRequest routerRequest, @NonNull Intent intent) throws Exception {
 
         if (routerRequest.requestCode == null) { // 如果是 startActivity
 

@@ -1,6 +1,7 @@
 package com.ehi.component.impl;
 
 import android.net.Uri;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -12,22 +13,22 @@ import com.ehi.component.router.IComponentModuleRouter;
 import java.util.HashMap;
 import java.util.Map;
 
-class RouterCenter implements IComponentModuleRouter {
+class EHiRouterCenter implements IComponentModuleRouter {
 
-    private static final String TAG = "RouterCenter";
+    private static final String TAG = "EHiRouterCenter";
 
-    private static volatile RouterCenter instance;
+    private static volatile EHiRouterCenter instance;
 
     private static Map<String, IComponentHostRouter> routerMap = new HashMap<>();
 
-    private RouterCenter() {
+    private EHiRouterCenter() {
     }
 
-    public static RouterCenter getInstance() {
+    public static EHiRouterCenter getInstance() {
         if (instance == null) {
-            synchronized (RouterCenter.class) {
+            synchronized (EHiRouterCenter.class) {
                 if (instance == null) {
-                    instance = new RouterCenter();
+                    instance = new EHiRouterCenter();
                 }
             }
         }
@@ -35,6 +36,7 @@ class RouterCenter implements IComponentModuleRouter {
     }
 
     @Override
+    @MainThread
     public void openUri(@NonNull EHiRouterRequest routerRequest) throws Exception {
         for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
             if (entry.getValue().isMatchUri(routerRequest.uri)) {
@@ -46,6 +48,7 @@ class RouterCenter implements IComponentModuleRouter {
     }
 
     @Override
+    @MainThread
     public boolean isMatchUri(@NonNull Uri uri) {
         for (String key : routerMap.keySet()) {
             IComponentHostRouter router = routerMap.get(key);

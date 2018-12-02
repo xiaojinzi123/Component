@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.EHiErrorRouterInterceptor;
 import com.ehi.component.support.EHiRouterInterceptor;
+import com.ehi.component.support.ExceptionHolder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 这个类必须放在 {@link ComponentUtil#IMPL_OUTPUT_PKG} 包下面
@@ -68,19 +71,19 @@ public class EHiRouter {
     }
 
     public static void register(IComponentHostRouter router) {
-        RouterCenter.getInstance().register(router);
+        EHiRouterCenter.getInstance().register(router);
     }
 
     public static void register(@NonNull String host) {
-        RouterCenter.getInstance().register(host);
+        EHiRouterCenter.getInstance().register(host);
     }
 
     public static void unregister(IComponentHostRouter router) {
-        RouterCenter.getInstance().unregister(router);
+        EHiRouterCenter.getInstance().unregister(router);
     }
 
     public static void unregister(@NonNull String host) {
-        RouterCenter.getInstance().unregister(host);
+        EHiRouterCenter.getInstance().unregister(host);
     }
 
     public static Builder with(@NonNull Context context) {
@@ -91,58 +94,58 @@ public class EHiRouter {
         return new Builder(fragment, null);
     }
 
-    public static EHiRouterResult open(@NonNull Context context, @NonNull String url) {
-        return new Builder(context, url).navigate();
+    public static void open(@NonNull Context context, @NonNull String url) {
+        new Builder(context, url).navigate();
     }
 
-    public static EHiRouterResult open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode) {
-        return new Builder(context, url)
+    public static void open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode) {
+        new Builder(context, url)
                 .requestCode(requestCode)
                 .navigate();
     }
 
-    public static EHiRouterResult open(@NonNull Context context, @NonNull String url, @Nullable Bundle bundle) {
-        return new Builder(context, url)
+    public static void open(@NonNull Context context, @NonNull String url, @Nullable Bundle bundle) {
+        new Builder(context, url)
                 .putAll(bundle == null ? new Bundle() : bundle)
                 .navigate();
     }
 
-    public static EHiRouterResult open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode, @Nullable Bundle bundle) {
-        return new Builder(context, url)
+    public static void open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode, @Nullable Bundle bundle) {
+        new Builder(context, url)
                 .putAll(bundle == null ? new Bundle() : bundle)
                 .requestCode(requestCode)
                 .navigate();
     }
 
-    public static EHiRouterResult fopen(@NonNull Fragment fragment, @NonNull String url) {
-        return new Builder(fragment, url).navigate();
+    public static void fopen(@NonNull Fragment fragment, @NonNull String url) {
+        new Builder(fragment, url).navigate();
     }
 
-    public static EHiRouterResult fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Integer requestCode) {
-        return new Builder(fragment, url)
+    public static void fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Integer requestCode) {
+        new Builder(fragment, url)
                 .requestCode(requestCode)
                 .navigate();
     }
 
-    public static EHiRouterResult fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle) {
-        return new Builder(fragment, url)
+    public static void fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle) {
+        new Builder(fragment, url)
                 .putAll(bundle == null ? new Bundle() : bundle)
                 .navigate();
     }
 
-    public static EHiRouterResult fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle, @Nullable Integer requestCode) {
-        return new Builder(fragment, url)
+    public static void fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle, @Nullable Integer requestCode) {
+        new Builder(fragment, url)
                 .putAll(bundle == null ? new Bundle() : bundle)
                 .requestCode(requestCode)
                 .navigate();
     }
 
     public static boolean isMatchUri(@NonNull Uri uri) {
-        return RouterCenter.getInstance().isMatchUri(uri);
+        return EHiRouterCenter.getInstance().isMatchUri(uri);
     }
 
     public static boolean isNeedLogin(@NonNull Uri uri) {
-        return RouterCenter.getInstance().isNeedLogin(uri);
+        return EHiRouterCenter.getInstance().isNeedLogin(uri);
     }
 
     public static class Builder {
@@ -464,71 +467,120 @@ public class EHiRouter {
 
         }
 
+        public void navigate() {
+            navigate(null);
+        }
+
         /**
-         * 执行跳转的具体逻辑
+         * 执行跳转的具体逻辑,必须在主线程中执行
          *
          * @return
          */
-        public synchronized EHiRouterResult navigate() {
+        @MainThread
+        public synchronized void navigate(@Nullable final EHiCallback callback) {
 
             if (isFinish) {
-                return EHiRouterResult.error(new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
+                EHiRouterUtil.errorCallback(callback, new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
+                return;
             }
+            // 标记这个 builder 已经不能使用了
+            isFinish = true;
+
+            EHiRouterRequest originalRequest = null;
+            Exception originalException = null;
 
             try {
-
                 // 创建请求对象
-                EHiRouterRequest routerRequest = generateRouterRequest();
-
-                List<EHiRouterInterceptor> interceptors = new ArrayList();
-                interceptors.addAll(routerInterceptors);
-                interceptors.add(new RealInterceptor());
-
-                EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, routerRequest);
-                EHiRouterResult routerResult = chain.proceed(routerRequest);
-
-                return routerResult;
-
-            } catch (Exception e) { // 发生路由错误的时候
-
-                for (EHiErrorRouterInterceptor interceptor : errorRouterInterceptors) {
-                    try {
-                        interceptor.onRouterError(e);
-                    } catch (Exception ignore) {
-                        // do nothing
-                    }
-                }
-
-                return EHiRouterResult.error(e);
-
-            } finally {
-
-                // 释放资源
-                url = null;
-                host = null;
-                path = null;
-                requestCode = null;
-                context = null;
-                fragment = null;
-                queryMap = null;
-                bundle = null;
-                isFinish = true;
-
+                originalRequest = generateRouterRequest();
+            } catch (Exception e) {
+                originalException = e;
             }
 
+            final EHiRouterRequest originalRequest1 = originalRequest;
+            final Exception originalException1 = originalException;
+
+            // 在子线程中执行
+            EHiRouterUtil.singleThread.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (originalException1 != null) {
+                            throw originalException1;
+                        }
+                        EHiRouterExecuteResult executeResult = realNavigate(originalRequest1);
+                        // 会在主线程中回调接口
+                        EHiRouterUtil.successCallback(callback,new EHiRouterResult(executeResult.request));
+
+                    } catch (Exception e) { // 发生路由错误的时候
+
+                        for (EHiErrorRouterInterceptor interceptor : errorRouterInterceptors) {
+                            try {
+                                interceptor.onRouterError(e);
+                            } catch (Exception ignore) {
+                                // do nothing
+                            }
+                        }
+
+                        EHiRouterUtil.errorCallback(callback, e);
+
+                    } finally {
+                        // 释放资源
+                        url = null;
+                        host = null;
+                        path = null;
+                        requestCode = null;
+                        context = null;
+                        fragment = null;
+                        queryMap = null;
+                        bundle = null;
+                    }
+                }
+            });
 
         }
 
+        private EHiRouterExecuteResult realNavigate(@NonNull EHiRouterRequest originalRequest) throws Exception {
+            final List<EHiRouterInterceptor> interceptors = new ArrayList(routerInterceptors);
+            interceptors.add(new RealInterceptor());
+            final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest);
+            // 拿到执行的结果
+            EHiRouterExecuteResult executeResult = chain.proceed(originalRequest);
+            return executeResult;
+        }
+
+        /**
+         * 实现拦截器列表中的最后一环,内部去执行了跳转的代码,并且切换了线程执行,当前线程会停住
+         */
         private class RealInterceptor implements EHiRouterInterceptor {
 
             @Override
-            public EHiRouterResult intercept(Chain chain) throws Exception {
-                RouterCenter.getInstance().openUri(chain.request());
-                return EHiRouterResult.success(chain.request());
+            public EHiRouterExecuteResult intercept(final Chain chain) throws Exception {
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                final ExceptionHolder exceptionHolder = new ExceptionHolder();
+                // 主线程去实现跳转
+                EHiRouterUtil.postActionToMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            EHiRouterCenter.getInstance().openUri(chain.request());
+                        } catch (Exception e) {
+                            exceptionHolder.exception = e;
+                        }
+                        countDownLatch.countDown();
+                    }
+                });
+                countDownLatch.await();
+                if (exceptionHolder.exception != null) {
+                    throw exceptionHolder.exception;
+                }
+                return new EHiRouterExecuteResult(chain.request());
             }
 
         }
 
+        /**
+         * 拦截器多个连接着走的执行器,源代码来源于 OkHttp
+         */
         private class InterceptorChain implements EHiRouterInterceptor.Chain {
 
             @NonNull
@@ -555,7 +607,7 @@ public class EHiRouter {
             }
 
             @Override
-            public EHiRouterResult proceed(EHiRouterRequest request) throws Exception {
+            public EHiRouterExecuteResult proceed(EHiRouterRequest request) throws Exception {
 
                 ++calls;
                 if (this.index >= this.interceptors.size()) {
@@ -567,11 +619,14 @@ public class EHiRouter {
                     InterceptorChain next = new InterceptorChain(this.interceptors, this.index + 1, request);
                     // current Interceptor
                     EHiRouterInterceptor interceptor = this.interceptors.get(this.index);
-                    EHiRouterResult response = interceptor.intercept(next);
-                    if (response == null) {
-                        throw new NavigationFailException("call interceptor " + next + "' method intercept return null ");
+                    EHiRouterExecuteResult result = interceptor.intercept(next);
+                    if (null == result) {
+                        throw new NavigationFailException("the result of method " + EHiRouterInterceptor.class.getSimpleName() + ".intercept() can't be null");
                     }
-                    return response;
+                    if (null == result.request) {
+                        throw new NavigationFailException("the EHiRouterRequest of " + EHiRouterInterceptor.class.getSimpleName() + " can't be null");
+                    }
+                    return result;
                 }
 
             }

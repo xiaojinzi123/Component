@@ -21,9 +21,9 @@ allprojects {
     repositories {
         // 公司私有的maven服务器
         mavenLocal()
-        maven { url 'http://192.168.9.230:8081/repository/app-releases/' }
         google()
         jcenter()
+        maven { url 'http://192.168.9.230:8081/repository/app-releases/' }
         // app 的库会在公司的服务器和这个服务器上都会上传一份,保证app 端能依赖下来公共库
         //maven { url 'http://192.168.5.105:8081/repository/maven-releases/' }
     }

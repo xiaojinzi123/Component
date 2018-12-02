@@ -7,7 +7,7 @@ package com.ehi.component.error;
  *
  * @author : xiaojinzi 30212
  */
-public class NavigationFailException extends Exception {
+public class NavigationFailException extends RuntimeException {
 
     public NavigationFailException() {
     }
