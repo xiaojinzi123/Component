@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Component1MainAct">
+    tools:context=".view.Component1MainAct">
 
     <TextView
         android:id="@+id/tv_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="component1"
+        android:text="component1 主界面"
         android:textColor="#FF0000"
         android:textSize="30dp" />
 

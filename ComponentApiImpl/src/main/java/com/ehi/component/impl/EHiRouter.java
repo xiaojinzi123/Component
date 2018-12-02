@@ -1,11 +1,9 @@
 package com.ehi.component.impl;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,13 +13,15 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.router.IComponentHostRouter;
-import com.ehi.component.support.Consumer;
+import com.ehi.component.support.EHiErrorRouterInterceptor;
+import com.ehi.component.support.EHiRouterInterceptor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,21 +39,19 @@ public class EHiRouter {
      */
     private static String TAG = "EHiRouter";
 
-    static Collection<EHiUiRouterInterceptor> uiRouterInterceptors = Collections.synchronizedCollection(new ArrayList<EHiUiRouterInterceptor>(0));
+    static Collection<EHiRouterInterceptor> routerInterceptors = Collections.synchronizedCollection(new ArrayList<EHiRouterInterceptor>(0));
 
     static Collection<EHiErrorRouterInterceptor> errorRouterInterceptors = Collections.synchronizedCollection(new ArrayList<EHiErrorRouterInterceptor>(0));
 
     public static void clearUiRouterInterceptor() {
-        uiRouterInterceptors.clear();
+        routerInterceptors.clear();
     }
 
-    public static void addUiRouterInterceptor(@NonNull EHiUiRouterInterceptor interceptor) {
-
-        if (uiRouterInterceptors.contains(interceptor)) {
+    public static void addRouterInterceptor(@NonNull EHiRouterInterceptor interceptor) {
+        if (routerInterceptors.contains(interceptor)) {
             return;
         }
-        uiRouterInterceptors.add(interceptor);
-
+        routerInterceptors.add(interceptor);
     }
 
     public static void clearErrorRouterInterceptor() {
@@ -186,14 +184,7 @@ public class EHiRouter {
         protected Bundle bundle = new Bundle();
 
         @Nullable
-        private Consumer<Intent> intentConsumer = null;
-
-        /**
-         * 为什么会有这个东西,因为可能有时候我们传给实现的那边的东西有点多,而我们最好控制一些参数
-         * 所以用这个对象来存储要传过去的额外的对象和数据
-         */
-        @Nullable
-        private HashMap<String, Object> helpMap = null;
+        private EHiRouterInterceptor onceInterceptor = null;
 
         /**
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
@@ -201,14 +192,13 @@ public class EHiRouter {
         protected boolean isFinish = false;
 
         /**
-         * 当 Intent 创建的时候调用
-         * 可以自己做一些个性化的设置
+         * 拦截单个 路由的
          *
-         * @param intentConsumer
+         * @param onceInterceptor
          * @return
          */
-        public Builder doOnIntentCreate(@Nullable Consumer<Intent> intentConsumer) {
-            this.intentConsumer = intentConsumer;
+        public Builder doOnInterceptor(@Nullable EHiRouterInterceptor onceInterceptor) {
+            this.onceInterceptor = onceInterceptor;
             return this;
         }
 
@@ -439,7 +429,7 @@ public class EHiRouter {
         }
 
         @NonNull
-        protected RouterHolder generateHolder() throws Exception {
+        protected EHiRouterRequest generateRouterRequest() throws Exception {
 
             Uri uri = null;
 
@@ -462,38 +452,24 @@ public class EHiRouter {
                 uri = Uri.parse(url);
             }
 
-            RouterHolder holder = new RouterHolder();
-
-            holder.context = context;
-            holder.fragment = fragment;
-            holder.uri = uri;
-            holder.requestCode = requestCode;
-            holder.bundle = bundle;
+            EHiRouterRequest holder = new EHiRouterRequest.Builder()
+                    .context(context)
+                    .fragment(fragment)
+                    .uri(uri)
+                    .requestCode(requestCode)
+                    .bundle(bundle)
+                    .build();
 
             return holder;
 
         }
 
-        @MainThread
-        protected void addExtraInfo(@NonNull String key, @NonNull Object o) {
-            if (helpMap == null) {
-                helpMap = new HashMap();
-            }
-            helpMap.put(key, o);
-        }
-
-        public synchronized EHiRouterResult navigate() {
-            return navigate(false);
-        }
-
         /**
          * 执行跳转的具体逻辑
          *
-         * @param isUsebuiltInFragment 是否使用 Context 或者 Fragment 内置的 Fragment 跳转
-         *                             这个 Fragment 的 TAG 为 {@link ComponentUtil#FRAGMENT_TAG}
          * @return
          */
-        protected synchronized EHiRouterResult navigate(boolean isUsebuiltInFragment) {
+        public synchronized EHiRouterResult navigate() {
 
             if (isFinish) {
                 return EHiRouterResult.error(new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
@@ -501,27 +477,17 @@ public class EHiRouter {
 
             try {
 
-                RouterHolder holder = generateHolder();
+                // 创建请求对象
+                EHiRouterRequest routerRequest = generateRouterRequest();
 
-                for (EHiUiRouterInterceptor interceptor : uiRouterInterceptors) {
-                    interceptor.preIntercept(holder);
-                }
+                List<EHiRouterInterceptor> interceptors = new ArrayList();
+                interceptors.addAll(routerInterceptors);
+                interceptors.add(new RealInterceptor());
 
-                if (isUsebuiltInFragment) {
-                    addExtraInfo("isUseBuildInFragment", true);
-                }
+                EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, routerRequest);
+                EHiRouterResult routerResult = chain.proceed(routerRequest);
 
-                if (intentConsumer != null) {
-                    addExtraInfo("intentConsumer", intentConsumer);
-                }
-
-                if (holder.context == null) {
-                    RouterCenter.getInstance().fopenUri(holder.fragment, holder.uri, holder.bundle, holder.requestCode, helpMap);
-                } else {
-                    RouterCenter.getInstance().openUri(holder.context, holder.uri, holder.bundle, holder.requestCode, helpMap);
-                }
-
-                return EHiRouterResult.success(holder.uri);
+                return routerResult;
 
             } catch (Exception e) { // 发生路由错误的时候
 
@@ -553,68 +519,64 @@ public class EHiRouter {
 
         }
 
-    }
+        private class RealInterceptor implements EHiRouterInterceptor {
 
-    /**
-     * 当发起一个路由的时候,这个类会持有所有的信息,拦截器中可以拿到这个参数
-     */
-    public static class RouterHolder {
+            @Override
+            public EHiRouterResult intercept(Chain chain) throws Exception {
+                RouterCenter.getInstance().openUri(chain.request());
+                return EHiRouterResult.success(chain.request());
+            }
 
-        @Nullable
-        public Context context;
+        }
 
-        @Nullable
-        public Fragment fragment;
+        private class InterceptorChain implements EHiRouterInterceptor.Chain {
 
-        @NonNull
-        public Uri uri;
+            @NonNull
+            private EHiRouterRequest originalRequest;
+            private List<EHiRouterInterceptor> interceptors;
+            private int index;
+            private int calls;
 
-        @Nullable
-        public Integer requestCode;
+            /**
+             * @param interceptors
+             * @param index
+             * @param request      第一次这个对象是不需要的
+             */
+            public InterceptorChain(@NonNull List<EHiRouterInterceptor> interceptors, int index, @NonNull EHiRouterRequest request) {
+                this.interceptors = interceptors;
+                this.index = index;
+                this.originalRequest = request;
+            }
 
-        @NonNull
-        public Bundle bundle = new Bundle();
+            @Override
+            public EHiRouterRequest request() {
+                // 第一个拦截器的
+                return originalRequest;
+            }
 
-    }
+            @Override
+            public EHiRouterResult proceed(EHiRouterRequest request) throws Exception {
 
-    /**
-     * 路由跳转的拦截器
-     */
-    public interface EHiUiRouterInterceptor {
+                ++calls;
+                if (this.index >= this.interceptors.size()) {
+                    throw new NavigationFailException(new IndexOutOfBoundsException("size = " + this.interceptors.size() + ",index = " + index));
+                } else if (calls > 1) { // 调用了两次
+                    throw new NavigationFailException("interceptor " + this.interceptors.get(this.index - 1) + " must call proceed() exactly once");
+                } else {
+                    // 当拦截器最后一个的时候,就不是这个类了,是 RealInterceptor 了
+                    InterceptorChain next = new InterceptorChain(this.interceptors, this.index + 1, request);
+                    // current Interceptor
+                    EHiRouterInterceptor interceptor = this.interceptors.get(this.index);
+                    EHiRouterResult response = interceptor.intercept(next);
+                    if (response == null) {
+                        throw new NavigationFailException("call interceptor " + next + "' method intercept return null ");
+                    }
+                    return response;
+                }
 
-        /**
-         * 路由之前的数据拦截
-         *
-         * @param holder
-         * @return
-         */
-        void preIntercept(@NonNull RouterHolder holder);
+            }
 
-        /**
-         * 路由跳转的拦截器的实现,最后执行前的拦截
-         *
-         * @param uri
-         * @return
-         */
-        boolean intercept(
-                @Nullable Context context, @Nullable Fragment fragment, @NonNull Uri uri,
-                @NonNull Class targetActivityClass, @Nullable Bundle bundle,
-                @Nullable Integer requestCode, boolean isNeedLogin
-        );
-
-    }
-
-    /**
-     * 当发生错误的时候的错误拦截器
-     */
-    public interface EHiErrorRouterInterceptor {
-
-        /**
-         * 发生错误的时候的回调
-         *
-         * @param e
-         */
-        void onRouterError(Exception e) throws Exception;
+        }
 
     }
 

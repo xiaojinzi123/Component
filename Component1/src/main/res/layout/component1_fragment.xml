@@ -10,12 +10,20 @@
         android:layout_centerInParent="true"
         android:text="我是component1模块的Component1Fragment提供的界面"
         android:textColor="#FF0000"
-        android:textSize="30dp" />
+        android:textSize="24dp" />
 
     <Button
         android:id="@+id/bt_go_component2"
         android:layout_width="match_parent"
         android:text="跳转到component2主界面"
+        android:textAllCaps="false"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/bt_rx_get"
+        android:layout_width="match_parent"
+        android:text="rxGetData"
+        android:textAllCaps="false"
         android:layout_height="wrap_content" />
 
 </LinearLayout>

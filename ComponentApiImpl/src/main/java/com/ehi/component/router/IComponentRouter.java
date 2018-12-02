@@ -1,13 +1,10 @@
 package com.ehi.component.router;
 
-import android.content.Context;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 
-import java.util.HashMap;
+import com.ehi.component.impl.EHiRouterRequest;
 
 /**
  * 组件之间实现跳转的接口
@@ -21,67 +18,11 @@ public interface IComponentRouter {
     /**
      * 打开一个链接实现跳转
      *
-     * @param context 上下文,一般是 Activity
-     * @param uri     目标界面的 Uri
+     * @param routerRequest
      * @return
      * @throws android.content.ActivityNotFoundException
      */
-    void openUri(@NonNull Context context, @NonNull Uri uri) throws Exception;
-
-    /**
-     * 打开一个链接实现跳转
-     *
-     * @param fragment
-     * @param uri
-     * @return
-     * @throws android.content.ActivityNotFoundException
-     */
-    void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) throws Exception;
-
-    /**
-     * 打开一个链接实现跳转
-     *
-     * @param context
-     * @param uri
-     * @param bundle  额外的信息携带对象,系统的 {@link Bundle} 对象可以被序列化
-     * @param helpMap 帮助传递额外的信息过去
-     * @return
-     */
-    void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception;
-
-    /**
-     * 打开一个链接实现跳转
-     *
-     * @param fragment
-     * @param uri
-     * @param bundle
-     * @return
-     */
-    void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception;
-
-    /**
-     * 打开一个链接,并且有请求码
-     *
-     * @param context
-     * @param uri
-     * @param bundle
-     * @param requestCode 界面的请求码
-     * @return
-     */
-    void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle
-            , @Nullable Integer requestCode, @Nullable HashMap helpMap) throws Exception;
-
-    /**
-     * 打开一个链接,并且有请求码
-     *
-     * @param fragment
-     * @param uri
-     * @param bundle
-     * @param requestCode 界面的请求码
-     * @return
-     */
-    void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle
-            , @Nullable Integer requestCode, @Nullable HashMap helpMap) throws Exception;
+    void openUri(@NonNull EHiRouterRequest routerRequest) throws Exception;
 
     /**
      * 是否有匹配的 uri

@@ -3,15 +3,16 @@
     package="com.ehi.componentdemo">
 
     <application
-        android:name=".MainApp"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TestRouterAct"></activity>
-        <activity android:name=".MainAct">
+        <activity android:name=".view.TestServiceAct"></activity>
+        <activity android:name=".view.TestRouterAct" />
+        <activity android:name=".view.MainAct">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -3,12 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TestRouterAct">
+    tools:context=".view.TestRouterAct">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="openUriTest"
+            android:textAllCaps="false"
+            android:text="直接打开 EHi://component3/main?data=openUriTest \n uri 可以是后台下发的,可以是动态的" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="jumpToAar3"
+            android:textAllCaps="false"
+            android:text="跳转到依赖的aar的业务组件3中" />
 
         <Button
             android:layout_width="match_parent"

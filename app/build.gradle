@@ -11,7 +11,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [HOST: "main"]
+                arguments = [HOST: "app"]
             }
         }
     }
@@ -35,6 +35,12 @@ dependencies {
 
     implementation project(':Component1')
     implementation project(':Component2')
+
+    if (Boolean.parseBoolean(rootProject.ext.isDependComponentOnline)) {
+        implementation "com.ehi:component3:${rootProject.ext.business_component_version}"
+    } else {
+        implementation project(':Component3')
+    }
 
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
         annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"

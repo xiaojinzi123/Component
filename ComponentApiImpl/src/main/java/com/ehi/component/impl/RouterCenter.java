@@ -1,11 +1,8 @@
 package com.ehi.component.impl;
 
-import android.content.Context;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.TargetActivityNotFoundException;
@@ -38,88 +35,37 @@ class RouterCenter implements IComponentModuleRouter {
     }
 
     @Override
-    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) throws Exception {
-        fopenUri(fragment, uri, null);
-    }
-
-    @Override
-    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
-        fopenUri(fragment, uri, null, null, null);
-    }
-
-    @Override
-    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle
-            , @Nullable Integer requestCode, @Nullable HashMap helpMap) throws Exception {
-
+    public void openUri(@NonNull EHiRouterRequest routerRequest) throws Exception {
         for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
-            if (entry.getValue().isMatchUri(uri)) {
-                entry.getValue().fopenUri(fragment, uri, bundle, requestCode, helpMap);
+            if (entry.getValue().isMatchUri(routerRequest.uri)) {
+                entry.getValue().openUri(routerRequest);
                 return;
             }
         }
-
-        throw new TargetActivityNotFoundException(uri.toString());
-
-    }
-
-    @Override
-    public void openUri(@NonNull Context context, @NonNull Uri uri) throws Exception {
-        openUri(context, uri, null);
-    }
-
-    @Override
-    public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
-        openUri(context, uri, null, null, null);
-    }
-
-    @Override
-    public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle
-            , @Nullable Integer requestCode, @Nullable HashMap helpMap) throws Exception {
-
-        for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
-            if (entry.getValue().isMatchUri(uri)) {
-                entry.getValue().openUri(context, uri, bundle, requestCode, helpMap);
-                return;
-            }
-        }
-
-        throw new TargetActivityNotFoundException(uri.toString());
-
+        throw new TargetActivityNotFoundException(routerRequest.uri == null ? "" : routerRequest.uri.toString());
     }
 
     @Override
     public boolean isMatchUri(@NonNull Uri uri) {
-
         for (String key : routerMap.keySet()) {
-
             IComponentHostRouter router = routerMap.get(key);
-
             if (router.isMatchUri(uri)) {
                 return true;
             }
-
         }
-
         return false;
-
     }
 
     @Override
     public Boolean isNeedLogin(@NonNull Uri uri) {
-
         for (String key : routerMap.keySet()) {
-
             // 每一个子路由
             IComponentHostRouter router = routerMap.get(key);
-
             Boolean isNeedLogin = null;
-
             if ((isNeedLogin = router.isNeedLogin(uri)) != null) {
                 return isNeedLogin;
             }
-
         }
-
         return null;
     }
 

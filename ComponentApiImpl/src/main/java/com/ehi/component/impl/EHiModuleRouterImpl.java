@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.router.IComponentHostRouter;
-import com.ehi.component.support.Consumer;
 import com.ehi.component.support.QueryParameterSupport;
 
 import java.util.HashMap;
@@ -62,78 +60,30 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     }
 
     @Override
-    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri) throws Exception {
-        fopenUri(fragment, uri, null);
-    }
-
-    @Override
-    public void openUri(@NonNull Context context, @NonNull Uri uri) throws Exception {
-        openUri(context, uri, null);
-    }
-
-    @Override
-    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
-        fopenUri(fragment, uri, bundle, null, null);
-    }
-
-    @Override
-    public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle) throws Exception {
-        openUri(context, uri, bundle, null, null);
-    }
-
-    @Override
-    public void fopenUri(@NonNull Fragment fragment, @NonNull Uri uri, @Nullable Bundle bundle
-            , @Nullable Integer requestCode, @Nullable HashMap helpMap) throws Exception {
-        doOpenUri(null, fragment, uri, bundle, requestCode, helpMap);
-    }
-
-    @Override
-    public void openUri(@NonNull Context context, @NonNull Uri uri, @Nullable Bundle bundle
-            , @Nullable Integer requestCode, @Nullable HashMap helpMap) throws Exception {
-        doOpenUri(context, null, uri, bundle, requestCode, helpMap);
+    public void openUri(@NonNull EHiRouterRequest routerRequest) throws Exception {
+        doOpenUri(routerRequest);
     }
 
     /**
      * content 参数和 fragment 参数必须有一个有值的
      *
-     * @param context
-     * @param fragment
-     * @param uri
-     * @param bundle
-     * @param requestCode
+     * @param routerRequest
      * @return
      */
-    private void doOpenUri(@Nullable Context context, @Nullable Fragment fragment, @NonNull Uri uri
-            , @Nullable Bundle bundle, @Nullable Integer requestCode, @Nullable HashMap<String, Object> helpMap) throws Exception {
+    private void doOpenUri(@NonNull EHiRouterRequest routerRequest) throws Exception {
 
         if (!hasInitMap) {
             initMap();
         }
 
-        Class targetClass = getTargetClass(uri);
+        if (routerRequest.uri == null) {
+            throw new TargetActivityNotFoundException("target Uri is null");
+        }
 
+        Class targetClass = getTargetClass(routerRequest.uri);
         // 没有找到目标界面
         if (targetClass == null) {
-            throw new TargetActivityNotFoundException(uri.toString());
-        }
-
-        // 处理拦截的代码
-
-        EHiRouter.EHiUiRouterInterceptor currInterceptor = null;
-
-        for (EHiRouter.EHiUiRouterInterceptor interceptor : EHiRouter.uiRouterInterceptors) {
-
-            if (interceptor.intercept(context, fragment, uri, targetClass, bundle, requestCode, isNeedLoginMap.get(targetClass))) {
-                currInterceptor = interceptor;
-                break;
-            }
-
-        }
-
-        // 如果不为空说明拦截下来了
-        if (currInterceptor != null) {
-            currInterceptor = null;
-            return;
+            throw new TargetActivityNotFoundException(routerRequest.uri.toString());
         }
 
         // 防止重复跳转同一个界面
@@ -145,69 +95,67 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         preTargetClass = targetClass;
         preTargetTime = System.currentTimeMillis();
 
-        if (bundle == null) {
-            bundle = new Bundle();
+        if (routerRequest.context == null && routerRequest.fragment == null) {
+            throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nEHiRouter.with(Context) or EHiRouter.withFragment(Fragment)");
         }
 
-        // 下面就是具体的跳转的代码了,针对上面的这个 Intent
-        Consumer<Intent> intentConsumer = null;
-        boolean isUseBuildInFragment = false;
-        if (helpMap != null) {
-            if (helpMap.containsKey("isUseBuildInFragment")) {
-                isUseBuildInFragment = (boolean) helpMap.get("isUseBuildInFragment");
-            }
-            if (helpMap.containsKey("intentConsumer")) {
-                intentConsumer = (Consumer<Intent>) helpMap.get("intentConsumer");
-            }
+        Context context = routerRequest.context;
+        if (context == null) {
+            context = routerRequest.fragment.getContext();
+        }
+
+        // 如果 Context 和 Fragment 中的 Context 都是 null
+        if (context == null) {
+            throw new NavigationFailException("your fragment attached to Activity?");
         }
 
         Intent intent = new Intent(context, targetClass);
-        // 回调我们 Intent 个性化的方法
-        if (intentConsumer != null) {
-            intentConsumer.accept(intent);
-        }
-        intent.putExtras(bundle);
-        QueryParameterSupport.put(intent, uri);
+        intent.putExtras(routerRequest.bundle);
+        QueryParameterSupport.put(intent, routerRequest.uri);
 
-        if (requestCode == null) {
-            if (context != null) {
-                context.startActivity(intent);
-            } else if (fragment != null) {
-                fragment.startActivity(intent);
+        // do startActivity
+        doStartActivity(routerRequest, intent);
+
+    }
+
+    private void doStartActivity(@NonNull EHiRouterRequest routerRequest, @NonNull Intent intent) throws Exception {
+
+        if (routerRequest.requestCode == null) { // 如果是 startActivity
+
+            if (routerRequest.context != null) {
+                routerRequest.context.startActivity(intent);
+            } else if (routerRequest.fragment != null) {
+                routerRequest.fragment.startActivity(intent);
             } else {
                 throw new NavigationFailException("the context or fragment both are null");
             }
+
         } else {
-            // 使用 context 跳转
-            if (context != null) {
-                if (isUseBuildInFragment) {
-                    Fragment rxFragment = findFragment(context);
-                    if (rxFragment == null) {
-                        throw new NavigationFailException("built in 'EHiRxFragment' for Context '" + context + "' can't be found");
-                    } else {
-                        rxFragment.startActivityForResult(intent, requestCode);
-                    }
+
+            // 使用 context 跳转 startActivityForResult
+            if (routerRequest.context != null) {
+
+                Fragment rxFragment = findFragment(routerRequest.context);
+                if (rxFragment != null) {
+                    rxFragment.startActivityForResult(intent, routerRequest.requestCode);
+                } else if (routerRequest.context instanceof Activity) {
+                    ((Activity) routerRequest.context).startActivityForResult(intent, routerRequest.requestCode);
                 } else {
-                    if (context instanceof Activity) {
-                        ((Activity) context).startActivityForResult(intent, requestCode);
-                    } else {
-                        throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
-                    }
+                    throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
                 }
-            } else if (fragment != null) { // 使用 Fragment 跳转
-                if (isUseBuildInFragment) {
-                    Fragment rxFragment = findFragment(fragment);
-                    if (rxFragment == null) {
-                        throw new NavigationFailException("built in 'EHiRxFragment' for Fragment '" + fragment + "' can't be found");
-                    } else {
-                        rxFragment.startActivityForResult(intent, requestCode);
-                    }
+
+            } else if (routerRequest.fragment != null) { // 使用 Fragment 跳转
+
+                Fragment rxFragment = findFragment(routerRequest.fragment);
+                if (rxFragment != null) {
+                    rxFragment.startActivityForResult(intent, routerRequest.requestCode);
                 } else {
-                    fragment.startActivityForResult(intent, requestCode);
+                    routerRequest.fragment.startActivityForResult(intent, routerRequest.requestCode);
                 }
             } else {
                 throw new NavigationFailException("the context or fragment both are null");
             }
+
         }
 
     }

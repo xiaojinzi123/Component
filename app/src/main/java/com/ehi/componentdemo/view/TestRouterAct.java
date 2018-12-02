@@ -1,4 +1,4 @@
-package com.ehi.componentdemo;
+package com.ehi.componentdemo.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,9 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
+import com.ehi.componentdemo.R;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +24,7 @@ import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-@EHiRouterAnno(value = "testRouter", desc = "测试跳转的界面")
+@EHiRouterAnno(host = ModuleConfig.App.NAME, value = ModuleConfig.App.TEST_ROUTER, desc = "测试跳转的界面")
 public class TestRouterAct extends AppCompatActivity {
 
     private TextView tv_detail;
@@ -35,13 +38,29 @@ public class TestRouterAct extends AppCompatActivity {
 
     }
 
+
+    public void openUriTest(View view) {
+        EHiRouterResult routerResult = EHiRouter.open(this, "EHi://component1/test?data=openUriTest");
+        addInfo(routerResult, "component1/test?data=openUriTest", null);
+    }
+
+    public void jumpToAar3(View view) {
+        EHiRouter
+                .with(this)
+                .host(ModuleConfig.Component3.NAME)
+                .path("main")
+                .navigate();
+    }
+
     public void normalJump(View view) {
 
-        EHiRouterResult routerResult = EHiRxRouter
+        EHiRouterResult routerResult = EHiRouter
                 .with(this)
                 .host("component1")
                 .path("test")
                 .query("data", "normalJump")
+                .putString("name", "cxj1")
+                .putInt("age", 25)
                 .navigate();
 
         addInfo(routerResult, "component1/test?data=normalJump", null);

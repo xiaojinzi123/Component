@@ -1,6 +1,5 @@
 package com.ehi.component.impl;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -22,8 +21,8 @@ public class EHiRouterResult implements Serializable {
     /**
      * 如果成功了,这个会有值
      */
-    @Nullable
-    private Uri uri;
+    @NonNull
+    private EHiRouterRequest request;
 
     /**
      * 当发生错误的时候,这个对象就是发生错误的时候跑出来的异常
@@ -40,9 +39,9 @@ public class EHiRouterResult implements Serializable {
         this.error = error;
     }
 
-    public EHiRouterResult(boolean isSuccess, @Nullable Uri uri, @Nullable Exception error) {
+    public EHiRouterResult(boolean isSuccess, @Nullable EHiRouterRequest request, @Nullable Exception error) {
         this.isSuccess = isSuccess;
-        this.uri = uri;
+        this.request = request;
         this.error = error;
     }
 
@@ -54,6 +53,15 @@ public class EHiRouterResult implements Serializable {
         isSuccess = success;
     }
 
+    @NonNull
+    public EHiRouterRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(@NonNull EHiRouterRequest request) {
+        this.request = request;
+    }
+
     @Nullable
     public Exception getError() {
         return error;
@@ -63,12 +71,8 @@ public class EHiRouterResult implements Serializable {
         this.error = error;
     }
 
-    public static final EHiRouterResult success() {
-        return new EHiRouterResult(true, null);
-    }
-
-    public static final EHiRouterResult success(@NonNull Uri uri) {
-        return new EHiRouterResult(true, uri, null);
+    public static final EHiRouterResult success(EHiRouterRequest request) {
+        return new EHiRouterResult(true, request, null);
     }
 
     public static final EHiRouterResult error(@NonNull Exception e) {

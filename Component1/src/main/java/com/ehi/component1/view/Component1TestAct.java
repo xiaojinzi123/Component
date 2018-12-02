@@ -1,4 +1,4 @@
-package com.ehi.component1;
+package com.ehi.component1.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.support.QueryParameterSupport;
+import com.ehi.component1.R;
 
 @EHiRouterAnno(host = "component1", value = "test", desc = "业务组件1的测试界面")
 public class Component1TestAct extends AppCompatActivity {

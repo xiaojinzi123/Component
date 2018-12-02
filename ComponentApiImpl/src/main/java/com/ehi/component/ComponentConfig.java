@@ -1,6 +1,7 @@
 package com.ehi.component;
 
 /**
+ * 组件化的配置类
  * time   : 2018/08/09
  *
  * @author : xiaojinzi 30212
@@ -13,7 +14,7 @@ public class ComponentConfig {
         ComponentConfig.isDebug = isDebug;
     }
 
-    public static boolean isDebug(){
+    public static boolean isDebug() {
         return isDebug;
     }
 

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.TestServiceAct">
+
+    <Button
+        android:layout_width="match_parent"
+        android:onClick="findComponent2"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="寻找findComponent2(非单例,多次点我多次创建)" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:onClick="callComponent2Method"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="调用component2服务提供的方法" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:onClick="findComponent1"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="寻找findComponent1(单例,多次点我只创建一次)" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:onClick="loadComponent1Fragment"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="加载component1服务提供的fragment" />
+
+    <FrameLayout
+        android:id="@+id/fl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

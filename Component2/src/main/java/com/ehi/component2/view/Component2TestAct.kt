@@ -1,8 +1,9 @@
-package com.ehi.component2
+package com.ehi.component2.view
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.ehi.component.anno.EHiRouterAnno
+import com.ehi.component2.R
 
 @EHiRouterAnno("component2/test")
 class Component2TestAct : AppCompatActivity() {

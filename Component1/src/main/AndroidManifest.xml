@@ -5,9 +5,9 @@
     <application>
 
         <activity
-            android:name=".Component1MainAct"
+            android:name=".view.Component1MainAct"
             android:launchMode="singleTop" />
-        <activity android:name=".Component1TestAct"/>
+        <activity android:name=".view.Component1TestAct"/>
 
     </application>
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainAct">
+    tools:context=".view.MainAct">
 
     <Button
         android:layout_width="match_parent"
@@ -21,12 +21,6 @@
 
     <Button
         android:layout_width="match_parent"
-        android:onClick="testRouter"
-        android:layout_height="wrap_content"
-        android:text="去测试跳转" />
-
-    <Button
-        android:layout_width="match_parent"
         android:onClick="registerComponent2"
         android:layout_height="wrap_content"
         android:text="注册组件2" />
@@ -39,13 +33,14 @@
 
     <Button
         android:layout_width="match_parent"
-        android:onClick="loadComponent1Fragment"
+        android:onClick="testRouter"
         android:layout_height="wrap_content"
-        android:text="加载component1服务提供的fragment" />
+        android:text="去测试跳转" />
 
-    <FrameLayout
-        android:id="@+id/fl"
+    <Button
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:onClick="testService"
+        android:layout_height="wrap_content"
+        android:text="去测试服务使用" />
 
 </LinearLayout>

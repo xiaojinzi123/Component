@@ -63,16 +63,27 @@ public class ModuleAppProcessor extends AbstractProcessor {
         typeString = mElements.getTypeElement("java.lang.String").asType();
 
         Map<String, String> options = processingEnv.getOptions();
+        mMessager.printMessage(Diagnostic.Kind.NOTE, "options = " + options);
         if (options != null) {
             componentHost = options.get("HOST");
         }
 
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "ModuleAppProcessor.componentHost = " + componentHost);
+        if (componentHost == null || "".equals(componentHost)) {
+            ErrorPrintUtil.printHostNull(mMessager);
+            return;
+        }
+
+        mMessager.printMessage(Diagnostic.Kind.NOTE, "componentHost = " + componentHost);
 
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
+
+        if (componentHost == null || "".equals(componentHost)) {
+            return false;
+        }
+
         if (CollectionUtils.isNotEmpty(set)) {
 
             Set<? extends Element> moduleAppElements = roundEnvironment.getElementsAnnotatedWith(EHiModuleApp.class);

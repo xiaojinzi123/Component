@@ -16,6 +16,7 @@ import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.impl.error.UnknowException;
+import com.ehi.component.support.EHiRouterInterceptor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -74,6 +75,11 @@ public class EHiRxRouter {
         @Override
         public Builder path(@NonNull String path) {
             return (Builder) super.path(path);
+        }
+
+        @Override
+        public Builder doOnInterceptor(@Nullable EHiRouterInterceptor onceInterceptor) {
+            return (Builder) super.doOnInterceptor(onceInterceptor);
         }
 
         @Override
@@ -349,7 +355,7 @@ public class EHiRxRouter {
                         if (rxFragment.isContainsSingleEmitter(mRequesetCode)) {
                             throw new NavigationFailException("request&result code: " + requestCode + " can't be same");
                         }
-                        EHiRouterResult routerResult = navigate(true);
+                        EHiRouterResult routerResult = navigate();
                         if (routerResult.isSuccess()) {
                             // 设置ActivityResult回调的发射器
                             rxFragment.setSingleEmitter(emitter, mRequesetCode);

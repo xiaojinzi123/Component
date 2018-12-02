@@ -68,7 +68,7 @@ public class RouterProcessor extends AbstractProcessor {
         }
 
         if (componentHost == null || "".equals(componentHost)) {
-            mMessager.printMessage(Diagnostic.Kind.ERROR, "the host must not be null,you must define host in build.gradle file");
+            ErrorPrintUtil.printHostNull(mMessager);
             return;
         }
 
