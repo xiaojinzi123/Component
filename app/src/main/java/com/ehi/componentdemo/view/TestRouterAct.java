@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ehi.base.ModuleConfig;
+import com.ehi.base.interceptor.LoginInterceptor;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterResult;
@@ -25,7 +26,12 @@ import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-@EHiRouterAnno(host = ModuleConfig.App.NAME, value = ModuleConfig.App.TEST_ROUTER, desc = "测试跳转的界面")
+@EHiRouterAnno(
+        host = ModuleConfig.App.NAME,
+        value = ModuleConfig.App.TEST_ROUTER,
+        interceptors = LoginInterceptor.class,
+        desc = "测试跳转的界面"
+)
 public class TestRouterAct extends AppCompatActivity {
 
     private TextView tv_detail;
@@ -47,13 +53,22 @@ public class TestRouterAct extends AppCompatActivity {
     public void jumpToAar3(View view) {
         EHiRouter
                 .with(this)
-                .host(ModuleConfig.Component3.NAME)
+                .host(ModuleConfig.User.NAME)
                 .path("main")
-                .navigate();
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, "component3/main", null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, "component3/main", null);
+                    }
+                });
     }
 
     public void normalJump(View view) {
-
         EHiRouter
                 .with(TestRouterAct.this)
                 .host("component1")
@@ -64,12 +79,14 @@ public class TestRouterAct extends AppCompatActivity {
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
-                        System.out.println("onSuccess.Thread = " + Thread.currentThread().getName());
+                        addInfo(result, null, "component1/test?data=normalJump", null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, "component1/test?data=normalJump", null);
                     }
                 });
-
-        // addInfo(routerResult, "component1/test?data=normalJump", null);
-
     }
 
     public void normalJumpTwice(View view) {
@@ -78,21 +95,35 @@ public class TestRouterAct extends AppCompatActivity {
                 .with(this)
                 .host("component1")
                 .path("test")
-                .query("data", "normalJumpTwice")
-                .navigate();
+                .query("data", "normalJumpTwice1")
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, "component1/test?data=normalJumpTwice1", null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, "component1/test?data=normalJumpTwice1", null);
+                    }
+                });
 
         EHiRxRouter
                 .with(this)
                 .host("component1")
                 .path("test")
-                .query("data", "normalJumpTwice")
-                .navigate();
+                .query("data", "normalJumpTwice2")
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, "component1/test?data=normalJumpTwice2", null);
+                    }
 
-        System.out.println("normalJumpTwice");
-
-        //addInfo(routerResult1, "component1/test?data=normalJumpTwice", 123);
-        //addInfo(routerResult2, "component1/test?data=normalJumpTwice", 123);
-
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, "component1/test?data=normalJumpTwice2", null);
+                    }
+                });
 
     }
 
@@ -104,9 +135,17 @@ public class TestRouterAct extends AppCompatActivity {
                 .path("test")
                 .query("data", "jumpGetData")
                 .requestCode(123)
-                .navigate();
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, "component1/test?data=jumpGetData", 123);
+                    }
 
-        // addInfo(routerResult, "component1/test?data=jumpGetData", 123);
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, "component1/test?data=jumpGetData", 123);
+                    }
+                });
 
     }
 
@@ -123,6 +162,11 @@ public class TestRouterAct extends AppCompatActivity {
                     @Override
                     public void accept(Intent intent) throws Exception {
                         tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据成功啦：Data = " + intent.getStringExtra("data"));
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage());
                     }
                 });
 
@@ -187,20 +231,20 @@ public class TestRouterAct extends AppCompatActivity {
         }*/
     }
 
-    private void addInfo(EHiRouterResult routerResult, @NonNull String url, @Nullable Integer requestCode) {
-//        if (requestCode == null) {
-//            if (routerResult.isSuccess()) {
-//                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转成功,目标:" + url);
-//            } else {
-//                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转失败,目标:" + url + ",error = " + routerResult.getError().getClass().getSimpleName() + " ,errorMsg = " + routerResult.getError().getMessage());
-//            }
-//        } else {
-//            if (routerResult.isSuccess()) {
-//                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转成功,目标:" + url);
-//            } else {
-//                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转失败,目标:" + url + ",error = " + routerResult.getError().getClass().getSimpleName() + " ,errorMsg = " + routerResult.getError().getMessage());
-//            }
-//        }
+    private void addInfo(@Nullable EHiRouterResult routerResult, @Nullable Exception error, @NonNull String url, @Nullable Integer requestCode) {
+        if (requestCode == null) {
+            if (routerResult != null) {
+                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转成功,目标:" + url);
+            } else {
+                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转失败,目标:" + url + ",error = " + error.getClass().getSimpleName() + " ,errorMsg = " + error.getMessage());
+            }
+        } else {
+            if (routerResult != null) {
+                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转成功,目标:" + url);
+            } else {
+                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转失败,目标:" + url + ",error = " + error.getClass().getSimpleName() + " ,errorMsg = " + error.getMessage());
+            }
+        }
     }
 
 }

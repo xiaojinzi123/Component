@@ -3,7 +3,6 @@ package com.ehi.component.impl;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +14,7 @@ import android.util.SparseArray;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
-import com.ehi.component.impl.error.UnknowException;
+import com.ehi.component.error.UnknowException;
 import com.ehi.component.support.EHiCallbackAdapter;
 import com.ehi.component.support.EHiRouterInterceptor;
 
@@ -313,28 +312,27 @@ public class EHiRxRouter {
                     }
 
                     if (isFinish) {
-                        onErrorEmitter(emitter,new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
+                        onErrorEmitter(emitter, new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
                         return;
                     }
 
-                    Thread currentThread = Thread.currentThread();
-                    if (currentThread != Looper.getMainLooper().getThread()) {
-                        onErrorEmitter(emitter,new NavigationFailException("EHiRxRouter must run on main thread"));
+                    if (EHiRouterUtil.isMainThread() == false) {
+                        onErrorEmitter(emitter, new NavigationFailException("EHiRxRouter must run on main thread"));
                         return;
                     }
 
                     if (context == null && fragment == null) {
-                        onErrorEmitter(emitter,new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router")));
+                        onErrorEmitter(emitter, new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router")));
                         return;
                     }
 
                     if (context != null && (context instanceof FragmentActivity) == false) {
-                        onErrorEmitter(emitter,new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity")));
+                        onErrorEmitter(emitter, new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity")));
                         return;
                     }
 
                     if (requestCode == null) {
-                        onErrorEmitter(emitter,new NavigationFailException(new NullPointerException("requestCode must not be null for router")));
+                        onErrorEmitter(emitter, new NavigationFailException(new NullPointerException("requestCode must not be null for router")));
                         return;
                     }
 
@@ -363,7 +361,7 @@ public class EHiRxRouter {
                         final int mRequesetCode = requestCode;
 
                         if (rxFragment.isContainsSingleEmitter(mRequesetCode)) {
-                            throw new NavigationFailException("request&result code: " + requestCode + " can't be same");
+                            onErrorEmitter(emitter, new NavigationFailException("request&result code: " + requestCode + " can't be same"));
                         }
 
                         navigate(new EHiCallbackAdapter() {
@@ -373,30 +371,30 @@ public class EHiRxRouter {
                                     if (routerResult != null) {
                                         // 设置ActivityResult回调的发射器
                                         rxFragment.setSingleEmitter(emitter, mRequesetCode);
-                                    }else {
+                                    } else {
                                         if (error != null) {
                                             throw error;
                                         } else {
                                             throw new NavigationFailException("host = " + mHost + ",path = " + mPath);
                                         }
                                     }
-                                }catch (TargetActivityNotFoundException e) {
-                                    onErrorEmitter(emitter,e);
+                                } catch (TargetActivityNotFoundException e) {
+                                    onErrorEmitter(emitter, e);
                                 } catch (NavigationFailException e) {
-                                    onErrorEmitter(emitter,e);
+                                    onErrorEmitter(emitter, e);
                                 } catch (Exception e) {
-                                    onErrorEmitter(emitter,new UnknowException(e));
+                                    onErrorEmitter(emitter, new UnknowException(e));
                                 }
 
                             }
                         });
 
                     } catch (TargetActivityNotFoundException e) {
-                        onErrorEmitter(emitter,e);
+                        onErrorEmitter(emitter, e);
                     } catch (NavigationFailException e) {
-                        onErrorEmitter(emitter,e);
+                        onErrorEmitter(emitter, e);
                     } catch (Exception e) {
-                        onErrorEmitter(emitter,new UnknowException(e));
+                        onErrorEmitter(emitter, new UnknowException(e));
                     }
 
                 }

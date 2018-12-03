@@ -48,7 +48,11 @@ public class EHiServiceContainer {
 
     @Nullable
     public static <T> T get(@NonNull Class<T> tClass) {
-        return (T) map.get(tClass).get();
+        if (map.get(tClass) == null) {
+            return null;
+        }else {
+            return (T) map.get(tClass).get();
+        }
     }
 
 }

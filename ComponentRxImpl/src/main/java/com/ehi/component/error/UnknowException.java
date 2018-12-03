@@ -1,4 +1,4 @@
-package com.ehi.component.impl.error;
+package com.ehi.component.error;
 
 /**
  * 表示不知道是啥异常的异常

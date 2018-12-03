@@ -31,9 +31,9 @@ public class ModuleConfig {
 
     }
 
-    public static class Component3 {
+    public static class User {
 
-        public static final String NAME = "component3";
+        public static final String NAME = "user";
 
     }
 

@@ -27,11 +27,11 @@ public @interface EHiRouterAnno {
     String value();
 
     /**
-     * 是否需要登录
+     * 拦截器的地址
      *
      * @return
      */
-    boolean needLogin() default false;
+    Class[] interceptors() default {};
 
     /**
      * 描述信息

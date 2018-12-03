@@ -12,9 +12,12 @@ import com.squareup.javapoet.TypeSpec;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -30,6 +33,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -96,7 +100,7 @@ public class RouterProcessor extends AbstractProcessor {
 
     }
 
-    private Map<String, com.ehi.component.bean.RouterBean> routerMap = new HashMap<>();
+    private Map<String, RouterBean> routerMap = new HashMap<>();
 
     /**
      * 解析注解
@@ -157,19 +161,17 @@ public class RouterProcessor extends AbstractProcessor {
             }
 
             if (routerMap.containsKey(getHostAndPath(router.host(), router.value()))) {
-
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value is alreay exist");
                 continue;
 
             }
 
-            com.ehi.component.bean.RouterBean routerBean = new com.ehi.component.bean.RouterBean();
+            RouterBean routerBean = new RouterBean();
             routerBean.setHost(router.host());
             routerBean.setPath(router.value());
-            routerBean.setNeedLogin(router.needLogin());
             routerBean.setDesc(router.desc());
-            //routerBean.setPriority(router.priority());
             routerBean.setRawType(element);
+            routerBean.getInterceptors().addAll(getImplClassName(router));
 
             routerMap.put(getHostAndPath(router.host(), router.value()), routerBean);
 
@@ -204,10 +206,11 @@ public class RouterProcessor extends AbstractProcessor {
                 .superclass(superClass)
                 .addMethod(initHostMethod)
                 .addMethod(initMapMethod)
+                .addJavadoc(componentHost + "业务模块的路由表\n")
                 .build();
 
         try {
-            JavaFile.builder(pkg,typeSpec)
+            JavaFile.builder(pkg, typeSpec)
                     .indent("    ")
                     .build().writeTo(mFiler);
         } catch (IOException e) {
@@ -219,24 +222,56 @@ public class RouterProcessor extends AbstractProcessor {
     private MethodSpec generateInitMapMethod() {
         TypeName returnType = TypeName.VOID;
 
-        final MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("initMap")
+        final MethodSpec.Builder initMapMethodSpecBuilder = MethodSpec.methodBuilder("initMap")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
 
-        openUriMethodSpecBuilder.addStatement("super.initMap()");
+        initMapMethodSpecBuilder.addStatement("super.initMap()");
+
+        final AtomicInteger atomicInteger = new AtomicInteger();
 
         routerMap.forEach(new BiConsumer<String, com.ehi.component.bean.RouterBean>() {
             @Override
             public void accept(String key, RouterBean routerBean) {
 
-                openUriMethodSpecBuilder.addStatement("routerMap" + ".put($S,$T.class)", key, ClassName.get((TypeElement) routerBean.getRawType()));
-                openUriMethodSpecBuilder.addStatement("isNeedLoginMap" + ".put($T.class,$L)", ClassName.get((TypeElement) routerBean.getRawType()), routerBean.isNeedLogin());
+                ClassName targetClassName = ClassName.get((TypeElement) routerBean.getRawType());
+                String routerBeanName = "routerBean" + atomicInteger.incrementAndGet();
+
+                initMapMethodSpecBuilder.addCode("\n");
+                initMapMethodSpecBuilder.addComment("---------------------------" + targetClassName.toString() + "---------------------------");
+                initMapMethodSpecBuilder.addCode("\n");
+
+                initMapMethodSpecBuilder.addStatement("com.ehi.component.impl.EHiRouterBean $N = new com.ehi.component.impl.EHiRouterBean()", routerBeanName);
+                initMapMethodSpecBuilder.addStatement("$N.host = $S", routerBeanName, routerBean.getHost());
+                initMapMethodSpecBuilder.addStatement("$N.path = $S", routerBeanName, routerBean.getPath());
+                initMapMethodSpecBuilder.addStatement("$N.desc = $S", routerBeanName, routerBean.getDesc());
+                initMapMethodSpecBuilder.addStatement("$N.targetClass = $T.class", routerBeanName, targetClassName);
+                if (routerBean.getInterceptors() != null && routerBean.getInterceptors().size() > 0) {
+                    initMapMethodSpecBuilder.addStatement("$N.interceptors = new java.util.ArrayList<>()", routerBeanName);
+                    for (String interceptorClassName : routerBean.getInterceptors()) {
+                        String interceptorName = "interceptor" + atomicInteger.incrementAndGet();
+                        initMapMethodSpecBuilder.addStatement("$N $N = com.ehi.component.support.EHiRouterInterceptorCache.get($N.class)", interceptorClassName, interceptorName, interceptorClassName);
+                        initMapMethodSpecBuilder.beginControlFlow("if($N == null)", interceptorName);
+                        initMapMethodSpecBuilder.addStatement("$N = new $N()", interceptorName, interceptorClassName);
+                        initMapMethodSpecBuilder.addStatement("com.ehi.component.support.EHiRouterInterceptorCache.put($N.class,$N)", interceptorClassName, interceptorName);
+                        initMapMethodSpecBuilder.endControlFlow();
+                        initMapMethodSpecBuilder.addStatement("$N.interceptors.add($N)", routerBeanName, interceptorName);
+                    }
+                }
+                initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
+
+                initMapMethodSpecBuilder.addCode("\n");
+                //initMapMethodSpecBuilder.addStatement("routerMap" + ".put($S,$T.class)", key, targetClassName);
+                //initMapMethodSpecBuilder.addStatement("isNeedLoginMap" + ".put($T.class,$L)", targetClassName, routerBean.isNeedLogin());
+
 
             }
         });
 
-        return openUriMethodSpecBuilder.build();
+        initMapMethodSpecBuilder.addJavadoc("初始化路由表的数据\n");
+
+        return initMapMethodSpecBuilder.build();
     }
 
     private MethodSpec generateInitHostMethod() {
@@ -265,6 +300,24 @@ public class RouterProcessor extends AbstractProcessor {
 
         return host + path;
 
+    }
+
+    private List<String> getImplClassName(EHiRouterAnno anno) {
+        List<String> implClassNames = new ArrayList<>();
+        try {
+            implClassNames.clear();
+            Class[] interceptors = anno.interceptors();
+            for (Class interceptor : interceptors) {
+                implClassNames.add(interceptor.getName());
+            }
+        } catch (MirroredTypesException e) {
+            implClassNames.clear();
+            List<? extends TypeMirror> typeMirrors = e.getTypeMirrors();
+            for (TypeMirror typeMirror : typeMirrors) {
+                implClassNames.add(typeMirror.toString());
+            }
+        }
+        return implClassNames;
     }
 
 }

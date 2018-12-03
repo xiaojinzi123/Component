@@ -4,8 +4,8 @@ import android.support.annotation.Nullable;
 
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
-import com.ehi.component.impl.error.IntentResultException;
-import com.ehi.component.impl.error.UnknowException;
+import com.ehi.component.error.IntentResultException;
+import com.ehi.component.error.UnknowException;
 
 import io.reactivex.functions.Consumer;
 

@@ -1,4 +1,4 @@
-package com.ehi.base.service.impl.component1;
+package com.ehi.base.service.inter.component1;
 
 import android.support.annotation.MainThread;
 import android.support.v4.app.Fragment;

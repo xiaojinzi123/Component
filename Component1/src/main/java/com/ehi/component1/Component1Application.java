@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.service.EHiServiceContainer;
 import com.ehi.base.service.SingletonService;
-import com.ehi.base.service.impl.component1.Component1Service;
+import com.ehi.base.service.inter.component1.Component1Service;
 import com.ehi.component.anno.EHiModuleApp;
 import com.ehi.component.application.IComponentApplication;
 import com.ehi.component.impl.EHiRouter;

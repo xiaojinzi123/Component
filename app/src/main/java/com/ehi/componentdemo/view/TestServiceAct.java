@@ -8,8 +8,8 @@ import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.service.EHiServiceContainer;
-import com.ehi.base.service.impl.component1.Component1Service;
-import com.ehi.base.service.impl.component2.Component2Service;
+import com.ehi.base.service.inter.component1.Component1Service;
+import com.ehi.base.service.inter.component2.Component2Service;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.componentdemo.R;
 

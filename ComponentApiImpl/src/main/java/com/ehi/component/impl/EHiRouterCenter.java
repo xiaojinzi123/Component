@@ -9,8 +9,10 @@ import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.router.IComponentModuleRouter;
+import com.ehi.component.support.EHiRouterInterceptor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 class EHiRouterCenter implements IComponentModuleRouter {
@@ -48,8 +50,7 @@ class EHiRouterCenter implements IComponentModuleRouter {
     }
 
     @Override
-    @MainThread
-    public boolean isMatchUri(@NonNull Uri uri) {
+    public synchronized boolean isMatchUri(@NonNull Uri uri) {
         for (String key : routerMap.keySet()) {
             IComponentHostRouter router = routerMap.get(key);
             if (router.isMatchUri(uri)) {
@@ -60,13 +61,12 @@ class EHiRouterCenter implements IComponentModuleRouter {
     }
 
     @Override
-    public Boolean isNeedLogin(@NonNull Uri uri) {
+    public synchronized List<EHiRouterInterceptor> interceptors(@NonNull Uri uri) {
         for (String key : routerMap.keySet()) {
             // 每一个子路由
             IComponentHostRouter router = routerMap.get(key);
-            Boolean isNeedLogin = null;
-            if ((isNeedLogin = router.isNeedLogin(uri)) != null) {
-                return isNeedLogin;
+            if (router.isMatchUri(uri)) {
+                return router.interceptors(uri);
             }
         }
         return null;

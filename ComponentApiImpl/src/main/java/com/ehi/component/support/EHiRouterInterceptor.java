@@ -1,5 +1,6 @@
 package com.ehi.component.support;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.ehi.component.impl.EHiRouterExecuteResult;
@@ -28,6 +29,7 @@ public interface EHiRouterInterceptor {
          *
          * @return
          */
+        @NonNull
         EHiRouterRequest request();
 
         /**
@@ -36,6 +38,7 @@ public interface EHiRouterInterceptor {
          * @return
          */
         @WorkerThread
+        @NonNull
         EHiRouterExecuteResult proceed(EHiRouterRequest request) throws Exception;
 
     }

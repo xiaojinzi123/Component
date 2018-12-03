@@ -9,7 +9,11 @@ import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.support.QueryParameterSupport;
 import com.ehi.component1.R;
 
-@EHiRouterAnno(host = "component1", value = "main", needLogin = true, desc = "业务组件1的主界面")
+@EHiRouterAnno(
+        host = "component1",
+        value = "main",
+        desc = "业务组件1的主界面"
+)
 public class Component1MainAct extends AppCompatActivity {
 
     @Override

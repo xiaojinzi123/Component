@@ -1,4 +1,4 @@
-package com.ehi.component3;
+package com.ehi.user;
 
 
 import android.content.Context;
@@ -15,13 +15,13 @@ public class Component3Application implements IComponentApplication {
     @Override
     public void onCreate(@NonNull final Context app) {
         // 注册路由和服务
-        EHiRouter.register(ModuleConfig.Component3.NAME);
+        EHiRouter.register(ModuleConfig.User.NAME);
     }
 
     @Override
     public void onDestory() {
         // 反注册路由和服务
-        EHiRouter.unregister(ModuleConfig.Component3.NAME);
+        EHiRouter.unregister(ModuleConfig.User.NAME);
     }
 
 }

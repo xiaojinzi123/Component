@@ -144,10 +144,6 @@ public class EHiRouter {
         return EHiRouterCenter.getInstance().isMatchUri(uri);
     }
 
-    public static boolean isNeedLogin(@NonNull Uri uri) {
-        return EHiRouterCenter.getInstance().isNeedLogin(uri);
-    }
-
     public static class Builder {
 
         protected Builder(@NonNull Context context, String url) {
@@ -486,6 +482,11 @@ public class EHiRouter {
             // 标记这个 builder 已经不能使用了
             isFinish = true;
 
+            if (EHiRouterUtil.isMainThread() == false) {
+                EHiRouterUtil.errorCallback(callback, new NavigationFailException("EHiRouter must run on main thread"));
+                return;
+            }
+
             EHiRouterRequest originalRequest = null;
             Exception originalException = null;
 
@@ -499,8 +500,8 @@ public class EHiRouter {
             final EHiRouterRequest originalRequest1 = originalRequest;
             final Exception originalException1 = originalException;
 
-            // 在子线程中执行
-            EHiRouterUtil.singleThread.execute(new Runnable() {
+            // 在子线程中执行跳转前的代码,真正的跳转是需要主线程执行的
+            EHiRouterUtil.threadPool.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -510,9 +511,7 @@ public class EHiRouter {
                         EHiRouterExecuteResult executeResult = realNavigate(originalRequest1);
                         // 会在主线程中回调接口
                         EHiRouterUtil.successCallback(callback,new EHiRouterResult(executeResult.request));
-
                     } catch (Exception e) { // 发生路由错误的时候
-
                         for (EHiErrorRouterInterceptor interceptor : errorRouterInterceptors) {
                             try {
                                 interceptor.onRouterError(e);
@@ -520,9 +519,7 @@ public class EHiRouter {
                                 // do nothing
                             }
                         }
-
                         EHiRouterUtil.errorCallback(callback, e);
-
                     } finally {
                         // 释放资源
                         url = null;
@@ -540,12 +537,38 @@ public class EHiRouter {
         }
 
         private EHiRouterExecuteResult realNavigate(@NonNull EHiRouterRequest originalRequest) throws Exception {
+            // 走拦截器
             final List<EHiRouterInterceptor> interceptors = new ArrayList(routerInterceptors);
-            interceptors.add(new RealInterceptor());
+            interceptors.add(new TargetInterceptorsInterceptor());
             final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest);
             // 拿到执行的结果
             EHiRouterExecuteResult executeResult = chain.proceed(originalRequest);
             return executeResult;
+        }
+
+        private class TargetInterceptorsInterceptor implements EHiRouterInterceptor{
+
+            /**
+             * @param nextChain 这个虽然名字叫这个,但是这个执行器里面有上一个拦截器传给你的 request
+             * @return
+             * @throws Exception
+             */
+            @Override
+            public EHiRouterExecuteResult intercept(Chain nextChain) throws Exception {
+                // 走拦截器
+                final List<EHiRouterInterceptor> interceptors = new ArrayList();
+                // 这个地址要执行的拦截器
+                List<EHiRouterInterceptor> targetInterceptors = EHiRouterCenter.getInstance().interceptors(nextChain.request().uri);
+                if (targetInterceptors != null && targetInterceptors.size() > 0) {
+                    for (EHiRouterInterceptor interceptor : targetInterceptors) {
+                        interceptors.add(interceptor);
+                    }
+                }
+                interceptors.add(new RealInterceptor());
+                final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, nextChain.request());
+                return chain.proceed(nextChain.request());
+            }
+
         }
 
         /**
@@ -555,9 +578,10 @@ public class EHiRouter {
 
             @Override
             public EHiRouterExecuteResult intercept(final Chain chain) throws Exception {
+
                 final CountDownLatch countDownLatch = new CountDownLatch(1);
                 final ExceptionHolder exceptionHolder = new ExceptionHolder();
-                // 主线程去实现跳转
+                // 主线程去实现跳转,并且让当前线程停住
                 EHiRouterUtil.postActionToMainThread(new Runnable() {
                     @Override
                     public void run() {
@@ -579,14 +603,20 @@ public class EHiRouter {
         }
 
         /**
-         * 拦截器多个连接着走的执行器,源代码来源于 OkHttp
+         * 拦截器多个连接着走的执行器,源代码来源于 OkHTTP
+         * 这个原理就是,本身是一个 执行器 (Chain),当你调用 proceed 方法的时候,会创建下一个拦截器的执行对象
+         * 然后调用当前拦截器的 intercept 方法
          */
         private class InterceptorChain implements EHiRouterInterceptor.Chain {
 
             @NonNull
             private EHiRouterRequest originalRequest;
-            private List<EHiRouterInterceptor> interceptors;
+            // 拦截器列表
+            @NonNull
+            private List<EHiRouterInterceptor> mInterceptors;
+            // 拦截器的下标
             private int index;
+            // 调用的次数
             private int calls;
 
             /**
@@ -595,7 +625,7 @@ public class EHiRouter {
              * @param request      第一次这个对象是不需要的
              */
             public InterceptorChain(@NonNull List<EHiRouterInterceptor> interceptors, int index, @NonNull EHiRouterRequest request) {
-                this.interceptors = interceptors;
+                this.mInterceptors = interceptors;
                 this.index = index;
                 this.originalRequest = request;
             }
@@ -610,15 +640,15 @@ public class EHiRouter {
             public EHiRouterExecuteResult proceed(EHiRouterRequest request) throws Exception {
 
                 ++calls;
-                if (this.index >= this.interceptors.size()) {
-                    throw new NavigationFailException(new IndexOutOfBoundsException("size = " + this.interceptors.size() + ",index = " + index));
+                if (this.index >= this.mInterceptors.size()) {
+                    throw new NavigationFailException(new IndexOutOfBoundsException("size = " + this.mInterceptors.size() + ",index = " + index));
                 } else if (calls > 1) { // 调用了两次
-                    throw new NavigationFailException("interceptor " + this.interceptors.get(this.index - 1) + " must call proceed() exactly once");
+                    throw new NavigationFailException("interceptor " + this.mInterceptors.get(this.index - 1) + " must call proceed() exactly once");
                 } else {
                     // 当拦截器最后一个的时候,就不是这个类了,是 RealInterceptor 了
-                    InterceptorChain next = new InterceptorChain(this.interceptors, this.index + 1, request);
+                    InterceptorChain next = new InterceptorChain(this.mInterceptors, this.index + 1, request);
                     // current Interceptor
-                    EHiRouterInterceptor interceptor = this.interceptors.get(this.index);
+                    EHiRouterInterceptor interceptor = this.mInterceptors.get(this.index);
                     EHiRouterExecuteResult result = interceptor.intercept(next);
                     if (null == result) {
                         throw new NavigationFailException("the result of method " + EHiRouterInterceptor.class.getSimpleName() + ".intercept() can't be null");

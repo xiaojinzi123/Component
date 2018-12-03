@@ -14,7 +14,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [HOST: "component3"]
+                arguments = [HOST: "user"]
             }
         }
     }
@@ -62,7 +62,7 @@ publishing {
             artifactId 'component3'
             version "${rootProject.ext.business_component_version}"
             artifact(androidSourcesJar)
-            artifact("$buildDir/outputs/aar/Component3-release.aar")
+            artifact("$buildDir/outputs/aar/User-release.aar")
         }
     }
     repositories {

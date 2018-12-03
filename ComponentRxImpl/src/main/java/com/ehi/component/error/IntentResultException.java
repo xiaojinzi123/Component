@@ -1,4 +1,4 @@
-package com.ehi.component.impl.error;
+package com.ehi.component.error;
 
 /**
  * 表示 Intent 获取过程中发生异常

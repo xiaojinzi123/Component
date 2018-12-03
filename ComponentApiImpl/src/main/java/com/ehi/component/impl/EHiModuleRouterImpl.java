@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,9 +15,11 @@ import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.router.IComponentHostRouter;
+import com.ehi.component.support.EHiRouterInterceptor;
 import com.ehi.component.support.QueryParameterSupport;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,12 +35,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     /**
      * 保存映射关系的map集合
      */
-    protected Map<String, Class> routerMap = new HashMap<>();
-
-    /**
-     * 记录这个Activity是否需要登录
-     */
-    protected Map<Class, Boolean> isNeedLoginMap = new HashMap<>();
+    protected Map<String, EHiRouterBean> routerBeanMap = new HashMap<>();
 
     /**
      * 是否初始化了map,懒加载
@@ -80,6 +74,10 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         if (!hasInitMap) {
             initMap();
+        }
+
+        if (EHiRouterUtil.isMainThread() == false) {
+            throw new NavigationFailException("EHiRouter must run on main thread");
         }
 
         if (routerRequest.uri == null) {
@@ -161,7 +159,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     }
 
     @Override
-    public boolean isMatchUri(@NonNull Uri uri) {
+    public synchronized boolean isMatchUri(@NonNull Uri uri) {
 
         if (!hasInitMap) {
             initMap();
@@ -172,16 +170,29 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     }
 
     @Override
-    public Boolean isNeedLogin(@NonNull Uri uri) {
-
+    public synchronized List<EHiRouterInterceptor> interceptors(@NonNull Uri uri) {
         if (!hasInitMap) {
             initMap();
         }
+        String targetPath = getTargetPath(uri);
+        EHiRouterBean routerBean = routerBeanMap.get(targetPath);
+        if (routerBean == null) {
+            return null;
+        }
+        return routerBean.interceptors;
+    }
 
-        Class<?> targetClass = getTargetClass(uri);
-
-        return targetClass == null ? null : isNeedLoginMap.get(targetClass);
-
+    private String getTargetPath(@NonNull Uri uri) {
+        // "/component1/test" 不含host
+        String targetPath = uri.getEncodedPath();
+        if (targetPath == null || "".equals(targetPath)) {
+            return null;
+        }
+        if (targetPath.charAt(0) != '/') {
+            targetPath = "/" + targetPath;
+        }
+        targetPath = uri.getHost() + targetPath;
+        return targetPath;
     }
 
     @Nullable
@@ -202,16 +213,16 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         Class targetClass = null;
 
-        for (String key : routerMap.keySet()) {
-
-            if (key == null || "".equals(key)) continue;
-
-            if (key.equals(targetPath)) {
-                targetClass = routerMap.get(key);
+        for (Map.Entry<String, EHiRouterBean> entry : routerBeanMap.entrySet()) {
+            if (entry.getKey() == null || "".equals(entry.getKey())) {
+                continue;
+            }
+            if (entry.getKey().equals(targetPath)) {
+                targetClass = entry.getValue().targetClass;
                 break;
             }
-
         }
+
         return targetClass;
 
     }

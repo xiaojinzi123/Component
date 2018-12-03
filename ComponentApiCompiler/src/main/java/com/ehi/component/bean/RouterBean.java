@@ -1,5 +1,8 @@
 package com.ehi.component.bean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.lang.model.element.Element;
 
 /**
@@ -11,9 +14,8 @@ public class RouterBean {
 
     private String host;
     private String path;
-    private boolean needLogin;
     private String desc;
-    //private int priority = -1;
+    private List<String> interceptors = new ArrayList<>(1);
     private Element rawType;
 
     public String getHost() {
@@ -32,14 +34,6 @@ public class RouterBean {
         this.path = path;
     }
 
-    public boolean isNeedLogin() {
-        return needLogin;
-    }
-
-    public void setNeedLogin(boolean needLogin) {
-        this.needLogin = needLogin;
-    }
-
     public String getDesc() {
         return desc;
     }
@@ -55,4 +49,9 @@ public class RouterBean {
     public void setRawType(Element rawType) {
         this.rawType = rawType;
     }
+
+    public List<String> getInterceptors() {
+        return interceptors;
+    }
+
 }

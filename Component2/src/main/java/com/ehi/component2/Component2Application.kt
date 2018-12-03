@@ -5,7 +5,7 @@ import android.widget.Toast
 import com.ehi.base.ModuleConfig
 import com.ehi.base.service.EHiServiceContainer
 import com.ehi.base.service.IServiceLoad
-import com.ehi.base.service.impl.component2.Component2Service
+import com.ehi.base.service.inter.component2.Component2Service
 import com.ehi.component.anno.EHiModuleApp
 import com.ehi.component.application.IComponentApplication
 import com.ehi.component.impl.EHiRouter

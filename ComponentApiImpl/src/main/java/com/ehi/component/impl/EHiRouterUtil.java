@@ -5,23 +5,37 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 工具类
  */
 class EHiRouterUtil {
 
-    public static ExecutorService singleThread =  Executors.newSingleThreadExecutor();
+    /**
+     * 路由的线程池
+     */
+    public static ExecutorService threadPool = Executors.newFixedThreadPool(5);
 
     private static Handler h = new Handler(Looper.getMainLooper());
 
-    public static void postActionToMainThread(@NonNull Runnable r){
+    /**
+     * 在主线程执行任务
+     *
+     * @param r
+     */
+    public static void postActionToMainThread(@NonNull Runnable r) {
         h.post(r);
+    }
+
+    /**
+     * 是否是主线程
+     *
+     * @return
+     */
+    public static boolean isMainThread() {
+        return Thread.currentThread() == Looper.getMainLooper().getThread();
     }
 
     public static void errorCallback(@Nullable final EHiCallback callback,
@@ -43,7 +57,7 @@ class EHiRouterUtil {
     }
 
     public static void successCallback(@Nullable final EHiCallback callback,
-                                     @NonNull final EHiRouterResult result) {
+                                       @NonNull final EHiRouterResult result) {
         postActionToMainThread(new Runnable() {
             @Override
             public void run() {

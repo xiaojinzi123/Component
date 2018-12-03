@@ -1,4 +1,4 @@
-package com.ehi.base.service.impl.component2;
+package com.ehi.base.service.inter.component2;
 
 import android.support.annotation.MainThread;
 
