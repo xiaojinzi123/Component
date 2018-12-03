@@ -1,6 +1,5 @@
 package com.ehi.component1.interceptor;
 
-import com.ehi.component.impl.EHiRouterExecuteResult;
 import com.ehi.component.support.EHiRouterInterceptor;
 
 /**
@@ -11,8 +10,8 @@ import com.ehi.component.support.EHiRouterInterceptor;
 public class Component1Interceptor1 implements EHiRouterInterceptor {
 
     @Override
-    public EHiRouterExecuteResult intercept(Chain chain) throws Exception {
-        return chain.proceed(chain.request());
+    public void intercept(Chain chain) throws Exception {
+        chain.proceed(chain.request());
     }
 
 }

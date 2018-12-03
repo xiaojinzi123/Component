@@ -10,7 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.TestServiceAct"></activity>
+        <activity android:name=".view.InfoAct"></activity>
+        <activity android:name=".view.TestInterceptor" />
+        <activity android:name=".view.TestServiceAct" />
         <activity android:name=".view.TestRouterAct" />
         <activity android:name=".view.MainAct">
             <intent-filter>

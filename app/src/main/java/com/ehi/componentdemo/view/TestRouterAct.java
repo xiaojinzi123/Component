@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.base.interceptor.LoginInterceptor;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterResult;
@@ -29,7 +28,6 @@ import io.reactivex.schedulers.Schedulers;
 @EHiRouterAnno(
         host = ModuleConfig.App.NAME,
         value = ModuleConfig.App.TEST_ROUTER,
-        interceptors = LoginInterceptor.class,
         desc = "测试跳转的界面"
 )
 public class TestRouterAct extends AppCompatActivity {
@@ -44,28 +42,24 @@ public class TestRouterAct extends AppCompatActivity {
 
     }
 
+    private void addInfo(@Nullable EHiRouterResult routerResult, @Nullable Exception error, @NonNull String url, @Nullable Integer requestCode) {
+        if (requestCode == null) {
+            if (routerResult != null) {
+                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转成功,目标:" + url);
+            } else {
+                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转失败,目标:" + url + ",error = " + error.getClass().getSimpleName() + " ,errorMsg = " + error.getMessage());
+            }
+        } else {
+            if (routerResult != null) {
+                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转成功,目标:" + url);
+            } else {
+                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转失败,目标:" + url + ",error = " + error.getClass().getSimpleName() + " ,errorMsg = " + error.getMessage());
+            }
+        }
+    }
 
     public void openUriTest(View view) {
         EHiRouter.open(this, "EHi://component1/test?data=openUriTest");
-        //addInfo(routerResult, "component1/test?data=openUriTest", null);
-    }
-
-    public void jumpToAar3(View view) {
-        EHiRouter
-                .with(this)
-                .host(ModuleConfig.User.NAME)
-                .path("main")
-                .navigate(new EHiCallbackAdapter() {
-                    @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
-                        addInfo(result, null, "component3/main", null);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Exception error) {
-                        addInfo(null, error, "component3/main", null);
-                    }
-                });
     }
 
     public void normalJump(View view) {
@@ -231,20 +225,60 @@ public class TestRouterAct extends AppCompatActivity {
         }*/
     }
 
-    private void addInfo(@Nullable EHiRouterResult routerResult, @Nullable Exception error, @NonNull String url, @Nullable Integer requestCode) {
-        if (requestCode == null) {
-            if (routerResult != null) {
-                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转成功,目标:" + url);
-            } else {
-                tv_detail.setText(tv_detail.getText() + "\n\n普通跳转失败,目标:" + url + ",error = " + error.getClass().getSimpleName() + " ,errorMsg = " + error.getMessage());
-            }
-        } else {
-            if (routerResult != null) {
-                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转成功,目标:" + url);
-            } else {
-                tv_detail.setText(tv_detail.getText() + "\n\nRequestCode=" + requestCode + "普通跳转失败,目标:" + url + ",error = " + error.getClass().getSimpleName() + " ,errorMsg = " + error.getMessage());
-            }
-        }
+    public void testQueryPass(View view) {
+        EHiRouter
+                .with(this)
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TESTQUERY)
+                .query("name", "我是小金子")
+                .query("pass", "我是小金子的密码")
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TESTQUERY + "?name=我是小金子&pass=我是小金子的密码", null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TESTQUERY, null);
+                    }
+                });
+    }
+
+    public void testLogin(View view) {
+        EHiRouter
+                .with(this)
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TESTLOGIN)
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TESTLOGIN, null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TESTLOGIN, null);
+                    }
+                });
+    }
+
+    public void testGotoKotlin(View view) {
+        EHiRouter
+                .with(this)
+                .host(ModuleConfig.Component2.NAME)
+                .path(ModuleConfig.Component2.MAIN)
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, ModuleConfig.Component2.NAME + "/" + ModuleConfig.Component2.MAIN, null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, ModuleConfig.Component2.NAME + "/" + ModuleConfig.Component2.MAIN, null);
+                    }
+                });
     }
 
 }

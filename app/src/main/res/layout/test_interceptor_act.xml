@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.MainAct">
+    tools:context=".view.TestInterceptor">
 
     <Button
         android:layout_width="match_parent"
-        android:onClick="testRouter"
         android:layout_height="wrap_content"
-        android:text="去测试跳转" />
+        android:onClick="clearAllInterceptor"
+        android:text="清空拦截器"
+        android:textAllCaps="false" />
 
     <Button
         android:layout_width="match_parent"
-        android:onClick="testService"
         android:layout_height="wrap_content"
-        android:text="去测试服务使用" />
+        android:onClick="registerAllBanInterceptor"
+        android:text="注册一个全局劫持的拦截器(唯独不拦截自己)"
+        android:textAllCaps="false" />
 
     <Button
         android:layout_width="match_parent"
-        android:onClick="testInterceptor"
         android:layout_height="wrap_content"
-        android:text="去测试拦截器" />
+        android:onClick="registerLoginInterceptor"
+        android:text="为全部路由添加一个登录拦截器"
+        android:textAllCaps="false" />
 
 </LinearLayout>

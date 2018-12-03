@@ -25,6 +25,14 @@ public final class EHiRxFragment extends Fragment {
     private Map<Integer, SingleEmitter<Intent>> singleEmitterMap = new HashMap<>();
 
     @Override
+    public void onDestroy() {
+        if (singleEmitterMap != null) {
+            singleEmitterMap.clear();
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 

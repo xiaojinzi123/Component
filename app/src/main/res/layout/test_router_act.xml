@@ -10,58 +10,110 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="openUriTest"
-            android:textAllCaps="false"
-            android:text="直接打开 EHi://component3/main?data=openUriTest \n uri 可以是后台下发的,可以是动态的" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="jumpToAar3"
-            android:textAllCaps="false"
-            android:text="跳转到依赖的aar的业务组件3中" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="openUriTest"
+                android:text="直接打开 EHi://component1/test?data=openUriTest \n uri 可以是后台下发的,可以是动态的"
+                android:textAllCaps="false"
+                android:textSize="12dp" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="normalJump"
-            android:text="普通跳转" />
+        </LinearLayout>
 
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="normalJumpTwice"
-            android:text="连续普通跳转两次,防止打开两次界面测试" />
+            android:orientation="horizontal">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="jumpGetData"
-            android:textAllCaps="false"
-            android:text="跳转拿数据(使用onActivityResult)" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="normalJump"
+                android:text="普通跳转" />
 
-        <Button
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="normalJumpTwice"
+                android:text="连续普通跳转两次,防止打开两次界面测试" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:onClick="rxJumpGetData"
-            android:text="跳转拿数据(不使用onActivityResult)" />
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="jumpGetData"
+                android:text="跳转拿数据(用onActivityResult)"
+                android:textAllCaps="false"
+                android:textSize="12dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="rxJumpGetData"
+                android:text="跳转拿数据(不用onActivityResult)"
+                android:textAllCaps="false"
+                android:textSize="12dp" />
+
+        </LinearLayout>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="rxJumpGetDataStartWithTask"
+            android:text="耗时操作后跳转拿数据(不用onActivityResult)"
             android:textAllCaps="false"
-            android:text="耗时操作后跳转拿数据(不使用onActivityResult)" />
+            android:textSize="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="testQueryPass"
+                android:text="测试传递 query 参数"
+                android:textAllCaps="false"
+                android:textSize="12dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="testLogin"
+                android:text="测试需要登录的界面"
+                android:textAllCaps="false"
+                android:textSize="12dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="testGotoKotlin"
+                android:text="跳转到Kotlin模块"
+                android:textAllCaps="false"
+                android:textSize="12dp" />
+
+        </LinearLayout>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="clearInfo"
-            android:text="清空信息" />
+            android:text="清空日志信息"
+            android:textSize="12dp" />
+
 
         <TextView
             android:layout_width="match_parent"
@@ -72,8 +124,8 @@
         <TextView
             android:id="@+id/tv_detail"
             android:layout_width="match_parent"
-            android:textColor="#FF0000"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="#FF0000" />
 
     </LinearLayout>
 

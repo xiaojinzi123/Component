@@ -31,6 +31,16 @@ public class EHiRouterRequest {
     @NonNull
     public final Bundle bundle = new Bundle();
 
+    public Builder toBuilder(){
+        Builder builder = new Builder();
+        builder.bundle = bundle;
+        builder.requestCode = requestCode;
+        builder.uri = uri;
+        builder.fragment = fragment;
+        builder.context = context;
+        return builder;
+    }
+
     private EHiRouterRequest(@NonNull Builder builder) {
         context = builder.context;
         fragment = builder.fragment;

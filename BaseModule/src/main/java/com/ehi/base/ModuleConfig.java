@@ -16,18 +16,24 @@ public class ModuleConfig {
         public static final String TEST_ROUTER = "testRouter";
         // 测试服务的界面
         public static final String TEST_SERVICE = "testService";
-
+        // 测试拦截器的界面
+        public static final String TEST_INTERCEPTOR = "testInterceptor";
+        // 显示一个信息的界面
+        public static final String INFO = "info";
     }
 
     public static class Component1 {
 
         public static final String NAME = "component1";
+        public static final String TESTQUERY = "testQuery";
+        public static final String TESTLOGIN = "testLogin";
 
     }
 
     public static class Component2 {
 
         public static final String NAME = "component2";
+        public static final String MAIN = "main";
 
     }
 

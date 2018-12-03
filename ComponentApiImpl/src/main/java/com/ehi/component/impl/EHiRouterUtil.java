@@ -5,18 +5,12 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.ehi.component.support.EHiErrorRouterInterceptor;
 
 /**
  * 工具类
  */
 class EHiRouterUtil {
-
-    /**
-     * 路由的线程池
-     */
-    public static ExecutorService threadPool = Executors.newFixedThreadPool(5);
 
     private static Handler h = new Handler(Looper.getMainLooper());
 
@@ -73,5 +67,18 @@ class EHiRouterUtil {
         });
 
     }
+
+    public static void deliveryError(@NonNull Exception error) {
+
+        for (EHiErrorRouterInterceptor interceptor : EHiRouter.errorRouterInterceptors) {
+            try {
+                interceptor.onRouterError(error);
+            } catch (Exception ignore) {
+                // do nothing
+            }
+        }
+
+    }
+
 
 }

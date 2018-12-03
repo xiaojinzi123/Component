@@ -20,7 +20,7 @@ public interface EHiCallback {
     /**
      * 当路由错误的时候,回调
      *
-     * @param e
+     * @param error
      */
     @MainThread
     void onError(@NonNull Exception error);

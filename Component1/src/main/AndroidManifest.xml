@@ -3,12 +3,11 @@
     package="com.ehi.component1">
 
     <application>
-
+        <activity android:name=".view.Component1TestLoginAct"></activity>
         <activity
-            android:name=".view.Component1MainAct"
+            android:name=".view.Component1TestQueryAct"
             android:launchMode="singleTop" />
-        <activity android:name=".view.Component1TestAct"/>
-
+        <activity android:name=".view.Component1TestAct" />
     </application>
 
 </manifest>
