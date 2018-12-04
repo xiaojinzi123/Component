@@ -154,7 +154,7 @@ public class TestRouterAct extends AppCompatActivity {
                 .path("test")
                 .query("data", "rxJumpGetData")
                 .requestCode(456)
-                .newIntentCall()
+                .intentCall()
                 .subscribe(new Consumer<Intent>() {
                     @Override
                     public void accept(Intent intent) throws Exception {
@@ -178,7 +178,7 @@ public class TestRouterAct extends AppCompatActivity {
                 .query("data", "rxJumpGetDataFromQuery")
                 .putString("data", "rxJumpGetDataFromBundle")
                 .requestCode(789)
-                .newIntentTransformer();
+                .intentSingleTransformer();
 
         Single
                 .just("value")

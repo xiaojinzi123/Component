@@ -49,7 +49,7 @@ public class LoginInterceptor implements EHiRouterInterceptor {
                 .host(ModuleConfig.User.NAME)
                 .path(ModuleConfig.User.LOGIN)
                 .requestCode(444)
-                .newIntentCall()
+                .intentCall()
                 .doOnSuccess(new Consumer<Intent>() {
                     @Override
                     public void accept(Intent intent) throws Exception {

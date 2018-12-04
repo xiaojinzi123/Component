@@ -47,7 +47,7 @@ public class Component1Fragment extends Fragment {
                         .path("test")
                         .query("data", "rxJumpGetData")
                         .requestCode(456)
-                        .newIntentCall()
+                        .intentCall()
                         .subscribe(new Consumer<Intent>() {
                             @Override
                             public void accept(Intent intent) throws Exception {

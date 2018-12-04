@@ -12,6 +12,8 @@ import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
 import com.ehi.component.ComponentUtil;
+import com.ehi.component.bean.EHiActivityResult;
+import com.ehi.component.error.IntentResultException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.error.UnknowException;
@@ -57,8 +59,6 @@ public class EHiRxRouter {
 
     public static class Builder extends EHiRouter.Builder {
 
-        private Integer resultCode;
-
         private Builder(@NonNull Context context, String url) {
             super(context, url);
         }
@@ -85,11 +85,6 @@ public class EHiRxRouter {
         @Override
         public Builder requestCode(@Nullable Integer requestCode) {
             return (Builder) super.requestCode(requestCode);
-        }
-
-        public Builder resultCode(@Nullable Integer resultCode) {
-            this.resultCode = resultCode;
-            return this;
         }
 
         @Override
@@ -277,23 +272,35 @@ public class EHiRxRouter {
             return (Builder) super.query(queryName, queryValue);
         }
 
-        public <T> SingleTransformer<T, Intent> newIntentTransformer() {
-
+        public <T> SingleTransformer<T, Intent> intentSingleTransformer() {
             return new SingleTransformer<T, Intent>() {
                 @Override
                 public SingleSource<Intent> apply(Single<T> upstream) {
                     return upstream.flatMap(new Function<T, SingleSource<? extends Intent>>() {
                         @Override
                         public SingleSource<Intent> apply(T t) throws Exception {
-                            return newIntentCall();
+                            return intentCall();
                         }
                     });
                 }
             };
-
         }
 
-        private void onErrorEmitter(@NonNull final SingleEmitter<Intent> emitter,
+        public <T> SingleTransformer<T, EHiActivityResult> activityResultSingleTransformer() {
+            return new SingleTransformer<T, EHiActivityResult>() {
+                @Override
+                public SingleSource<EHiActivityResult> apply(Single<T> upstream) {
+                    return upstream.flatMap(new Function<T, SingleSource<? extends EHiActivityResult>>() {
+                        @Override
+                        public SingleSource<EHiActivityResult> apply(T t) throws Exception {
+                            return activityResultCall();
+                        }
+                    });
+                }
+            };
+        }
+
+        private void onErrorEmitter(@NonNull final SingleEmitter<? extends Object> emitter,
                                     @NonNull Exception e) {
             if (emitter.isDisposed()) {
                 return;
@@ -301,11 +308,31 @@ public class EHiRxRouter {
             emitter.onError(e);
         }
 
-        public Single<Intent> newIntentCall() {
+        public Single<Intent> intentCall() {
 
-            return Single.create(new SingleOnSubscribe<Intent>() {
+            return activityResultCall()
+                    .doOnSuccess(new Consumer<EHiActivityResult>() {
+                        @Override
+                        public void accept(EHiActivityResult activityResult) throws Exception {
+                            if (activityResult.data == null) {
+                                throw new IntentResultException("the result data is null");
+                            }
+                        }
+                    })
+                    .map(new Function<EHiActivityResult, Intent>() {
+                        @Override
+                        public Intent apply(EHiActivityResult activityResult) throws Exception {
+                            return activityResult.data;
+                        }
+                    });
+
+        }
+
+        public Single<EHiActivityResult> activityResultCall() {
+
+            return Single.create(new SingleOnSubscribe<EHiActivityResult>() {
                 @Override
-                public void subscribe(final SingleEmitter<Intent> emitter) throws Exception {
+                public void subscribe(final SingleEmitter<EHiActivityResult> emitter) throws Exception {
 
                     if (emitter.isDisposed()) {
                         return;
