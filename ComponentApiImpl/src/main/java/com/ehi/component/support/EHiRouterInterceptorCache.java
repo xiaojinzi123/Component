@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 缓存所有的自定义拦截器
+ * 支持缓存自定义拦截器
  * <p>
  * time   : 2018/12/03
  *

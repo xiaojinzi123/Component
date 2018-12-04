@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
 import com.ehi.base.service.EHiServiceContainer;
 import com.ehi.base.service.inter.user.UserService;
@@ -45,8 +46,8 @@ public class LoginInterceptor implements EHiRouterInterceptor {
         Toast.makeText(context, "目标界面需要登录,拦截器帮您跳转到登录界面登录,", Toast.LENGTH_SHORT).show();
 
         EHiRxRouter.with(context)
-                .host("user")
-                .path("login")
+                .host(ModuleConfig.User.NAME)
+                .path(ModuleConfig.User.LOGIN)
                 .requestCode(444)
                 .newIntentCall()
                 .doOnSuccess(new Consumer<Intent>() {

@@ -180,10 +180,18 @@ public class EHiRouter {
         @NonNull
         protected Bundle bundle = new Bundle();
 
+        @Nullable
+        private EHiRouterInterceptor[] interceptors;
+
         /**
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
          */
         protected boolean isFinish = false;
+
+        public Builder interceptors(@Nullable EHiRouterInterceptor... interceptors) {
+            this.interceptors = interceptors;
+            return this;
+        }
 
         public Builder requestCode(@Nullable Integer requestCode) {
             this.requestCode = requestCode;
@@ -475,7 +483,7 @@ public class EHiRouter {
 
                 EHiRouterRequest originalRequest = generateRouterRequest();
 
-                realNavigate(originalRequest, new InterceptorCallbackImpl(callback));
+                realNavigate(originalRequest, interceptors, new InterceptorCallbackImpl(callback));
 
             } catch (Exception e) { // 发生路由错误的时候
                 EHiRouterUtil.deliveryError(e);
@@ -495,10 +503,25 @@ public class EHiRouter {
 
         }
 
+        /**
+         * 真正的执行路由
+         *
+         * @param originalRequest    最原始的请求对象
+         * @param customInterceptors 自定义的拦截器
+         * @param callback           回调对象
+         * @throws Exception
+         */
         @MainThread
-        private void realNavigate(@NonNull EHiRouterRequest originalRequest, @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
+        private void realNavigate(@NonNull EHiRouterRequest originalRequest,
+                                  @Nullable EHiRouterInterceptor[] customInterceptors,
+                                  @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
             // 走拦截器
             final List<EHiRouterInterceptor> interceptors = new ArrayList(routerInterceptors);
+            if (customInterceptors != null) {
+                for (EHiRouterInterceptor customInterceptor : customInterceptors) {
+                    interceptors.add(customInterceptor);
+                }
+            }
             interceptors.add(new TargetInterceptorsInterceptor());
             final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest, callback);
             chain.proceed(originalRequest);

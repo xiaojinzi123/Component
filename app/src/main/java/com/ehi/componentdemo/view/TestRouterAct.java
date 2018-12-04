@@ -1,5 +1,6 @@
 package com.ehi.componentdemo.view;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,8 +15,10 @@ import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
+import com.ehi.component.support.EHiRouterInterceptor;
 import com.ehi.componentdemo.R;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
@@ -38,8 +41,8 @@ public class TestRouterAct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_router_act);
+        getSupportActionBar().setTitle("高级路由测试");
         tv_detail = findViewById(R.id.tv_detail);
-
     }
 
     private void addInfo(@Nullable EHiRouterResult routerResult, @Nullable Exception error, @NonNull String url, @Nullable Integer requestCode) {
@@ -211,6 +214,74 @@ public class TestRouterAct extends AppCompatActivity {
 
     }
 
+    public void jumpWithInterceptor(View view) {
+
+        EHiRxRouter
+                .with(this)
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TEST)
+                .query("data", "jumpWithInterceptor")
+                .requestCode(123)
+                .interceptors(new EHiRouterInterceptor() {
+                    @Override
+                    public void intercept(final Chain chain) throws Exception {
+                        final ProgressDialog dialog = ProgressDialog.show(chain.request().getRawContext(), "温馨提示", "耗时操作进行中,2秒后结束", true, false);
+                        dialog.show();
+                        Single
+                                .fromCallable(new Callable<String>() {
+                                    @Override
+                                    public String call() throws Exception {
+                                        return "test";
+                                    }
+                                })
+                                .delay(2, TimeUnit.SECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe(new Consumer<String>() {
+                                    @Override
+                                    public void accept(String s) throws Exception {
+                                        dialog.dismiss();
+                                        chain.proceed(chain.request());
+                                    }
+                                });
+                    }
+                },new EHiRouterInterceptor() {
+                    @Override
+                    public void intercept(final Chain chain) throws Exception {
+                        final ProgressDialog dialog = ProgressDialog.show(chain.request().getRawContext(), "温馨提示", "再一次耗时操作,2秒后结束", true, false);
+                        dialog.show();
+                        Single
+                                .fromCallable(new Callable<String>() {
+                                    @Override
+                                    public String call() throws Exception {
+                                        return "test";
+                                    }
+                                })
+                                .delay(2, TimeUnit.SECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe(new Consumer<String>() {
+                                    @Override
+                                    public void accept(String s) throws Exception {
+                                        dialog.dismiss();
+                                        chain.proceed(chain.request());
+                                    }
+                                });
+                    }
+                })
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, "component1/test?data=jumpWithInterceptor", 123);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, "component1/test?data=jumpWithInterceptor", 123);
+                    }
+                });
+    }
+
     public void clearInfo(View view) {
         tv_detail.setText("");
     }
@@ -229,18 +300,18 @@ public class TestRouterAct extends AppCompatActivity {
         EHiRouter
                 .with(this)
                 .host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TESTQUERY)
+                .path(ModuleConfig.Component1.TEST_QUERY)
                 .query("name", "我是小金子")
                 .query("pass", "我是小金子的密码")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
-                        addInfo(result, null, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TESTQUERY + "?name=我是小金子&pass=我是小金子的密码", null);
+                        addInfo(result, null, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST_QUERY + "?name=我是小金子&pass=我是小金子的密码", null);
                     }
 
                     @Override
                     public void onError(@NonNull Exception error) {
-                        addInfo(null, error, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TESTQUERY, null);
+                        addInfo(null, error, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST_QUERY, null);
                     }
                 });
     }
@@ -249,16 +320,34 @@ public class TestRouterAct extends AppCompatActivity {
         EHiRouter
                 .with(this)
                 .host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TESTLOGIN)
+                .path(ModuleConfig.Component1.TEST_LOGIN)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
-                        addInfo(result, null, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TESTLOGIN, null);
+                        addInfo(result, null, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST_LOGIN, null);
                     }
 
                     @Override
                     public void onError(@NonNull Exception error) {
-                        addInfo(null, error, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TESTLOGIN, null);
+                        addInfo(null, error, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST_LOGIN, null);
+                    }
+                });
+    }
+
+    public void testDialog(View view) {
+        EHiRouter
+                .with(this)
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TEST_DIALOG)
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST_LOGIN, null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST_LOGIN, null);
                     }
                 });
     }

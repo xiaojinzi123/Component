@@ -31,6 +31,15 @@ public class EHiRouterRequest {
     @NonNull
     public final Bundle bundle = new Bundle();
 
+    @Nullable
+    public final Context getRawContext(){
+        if (context == null) {
+            return fragment.getContext();
+        }else {
+            return context;
+        }
+    }
+
     public Builder toBuilder(){
         Builder builder = new Builder();
         builder.bundle = bundle;

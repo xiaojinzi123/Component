@@ -54,27 +54,42 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="jumpGetData"
-                android:text="跳转拿数据(用onActivityResult)"
+                android:text="跳转获取数据(用onActivityResult)"
                 android:textAllCaps="false"
-                android:textSize="12dp" />
+                android:textSize="10dp" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="rxJumpGetData"
-                android:text="跳转拿数据(不用onActivityResult)"
+                android:text="跳转获取数据(不用onActivityResult)"
                 android:textAllCaps="false"
-                android:textSize="12dp" />
+                android:textSize="10dp" />
 
         </LinearLayout>
 
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="rxJumpGetDataStartWithTask"
-            android:text="耗时操作后跳转拿数据(不用onActivityResult)"
-            android:textAllCaps="false"
-            android:textSize="12dp" />
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="rxJumpGetDataStartWithTask"
+                android:text="耗时操作后跳转拿数据(不用onActivityResult)"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="jumpWithInterceptor"
+                android:text="跳转自带多个拦截器"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -85,25 +100,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="testQueryPass"
-                android:text="测试传递 query 参数"
+                android:text="传递 query 参数"
                 android:textAllCaps="false"
-                android:textSize="12dp" />
+                android:textSize="10dp" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="testLogin"
-                android:text="测试需要登录的界面"
+                android:text="需要登录的界面"
                 android:textAllCaps="false"
-                android:textSize="12dp" />
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="testDialog"
+                android:text="耗时弹出Dialog"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="testGotoKotlin"
-                android:text="跳转到Kotlin模块"
+                android:text="Kotlin模块"
                 android:textAllCaps="false"
-                android:textSize="12dp" />
+                android:textSize="10dp" />
 
         </LinearLayout>
 

@@ -16,6 +16,7 @@ import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.error.UnknowException;
 import com.ehi.component.support.EHiCallbackAdapter;
+import com.ehi.component.support.EHiRouterInterceptor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -74,6 +75,11 @@ public class EHiRxRouter {
         @Override
         public Builder path(@NonNull String path) {
             return (Builder) super.path(path);
+        }
+
+        @Override
+        public Builder interceptors(@NonNull EHiRouterInterceptor... interceptors) {
+            return (Builder) super.interceptors(interceptors);
         }
 
         @Override

@@ -25,6 +25,7 @@ public class TestServiceAct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_service_act);
+        getSupportActionBar().setTitle("服务的使用(单例服务、非单例服务)");
     }
 
     public void loadComponent1Fragment(View view) {

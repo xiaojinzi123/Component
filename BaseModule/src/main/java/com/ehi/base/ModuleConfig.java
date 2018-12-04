@@ -18,6 +18,8 @@ public class ModuleConfig {
         public static final String TEST_SERVICE = "testService";
         // 测试拦截器的界面
         public static final String TEST_INTERCEPTOR = "testInterceptor";
+        // 测试错误页面
+        public static final String TEST_ERROR = "testError";
         // 显示一个信息的界面
         public static final String INFO = "info";
     }
@@ -25,8 +27,10 @@ public class ModuleConfig {
     public static class Component1 {
 
         public static final String NAME = "component1";
-        public static final String TESTQUERY = "testQuery";
-        public static final String TESTLOGIN = "testLogin";
+        public static final String TEST = "test";
+        public static final String TEST_QUERY = "testQuery";
+        public static final String TEST_LOGIN = "testLogin";
+        public static final String TEST_DIALOG = "testDialog";
 
     }
 
@@ -40,6 +44,7 @@ public class ModuleConfig {
     public static class User {
 
         public static final String NAME = "user";
+        public static final String LOGIN = "login";
 
     }
 

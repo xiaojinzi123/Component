@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.TestErrorAct">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="跳转到目标界面前需要弹框做耗时的操作,但是当前界面销毁造成的崩溃,路由框架无法捕获,因为是拦截器中的自定义代码的问题"
+        android:layout_height="wrap_content" />
+    <Button
+        android:layout_width="match_parent"
+        android:text="测试"
+        android:onClick="testError1"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

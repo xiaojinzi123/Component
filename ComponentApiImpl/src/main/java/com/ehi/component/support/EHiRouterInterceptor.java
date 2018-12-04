@@ -31,6 +31,7 @@ public interface EHiRouterInterceptor {
          *
          * @return
          */
+        @NonNull
         EHiRouterRequest request();
 
         /**

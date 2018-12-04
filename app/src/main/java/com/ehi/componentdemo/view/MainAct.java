@@ -22,6 +22,7 @@ public class MainAct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_act);
+        getSupportActionBar().setTitle("组件化方案:(路由、服务、生命周期)");
 
         EHiModuleManager.getInstance().register(ModuleConfig.App.NAME);
         EHiModuleManager.getInstance().register(ModuleConfig.Component1.NAME);
@@ -70,6 +71,14 @@ public class MainAct extends AppCompatActivity {
                 .with(this)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_INTERCEPTOR)
+                .navigate();
+    }
+
+    public void testError(View view) {
+        EHiRouter
+                .with(this)
+                .host(ModuleConfig.App.NAME)
+                .path(ModuleConfig.App.TEST_ERROR)
                 .navigate();
     }
 

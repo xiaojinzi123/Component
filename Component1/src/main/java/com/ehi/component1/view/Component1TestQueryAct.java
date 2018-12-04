@@ -11,7 +11,7 @@ import com.ehi.component1.R;
 
 @EHiRouterAnno(
         host = ModuleConfig.Component1.NAME,
-        value = ModuleConfig.Component1.TESTQUERY,
+        value = ModuleConfig.Component1.TEST_QUERY,
         desc = "业务组件1的主界面"
 )
 public class Component1TestQueryAct extends AppCompatActivity {
