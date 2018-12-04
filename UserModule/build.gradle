@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 28
@@ -46,28 +45,3 @@ dependencies {
 
 }
 
-task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
-
-artifacts {
-    archives androidSourcesJar
-}
-
-publishing {
-    publications {
-        bar(MavenPublication) {
-            groupId 'com.ehi'
-            artifactId 'component3'
-            version "${rootProject.ext.business_component_version}"
-            artifact(androidSourcesJar)
-            artifact("$buildDir/outputs/aar/User-release.aar")
-        }
-    }
-    repositories {
-        maven {
-            url "../repo"
-        }
-    }
-}

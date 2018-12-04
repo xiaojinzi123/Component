@@ -35,12 +35,8 @@ dependencies {
 
     implementation project(':Component1')
     implementation project(':Component2')
+    implementation project(':UserModule')
 
-    if (Boolean.parseBoolean(rootProject.ext.isDependComponentOnline)) {
-        implementation "com.ehi:component3:${rootProject.ext.business_component_version}"
-    } else {
-        implementation project(':UserModule')
-    }
 
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
         annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
