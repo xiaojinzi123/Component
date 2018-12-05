@@ -1,5 +1,6 @@
 package com.ehi.component.application;
 
+import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -16,7 +17,7 @@ public interface IComponentApplication {
      *
      * @param app
      */
-    void onCreate(@NonNull Context app);
+    void onCreate(@NonNull Application app);
 
     /**
      * 模块被卸载的时候会被调用,该模块被卸载,对应的路由也会被卸载,也就是表现为跳转不过去了

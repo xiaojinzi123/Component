@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.service.EHiServiceContainer;
+import com.ehi.component.service.EHiService;
 import com.ehi.base.service.inter.component1.Component1Service;
 import com.ehi.base.service.inter.component2.Component2Service;
 import com.ehi.component.anno.EHiRouterAnno;
@@ -52,7 +52,7 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void findComponent2(View view) {
-        service2 = EHiServiceContainer.get(Component2Service.class);
+        service2 = EHiService.get(Component2Service.class);
         if (service2 == null) {
             Toast.makeText(this, "Component2Service服务没找到", Toast.LENGTH_SHORT).show();
             return;
@@ -60,7 +60,7 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void findComponent1(View view) {
-        service1 = EHiServiceContainer.get(Component1Service.class);
+        service1 = EHiService.get(Component1Service.class);
         if (service1 == null) {
             Toast.makeText(this, "Component1Service服务没找到", Toast.LENGTH_SHORT).show();
             return;

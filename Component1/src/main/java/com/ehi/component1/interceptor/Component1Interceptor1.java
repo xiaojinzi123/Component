@@ -1,5 +1,8 @@
 package com.ehi.component1.interceptor;
 
+import android.app.Application;
+import android.support.annotation.NonNull;
+
 import com.ehi.component.support.EHiRouterInterceptor;
 
 /**
@@ -8,6 +11,12 @@ import com.ehi.component.support.EHiRouterInterceptor;
  * @author : xiaojinzi 30212
  */
 public class Component1Interceptor1 implements EHiRouterInterceptor {
+
+    public Component1Interceptor1() {
+    }
+
+    public void component1Interceptor1() {
+    }
 
     @Override
     public void intercept(Chain chain) throws Exception {

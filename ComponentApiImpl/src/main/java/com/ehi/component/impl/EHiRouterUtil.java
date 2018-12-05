@@ -8,10 +8,13 @@ import android.support.annotation.Nullable;
 import com.ehi.component.support.EHiErrorRouterInterceptor;
 
 /**
- * 工具类
+ * 路由的工具类,内部都是一些help方法
  */
 class EHiRouterUtil {
 
+    /**
+     * 主线程的Handler
+     */
     private static Handler h = new Handler(Looper.getMainLooper());
 
     /**
@@ -34,38 +37,54 @@ class EHiRouterUtil {
 
     public static void errorCallback(@Nullable final EHiCallback callback,
                                      @NonNull final Exception error) {
-        postActionToMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (callback == null) {
-                    return;
+        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+            errorCallbackOnMainThread(callback, error);
+        } else {
+            postActionToMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    errorCallbackOnMainThread(callback, error);
                 }
-                if (error == null) {
-                    return;
-                }
-                callback.onEvent(null, error);
-                callback.onError(error);
-            }
-        });
+            });
+        }
+    }
 
+    private static void errorCallbackOnMainThread(@Nullable final EHiCallback callback,
+                                                  @NonNull final Exception error) {
+        if (callback == null) {
+            return;
+        }
+        if (error == null) {
+            return;
+        }
+        callback.onEvent(null, error);
+        callback.onError(error);
     }
 
     public static void successCallback(@Nullable final EHiCallback callback,
                                        @NonNull final EHiRouterResult result) {
-        postActionToMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (callback == null) {
-                    return;
+        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+            successCallbackOnMainThread(callback, result);
+        } else {
+            postActionToMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    successCallbackOnMainThread(callback, result);
                 }
-                if (result == null) {
-                    return;
-                }
-                callback.onEvent(result, null);
-                callback.onSuccess(result);
-            }
-        });
+            });
+        }
+    }
 
+    public static void successCallbackOnMainThread(@Nullable final EHiCallback callback,
+                                                   @NonNull final EHiRouterResult result) {
+        if (callback == null) {
+            return;
+        }
+        if (result == null) {
+            return;
+        }
+        callback.onEvent(result, null);
+        callback.onSuccess(result);
     }
 
     public static void deliveryError(@NonNull Exception error) {

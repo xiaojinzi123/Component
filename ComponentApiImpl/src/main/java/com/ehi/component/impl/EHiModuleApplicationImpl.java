@@ -1,5 +1,6 @@
 package com.ehi.component.impl;
 
+import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -33,7 +34,7 @@ abstract class EHiModuleApplicationImpl implements IComponentHostApplication {
     }
 
     @Override
-    public void onCreate(@NonNull Context app) {
+    public void onCreate(@NonNull Application app) {
 
         if (!hasInitList) {
             initList();

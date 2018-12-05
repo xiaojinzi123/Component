@@ -1,5 +1,6 @@
 package com.ehi.component.impl;
 
+import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,9 +22,9 @@ public class EHiModuleManager implements IComponentModuleApplication {
     private static Map<String, IComponentHostApplication> moduleApplicationMap = new HashMap<>();
 
     @NonNull
-    private static Context mApplication;
+    static Application mApplication;
 
-    public static void init(Context application) {
+    public static void init(Application application) {
         mApplication = application;
         if (mApplication == null) {
             throw new NullPointerException("parameter 'Application' is null");

@@ -211,9 +211,9 @@ public class ModuleAppProcessor extends AbstractProcessor {
     private MethodSpec generateOnCreateMethod() {
 
         TypeName returnType = TypeName.VOID;
-        ClassName contextName = ClassName.get(mElements.getTypeElement(ComponentConstants.CONTEXT));
+        ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.APPLICATION));
 
-        ParameterSpec parameterSpec = ParameterSpec.builder(contextName,"application")
+        ParameterSpec parameterSpec = ParameterSpec.builder(applicationName,"application")
                 .build();
 
         final MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("onCreate")

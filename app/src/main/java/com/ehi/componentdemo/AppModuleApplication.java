@@ -1,5 +1,6 @@
 package com.ehi.componentdemo;
 
+import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -10,7 +11,7 @@ import com.ehi.component.application.IComponentApplication;
 public class AppModuleApplication implements IComponentApplication {
 
     @Override
-    public void onCreate(@NonNull Context app) {
+    public void onCreate(@NonNull Application app) {
     }
 
     @Override

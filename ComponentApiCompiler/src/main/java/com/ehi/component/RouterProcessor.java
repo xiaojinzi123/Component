@@ -31,7 +31,9 @@ import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
@@ -44,6 +46,9 @@ import javax.tools.Diagnostic;
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes({"com.ehi.component.anno.EHiRouterAnno"})
 public class RouterProcessor extends AbstractProcessor {
+
+    private static final String INTERCEPTOR_UTIL_NAME = "com.ehi.component.impl.EHiRouterInterceptorUtil";
+    private static final String COMPONENT_MANAGER_NAME = "com.ehi.component.impl.EHiModuleManager";
 
     private TypeMirror typeString;
 
@@ -250,12 +255,23 @@ public class RouterProcessor extends AbstractProcessor {
                 if (routerBean.getInterceptors() != null && routerBean.getInterceptors().size() > 0) {
                     initMapMethodSpecBuilder.addStatement("$N.interceptors = new java.util.ArrayList<>()", routerBeanName);
                     for (String interceptorClassName : routerBean.getInterceptors()) {
+
+                        boolean isHaveDefaultConstructor = isHaveDefaultConstructor(interceptorClassName);
+
+                        // 生成一个名字
                         String interceptorName = "interceptor" + atomicInteger.incrementAndGet();
-                        initMapMethodSpecBuilder.addStatement("$N $N = com.ehi.component.support.EHiRouterInterceptorCache.get($N.class)", interceptorClassName, interceptorName, interceptorClassName);
+                        // 先从缓存中获取
+                        initMapMethodSpecBuilder.addStatement("$N $N = $N.get($N.class)", interceptorClassName, interceptorName, INTERCEPTOR_UTIL_NAME, interceptorClassName);
+                        // 如果是null,就创建一个然后放进去
                         initMapMethodSpecBuilder.beginControlFlow("if($N == null)", interceptorName);
-                        initMapMethodSpecBuilder.addStatement("$N = new $N()", interceptorName, interceptorClassName);
-                        initMapMethodSpecBuilder.addStatement("com.ehi.component.support.EHiRouterInterceptorCache.put($N.class,$N)", interceptorClassName, interceptorName);
+                        if (isHaveDefaultConstructor) {
+                            initMapMethodSpecBuilder.addStatement("$N = new $N()", interceptorName, interceptorClassName);
+                        } else {
+                            initMapMethodSpecBuilder.addStatement("$N = new $N($N.getInstance().mApplication)", interceptorName, interceptorClassName, COMPONENT_MANAGER_NAME);
+                        }
+                        initMapMethodSpecBuilder.addStatement("$N.put($N.class,$N)", INTERCEPTOR_UTIL_NAME, interceptorClassName, interceptorName);
                         initMapMethodSpecBuilder.endControlFlow();
+
                         initMapMethodSpecBuilder.addStatement("$N.interceptors.add($N)", routerBeanName, interceptorName);
                     }
                 }
@@ -318,6 +334,19 @@ public class RouterProcessor extends AbstractProcessor {
             }
         }
         return implClassNames;
+    }
+
+    private boolean isHaveDefaultConstructor(String interceptorClassName) {
+        // 实现类的类型
+        TypeElement typeElementInterceptorImpl = mElements.getTypeElement(interceptorClassName);
+        String constructorName = typeElementInterceptorImpl.getSimpleName().toString() + ("()");
+        List<? extends Element> enclosedElements = typeElementInterceptorImpl.getEnclosedElements();
+        for (Element enclosedElement : enclosedElements) {
+            if (enclosedElement.toString().equals(constructorName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

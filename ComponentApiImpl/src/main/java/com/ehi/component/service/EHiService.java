@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * EHi 服务的容器
  */
-public class EHiServiceContainer {
+public class EHiService {
 
     private static Map<Class, IServiceLoad<?>> map = new HashMap();
 

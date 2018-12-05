@@ -13,6 +13,7 @@ public interface ComponentConstants {
 
     String EHIAPPLCATON = "com.ehi.component.application.IComponentApplication";
 
+    String APPLICATION = "android.app.Application";
     String CONTEXT = "android.content.Context";
 
 }

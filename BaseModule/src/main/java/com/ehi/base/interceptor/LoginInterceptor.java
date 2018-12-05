@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
-import com.ehi.component.service.EHiServiceContainer;
+import com.ehi.component.service.EHiService;
 import com.ehi.base.service.inter.user.UserService;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiRouterInterceptor;
@@ -30,7 +30,7 @@ public class LoginInterceptor implements EHiRouterInterceptor {
     public void intercept(final Chain chain) throws Exception {
 
         final Context context = chain.request().context == null ? chain.request().fragment.getContext() : chain.request().context;
-        UserService userService = EHiServiceContainer.get(UserService.class);
+        UserService userService = EHiService.get(UserService.class);
 
         if (chain.request().uri.toString().contains("user/login")) {
             chain.proceed(chain.request());

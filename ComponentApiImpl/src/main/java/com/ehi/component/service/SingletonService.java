@@ -15,7 +15,7 @@ public abstract class SingletonService<T> implements IServiceLoad<T> {
     @Override
     public final T get() {
         if (instance == null) {
-            synchronized (EHiServiceContainer.class) {
+            synchronized (EHiService.class) {
                 instance = getRaw();
             }
         }

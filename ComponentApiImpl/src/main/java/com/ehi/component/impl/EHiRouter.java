@@ -526,20 +526,27 @@ public class EHiRouter {
         private void realNavigate(@NonNull EHiRouterRequest originalRequest,
                                   @Nullable EHiRouterInterceptor[] customInterceptors,
                                   @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
-            // 走拦截器
-            final List<EHiRouterInterceptor> interceptors = new ArrayList(routerInterceptors);
+            int totalCount = (customInterceptors == null ? 0 : customInterceptors.length) + routerInterceptors.size() + 1;
+            // 自定义拦截器
+            final List<EHiRouterInterceptor> interceptors = new ArrayList(totalCount);
             if (customInterceptors != null) {
                 for (EHiRouterInterceptor customInterceptor : customInterceptors) {
                     interceptors.add(customInterceptor);
                 }
             }
+            // 公共拦截器
+            interceptors.addAll(routerInterceptors);
+            // 扫尾拦截器
             interceptors.add(new TargetInterceptorsInterceptor());
+            // 创建执行器
             final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest, callback);
+            // 执行
             chain.proceed(originalRequest);
         }
 
         private class InterceptorCallbackImpl implements EHiRouterInterceptor.Callback {
 
+            // 回调
             private EHiCallback mCallback;
 
             /**
@@ -584,6 +591,9 @@ public class EHiRouter {
 
         }
 
+        /**
+         * 这个扫尾拦截器是为了连接目标界面的拦截器
+         */
         private class TargetInterceptorsInterceptor implements EHiRouterInterceptor {
 
             /**
@@ -602,8 +612,11 @@ public class EHiRouter {
                         interceptors.add(interceptor);
                     }
                 }
+                // 真正的执行跳转的拦截器
                 interceptors.add(new RealInterceptor());
+                // 创建执行器
                 final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, nextChain.request(), nextChain.callback());
+                // 执行
                 chain.proceed(nextChain.request());
 
             }
