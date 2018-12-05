@@ -1,11 +1,14 @@
 package com.ehi.component.impl;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+
+import com.ehi.component.support.Consumer;
 
 /**
  * 表示路由的一个请求类
@@ -32,6 +35,9 @@ public class EHiRouterRequest {
     public final Bundle bundle = new Bundle();
 
     @Nullable
+    public final Consumer<Intent> intentConsumer;
+
+    @Nullable
     public final Context getRawContext(){
         if (context == null) {
             return fragment.getContext();
@@ -47,6 +53,7 @@ public class EHiRouterRequest {
         builder.uri = uri;
         builder.fragment = fragment;
         builder.context = context;
+        builder.intentConsumer = intentConsumer;
         return builder;
     }
 
@@ -58,6 +65,7 @@ public class EHiRouterRequest {
         if (builder.bundle != null) {
             this.bundle.putAll(builder.bundle);
         }
+        intentConsumer = builder.intentConsumer;
     }
 
     public static class Builder {
@@ -74,7 +82,11 @@ public class EHiRouterRequest {
         @Nullable
         private Integer requestCode;
 
-        public Bundle bundle;
+        @Nullable
+        private Bundle bundle;
+
+        @Nullable
+        private Consumer<Intent> intentConsumer;
 
         public Builder context(@NonNull Context context) {
             this.context = context;
@@ -98,6 +110,11 @@ public class EHiRouterRequest {
 
         public Builder bundle(@NonNull Bundle bundle) {
             this.bundle = bundle;
+            return this;
+        }
+
+        public Builder intentConsumer(@NonNull Consumer<Intent> intentConsumer) {
+            this.intentConsumer = intentConsumer;
             return this;
         }
 

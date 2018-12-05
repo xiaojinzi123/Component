@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="XFlowLayout">
+        <!--横纵向的间距-->
+        <attr name="h_space" format="dimension" />
+        <attr name="v_space" format="dimension" />
+        <attr name="maxlines" format="integer" />
+        <attr name="maxcolums" format="integer" />
+    </declare-styleable>
+</resources>

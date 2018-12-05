@@ -1,5 +1,7 @@
 package com.ehi.component.support;
 
+import android.support.annotation.NonNull;
+
 /**
  * 表示一个接受一个参数的接口
  *
@@ -13,6 +15,6 @@ public interface Consumer<T> {
      * @param t the value
      * @throws Exception on error
      */
-    void accept(T t) throws Exception;
+    void accept(@NonNull T t) throws Exception;
 
 }

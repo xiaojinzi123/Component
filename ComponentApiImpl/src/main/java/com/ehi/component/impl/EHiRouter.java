@@ -1,6 +1,7 @@
 package com.ehi.component.impl;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -14,6 +15,7 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.router.IComponentHostRouter;
+import com.ehi.component.support.Consumer;
 import com.ehi.component.support.EHiErrorRouterInterceptor;
 import com.ehi.component.support.EHiRouterInterceptor;
 
@@ -183,12 +185,20 @@ public class EHiRouter {
         @Nullable
         private EHiRouterInterceptor[] interceptors;
 
+        @NonNull
+        private Consumer<Intent> intentConsumer = null;
+
         /**
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
          */
         protected boolean isFinish = false;
 
-        public Builder interceptors(@Nullable EHiRouterInterceptor... interceptors) {
+        public Builder intentConsumer(@NonNull Consumer<Intent> intentConsumer) {
+            this.intentConsumer = intentConsumer;
+            return this;
+        }
+
+        public Builder interceptors(@NonNull EHiRouterInterceptor... interceptors) {
             this.interceptors = interceptors;
             return this;
         }
@@ -449,6 +459,7 @@ public class EHiRouter {
                     .uri(uri)
                     .requestCode(requestCode)
                     .bundle(bundle)
+                    .intentConsumer(intentConsumer)
                     .build();
 
             return holder;

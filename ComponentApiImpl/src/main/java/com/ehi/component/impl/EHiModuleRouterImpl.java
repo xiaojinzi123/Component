@@ -118,6 +118,10 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         intent.putExtras(routerRequest.bundle);
         QueryParameterSupport.put(intent, routerRequest.uri);
 
+        if (routerRequest.intentConsumer != null) {
+            routerRequest.intentConsumer.accept(intent);
+        }
+
         if (routerRequest.requestCode == null) { // 如果是 startActivity
 
             if (routerRequest.context != null) {

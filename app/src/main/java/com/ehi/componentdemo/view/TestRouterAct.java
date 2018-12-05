@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
@@ -342,12 +343,12 @@ public class TestRouterAct extends AppCompatActivity {
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
-                        addInfo(result, null, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST_LOGIN, null);
+                        addInfo(result, null, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST_DIALOG, null);
                     }
 
                     @Override
                     public void onError(@NonNull Exception error) {
-                        addInfo(null, error, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST_LOGIN, null);
+                        addInfo(null, error, ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST_DIALOG, null);
                     }
                 });
     }
@@ -368,6 +369,32 @@ public class TestRouterAct extends AppCompatActivity {
                         addInfo(null, error, ModuleConfig.Component2.NAME + "/" + ModuleConfig.Component2.MAIN, null);
                     }
                 });
+    }
+
+    public void testCustomIntent(View view) {
+
+        EHiRouter
+                .with(this)
+                .host(ModuleConfig.Component2.NAME)
+                .path(ModuleConfig.Component2.MAIN)
+                .intentConsumer(new com.ehi.component.support.Consumer<Intent>() {
+                    @Override
+                    public void accept(@NonNull Intent intent) throws Exception {
+                        Toast.makeText(TestRouterAct.this, intent.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, ModuleConfig.Component2.NAME + "/" + ModuleConfig.Component2.MAIN, null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        addInfo(null, error, ModuleConfig.Component2.NAME + "/" + ModuleConfig.Component2.MAIN, null);
+                    }
+                });
+
     }
 
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,45 +11,51 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <com.ehi.componentdemo.view.XFlowLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            app:h_space="0dp"
+            app:v_space="0dp">
 
             <Button
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="openUriTest"
                 android:text="直接打开 EHi://component1/test?data=openUriTest \n uri 可以是后台下发的,可以是动态的"
                 android:textAllCaps="false"
-                android:textSize="12dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                android:textSize="10dp" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="normalJump"
-                android:text="普通跳转" />
+                android:text="普通跳转"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
 
             <Button
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textSize="10dp"
                 android:onClick="normalJumpTwice"
-                android:text="连续普通跳转两次,防止打开两次界面测试" />
+                android:text="连续跳转两次,防止打开两次界面" />
 
-        </LinearLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="testGotoKotlin"
+                android:text="Kotlin模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="testQueryPass"
+                android:text="传递 query 参数"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -66,13 +73,6 @@
                 android:textAllCaps="false"
                 android:textSize="10dp" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,21 +86,6 @@
                 android:layout_height="wrap_content"
                 android:onClick="jumpWithInterceptor"
                 android:text="跳转自带多个拦截器"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="testQueryPass"
-                android:text="传递 query 参数"
                 android:textAllCaps="false"
                 android:textSize="10dp" />
 
@@ -123,12 +108,12 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="testGotoKotlin"
-                android:text="Kotlin模块"
+                android:onClick="testCustomIntent"
+                android:text="自定义最终的Intent"
                 android:textAllCaps="false"
                 android:textSize="10dp" />
 
-        </LinearLayout>
+        </com.ehi.componentdemo.view.XFlowLayout>
 
         <Button
             android:layout_width="match_parent"
@@ -141,7 +126,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="这里会显示所有的结果"
+            android:text="这里会显示所有的跳转结果"
             android:textColor="#FF0000" />
 
         <TextView
