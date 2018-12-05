@@ -1,4 +1,4 @@
-package com.ehi.base.service;
+package com.ehi.component.service;
 
 import android.support.annotation.Nullable;
 

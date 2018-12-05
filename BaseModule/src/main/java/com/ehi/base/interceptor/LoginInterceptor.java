@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
-import com.ehi.base.service.EHiServiceContainer;
+import com.ehi.component.service.EHiServiceContainer;
 import com.ehi.base.service.inter.user.UserService;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiRouterInterceptor;

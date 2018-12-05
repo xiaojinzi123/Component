@@ -6,9 +6,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 这是一个标识模块的生命周期类的注解,因为用注解标识的类肯定在某一个模块,所以标识了就知道那个类是哪个模块下面的
+ * 这是一个拦截器的注解
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.CLASS)
-public @interface EHiModuleApp {
+public @interface EHiInterceptorAnno {
+
+    /**
+     * 这个路由器的级别,如果越高顺序就会越靠前
+     */
+    int priority();
+
 }

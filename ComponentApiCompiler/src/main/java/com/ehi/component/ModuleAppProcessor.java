@@ -1,10 +1,11 @@
 package com.ehi.component;
 
-import com.ehi.component.anno.EHiModuleApp;
+import com.ehi.component.anno.EHiModuleAppAnno;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
@@ -38,7 +39,7 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedAnnotationTypes({"com.ehi.component.anno.EHiModuleApp"})
+@SupportedAnnotationTypes({"com.ehi.component.anno.EHiModuleAppAnno"})
 public class ModuleAppProcessor extends AbstractProcessor {
 
     private TypeMirror typeString;
@@ -86,7 +87,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
         if (CollectionUtils.isNotEmpty(set)) {
 
-            Set<? extends Element> moduleAppElements = roundEnvironment.getElementsAnnotatedWith(EHiModuleApp.class);
+            Set<? extends Element> moduleAppElements = roundEnvironment.getElementsAnnotatedWith(EHiModuleAppAnno.class);
 
             mMessager.printMessage(Diagnostic.Kind.NOTE, " moduleApp.size = " + (moduleAppElements == null ? 0 : moduleAppElements.size()));
 
@@ -130,7 +131,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
             // 如果是一个 Application
 
-            EHiModuleApp moduleApp = element.getAnnotation(EHiModuleApp.class);
+            EHiModuleAppAnno moduleApp = element.getAnnotation(EHiModuleAppAnno.class);
 
             if (moduleApp == null) {
 
@@ -160,6 +161,8 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();
+        MethodSpec onCreateMethod = generateOnCreateMethod();
+        MethodSpec onDestoryMethod = generateOnDestoryMethod();
 
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 //.addModifiers(Modifier.PUBLIC)
@@ -167,6 +170,8 @@ public class ModuleAppProcessor extends AbstractProcessor {
                 .superclass(superClass)
                 .addMethod(initHostMethod)
                 .addMethod(initMapMethod)
+                .addMethod(onCreateMethod)
+                .addMethod(onDestoryMethod)
                 .build();
 
         try {
@@ -180,6 +185,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
     }
 
     private MethodSpec generateInitMapMethod() {
+
         TypeName returnType = TypeName.VOID;
 
         final MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("initList")
@@ -198,6 +204,41 @@ public class ModuleAppProcessor extends AbstractProcessor {
                 );
             }
         });
+
+        return openUriMethodSpecBuilder.build();
+    }
+
+    private MethodSpec generateOnCreateMethod() {
+
+        TypeName returnType = TypeName.VOID;
+        ClassName contextName = ClassName.get(mElements.getTypeElement(ComponentConstants.CONTEXT));
+
+        ParameterSpec parameterSpec = ParameterSpec.builder(contextName,"application")
+                .build();
+
+        final MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("onCreate")
+                .returns(returnType)
+                .addAnnotation(Override.class)
+                .addParameter(parameterSpec)
+                .addModifiers(Modifier.PUBLIC);
+
+        openUriMethodSpecBuilder.addStatement("super.onCreate(application)");
+        openUriMethodSpecBuilder.addStatement("EHiRouter.register(getHost())");
+
+        return openUriMethodSpecBuilder.build();
+    }
+
+    private MethodSpec generateOnDestoryMethod() {
+
+        TypeName returnType = TypeName.VOID;
+
+        final MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("onDestory")
+                .returns(returnType)
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC);
+
+        openUriMethodSpecBuilder.addStatement("super.onDestory()");
+        openUriMethodSpecBuilder.addStatement("EHiRouter.unregister(getHost())");
 
         return openUriMethodSpecBuilder.build();
     }

@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.base.service.EHiServiceContainer;
+import com.ehi.component.service.EHiServiceContainer;
 import com.ehi.base.service.inter.component1.Component1Service;
 import com.ehi.base.service.inter.component2.Component2Service;
 import com.ehi.component.anno.EHiRouterAnno;
