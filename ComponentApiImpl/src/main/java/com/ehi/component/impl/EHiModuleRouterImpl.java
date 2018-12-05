@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.ehi.component.ComponentUtil;
+import com.ehi.component.bean.EHiRouterBean;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.router.IComponentHostRouter;

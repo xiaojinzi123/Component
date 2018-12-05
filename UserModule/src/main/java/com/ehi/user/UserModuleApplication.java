@@ -16,12 +16,10 @@ public class UserModuleApplication implements IComponentApplication {
 
     @Override
     public void onCreate(@NonNull final Application app) {
-        EHiService.register(UserService.class,new UserServiceImpl());
     }
 
     @Override
     public void onDestory() {
-        EHiService.unregister(UserService.class);
     }
 
 }

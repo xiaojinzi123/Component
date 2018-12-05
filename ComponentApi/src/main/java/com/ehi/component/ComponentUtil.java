@@ -35,6 +35,11 @@ public class ComponentUtil {
     public static final String MODULE_APPLCATION = "ModuleApplication";
 
     /**
+     * 生成的文件名称的后缀
+     */
+    public static final String SERVICE = "Service";
+
+    /**
      * 路由框架基础实现类的全类名
      */
     public static final String UIROUTER_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "EHiModuleRouterImpl";
@@ -43,6 +48,11 @@ public class ComponentUtil {
      * 生命周期框架基础实现类的全类名
      */
     public static final String MODULE_APPLICATION_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "EHiModuleApplicationImpl";
+
+    /**
+     * 生命周期框架基础实现类的全类名
+     */
+    public static final String SERVICE_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "service" + DOT + "EHiMuduleServiceImpl";
 
     /**
      * 首字母小写
@@ -65,6 +75,11 @@ public class ComponentUtil {
 
     public static String genHostModuleApplicationClassName(String host) {
         String claName = IMPL_OUTPUT_PKG + DOT + firstCharUpperCase(host) + MODULE_APPLCATION;
+        return new String(claName);
+    }
+
+    public static String genHostServiceClassName(String host) {
+        String claName = IMPL_OUTPUT_PKG + DOT + "service"+ DOT + firstCharUpperCase(host) + SERVICE;
         return new String(claName);
     }
 

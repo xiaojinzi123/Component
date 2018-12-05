@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.application.IComponentHostApplication;
 import com.ehi.component.application.IComponentModuleApplication;
@@ -20,16 +21,6 @@ public class EHiModuleManager implements IComponentModuleApplication {
     private static volatile EHiModuleManager instance;
 
     private static Map<String, IComponentHostApplication> moduleApplicationMap = new HashMap<>();
-
-    @NonNull
-    static Application mApplication;
-
-    public static void init(Application application) {
-        mApplication = application;
-        if (mApplication == null) {
-            throw new NullPointerException("parameter 'Application' is null");
-        }
-    }
 
     private EHiModuleManager() {
     }
@@ -54,7 +45,7 @@ public class EHiModuleManager implements IComponentModuleApplication {
 
         moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
 
-        moduleApp.onCreate(mApplication);
+        moduleApp.onCreate(ComponentConfig.getApplication());
 
     }
 

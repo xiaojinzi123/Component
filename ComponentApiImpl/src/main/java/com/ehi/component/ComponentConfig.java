@@ -1,5 +1,8 @@
 package com.ehi.component;
 
+import android.app.Application;
+import android.support.annotation.NonNull;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -13,13 +16,22 @@ import java.util.concurrent.TimeUnit;
 public class ComponentConfig {
 
     private static boolean isDebug = false;
+    private static Application application = null;
 
-    public static void init(boolean isDebug) {
+    public static void init(@NonNull Application application, boolean isDebug) {
+        ComponentConfig.application = application;
         ComponentConfig.isDebug = isDebug;
     }
 
     public static boolean isDebug() {
         return isDebug;
+    }
+
+    public static Application getApplication() {
+        if (application == null) {
+            throw new NullPointerException("the Application is null,do you call ComponentConfig.init(Application application,boolean isDebug)?");
+        }
+        return application;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ehi.component.impl;
+package com.ehi.component.bean;
 
 import com.ehi.component.support.EHiRouterInterceptor;
 

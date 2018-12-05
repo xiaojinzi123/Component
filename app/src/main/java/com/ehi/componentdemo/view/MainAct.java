@@ -23,11 +23,6 @@ public class MainAct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_act);
         getSupportActionBar().setTitle("组件化方案:(路由、服务、生命周期)");
-
-        EHiModuleManager.getInstance().register(ModuleConfig.App.NAME);
-        EHiModuleManager.getInstance().register(ModuleConfig.Component1.NAME);
-        EHiModuleManager.getInstance().register(ModuleConfig.Component2.NAME);
-
     }
 
     public void testRouter(View view) {

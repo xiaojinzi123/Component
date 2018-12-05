@@ -1,6 +1,8 @@
 package com.ehi.component;
 
 import com.ehi.component.anno.EHiModuleAppAnno;
+import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.EHiServiceAnno;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -31,6 +34,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -39,8 +43,10 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedAnnotationTypes({"com.ehi.component.anno.EHiModuleAppAnno"})
-public class ModuleAppProcessor extends AbstractProcessor {
+@SupportedAnnotationTypes({"com.ehi.component.anno.EHiServiceAnno"})
+public class ServiceProcessor extends AbstractProcessor {
+
+    private static final String SERVICE = "com.ehi.component.service.EHiService";
 
     private TypeMirror typeString;
 
@@ -74,8 +80,6 @@ public class ModuleAppProcessor extends AbstractProcessor {
             return;
         }
 
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "componentHost = " + componentHost);
-
     }
 
     @Override
@@ -87,11 +91,9 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
         if (CollectionUtils.isNotEmpty(set)) {
 
-            Set<? extends Element> moduleAppElements = roundEnvironment.getElementsAnnotatedWith(EHiModuleAppAnno.class);
+            Set<? extends Element> annoElements = roundEnvironment.getElementsAnnotatedWith(EHiServiceAnno.class);
 
-            mMessager.printMessage(Diagnostic.Kind.NOTE, " moduleApp.size = " + (moduleAppElements == null ? 0 : moduleAppElements.size()));
-
-            parseAnnotation(moduleAppElements);
+            parseAnnotation(annoElements);
 
             createImpl();
 
@@ -101,54 +103,43 @@ public class ModuleAppProcessor extends AbstractProcessor {
         return false;
     }
 
-    private List<Element> applicationList = new ArrayList<>();
+    private List<Element> annoElementList = new ArrayList<>();
 
-    private void parseAnnotation(Set<? extends Element> moduleAppElements) {
+    private void parseAnnotation(Set<? extends Element> annoElements) {
 
-        applicationList.clear();
+        annoElementList.clear();
 
         TypeMirror typeApplication = mElements.getTypeElement(ComponentConstants.EHIAPPLCATON).asType();
 
-        for (Element element : moduleAppElements) {
+        for (Element element : annoElements) {
 
             TypeMirror tm = element.asType();
 
             if (!(element instanceof TypeElement)) {
-
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
+                continue;
+            }
+
+            // 如果是一个 Service
+
+            EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
+
+            if (anno == null) {
 
                 continue;
 
             }
 
-            if (!mTypes.isSubtype(tm, typeApplication)) {
+            annoElementList.add(element);
 
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'EHiModuleAppAnno' annotation");
-
-                continue;
-
-            }
-
-            // 如果是一个 Application
-
-            EHiModuleAppAnno moduleApp = element.getAnnotation(EHiModuleAppAnno.class);
-
-            if (moduleApp == null) {
-
-                continue;
-
-            }
-
-            applicationList.add(element);
-
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "moduleApplication = " + element);
+            mMessager.printMessage(Diagnostic.Kind.NOTE, "serviceImpl = " + element);
 
         }
     }
 
     private void createImpl() {
 
-        String claName = ComponentUtil.genHostModuleApplicationClassName(componentHost);
+        String claName = ComponentUtil.genHostServiceClassName(componentHost);
 
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf("."));
@@ -156,11 +147,15 @@ public class ModuleAppProcessor extends AbstractProcessor {
         //simpleName
         String cn = claName.substring(claName.lastIndexOf(".") + 1);
 
+        mMessager.printMessage(Diagnostic.Kind.NOTE, "00000000000000000000000000000000000000");
+
         // superClassName
-        ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.MODULE_APPLICATION_IMPL_CLASS_NAME));
+        ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.SERVICE_IMPL_CLASS_NAME));
+
+        mMessager.printMessage(Diagnostic.Kind.NOTE, "9999999999999999999999999999999");
 
         MethodSpec initHostMethod = generateInitHostMethod();
-        MethodSpec initMapMethod = generateInitMapMethod();
+//        MethodSpec initMapMethod = generateInitMapMethod();
         MethodSpec onCreateMethod = generateOnCreateMethod();
         MethodSpec onDestoryMethod = generateOnDestoryMethod();
 
@@ -169,16 +164,13 @@ public class ModuleAppProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.FINAL)
                 .superclass(superClass)
                 .addMethod(initHostMethod)
-                .addMethod(initMapMethod)
                 .addMethod(onCreateMethod)
                 .addMethod(onDestoryMethod)
                 .build();
 
         try {
-            JavaFile
-                    .builder(pkg, typeSpec)
-                    .indent("    ")
-                    .build().writeTo(mFiler);
+            JavaFile.builder(pkg, typeSpec
+            ).indent("    ").build().writeTo(mFiler);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -197,7 +189,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
         openUriMethodSpecBuilder.addStatement("super.initList()");
 
-        applicationList.forEach(new Consumer<Element>() {
+        annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {
                 openUriMethodSpecBuilder.addStatement(
@@ -216,6 +208,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
         ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.APPLICATION));
 
         ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, "application")
+                .addModifiers(Modifier.FINAL)
                 .build();
 
         final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onCreate")
@@ -225,8 +218,41 @@ public class ModuleAppProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC);
 
         methodSpecBuilder.addStatement("super.onCreate(application)");
-        methodSpecBuilder.addStatement("EHiRouter.register(getHost())");
-        methodSpecBuilder.addStatement("com.ehi.component.impl.service.EHiCenterService.getInstance().register(getHost())");
+
+        final AtomicInteger atomicInteger = new AtomicInteger();
+
+        annoElementList.forEach(new Consumer<Element>() {
+            @Override
+            public void accept(Element element) {
+                String serviceImplClassName = element.toString();
+                EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
+                boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
+                String implName = "implName" + atomicInteger.incrementAndGet();
+
+//                SingletonService<Component1ServiceImpl> implName1 = new SingletonService<Component1ServiceImpl>() {
+//                    @Override
+//                    protected Component1ServiceImpl getRaw() {
+//                        return new Component1ServiceImpl(application);
+//                    }
+//                };
+
+                methodSpecBuilder.addStatement("com.ehi.component.service.SingletonService<$N> $N = new com.ehi.component.service.SingletonService<$N>() {" +
+                        "\n\t@Override" +
+                        "\n\tprotected $N getRaw() {" +
+                        "\n\t\nreturn new $N(application);" +
+                        "\n\t}" +
+                        "}",serviceImplClassName,implName,serviceImplClassName,serviceImplClassName,serviceImplClassName
+                );
+                List<String> interServiceClassNames = getInterServiceClassNames(anno);
+                for (String interServiceClassName : interServiceClassNames) {
+                    if (anno.singleTon()) {
+                        methodSpecBuilder.addStatement("$N.register($N.class,$N)", SERVICE, interServiceClassName,implName);
+                    }else {
+
+                    }
+                }
+            }
+        });
 
         return methodSpecBuilder.build();
     }
@@ -241,8 +267,17 @@ public class ModuleAppProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC);
 
         methodSpecBuilder.addStatement("super.onDestory()");
-        methodSpecBuilder.addStatement("EHiRouter.unregister(getHost())");
-        methodSpecBuilder.addStatement("com.ehi.component.impl.service.EHiCenterService.getInstance().unregister(getHost())");
+
+        annoElementList.forEach(new Consumer<Element>() {
+            @Override
+            public void accept(Element element) {
+                EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
+                List<String> interServiceClassNames = getInterServiceClassNames(anno);
+                for (String interServiceClassName : interServiceClassNames) {
+                    methodSpecBuilder.addStatement("$N.unregister($N.class)", SERVICE, interServiceClassName);
+                }
+            }
+        });
 
         return methodSpecBuilder.build();
     }
@@ -259,6 +294,43 @@ public class ModuleAppProcessor extends AbstractProcessor {
         openUriMethodSpecBuilder.addStatement("return $S", componentHost);
 
         return openUriMethodSpecBuilder.build();
+    }
+
+    /**
+     * 获取注解中的目标 Service 接口的全类名
+     *
+     * @param anno
+     * @return
+     */
+    private List<String> getInterServiceClassNames(EHiServiceAnno anno) {
+        List<String> implClassNames = new ArrayList<>();
+        try {
+            implClassNames.clear();
+            Class[] interceptors = anno.value();
+            for (Class interceptor : interceptors) {
+                implClassNames.add(interceptor.getName());
+            }
+        } catch (MirroredTypesException e) {
+            implClassNames.clear();
+            List<? extends TypeMirror> typeMirrors = e.getTypeMirrors();
+            for (TypeMirror typeMirror : typeMirrors) {
+                implClassNames.add(typeMirror.toString());
+            }
+        }
+        return implClassNames;
+    }
+
+    private boolean isHaveDefaultConstructor(String className) {
+        // 实现类的类型
+        TypeElement typeElementClassImpl = mElements.getTypeElement(className);
+        String constructorName = typeElementClassImpl.getSimpleName().toString() + ("()");
+        List<? extends Element> enclosedElements = typeElementClassImpl.getEnclosedElements();
+        for (Element enclosedElement : enclosedElements) {
+            if (enclosedElement.toString().equals(constructorName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

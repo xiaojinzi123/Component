@@ -17,18 +17,10 @@ public class Component1Application implements IComponentApplication {
 
     @Override
     public void onCreate(@NonNull final Application app) {
-        // 这里注册一个单例的,并且懒加载的服务
-        EHiService.register(Component1Service.class, new SingletonService<Component1Service>() {
-            @Override
-            public Component1Service getRaw() {
-                return new Component1ServiceImpl(app);
-            }
-        });
     }
 
     @Override
     public void onDestory() {
-        EHiService.unregister(Component1Service.class);
     }
 
 }

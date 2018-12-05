@@ -8,8 +8,7 @@ import javax.tools.Diagnostic;
  *
  * @author : xiaojinzi 30212
  */
-public class ErrorPrintUtil {
-
+class ErrorPrintUtil {
     public static void printHostNull(Messager mMessager) {
         mMessager.printMessage(
                 Diagnostic.Kind.ERROR,
@@ -27,5 +26,4 @@ public class ErrorPrintUtil {
                         "}\n  \n"
         );
     }
-
 }

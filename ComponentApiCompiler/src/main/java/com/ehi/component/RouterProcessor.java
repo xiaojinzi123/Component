@@ -47,8 +47,9 @@ import javax.tools.Diagnostic;
 @SupportedAnnotationTypes({"com.ehi.component.anno.EHiRouterAnno"})
 public class RouterProcessor extends AbstractProcessor {
 
+    private static final String ROUTER_BEAN_NAME = "com.ehi.component.bean.EHiRouterBean";
     private static final String INTERCEPTOR_UTIL_NAME = "com.ehi.component.impl.EHiRouterInterceptorUtil";
-    private static final String COMPONENT_MANAGER_NAME = "com.ehi.component.impl.EHiModuleManager";
+    private static final String COMPONENT_CONFIG_NAME = "com.ehi.component.ComponentConfig";
 
     private TypeMirror typeString;
 
@@ -247,7 +248,7 @@ public class RouterProcessor extends AbstractProcessor {
                 initMapMethodSpecBuilder.addComment("---------------------------" + targetClassName.toString() + "---------------------------");
                 initMapMethodSpecBuilder.addCode("\n");
 
-                initMapMethodSpecBuilder.addStatement("com.ehi.component.impl.EHiRouterBean $N = new com.ehi.component.impl.EHiRouterBean()", routerBeanName);
+                initMapMethodSpecBuilder.addStatement("$N $N = new $N()", ROUTER_BEAN_NAME, routerBeanName, ROUTER_BEAN_NAME);
                 initMapMethodSpecBuilder.addStatement("$N.host = $S", routerBeanName, routerBean.getHost());
                 initMapMethodSpecBuilder.addStatement("$N.path = $S", routerBeanName, routerBean.getPath());
                 initMapMethodSpecBuilder.addStatement("$N.desc = $S", routerBeanName, routerBean.getDesc());
@@ -267,7 +268,7 @@ public class RouterProcessor extends AbstractProcessor {
                         if (isHaveDefaultConstructor) {
                             initMapMethodSpecBuilder.addStatement("$N = new $N()", interceptorName, interceptorClassName);
                         } else {
-                            initMapMethodSpecBuilder.addStatement("$N = new $N($N.getInstance().mApplication)", interceptorName, interceptorClassName, COMPONENT_MANAGER_NAME);
+                            initMapMethodSpecBuilder.addStatement("$N = new $N($N.getApplication())", interceptorName, interceptorClassName,COMPONENT_CONFIG_NAME);
                         }
                         initMapMethodSpecBuilder.addStatement("$N.put($N.class,$N)", INTERCEPTOR_UTIL_NAME, interceptorClassName, interceptorName);
                         initMapMethodSpecBuilder.endControlFlow();

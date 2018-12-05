@@ -15,6 +15,7 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.router.IComponentHostRouter;
+import com.ehi.component.router.IComponentModuleRouter;
 import com.ehi.component.support.Consumer;
 import com.ehi.component.support.EHiErrorRouterInterceptor;
 import com.ehi.component.support.EHiRouterInterceptor;

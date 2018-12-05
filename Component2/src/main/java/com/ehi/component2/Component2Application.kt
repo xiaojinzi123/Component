@@ -13,12 +13,6 @@ import com.ehi.component.service.IServiceLoad
 class Component2Application : IComponentApplication {
 
     override fun onCreate(app: Application) {
-        EHiService.register(Component2Service::class.java, IServiceLoad {
-            Toast.makeText(app, "Component2Service 被加载了", Toast.LENGTH_SHORT).show();
-            Component2Service {
-                Toast.makeText(app, "Component2Service 方法被调用了", Toast.LENGTH_SHORT).show();
-            }
-        })
     }
 
     override fun onDestory() {
