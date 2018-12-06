@@ -35,7 +35,7 @@ dependencies {
 
     implementation project(':Component1')
     implementation project(':Component2')
-    implementation project(':UserModule')
+    implementation project(':UserComponent')
 
 
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {

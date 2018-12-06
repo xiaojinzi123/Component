@@ -1,7 +1,5 @@
 package com.ehi.component;
 
-import com.ehi.component.anno.EHiModuleAppAnno;
-import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.anno.EHiServiceAnno;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
@@ -147,12 +145,8 @@ public class ServiceProcessor extends AbstractProcessor {
         //simpleName
         String cn = claName.substring(claName.lastIndexOf(".") + 1);
 
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "00000000000000000000000000000000000000");
-
         // superClassName
         ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.SERVICE_IMPL_CLASS_NAME));
-
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "9999999999999999999999999999999");
 
         MethodSpec initHostMethod = generateInitHostMethod();
 //        MethodSpec initMapMethod = generateInitMapMethod();
@@ -176,30 +170,6 @@ public class ServiceProcessor extends AbstractProcessor {
         }
 
 
-    }
-
-    private MethodSpec generateInitMapMethod() {
-
-        TypeName returnType = TypeName.VOID;
-
-        final MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("initList")
-                .returns(returnType)
-                .addAnnotation(Override.class)
-                .addModifiers(Modifier.PUBLIC);
-
-        openUriMethodSpecBuilder.addStatement("super.initList()");
-
-        annoElementList.forEach(new Consumer<Element>() {
-            @Override
-            public void accept(Element element) {
-                openUriMethodSpecBuilder.addStatement(
-                        "moduleAppList" + ".add(new $T())",
-                        ClassName.get((TypeElement) element)
-                );
-            }
-        });
-
-        return openUriMethodSpecBuilder.build();
     }
 
     private MethodSpec generateOnCreateMethod() {
@@ -236,20 +206,27 @@ public class ServiceProcessor extends AbstractProcessor {
 //                    }
 //                };
 
-                methodSpecBuilder.addStatement("com.ehi.component.service.SingletonService<$N> $N = new com.ehi.component.service.SingletonService<$N>() {" +
-                        "\n\t@Override" +
-                        "\n\tprotected $N getRaw() {" +
-                        "\n\t\nreturn new $N(application);" +
-                        "\n\t}" +
-                        "}",serviceImplClassName,implName,serviceImplClassName,serviceImplClassName,serviceImplClassName
-                );
+                if (anno.singleTon()) {
+                    methodSpecBuilder.addStatement("com.ehi.component.service.SingletonService<$N> $N = new com.ehi.component.service.SingletonService<$N>() {" +
+                            "\n\t@Override" +
+                            "\n\tprotected $N getRaw() {" +
+                            "\n\t\treturn new $N($N);" +
+                            "\n\t}" +
+                            "}", serviceImplClassName, implName, serviceImplClassName, serviceImplClassName, serviceImplClassName, (haveDefaultConstructor ? "" : "application")
+                    );
+                } else {
+                    methodSpecBuilder.addStatement("com.ehi.component.service.IServiceLoad<$N> $N = new com.ehi.component.service.IServiceLoad<$N>() {" +
+                            "\n\t@Override" +
+                            "\n\tpublic $N get() {" +
+                            "\n\t\treturn new $N($N);" +
+                            "\n\t}" +
+                            "}", serviceImplClassName, implName, serviceImplClassName, serviceImplClassName, serviceImplClassName, (haveDefaultConstructor ? "" : "application")
+                    );
+                }
+
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 for (String interServiceClassName : interServiceClassNames) {
-                    if (anno.singleTon()) {
-                        methodSpecBuilder.addStatement("$N.register($N.class,$N)", SERVICE, interServiceClassName,implName);
-                    }else {
-
-                    }
+                    methodSpecBuilder.addStatement("$N.register($N.class,$N)", SERVICE, interServiceClassName, implName);
                 }
             }
         });
