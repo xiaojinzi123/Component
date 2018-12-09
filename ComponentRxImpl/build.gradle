@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.xiaojinzi123'
 
 android {
 
@@ -39,7 +38,6 @@ task androidSourcesJar(type: Jar) {
     classifier = 'sources'
     from android.sourceSets.main.java.srcDirs
 }
-
 
 artifacts {
     archives androidSourcesJar
