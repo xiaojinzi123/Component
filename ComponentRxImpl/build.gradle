@@ -3,6 +3,8 @@ apply plugin: 'maven'
 
 apply plugin: 'com.github.dcendents.android-maven'
 
+archivesBaseName = "impl-rx"
+
 android {
 
     compileSdkVersion 27

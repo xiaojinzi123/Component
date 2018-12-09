@@ -1,6 +1,8 @@
 apply plugin: 'java-library'
 apply plugin: 'maven'
 
+archivesBaseName = "annotation"
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
