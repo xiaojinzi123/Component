@@ -43,6 +43,6 @@ dependencies {
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
         kapt "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
     }else {
-        kapt project(':ComponentApiCompiler')
+        kapt project(':ComponentCompiler')
     }
 }

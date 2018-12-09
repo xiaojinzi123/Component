@@ -32,7 +32,7 @@ dependencies {
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
         api "com.ehi:component-impl:${rootProject.ext.component_version}"
     } else {
-        api project(':ComponentApiImpl')
+        api project(':ComponentImpl')
     }
 }
 

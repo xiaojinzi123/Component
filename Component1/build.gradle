@@ -40,7 +40,7 @@ dependencies {
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
         annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
     } else {
-        annotationProcessor project(':ComponentApiCompiler')
+        annotationProcessor project(':ComponentCompiler')
     }
 
 }

@@ -5,5 +5,5 @@ include ':app',
         ':UserComponent',
         ':BaseModule',
         ':ComponentApi',
-        ':ComponentApiCompiler',
-        ':ComponentApiImpl'
+        ':ComponentCompiler',
+        ':ComponentImpl'

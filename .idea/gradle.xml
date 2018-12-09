@@ -12,8 +12,8 @@
             <option value="$PROJECT_DIR$/Component1" />
             <option value="$PROJECT_DIR$/Component2" />
             <option value="$PROJECT_DIR$/ComponentApi" />
-            <option value="$PROJECT_DIR$/ComponentApiCompiler" />
-            <option value="$PROJECT_DIR$/ComponentApiImpl" />
+            <option value="$PROJECT_DIR$/ComponentCompiler" />
+            <option value="$PROJECT_DIR$/ComponentImpl" />
             <option value="$PROJECT_DIR$/ComponentRxImpl" />
             <option value="$PROJECT_DIR$/UserComponent" />
             <option value="$PROJECT_DIR$/app" />
