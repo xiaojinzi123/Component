@@ -3,10 +3,6 @@ package com.ehi.component;
 import android.app.Application;
 import android.support.annotation.NonNull;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 /**
  * 组件化的配置类
  * time   : 2018/08/09
@@ -19,6 +15,9 @@ public class ComponentConfig {
     private static Application application = null;
 
     public static void init(@NonNull Application application, boolean isDebug) {
+        if (application == null) {
+            throw new NullPointerException("the Application is null");
+        }
         ComponentConfig.application = application;
         ComponentConfig.isDebug = isDebug;
     }

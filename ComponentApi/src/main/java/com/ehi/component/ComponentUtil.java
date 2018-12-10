@@ -27,17 +27,17 @@ public class ComponentUtil {
     /**
      * 生成的文件名称的后缀
      */
-    public static final String UIROUTER = "UiRouter";
+    public static final String UIROUTER = "UiRouterGenerated";
 
     /**
      * 生成的文件名称的后缀
      */
-    public static final String MODULE_APPLCATION = "ModuleApplication";
+    public static final String MODULE_APPLCATION = "ModuleApplicationGenerated";
 
     /**
      * 生成的文件名称的后缀
      */
-    public static final String SERVICE = "Service";
+    public static final String SERVICE = "ServiceGenerated";
 
     /**
      * 路由框架基础实现类的全类名

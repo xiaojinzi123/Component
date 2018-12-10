@@ -25,5 +25,4 @@ public class Component1ServiceImpl implements Component1Service {
         return new Component1Fragment();
     }
 
-
 }

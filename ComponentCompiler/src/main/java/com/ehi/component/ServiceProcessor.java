@@ -6,6 +6,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
@@ -44,9 +45,22 @@ import javax.tools.Diagnostic;
 @SupportedAnnotationTypes({"com.ehi.component.anno.EHiServiceAnno"})
 public class ServiceProcessor extends AbstractProcessor {
 
-    private static final String SERVICE = "com.ehi.component.service.EHiService";
+    private static final String SERVICE_CONTAINER_NAME = "com.ehi.component.service.EHiService";
+
+    private static final String SERVICE_SEPER_NAME1 = "com.ehi.component.service.IServiceLoad";
+    private static final String SERVICE_SEPER_NAME2 = "com.ehi.component.service.SingletonService";
 
     private TypeMirror typeString;
+
+    private TypeElement typeElementServiceContainer;
+
+    private ClassName classNameServiceContainer;
+
+    private TypeElement typeElementService1;
+    private TypeElement typeElementService2;
+
+    private ClassName classNameService1;
+    private ClassName classNameService2;
 
     private Filer mFiler;
     private Messager mMessager;
@@ -64,11 +78,20 @@ public class ServiceProcessor extends AbstractProcessor {
         mMessager = processingEnvironment.getMessager();
         mTypes = processingEnv.getTypeUtils();
         mElements = processingEnv.getElementUtils();
-
         typeString = mElements.getTypeElement("java.lang.String").asType();
 
+        typeElementServiceContainer = mElements.getTypeElement(SERVICE_CONTAINER_NAME);
+
+        classNameServiceContainer = ClassName.get(typeElementServiceContainer);
+
+        typeElementService1 = mElements.getTypeElement(SERVICE_SEPER_NAME1);
+        typeElementService2 = mElements.getTypeElement(SERVICE_SEPER_NAME2);
+
+        classNameService1 = ClassName.get(typeElementService1);
+        classNameService2 = ClassName.get(typeElementService2);
+
         Map<String, String> options = processingEnv.getOptions();
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "options = " + options);
+
         if (options != null) {
             componentHost = options.get("HOST");
         }
@@ -77,6 +100,7 @@ public class ServiceProcessor extends AbstractProcessor {
             ErrorPrintUtil.printHostNull(mMessager);
             return;
         }
+
 
     }
 
@@ -195,39 +219,46 @@ public class ServiceProcessor extends AbstractProcessor {
             @Override
             public void accept(Element element) {
                 String serviceImplClassName = element.toString();
+                TypeElement serviceImplTypeElement = mElements.getTypeElement(serviceImplClassName);
                 EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
                 boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
                 String implName = "implName" + atomicInteger.incrementAndGet();
 
-//                SingletonService<Component1ServiceImpl> implName1 = new SingletonService<Component1ServiceImpl>() {
-//                    @Override
-//                    protected Component1ServiceImpl getRaw() {
-//                        return new Component1ServiceImpl(application);
-//                    }
-//                };
-
                 if (anno.singleTon()) {
-                    methodSpecBuilder.addStatement("com.ehi.component.service.SingletonService<$N> $N = new com.ehi.component.service.SingletonService<$N>() {" +
-                            "\n\t@Override" +
-                            "\n\tprotected $N getRaw() {" +
-                            "\n\t\treturn new $N($N);" +
-                            "\n\t}" +
-                            "}", serviceImplClassName, implName, serviceImplClassName, serviceImplClassName, serviceImplClassName, (haveDefaultConstructor ? "" : "application")
-                    );
+
+                    TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
+                            .addSuperinterface(ParameterizedTypeName.get(classNameService2, TypeName.get(serviceImplTypeElement.asType())))
+                            .addMethod(
+                                    MethodSpec.methodBuilder("getRaw")
+                                            .addAnnotation(Override.class)
+                                            .addModifiers(Modifier.PROTECTED)
+                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : "application"))
+                                            .returns(TypeName.get(element.asType()))
+                                            .build()
+                            )
+                            .build();
+                    methodSpecBuilder.addStatement("$T $N = $L", classNameService1, implName, innerTypeSpec);
+
                 } else {
-                    methodSpecBuilder.addStatement("com.ehi.component.service.IServiceLoad<$N> $N = new com.ehi.component.service.IServiceLoad<$N>() {" +
-                            "\n\t@Override" +
-                            "\n\tpublic $N get() {" +
-                            "\n\t\treturn new $N($N);" +
-                            "\n\t}" +
-                            "}", serviceImplClassName, implName, serviceImplClassName, serviceImplClassName, serviceImplClassName, (haveDefaultConstructor ? "" : "application")
-                    );
+                    TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
+                            .addSuperinterface(ParameterizedTypeName.get(classNameService1, TypeName.get(serviceImplTypeElement.asType())))
+                            .addMethod(
+                                    MethodSpec.methodBuilder("get")
+                                            .addAnnotation(Override.class)
+                                            .addModifiers(Modifier.PUBLIC)
+                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : "application"))
+                                            .returns(TypeName.get(element.asType()))
+                                            .build()
+                            )
+                            .build();
+                    methodSpecBuilder.addStatement("$T $N = $L", classNameService1, implName, innerTypeSpec);
                 }
 
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 for (String interServiceClassName : interServiceClassNames) {
-                    methodSpecBuilder.addStatement("$N.register($N.class,$N)", SERVICE, interServiceClassName, implName);
+                    methodSpecBuilder.addStatement("$T.register($T.class,$N)", classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)), implName);
                 }
+
             }
         });
 
@@ -251,7 +282,7 @@ public class ServiceProcessor extends AbstractProcessor {
                 EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 for (String interServiceClassName : interServiceClassNames) {
-                    methodSpecBuilder.addStatement("$N.unregister($N.class)", SERVICE, interServiceClassName);
+                    methodSpecBuilder.addStatement("$T.unregister($T.class)", classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)));
                 }
             }
         });

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
+import com.ehi.base.interceptor.LoginInterceptor;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterResult;
@@ -270,6 +271,7 @@ public class TestRouterAct extends AppCompatActivity {
                                 });
                     }
                 })
+                .interceptors(LoginInterceptor.class)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {

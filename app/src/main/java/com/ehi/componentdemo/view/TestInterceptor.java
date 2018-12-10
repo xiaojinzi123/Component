@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.base.interceptor.LoginInterceptor;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.support.EHiRouterInterceptor;
@@ -48,7 +47,7 @@ public class TestInterceptor extends AppCompatActivity {
     }
 
     public void registerLoginInterceptor(View view) {
-        EHiRouter.addRouterInterceptor(new LoginInterceptor());
+        // EHiRouter.addRouterInterceptor(new LoginInterceptor());
     }
 
 }

@@ -60,6 +60,7 @@ class EHiRouterCenter implements IComponentModuleRouter {
         return false;
     }
 
+    @Nullable
     @Override
     public synchronized List<EHiRouterInterceptor> interceptors(@NonNull Uri uri) {
         for (String key : routerMap.keySet()) {

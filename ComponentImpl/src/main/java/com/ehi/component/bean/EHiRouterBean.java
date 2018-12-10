@@ -19,7 +19,7 @@ public class EHiRouterBean {
 
     public Class targetClass;
 
-    public List<EHiRouterInterceptor> interceptors;
+    public List<Class<? extends EHiRouterInterceptor>> interceptors;
 
     public String desc;
 

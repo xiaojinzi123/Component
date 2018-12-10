@@ -1,12 +1,14 @@
 package com.ehi.user.service;
 
 import com.ehi.base.service.inter.user.UserService;
+import com.ehi.component.anno.EHiServiceAnno;
 
 /**
  * time   : 2018/12/03
  *
  * @author : xiaojinzi 30212
  */
+@EHiServiceAnno(value = UserService.class)
 public class UserServiceImpl implements UserService {
 
     /**

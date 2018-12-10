@@ -31,9 +31,7 @@ import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
@@ -254,26 +252,9 @@ public class RouterProcessor extends AbstractProcessor {
                 initMapMethodSpecBuilder.addStatement("$N.desc = $S", routerBeanName, routerBean.getDesc());
                 initMapMethodSpecBuilder.addStatement("$N.targetClass = $T.class", routerBeanName, targetClassName);
                 if (routerBean.getInterceptors() != null && routerBean.getInterceptors().size() > 0) {
-                    initMapMethodSpecBuilder.addStatement("$N.interceptors = new java.util.ArrayList<>()", routerBeanName);
+                    initMapMethodSpecBuilder.addStatement("$N.interceptors = new $T()", routerBeanName,ArrayList.class);
                     for (String interceptorClassName : routerBean.getInterceptors()) {
-
-                        boolean isHaveDefaultConstructor = isHaveDefaultConstructor(interceptorClassName);
-
-                        // 生成一个名字
-                        String interceptorName = "interceptor" + atomicInteger.incrementAndGet();
-                        // 先从缓存中获取
-                        initMapMethodSpecBuilder.addStatement("$N $N = $N.get($N.class)", interceptorClassName, interceptorName, INTERCEPTOR_UTIL_NAME, interceptorClassName);
-                        // 如果是null,就创建一个然后放进去
-                        initMapMethodSpecBuilder.beginControlFlow("if($N == null)", interceptorName);
-                        if (isHaveDefaultConstructor) {
-                            initMapMethodSpecBuilder.addStatement("$N = new $N()", interceptorName, interceptorClassName);
-                        } else {
-                            initMapMethodSpecBuilder.addStatement("$N = new $N($N.getApplication())", interceptorName, interceptorClassName,COMPONENT_CONFIG_NAME);
-                        }
-                        initMapMethodSpecBuilder.addStatement("$N.put($N.class,$N)", INTERCEPTOR_UTIL_NAME, interceptorClassName, interceptorName);
-                        initMapMethodSpecBuilder.endControlFlow();
-
-                        initMapMethodSpecBuilder.addStatement("$N.interceptors.add($N)", routerBeanName, interceptorName);
+                        initMapMethodSpecBuilder.addStatement("$N.interceptors.add($T.class)", routerBeanName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
                     }
                 }
                 initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);

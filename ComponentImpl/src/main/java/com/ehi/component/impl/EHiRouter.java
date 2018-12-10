@@ -15,7 +15,6 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.router.IComponentHostRouter;
-import com.ehi.component.router.IComponentModuleRouter;
 import com.ehi.component.support.Consumer;
 import com.ehi.component.support.EHiErrorRouterInterceptor;
 import com.ehi.component.support.EHiRouterInterceptor;
@@ -185,6 +184,7 @@ public class EHiRouter {
 
         @Nullable
         private EHiRouterInterceptor[] interceptors;
+        private Class<? extends EHiRouterInterceptor>[] classInterceptors;
 
         @NonNull
         private Consumer<Intent> intentConsumer = null;
@@ -201,6 +201,11 @@ public class EHiRouter {
 
         public Builder interceptors(@NonNull EHiRouterInterceptor... interceptors) {
             this.interceptors = interceptors;
+            return this;
+        }
+
+        public Builder interceptors(@NonNull Class<? extends EHiRouterInterceptor>... interceptors) {
+            this.classInterceptors = interceptors;
             return this;
         }
 
@@ -495,7 +500,7 @@ public class EHiRouter {
 
                 EHiRouterRequest originalRequest = generateRouterRequest();
 
-                realNavigate(originalRequest, interceptors, new InterceptorCallbackImpl(callback));
+                realNavigate(originalRequest, interceptors, classInterceptors, new InterceptorCallbackImpl(callback));
 
             } catch (Exception e) { // 发生路由错误的时候
                 EHiRouterUtil.deliveryError(e);
@@ -526,15 +531,37 @@ public class EHiRouter {
         @MainThread
         private void realNavigate(@NonNull EHiRouterRequest originalRequest,
                                   @Nullable EHiRouterInterceptor[] customInterceptors,
+                                  @Nullable Class<? extends EHiRouterInterceptor>[] customClassInterceptors,
                                   @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
-            int totalCount = (customInterceptors == null ? 0 : customInterceptors.length) + routerInterceptors.size() + 1;
+
+            // 预计算个数,可能不足
+            int totalCount = (customInterceptors == null ? 0 : customInterceptors.length) +
+                    (customClassInterceptors == null ? 0 : customClassInterceptors.length) +
+                    routerInterceptors.size() + 1;
+
             // 自定义拦截器
             final List<EHiRouterInterceptor> interceptors = new ArrayList(totalCount);
+
             if (customInterceptors != null) {
                 for (EHiRouterInterceptor customInterceptor : customInterceptors) {
                     interceptors.add(customInterceptor);
                 }
             }
+            if (customClassInterceptors != null) {
+                for (Class<? extends EHiRouterInterceptor> customClassInterceptor : customClassInterceptors) {
+                    if (customClassInterceptor == null) {
+                        continue;
+                    }
+                    EHiRouterInterceptor interceptor = EHiRouterInterceptorUtil.get(customClassInterceptor);
+                    if (interceptor != null) {
+                        interceptors.add(interceptor);
+                    }else {
+                        callback.onError(new Exception(customClassInterceptor.getName() + " can't instantiation"));
+                        return;
+                    }
+                }
+            }
+
             // 公共拦截器
             interceptors.addAll(routerInterceptors);
             // 扫尾拦截器
@@ -543,6 +570,7 @@ public class EHiRouter {
             final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest, callback);
             // 执行
             chain.proceed(originalRequest);
+
         }
 
         private class InterceptorCallbackImpl implements EHiRouterInterceptor.Callback {

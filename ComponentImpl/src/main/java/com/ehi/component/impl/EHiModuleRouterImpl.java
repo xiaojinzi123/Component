@@ -19,6 +19,7 @@ import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.EHiRouterInterceptor;
 import com.ehi.component.support.QueryParameterSupport;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,6 +175,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
     }
 
+    @Nullable
     @Override
     public synchronized List<EHiRouterInterceptor> interceptors(@NonNull Uri uri) {
         if (!hasInitMap) {
@@ -184,7 +186,15 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         if (routerBean == null) {
             return null;
         }
-        return routerBean.interceptors;
+        List<Class<? extends EHiRouterInterceptor>> interceptors = routerBean.interceptors;
+        if (interceptors == null) {
+            return null;
+        }
+        List<EHiRouterInterceptor> result = new ArrayList<>();
+        for (Class<? extends EHiRouterInterceptor> interceptor : interceptors) {
+            result.add(EHiRouterInterceptorUtil.get(interceptor));
+        }
+        return result;
     }
 
     private String getTargetPath(@NonNull Uri uri) {

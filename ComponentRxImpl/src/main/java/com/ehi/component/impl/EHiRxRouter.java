@@ -83,6 +83,11 @@ public class EHiRxRouter {
         }
 
         @Override
+        public EHiRouter.Builder interceptors(@NonNull Class<? extends EHiRouterInterceptor>... interceptors) {
+            return (Builder) super.interceptors(interceptors);
+        }
+
+        @Override
         public Builder requestCode(@Nullable Integer requestCode) {
             return (Builder) super.requestCode(requestCode);
         }
