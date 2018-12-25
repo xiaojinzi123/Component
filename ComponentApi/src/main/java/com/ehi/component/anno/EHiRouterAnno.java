@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * 这是一个路由的 Api
  */
-@Target({ElementType.TYPE})
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)
 public @interface EHiRouterAnno {
 

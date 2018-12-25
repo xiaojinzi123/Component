@@ -121,6 +121,14 @@
                 android:textAllCaps="false"
                 android:textSize="10dp" />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="testCustomerCallPhone"
+                android:text="自定义解析,跳转到打电话界面"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
         </com.ehi.componentdemo.view.XFlowLayout>
 
         <Button

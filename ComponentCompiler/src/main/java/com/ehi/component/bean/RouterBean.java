@@ -16,6 +16,7 @@ public class RouterBean {
     private String path;
     private String desc;
     private List<String> interceptors = new ArrayList<>(1);
+    // 可是是一个Activity 类或者是一个静态方法
     private Element rawType;
 
     public String getHost() {

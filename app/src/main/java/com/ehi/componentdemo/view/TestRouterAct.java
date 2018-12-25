@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.interceptor.LoginInterceptor;
 import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
@@ -417,4 +418,20 @@ public class TestRouterAct extends AppCompatActivity {
 
     }
 
+    public void testCustomerCallPhone(View view) {
+
+        EHiRxRouter
+                .with(this)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.CALL_PHONE)
+                .requestCode(123)
+                .activityResultCall()
+                .subscribe(new Consumer<EHiActivityResult>() {
+                    @Override
+                    public void accept(EHiActivityResult eHiActivityResult) throws Exception {
+                        System.out.println("12312312");
+                    }
+                });
+
+    }
 }

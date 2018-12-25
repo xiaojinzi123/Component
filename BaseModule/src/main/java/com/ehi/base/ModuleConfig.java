@@ -8,6 +8,15 @@ package com.ehi.base;
  */
 public class ModuleConfig {
 
+    public static class System {
+
+        public static final String NAME = "system";
+
+        // 测试跳转的界面
+        public static final String CALL_PHONE = "callPhone";
+
+    }
+
     public static class App {
 
         public static final String NAME = "app";

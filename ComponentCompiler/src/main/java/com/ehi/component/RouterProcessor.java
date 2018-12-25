@@ -6,6 +6,7 @@ import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
@@ -31,6 +32,7 @@ import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypesException;
@@ -48,6 +50,9 @@ public class RouterProcessor extends AbstractProcessor {
     private static final String ROUTER_BEAN_NAME = "com.ehi.component.bean.EHiRouterBean";
     private static final String INTERCEPTOR_UTIL_NAME = "com.ehi.component.impl.EHiRouterInterceptorUtil";
     private static final String COMPONENT_CONFIG_NAME = "com.ehi.component.ComponentConfig";
+    private static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.ehi.component.bean.CustomerIntentCall";
+    private static final String INTENT_CLASS_NAME = "android.content.Intent";
+    private static final String ROUTER_REQUEST_CLASS_NAME = "com.ehi.component.impl.EHiRouterRequest";
 
     private TypeMirror typeString;
 
@@ -55,6 +60,11 @@ public class RouterProcessor extends AbstractProcessor {
     private Messager mMessager;
     private Types mTypes;
     private Elements mElements;
+    private TypeElement customerIntentCallTypeElement;
+    private ClassName customerIntentCallClassName;
+
+    private TypeElement intentTypeElement;
+    private TypeElement routerRequestTypeElement;
 
     // 在每一个 module 中配置的 HOST 的信息
     private String componentHost = null;
@@ -69,6 +79,10 @@ public class RouterProcessor extends AbstractProcessor {
         mElements = processingEnv.getElementUtils();
 
         typeString = mElements.getTypeElement("java.lang.String").asType();
+        customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
+        intentTypeElement = mElements.getTypeElement(INTENT_CLASS_NAME);
+        routerRequestTypeElement = mElements.getTypeElement(ROUTER_REQUEST_CLASS_NAME);
+        customerIntentCallClassName = ClassName.get(customerIntentCallTypeElement);
 
         Map<String, String> options = processingEnv.getOptions();
         if (options != null) {
@@ -121,32 +135,26 @@ public class RouterProcessor extends AbstractProcessor {
 
             TypeMirror tm = element.asType();
 
-            // 必须标记的是一种类型的元素
-            if (!(element instanceof TypeElement)) {
-
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
-
-                continue;
-
-            }
-
-            // 必须标记在 Activity 上
-            if (!mTypes.isSubtype(tm, typeActivity)) {
-
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'EHiRouterAnno' annotation");
-
-                continue;
-
-            }
+            // 必须标记的是一种类型的元素或者是一个可执行的方法
+//            if (!(element instanceof TypeElement)) {
+//
+//                throw new RuntimeException(element + " is not a 'TypeElement' ");
+//
+//            }
+//
+//            // 必须标记在 Activity 上
+//            if (!mTypes.isSubtype(tm, typeActivity)) {
+//
+//                throw new RuntimeException(element + " can't use 'EHiRouterAnno' annotation");
+//
+//            }
 
             // 如果是一个Activity 才会走到这里
 
             EHiRouterAnno router = element.getAnnotation(EHiRouterAnno.class);
 
             if (router == null) {
-
                 continue;
-
             }
 
             if (router.value() == null || "".equals(router.value())) {
@@ -239,20 +247,63 @@ public class RouterProcessor extends AbstractProcessor {
             @Override
             public void accept(String key, RouterBean routerBean) {
 
-                ClassName targetClassName = ClassName.get((TypeElement) routerBean.getRawType());
+                // 可能是空的,因为注解可能标记在静态方法上
+                ClassName targetActivityClassName = null;
+                // 当标记在静态方法上的时候,这个不会为空,比如 "xxx.intentCreate"
+                String customerIntentCreatePath = null;
+
+                String commentStr = null;
+
+                if (routerBean.getRawType() instanceof TypeElement) {
+
+                    targetActivityClassName = ClassName.get((TypeElement) routerBean.getRawType());
+                    commentStr = targetActivityClassName.toString();
+
+                } else if (routerBean.getRawType() instanceof ExecutableElement) {
+
+                    // 静态方法
+                    ExecutableElement executableElement = (ExecutableElement) routerBean.getRawType();
+
+                    TypeElement declareClassType = (TypeElement) executableElement.getEnclosingElement();
+
+                    //throw new RuntimeException(declareClassType.toString() + "." + executableElement.getSimpleName());
+
+                    customerIntentCreatePath = declareClassType.toString() + "." + executableElement.getSimpleName();
+                    commentStr = customerIntentCreatePath;
+
+                }
+
+
                 String routerBeanName = "routerBean" + atomicInteger.incrementAndGet();
 
                 initMapMethodSpecBuilder.addCode("\n");
-                initMapMethodSpecBuilder.addComment("---------------------------" + targetClassName.toString() + "---------------------------");
+                initMapMethodSpecBuilder.addComment("---------------------------" + commentStr + "---------------------------");
                 initMapMethodSpecBuilder.addCode("\n");
 
                 initMapMethodSpecBuilder.addStatement("$N $N = new $N()", ROUTER_BEAN_NAME, routerBeanName, ROUTER_BEAN_NAME);
                 initMapMethodSpecBuilder.addStatement("$N.host = $S", routerBeanName, routerBean.getHost());
                 initMapMethodSpecBuilder.addStatement("$N.path = $S", routerBeanName, routerBean.getPath());
                 initMapMethodSpecBuilder.addStatement("$N.desc = $S", routerBeanName, routerBean.getDesc());
-                initMapMethodSpecBuilder.addStatement("$N.targetClass = $T.class", routerBeanName, targetClassName);
+                if (targetActivityClassName != null) {
+                    initMapMethodSpecBuilder.addStatement("$N.targetClass = $T.class", routerBeanName, targetActivityClassName);
+                }
+                if (customerIntentCreatePath != null) {
+                    TypeSpec intentCallTypeSpec = TypeSpec.anonymousClassBuilder("")
+                            .addSuperinterface(customerIntentCallClassName)
+                            .addMethod(
+                                    MethodSpec.methodBuilder("get")
+                                            .addParameter(TypeName.get(routerRequestTypeElement.asType()), "request", Modifier.FINAL)
+                                            .addAnnotation(Override.class)
+                                            .addModifiers(Modifier.PUBLIC)
+                                            .addStatement("return $N(request)", customerIntentCreatePath)
+                                            .returns(TypeName.get(intentTypeElement.asType()))
+                                            .build()
+                            )
+                            .build();
+                    initMapMethodSpecBuilder.addStatement("$N.customerIntentCall = $L", routerBeanName, intentCallTypeSpec);
+                }
                 if (routerBean.getInterceptors() != null && routerBean.getInterceptors().size() > 0) {
-                    initMapMethodSpecBuilder.addStatement("$N.interceptors = new $T()", routerBeanName,ArrayList.class);
+                    initMapMethodSpecBuilder.addStatement("$N.interceptors = new $T()", routerBeanName, ArrayList.class);
                     for (String interceptorClassName : routerBean.getInterceptors()) {
                         initMapMethodSpecBuilder.addStatement("$N.interceptors.add($T.class)", routerBeanName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
                     }
@@ -260,9 +311,6 @@ public class RouterProcessor extends AbstractProcessor {
                 initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
 
                 initMapMethodSpecBuilder.addCode("\n");
-                //initMapMethodSpecBuilder.addStatement("routerMap" + ".put($S,$T.class)", key, targetClassName);
-                //initMapMethodSpecBuilder.addStatement("isNeedLoginMap" + ".put($T.class,$L)", targetClassName, routerBean.isNeedLogin());
-
 
             }
         });
