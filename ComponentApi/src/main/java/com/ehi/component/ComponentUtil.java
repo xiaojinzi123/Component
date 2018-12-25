@@ -40,19 +40,20 @@ public class ComponentUtil {
     public static final String SERVICE = "ServiceGenerated";
 
     /**
-     * 路由框架基础实现类的全类名
+     * 生成的文件名称的后缀
      */
+    public static final String INTERCEPTOR = "InterceptorGenerated";
+
+    public static final String ROUTER_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiRouterAnno";
+    public static final String MODULE_APP_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiModuleAppAnno";
+    public static final String SERVICE_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiServiceAnno";
+
+    // 路由框架基础实现类的全类名
+
     public static final String UIROUTER_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "EHiModuleRouterImpl";
-
-    /**
-     * 生命周期框架基础实现类的全类名
-     */
     public static final String MODULE_APPLICATION_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "EHiModuleApplicationImpl";
-
-    /**
-     * 生命周期框架基础实现类的全类名
-     */
     public static final String SERVICE_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "service" + DOT + "EHiMuduleServiceImpl";
+    public static final String INTERCEPTOR_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "EHiModuleInterceptorImpl";
 
     /**
      * 首字母小写
@@ -80,6 +81,11 @@ public class ComponentUtil {
 
     public static String genHostServiceClassName(String host) {
         String claName = IMPL_OUTPUT_PKG + DOT + "service"+ DOT + firstCharUpperCase(host) + SERVICE;
+        return new String(claName);
+    }
+
+    public static String genHostInterceptorClassName(String host) {
+        String claName = IMPL_OUTPUT_PKG + DOT + firstCharUpperCase(host) + INTERCEPTOR;
         return new String(claName);
     }
 

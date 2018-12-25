@@ -13,7 +13,7 @@ import android.util.SparseArray;
 
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.bean.EHiActivityResult;
-import com.ehi.component.error.IntentResultException;
+import com.ehi.component.error.ActivityResultException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.error.UnknowException;
@@ -23,6 +23,9 @@ import com.ehi.component.support.EHiRouterInterceptor;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
@@ -45,7 +48,7 @@ public class EHiRxRouter {
      * 必须初始化的时候调用,错误就会自动抓住
      */
     public static void tryErrorCatch() {
-        Consumer<Throwable> preErrorHandler = RxJavaPlugins.getErrorHandler();
+        Consumer<? super Throwable> preErrorHandler = RxJavaPlugins.getErrorHandler();
         RxJavaPlugins.setErrorHandler(new RxRouterConsumer(preErrorHandler));
     }
 
@@ -307,10 +310,19 @@ public class EHiRxRouter {
 
         private void onErrorEmitter(@NonNull final SingleEmitter<? extends Object> emitter,
                                     @NonNull Exception e) {
-            if (emitter.isDisposed()) {
+            if (emitter == null || emitter.isDisposed()) {
                 return;
             }
             emitter.onError(e);
+        }
+
+        private void onErrorEmitter(@NonNull final CompletableEmitter emitter,
+                                    @NonNull Exception e) {
+            if (emitter == null || emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(e);
+
         }
 
         public Single<Intent> intentCall() {
@@ -320,7 +332,7 @@ public class EHiRxRouter {
                         @Override
                         public void accept(EHiActivityResult activityResult) throws Exception {
                             if (activityResult.data == null) {
-                                throw new IntentResultException("the result data is null");
+                                throw new ActivityResultException("the intent result data is null");
                             }
                         }
                     })
@@ -333,6 +345,66 @@ public class EHiRxRouter {
 
         }
 
+        public Single<Integer> resultCodeCall() {
+
+            return activityResultCall()
+                    .map(new Function<EHiActivityResult, Integer>() {
+                        @Override
+                        public Integer apply(EHiActivityResult activityResult) throws Exception {
+                            return activityResult.resultCode;
+                        }
+                    });
+
+        }
+
+        /**
+         * requestCode 一定是相同的,resultCode 如果匹配了就剩下 Intent 参数了
+         * 这个方法不会给你 Intent 对象,只会给你是否 resultCode 匹配成功了
+         * 那么
+         *
+         * @param expectedResultCode
+         * @return
+         */
+        public Completable resultCodeMatchCall(final int expectedResultCode) {
+            return activityResultCall()
+                    .doOnSuccess(new Consumer<EHiActivityResult>() {
+                        @Override
+                        public void accept(EHiActivityResult activityResult) throws Exception {
+                            if (activityResult.resultCode != expectedResultCode) {
+                                throw new ActivityResultException("the resultCode is not matching " + requestCode);
+                            }
+                        }
+                    })
+                    .ignoreElement();
+        }
+
+        /**
+         * 这个方法不仅可以匹配 resultCode,还可以拿到 Intent,当不匹配或者 Intent 为空的时候都会报错哦
+         *
+         * @param expectedResultCode
+         * @return
+         */
+        public Single<Intent> intentResultCodeMatchCall(final int expectedResultCode) {
+            return activityResultCall()
+                    .doOnSuccess(new Consumer<EHiActivityResult>() {
+                        @Override
+                        public void accept(EHiActivityResult activityResult) throws Exception {
+                            if (activityResult.resultCode != expectedResultCode) {
+                                throw new ActivityResultException("the resultCode is not matching " + requestCode);
+                            }
+                            if (activityResult.data == null) {
+                                throw new ActivityResultException("the intent result data is null");
+                            }
+                        }
+                    })
+                    .map(new Function<EHiActivityResult, Intent>() {
+                        @Override
+                        public Intent apply(EHiActivityResult activityResult) throws Exception {
+                            return activityResult.data;
+                        }
+                    });
+        }
+
         public Single<EHiActivityResult> activityResultCall() {
 
             return Single.create(new SingleOnSubscribe<EHiActivityResult>() {
@@ -343,32 +415,9 @@ public class EHiRxRouter {
                         return;
                     }
 
-                    if (isFinish) {
-                        onErrorEmitter(emitter, new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
-                        return;
-                    }
-
-                    if (EHiRouterUtil.isMainThread() == false) {
-                        onErrorEmitter(emitter, new NavigationFailException("EHiRxRouter must run on main thread"));
-                        return;
-                    }
-
-                    if (context == null && fragment == null) {
-                        onErrorEmitter(emitter, new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router")));
-                        return;
-                    }
-
-                    if (context != null && (context instanceof FragmentActivity) == false) {
-                        onErrorEmitter(emitter, new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity")));
-                        return;
-                    }
-
-                    if (requestCode == null) {
-                        onErrorEmitter(emitter, new NavigationFailException(new NullPointerException("requestCode must not be null for router")));
-                        return;
-                    }
-
                     try {
+
+                        onCheck();
 
                         FragmentManager fm = null;
                         if (context == null) {
@@ -433,6 +482,83 @@ public class EHiRxRouter {
             });
 
 
+        }
+
+        public Completable call() {
+            return Completable.create(new CompletableOnSubscribe() {
+                @Override
+                public void subscribe(final CompletableEmitter emitter) throws Exception {
+
+                    if (emitter.isDisposed()) {
+                        return;
+                    }
+
+                    try {
+
+                        onCheck();
+
+                        // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
+                        final String mHost = host;
+                        final String mPath = path;
+
+                        navigate(new EHiCallbackAdapter() {
+                            @Override
+                            public void onEvent(@Nullable EHiRouterResult routerResult, @Nullable Exception error) {
+                                try {
+                                    if (routerResult != null) {
+                                        if (emitter != null && !emitter.isDisposed()) {
+                                            emitter.onComplete();
+                                        }
+                                    } else {
+                                        if (error != null) {
+                                            throw error;
+                                        } else {
+                                            throw new NavigationFailException("host = " + mHost + ",path = " + mPath);
+                                        }
+                                    }
+                                } catch (TargetActivityNotFoundException e) {
+                                    onErrorEmitter(emitter, e);
+                                } catch (NavigationFailException e) {
+                                    onErrorEmitter(emitter, e);
+                                } catch (Exception e) {
+                                    onErrorEmitter(emitter, new UnknowException(e));
+                                }
+
+                            }
+                        });
+
+                    } catch (TargetActivityNotFoundException e) {
+                        onErrorEmitter(emitter, e);
+                    } catch (NavigationFailException e) {
+                        onErrorEmitter(emitter, e);
+                    } catch (Exception e) {
+                        onErrorEmitter(emitter, new UnknowException(e));
+                    }
+
+                }
+            });
+        }
+
+        private void onCheck() throws Exception {
+            if (isFinish) {
+                throw new NavigationFailException("EHiRouter.Builder can't be used multiple times");
+            }
+
+            if (EHiRouterUtil.isMainThread() == false) {
+                throw new NavigationFailException("EHiRxRouter must run on main thread");
+            }
+
+            if (context == null && fragment == null) {
+                throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router"));
+            }
+
+            if (context != null && (context instanceof FragmentActivity) == false) {
+                throw new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity"));
+            }
+
+            if (requestCode == null) {
+                throw new NavigationFailException(new NullPointerException("requestCode must not be null for router"));
+            }
         }
 
     }

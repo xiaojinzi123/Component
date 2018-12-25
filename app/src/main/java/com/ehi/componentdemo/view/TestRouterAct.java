@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Single;
 import io.reactivex.SingleTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -394,6 +395,23 @@ public class TestRouterAct extends AppCompatActivity {
                     @Override
                     public void onError(@NonNull Exception error) {
                         addInfo(null, error, ModuleConfig.Component2.NAME + "/" + ModuleConfig.Component2.MAIN, null);
+                    }
+                });
+
+    }
+
+    public void testMatchesResultCode(View v) {
+
+        EHiRxRouter
+                .with(this)
+                .host("component1")
+                .path("test")
+                .query("data", "testMatchesResultCode")
+                .resultCodeMatchCall(RESULT_OK)
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+
                     }
                 });
 

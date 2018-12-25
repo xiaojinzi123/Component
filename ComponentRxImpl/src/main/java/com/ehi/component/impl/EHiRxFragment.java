@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.ehi.component.bean.EHiActivityResult;
-import com.ehi.component.error.IntentResultException;
+import com.ehi.component.error.ActivityResultException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,10 +57,10 @@ public final class EHiRxFragment extends Fragment {
         return singleEmitterMap.containsKey(requestCode);
     }
 
-    public void setSingleEmitter(@NonNull SingleEmitter<EHiActivityResult> singleEmitter, @NonNull int requestCode) throws IntentResultException {
+    public void setSingleEmitter(@NonNull SingleEmitter<EHiActivityResult> singleEmitter, @NonNull int requestCode) throws ActivityResultException {
 
         if (isContainsSingleEmitter(requestCode)) {
-            throw new IntentResultException("request&result code: " + requestCode + " can't be same");
+            throw new ActivityResultException("request&result code: " + requestCode + " can't be same");
         }
         singleEmitterMap.put(requestCode, singleEmitter);
     }

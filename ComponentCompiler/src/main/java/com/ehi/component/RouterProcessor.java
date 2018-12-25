@@ -42,7 +42,7 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedAnnotationTypes({"com.ehi.component.anno.EHiRouterAnno"})
+@SupportedAnnotationTypes({ComponentUtil.ROUTER_ANNO_CLASS_NAME})
 public class RouterProcessor extends AbstractProcessor {
 
     private static final String ROUTER_BEAN_NAME = "com.ehi.component.bean.EHiRouterBean";

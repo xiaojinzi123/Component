@@ -39,7 +39,7 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedAnnotationTypes({"com.ehi.component.anno.EHiModuleAppAnno"})
+@SupportedAnnotationTypes({ComponentUtil.MODULE_APP_ANNO_CLASS_NAME})
 public class ModuleAppProcessor extends AbstractProcessor {
 
     private TypeMirror typeString;

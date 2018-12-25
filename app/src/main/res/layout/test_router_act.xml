@@ -113,6 +113,14 @@
                 android:textAllCaps="false"
                 android:textSize="10dp" />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="testMatchesResultCode"
+                android:text="匹配resultCode"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
         </com.ehi.componentdemo.view.XFlowLayout>
 
         <Button

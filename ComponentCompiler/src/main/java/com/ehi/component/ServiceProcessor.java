@@ -42,7 +42,7 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedAnnotationTypes({"com.ehi.component.anno.EHiServiceAnno"})
+@SupportedAnnotationTypes({ComponentUtil.SERVICE_ANNO_CLASS_NAME})
 public class ServiceProcessor extends AbstractProcessor {
 
     private static final String SERVICE_CONTAINER_NAME = "com.ehi.component.service.EHiService";
