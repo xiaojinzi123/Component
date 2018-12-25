@@ -90,18 +90,21 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         EHiRouterBean target = getTarget(routerRequest.uri);
 
+        // EHi://component1/test?data=xxxx
+        String uriString = routerRequest.uri.toString();
+
         // 没有找到目标界面
         if (target == null) {
-            throw new TargetActivityNotFoundException(routerRequest.uri.toString());
+            throw new TargetActivityNotFoundException(uriString);
         }
 
         // 防止重复跳转同一个界面
-        if (routerRequest.uri.toString().equals(preTargetStrUri) && (System.currentTimeMillis() - preTargetTime) < 1000) { // 如果跳转的是同一个界面
+        if (getUrlWithOutQuerys(uriString).equals(preTargetStrUri) && (System.currentTimeMillis() - preTargetTime) < 1000) { // 如果跳转的是同一个界面
             throw new NavigationFailException("target activity can't launch twice In a second");
         }
 
         // 保存目前跳转过去的界面
-        preTargetStrUri = routerRequest.uri.toString();
+        preTargetStrUri = getUrlWithOutQuerys(uriString);
         preTargetTime = System.currentTimeMillis();
 
         if (routerRequest.context == null && routerRequest.fragment == null) {
@@ -128,7 +131,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         }
 
         if (intent == null) {
-            throw new TargetActivityNotFoundException(routerRequest.uri.toString());
+            throw new TargetActivityNotFoundException(uriString);
         }
 
         intent.putExtras(routerRequest.bundle);
@@ -276,6 +279,15 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     private Fragment findFragment(@NonNull Fragment fragment) {
         Fragment result = fragment.getChildFragmentManager().findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
         return result;
+    }
+
+    private String getUrlWithOutQuerys(String url) {
+        int index = url.indexOf("?");
+        if (index > -1) {
+            return url.substring(0, index);
+        }else {
+            return url;
+        }
     }
 
 }
