@@ -14,6 +14,8 @@ import android.util.SparseArray;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.NavigationFailException;
+import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
+import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.Consumer;
 import com.ehi.component.support.EHiErrorRouterInterceptor;
@@ -42,20 +44,7 @@ public class EHiRouter {
      */
     private static String TAG = "EHiRouter";
 
-    static Collection<EHiRouterInterceptor> routerInterceptors = Collections.synchronizedCollection(new ArrayList<EHiRouterInterceptor>(0));
-
     static Collection<EHiErrorRouterInterceptor> errorRouterInterceptors = Collections.synchronizedCollection(new ArrayList<EHiErrorRouterInterceptor>(0));
-
-    public static void clearRouterInterceptor() {
-        routerInterceptors.clear();
-    }
-
-    public static void addRouterInterceptor(@NonNull EHiRouterInterceptor interceptor) {
-        if (routerInterceptors.contains(interceptor)) {
-            return;
-        }
-        routerInterceptors.add(interceptor);
-    }
 
     public static void clearErrorRouterInterceptor() {
         errorRouterInterceptors.clear();
@@ -534,7 +523,9 @@ public class EHiRouter {
                                   @Nullable Class<? extends EHiRouterInterceptor>[] customClassInterceptors,
                                   @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
 
-            // 预计算个数,可能不足
+            List<EHiRouterInterceptor> routerInterceptors = EHiCenterInterceptor.getInstance().getInterceptorList();
+
+            // 预计算个数,可能不足, +1 的拦截器是扫尾的一个拦截器,是正确的行为
             int totalCount = (customInterceptors == null ? 0 : customInterceptors.length) +
                     (customClassInterceptors == null ? 0 : customClassInterceptors.length) +
                     routerInterceptors.size() + 1;
@@ -566,6 +557,7 @@ public class EHiRouter {
             interceptors.addAll(routerInterceptors);
             // 扫尾拦截器
             interceptors.add(new TargetInterceptorsInterceptor());
+
             // 创建执行器
             final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest, callback);
             // 执行

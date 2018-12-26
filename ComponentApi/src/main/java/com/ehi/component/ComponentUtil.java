@@ -44,6 +44,7 @@ public class ComponentUtil {
      */
     public static final String INTERCEPTOR = "InterceptorGenerated";
 
+    public static final String INTERCEPTOR_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiInterceptorAnno";
     public static final String ROUTER_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiRouterAnno";
     public static final String MODULE_APP_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiModuleAppAnno";
     public static final String SERVICE_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiServiceAnno";
@@ -53,7 +54,7 @@ public class ComponentUtil {
     public static final String UIROUTER_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "EHiModuleRouterImpl";
     public static final String MODULE_APPLICATION_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "EHiModuleApplicationImpl";
     public static final String SERVICE_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "service" + DOT + "EHiMuduleServiceImpl";
-    public static final String INTERCEPTOR_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "EHiModuleInterceptorImpl";
+    public static final String INTERCEPTOR_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + "EHiMuduleInterceptorImpl";
 
     /**
      * 首字母小写
@@ -80,12 +81,12 @@ public class ComponentUtil {
     }
 
     public static String genHostServiceClassName(String host) {
-        String claName = IMPL_OUTPUT_PKG + DOT + "service"+ DOT + firstCharUpperCase(host) + SERVICE;
+        String claName = IMPL_OUTPUT_PKG + DOT + "service" + DOT + firstCharUpperCase(host) + SERVICE;
         return new String(claName);
     }
 
     public static String genHostInterceptorClassName(String host) {
-        String claName = IMPL_OUTPUT_PKG + DOT + firstCharUpperCase(host) + INTERCEPTOR;
+        String claName = IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + firstCharUpperCase(host) + INTERCEPTOR;
         return new String(claName);
     }
 

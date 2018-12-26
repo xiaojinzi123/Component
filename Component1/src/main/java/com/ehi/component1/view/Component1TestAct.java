@@ -9,13 +9,10 @@ import android.widget.TextView;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.support.QueryParameterSupport;
 import com.ehi.component1.R;
-import com.ehi.component1.interceptor.Component1Interceptor1;
-import com.ehi.component1.interceptor.Component1Interceptor2;
 
 @EHiRouterAnno(
         host = "component1",
         value = "test",
-        interceptors = {Component1Interceptor1.class, Component1Interceptor2.class},
         desc = "业务组件1的测试界面"
 )
 public class Component1TestAct extends AppCompatActivity {

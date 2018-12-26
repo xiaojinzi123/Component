@@ -1,13 +1,7 @@
 package com.ehi.component.service;
 
-import android.app.Application;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.ehi.component.ComponentConfig;
-import com.ehi.component.ComponentUtil;
-import com.ehi.component.application.IComponentHostApplication;
-import com.ehi.component.impl.EHiModuleManager;
 
 import java.util.HashMap;
 import java.util.Map;

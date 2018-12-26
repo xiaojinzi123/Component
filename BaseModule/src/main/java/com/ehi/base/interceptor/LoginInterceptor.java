@@ -27,9 +27,7 @@ import io.reactivex.schedulers.Schedulers;
 public class LoginInterceptor implements EHiRouterInterceptor {
 
     public LoginInterceptor(Context app) {
-        System.out.println("qweqwe");
     }
-
 
     @Override
     public void intercept(final Chain chain) throws Exception {

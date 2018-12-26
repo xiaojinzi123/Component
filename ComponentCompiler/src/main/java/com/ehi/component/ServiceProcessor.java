@@ -131,7 +131,7 @@ public class ServiceProcessor extends AbstractProcessor {
 
         annoElementList.clear();
 
-        TypeMirror typeApplication = mElements.getTypeElement(ComponentConstants.EHIAPPLCATON).asType();
+        TypeMirror typeApplication = mElements.getTypeElement(ComponentConstants.EHIAPPLCATON_INTERFACE_CLASS_NAME).asType();
 
         for (Element element : annoElements) {
 

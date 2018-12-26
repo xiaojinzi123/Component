@@ -1,4 +1,4 @@
-package com.ehi.component1.interceptor;
+package com.ehi.user.interceptor;
 
 import com.ehi.component.anno.EHiInterceptorAnno;
 import com.ehi.component.support.EHiRouterInterceptor;
@@ -8,10 +8,10 @@ import com.ehi.component.support.EHiRouterInterceptor;
  *
  * @author : xiaojinzi 30212
  */
-@EHiInterceptorAnno(priority = 2)
-public class Component1Interceptor1 implements EHiRouterInterceptor {
+@EHiInterceptorAnno(priority = 5)
+public class UserInterceptor1 implements EHiRouterInterceptor {
 
-    public Component1Interceptor1() {
+    public UserInterceptor1() {
     }
 
     @Override

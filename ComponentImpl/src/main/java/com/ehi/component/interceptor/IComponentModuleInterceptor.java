@@ -1,21 +1,20 @@
-package com.ehi.component.service;
+package com.ehi.component.interceptor;
 
 import android.support.annotation.NonNull;
 
 /**
- * 模块的UI服务接口
- * time   : 2018/07/26
+ * time   : 2018/12/26
  *
  * @author : xiaojinzi 30212
  */
-public interface IComponentModuleService {
+public interface IComponentModuleInterceptor {
 
     /**
-     * 注册每一个模块的服务
+     * 注册每一个模块的拦截器
      *
-     * @param service
+     * @param interceptor
      */
-    void register(@NonNull IComponentHostService service);
+    void register(@NonNull IComponentHostInterceptor interceptor);
 
     /**
      * 通过host注册
@@ -25,11 +24,11 @@ public interface IComponentModuleService {
     void register(@NonNull String host);
 
     /**
-     * 反注册模块的服务
+     * 反注册模块的拦截器
      *
      * @param service
      */
-    void unregister(@NonNull IComponentHostService service);
+    void unregister(@NonNull IComponentHostInterceptor interceptor);
 
     /**
      * 通过 host 反注册

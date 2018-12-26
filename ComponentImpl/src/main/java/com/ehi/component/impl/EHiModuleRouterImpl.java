@@ -15,6 +15,7 @@ import com.ehi.component.ComponentUtil;
 import com.ehi.component.bean.EHiRouterBean;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
+import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.EHiRouterInterceptor;
 import com.ehi.component.support.QueryParameterSupport;
@@ -35,6 +36,7 @@ import java.util.Map;
 abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
     /**
+     * component/test
      * 保存映射关系的map集合
      */
     protected Map<String, EHiRouterBean> routerBeanMap = new HashMap<>();
@@ -242,8 +244,6 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         }
 
         targetPath = uri.getHost() + targetPath;
-
-        Class targetClass = null;
 
         return routerBeanMap.get(targetPath);
 

@@ -14,13 +14,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -32,49 +28,23 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes({ComponentUtil.MODULE_APP_ANNO_CLASS_NAME})
-public class ModuleAppProcessor extends AbstractProcessor {
+public class ModuleAppProcessor extends BaseHostProcessor {
 
-    private TypeMirror typeString;
-
-    private Filer mFiler;
-    private Messager mMessager;
-    private Types mTypes;
-    private Elements mElements;
-
-    // 在每一个 module 中配置的 HOST 的信息
-    private String componentHost = null;
+    private TypeElement eHiCenterInterceptorTypeElement;
+    private TypeElement ehiCenterServiceTypeElement;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
 
-        mFiler = processingEnv.getFiler();
-        mMessager = processingEnvironment.getMessager();
-        mTypes = processingEnv.getTypeUtils();
-        mElements = processingEnv.getElementUtils();
-
-        typeString = mElements.getTypeElement("java.lang.String").asType();
-
-        Map<String, String> options = processingEnv.getOptions();
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "options = " + options);
-        if (options != null) {
-            componentHost = options.get("HOST");
-        }
-
-        if (componentHost == null || "".equals(componentHost)) {
-            ErrorPrintUtil.printHostNull(mMessager);
-            return;
-        }
-
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "componentHost = " + componentHost);
+        eHiCenterInterceptorTypeElement = mElements.getTypeElement(ComponentConstants.EHICENTERINTERCEPTOR_CLASS_NAME);
+        ehiCenterServiceTypeElement = mElements.getTypeElement(ComponentConstants.EHICENTERSERVICE_CLASS_NAME);
 
     }
 
@@ -89,8 +59,6 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
             Set<? extends Element> moduleAppElements = roundEnvironment.getElementsAnnotatedWith(EHiModuleAppAnno.class);
 
-            mMessager.printMessage(Diagnostic.Kind.NOTE, " moduleApp.size = " + (moduleAppElements == null ? 0 : moduleAppElements.size()));
-
             parseAnnotation(moduleAppElements);
 
             createImpl();
@@ -99,6 +67,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
         }
 
         return false;
+
     }
 
     private List<Element> applicationList = new ArrayList<>();
@@ -107,7 +76,7 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
         applicationList.clear();
 
-        TypeMirror typeApplication = mElements.getTypeElement(ComponentConstants.EHIAPPLCATON).asType();
+        TypeMirror typeApplication = mElements.getTypeElement(ComponentConstants.EHIAPPLCATON_INTERFACE_CLASS_NAME).asType();
 
         for (Element element : moduleAppElements) {
 
@@ -226,7 +195,8 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
         methodSpecBuilder.addStatement("super.onCreate(application)");
         methodSpecBuilder.addStatement("EHiRouter.register(getHost())");
-        methodSpecBuilder.addStatement("com.ehi.component.impl.service.EHiCenterService.getInstance().register(getHost())");
+        methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", ehiCenterServiceTypeElement);
+        methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", eHiCenterInterceptorTypeElement);
 
         return methodSpecBuilder.build();
     }
@@ -242,14 +212,15 @@ public class ModuleAppProcessor extends AbstractProcessor {
 
         methodSpecBuilder.addStatement("super.onDestory()");
         methodSpecBuilder.addStatement("EHiRouter.unregister(getHost())");
-        methodSpecBuilder.addStatement("com.ehi.component.impl.service.EHiCenterService.getInstance().unregister(getHost())");
+        methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", ehiCenterServiceTypeElement);
+        methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", eHiCenterInterceptorTypeElement);
 
         return methodSpecBuilder.build();
     }
 
     private MethodSpec generateInitHostMethod() {
 
-        TypeName returnType = TypeName.get(typeString);
+        TypeName returnType = TypeName.get(mTypeElementString.asType());
 
         MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("getHost")
                 .returns(returnType)

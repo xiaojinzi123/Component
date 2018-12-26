@@ -9,6 +9,7 @@ import com.ehi.component.application.IComponentApplication;
 
 @EHiModuleAppAnno()
 public class Component1Application implements IComponentApplication {
+
     @Override
     public void onCreate(@NonNull final Application app) {
         // 你可以做一些当前业务模块的一些初始化
@@ -18,4 +19,5 @@ public class Component1Application implements IComponentApplication {
     public void onDestory() {
         // 你可以销毁有关当前业务模块的东西
     }
+
 }

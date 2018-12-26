@@ -1,4 +1,4 @@
-package com.ehi.component.impl;
+package com.ehi.component.impl.interceptor;
 
 import android.app.Application;
 import android.content.Context;
@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author : xiaojinzi 30212
  */
-class EHiRouterInterceptorUtil {
+public class EHiRouterInterceptorUtil {
 
     private static final Map map = new HashMap<>();
 
