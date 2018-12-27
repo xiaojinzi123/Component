@@ -45,8 +45,6 @@ import javax.tools.Diagnostic;
 @SupportedAnnotationTypes({ComponentUtil.SERVICE_ANNO_CLASS_NAME})
 public class ServiceProcessor extends AbstractProcessor {
 
-    private static final String SERVICE_CONTAINER_NAME = "com.ehi.component.service.EHiService";
-
     private static final String SERVICE_SEPER_NAME1 = "com.ehi.component.service.IServiceLoad";
     private static final String SERVICE_SEPER_NAME2 = "com.ehi.component.service.SingletonService";
 
@@ -80,7 +78,7 @@ public class ServiceProcessor extends AbstractProcessor {
         mElements = processingEnv.getElementUtils();
         typeString = mElements.getTypeElement("java.lang.String").asType();
 
-        typeElementServiceContainer = mElements.getTypeElement(SERVICE_CONTAINER_NAME);
+        typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.EHISERVICE_CLASS_NAME);
 
         classNameServiceContainer = ClassName.get(typeElementServiceContainer);
 
@@ -199,7 +197,7 @@ public class ServiceProcessor extends AbstractProcessor {
     private MethodSpec generateOnCreateMethod() {
 
         TypeName returnType = TypeName.VOID;
-        ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.APPLICATION));
+        ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_APPLICATION));
 
         ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, "application")
                 .addModifiers(Modifier.FINAL)

@@ -1,10 +1,7 @@
-package com.ehi.component.support;
+package com.ehi.component.impl;
 
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-
-import com.ehi.component.impl.EHiRouterExecuteResult;
-import com.ehi.component.impl.EHiRouterRequest;
 
 /**
  * 路由跳转的拦截器

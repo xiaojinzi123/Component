@@ -27,7 +27,7 @@ public class ComponentUtil {
     /**
      * 生成的文件名称的后缀
      */
-    public static final String UIROUTER = "UiRouterGenerated";
+    public static final String UIROUTER = "RouterGenerated";
 
     /**
      * 生成的文件名称的后缀
@@ -52,7 +52,7 @@ public class ComponentUtil {
     // 路由框架基础实现类的全类名
 
     public static final String UIROUTER_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "EHiModuleRouterImpl";
-    public static final String MODULE_APPLICATION_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "EHiModuleApplicationImpl";
+    public static final String MODULE_APPLICATION_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "application" + DOT + "EHiModuleApplicationImpl";
     public static final String SERVICE_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "service" + DOT + "EHiMuduleServiceImpl";
     public static final String INTERCEPTOR_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + "EHiMuduleInterceptorImpl";
 
@@ -70,13 +70,13 @@ public class ComponentUtil {
         return new String(ch);
     }
 
-    public static String genHostUIRouterClassName(String host) {
-        String claName = IMPL_OUTPUT_PKG + DOT + firstCharUpperCase(host) + UIROUTER;
+    public static String genHostModuleApplicationClassName(String host) {
+        String claName = IMPL_OUTPUT_PKG + DOT + "application" + DOT + firstCharUpperCase(host) + MODULE_APPLCATION;
         return new String(claName);
     }
 
-    public static String genHostModuleApplicationClassName(String host) {
-        String claName = IMPL_OUTPUT_PKG + DOT + firstCharUpperCase(host) + MODULE_APPLCATION;
+    public static String genHostRouterClassName(String host) {
+        String claName = IMPL_OUTPUT_PKG  + DOT + firstCharUpperCase(host) + UIROUTER;
         return new String(claName);
     }
 

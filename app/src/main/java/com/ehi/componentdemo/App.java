@@ -4,8 +4,8 @@ import android.app.Application;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.ComponentConfig;
-import com.ehi.component.impl.EHiModuleManager;
 import com.ehi.component.impl.EHiRxRouter;
+import com.ehi.component.impl.application.EHiModuleManager;
 
 public class App extends Application {
 

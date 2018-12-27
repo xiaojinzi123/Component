@@ -10,8 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
-import com.ehi.component.support.EHiErrorRouterInterceptor;
-
 /**
  * 路由的工具类,内部都是一些help方法
  */

@@ -9,7 +9,6 @@ import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.router.IComponentModuleRouter;
-import com.ehi.component.support.EHiRouterInterceptor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,7 +102,7 @@ class EHiRouterCenter implements IComponentModuleRouter {
     @Nullable
     private IComponentHostRouter findUiRouter(String host) {
 
-        String className = ComponentUtil.genHostUIRouterClassName(host);
+        String className = ComponentUtil.genHostRouterClassName(host);
 
         try {
             Class<?> clazz = Class.forName(className);

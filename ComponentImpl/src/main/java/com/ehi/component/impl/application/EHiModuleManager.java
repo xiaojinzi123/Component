@@ -1,7 +1,5 @@
-package com.ehi.component.impl;
+package com.ehi.component.impl.application;
 
-import android.app.Application;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -78,8 +76,10 @@ public class EHiModuleManager implements IComponentModuleApplication {
         String className = ComponentUtil.genHostModuleApplicationClassName(host);
 
         try {
-            Class<?> clazz = Class.forName(className);
 
+            Class<?> clazz = Class.forName(className);
+            /*Constructor<?> constructor = clazz.getConstructor();
+            constructor.setAccessible(true);*/
             IComponentHostApplication instance = (IComponentHostApplication) clazz.newInstance();
 
             return instance;

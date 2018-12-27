@@ -3,7 +3,7 @@ package com.ehi.component1.interceptor;
 import android.app.Application;
 
 import com.ehi.component.anno.EHiInterceptorAnno;
-import com.ehi.component.support.EHiRouterInterceptor;
+import com.ehi.component.impl.EHiRouterInterceptor;
 
 /**
  * time   : 2018/12/03

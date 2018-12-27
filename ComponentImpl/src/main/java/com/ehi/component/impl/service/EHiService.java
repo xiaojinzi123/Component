@@ -1,7 +1,9 @@
-package com.ehi.component.service;
+package com.ehi.component.impl.service;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.ehi.component.service.IServiceLoad;
 
 import java.util.HashMap;
 import java.util.Map;

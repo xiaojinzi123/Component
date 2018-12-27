@@ -3,7 +3,7 @@ package com.ehi.base.interceptor;
 import android.app.ProgressDialog;
 import android.content.Context;
 
-import com.ehi.component.support.EHiRouterInterceptor;
+import com.ehi.component.impl.EHiRouterInterceptor;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +42,7 @@ public class DialogShowInterceptor implements EHiRouterInterceptor {
                         return "test";
                     }
                 })
-                .delay(4, TimeUnit.SECONDS)
+                .delay(2, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doOnEvent(new BiConsumer<String, Throwable>() {

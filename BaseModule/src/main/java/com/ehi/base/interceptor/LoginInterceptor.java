@@ -8,8 +8,8 @@ import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
 import com.ehi.base.service.inter.user.UserService;
 import com.ehi.component.impl.EHiRxRouter;
-import com.ehi.component.service.EHiService;
-import com.ehi.component.support.EHiRouterInterceptor;
+import com.ehi.component.impl.service.EHiService;
+import com.ehi.component.impl.EHiRouterInterceptor;
 
 import java.util.concurrent.TimeUnit;
 

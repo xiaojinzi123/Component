@@ -16,10 +16,10 @@ import com.ehi.base.view.BaseAct;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRouterInterceptor;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
-import com.ehi.component.support.EHiRouterInterceptor;
 import com.ehi.componentdemo.R;
 
 import java.util.concurrent.Callable;
@@ -250,29 +250,6 @@ public class TestRouterAct extends BaseAct {
                                     }
                                 });
                     }
-                },new EHiRouterInterceptor() {
-                    @Override
-                    public void intercept(final Chain chain) throws Exception {
-                        final ProgressDialog dialog = ProgressDialog.show(chain.request().getRawContext(), "温馨提示", "再一次耗时操作,2秒后结束", true, false);
-                        dialog.show();
-                        Single
-                                .fromCallable(new Callable<String>() {
-                                    @Override
-                                    public String call() throws Exception {
-                                        return "test";
-                                    }
-                                })
-                                .delay(2, TimeUnit.SECONDS)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeOn(Schedulers.io())
-                                .subscribe(new Consumer<String>() {
-                                    @Override
-                                    public void accept(String s) throws Exception {
-                                        dialog.dismiss();
-                                        chain.proceed(chain.request());
-                                    }
-                                });
-                    }
                 })
                 .interceptors(LoginInterceptor.class)
                 .navigate(new EHiCallbackAdapter() {
@@ -437,37 +414,13 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void testCallbackAfterFinish(View view) {
-//        EHiRxRouter
-//                .with(this)
-//                .host(ModuleConfig.System.NAME)
-//                .requestCode(123)
-//                .interceptors(DialogShowInterceptor.class)
-//                .path(ModuleConfig.System.CALL_PHONE)
-//                .call()
-//                .doOnDispose(new Action() {
-//                    @Override
-//                    public void run() throws Exception {
-//                        System.out.println("2313213");
-//                    }
-//                })
-//                .subscribe(new Action() {
-//                    @Override
-//                    public void run() throws Exception {
-//                        System.out.println("");
-//                    }
-//                }, new Consumer<Throwable>() {
-//                    @Override
-//                    public void accept(Throwable throwable) throws Exception {
-//                        System.out.println("");
-//                    }
-//                });
 
         EHiRxRouter
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .interceptors(DialogShowInterceptor.class)
-                .navigate(new EHiCallbackAdapter(){
+                .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
                         super.onEvent(result, error);

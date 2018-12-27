@@ -1,7 +1,7 @@
 package com.ehi.user.interceptor;
 
 import com.ehi.component.anno.EHiInterceptorAnno;
-import com.ehi.component.support.EHiRouterInterceptor;
+import com.ehi.component.impl.EHiRouterInterceptor;
 
 /**
  * time   : 2018/12/03

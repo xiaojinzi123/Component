@@ -181,7 +181,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
     private MethodSpec generateInterceptorListMethod() {
 
         TypeName returnType = ParameterizedTypeName.get(mClassNameList, TypeName.get(interceptorBeanTypeElement.asType()));
-        ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.APPLICATION));
+        ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_APPLICATION));
 
         final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("interceptorList")
                 .returns(returnType)

@@ -17,7 +17,6 @@ import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
 import com.ehi.component.router.IComponentHostRouter;
-import com.ehi.component.support.EHiRouterInterceptor;
 import com.ehi.component.support.QueryParameterSupport;
 
 import java.util.ArrayList;

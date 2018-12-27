@@ -1,6 +1,6 @@
 package com.ehi.component.impl.interceptor;
 
-import com.ehi.component.support.EHiRouterInterceptor;
+import com.ehi.component.impl.EHiRouterInterceptor;
 
 /**
  * time   : 2018/12/26

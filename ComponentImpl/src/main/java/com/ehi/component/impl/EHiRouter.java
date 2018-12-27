@@ -20,8 +20,6 @@ import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.Consumer;
-import com.ehi.component.support.EHiErrorRouterInterceptor;
-import com.ehi.component.support.EHiRouterInterceptor;
 
 import java.io.Serializable;
 import java.util.ArrayList;

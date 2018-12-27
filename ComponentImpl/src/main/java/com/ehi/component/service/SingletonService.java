@@ -2,6 +2,8 @@ package com.ehi.component.service;
 
 import android.support.annotation.Nullable;
 
+import com.ehi.component.impl.service.EHiService;
+
 /**
  * 单例服务,这是注册服务默认的形式
  *

@@ -18,7 +18,6 @@ import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.error.UnknowException;
 import com.ehi.component.support.EHiCallbackAdapter;
-import com.ehi.component.support.EHiRouterInterceptor;
 
 import java.io.Serializable;
 import java.util.ArrayList;

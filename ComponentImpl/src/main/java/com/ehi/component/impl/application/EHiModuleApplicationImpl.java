@@ -1,7 +1,6 @@
-package com.ehi.component.impl;
+package com.ehi.component.impl.application;
 
 import android.app.Application;
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.ehi.component.ComponentUtil;

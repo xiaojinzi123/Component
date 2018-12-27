@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.impl.EHiModuleManager;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.support.EHiCallbackAdapter;

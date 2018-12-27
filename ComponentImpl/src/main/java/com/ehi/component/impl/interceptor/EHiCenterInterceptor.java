@@ -7,7 +7,7 @@ import com.ehi.component.ComponentUtil;
 import com.ehi.component.impl.service.EHiCenterService;
 import com.ehi.component.interceptor.IComponentHostInterceptor;
 import com.ehi.component.interceptor.IComponentModuleInterceptor;
-import com.ehi.component.support.EHiRouterInterceptor;
+import com.ehi.component.impl.EHiRouterInterceptor;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -38,6 +38,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
 
     private TypeElement eHiCenterInterceptorTypeElement;
     private TypeElement ehiCenterServiceTypeElement;
+    private TypeElement ehiRouter;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -45,6 +46,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
 
         eHiCenterInterceptorTypeElement = mElements.getTypeElement(ComponentConstants.EHICENTERINTERCEPTOR_CLASS_NAME);
         ehiCenterServiceTypeElement = mElements.getTypeElement(ComponentConstants.EHICENTERSERVICE_CLASS_NAME);
+        ehiRouter = mElements.getTypeElement(ComponentConstants.EHIROUTER_CLASS_NAME);
 
     }
 
@@ -182,7 +184,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
     private MethodSpec generateOnCreateMethod() {
 
         TypeName returnType = TypeName.VOID;
-        ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.APPLICATION));
+        ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_APPLICATION));
 
         ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, "application")
                 .build();
@@ -194,7 +196,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addModifiers(Modifier.PUBLIC);
 
         methodSpecBuilder.addStatement("super.onCreate(application)");
-        methodSpecBuilder.addStatement("EHiRouter.register(getHost())");
+        methodSpecBuilder.addStatement("$T.register(getHost())",ehiRouter);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", ehiCenterServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", eHiCenterInterceptorTypeElement);
 
