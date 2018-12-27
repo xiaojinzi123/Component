@@ -1,8 +1,10 @@
 package com.ehi.component.impl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,7 +14,7 @@ import com.ehi.component.support.Consumer;
 
 /**
  * 表示路由的一个请求类
- *
+ * <p>
  * time   : 2018/11/29
  *
  * @author : xiaojinzi 30212
@@ -38,15 +40,29 @@ public class EHiRouterRequest {
     public final Consumer<Intent> intentConsumer;
 
     @Nullable
-    public final Context getRawContext(){
+    public final Context getRawContext() {
+        Context rawContext = null;
         if (context == null) {
-            return fragment.getContext();
-        }else {
-            return context;
+            rawContext = fragment.getContext();
+        } else {
+            rawContext = context;
         }
+        if (rawContext != null && rawContext instanceof Activity) {
+            Activity activity = (Activity) rawContext;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if(activity.isFinishing() || activity.isDestroyed()){
+                    return null;
+                }
+            }else {
+                if(activity.isFinishing()){
+                    return null;
+                }
+            }
+        }
+        return rawContext;
     }
 
-    public Builder toBuilder(){
+    public Builder toBuilder() {
         Builder builder = new Builder();
         builder.bundle = bundle;
         builder.requestCode = requestCode;

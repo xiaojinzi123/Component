@@ -82,6 +82,18 @@ public interface EHiRouterInterceptor {
         @MainThread
         boolean isComplete();
 
+        /**
+         * 是否已经取消了
+         *
+         * @return
+         */
+        boolean isCanceled();
+
+        /**
+         * 取消
+         */
+        void cancel();
+
     }
 
 }

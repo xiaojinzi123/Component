@@ -86,7 +86,7 @@ public class EHiRxRouter {
         }
 
         @Override
-        public EHiRouter.Builder interceptors(@NonNull Class<? extends EHiRouterInterceptor>... interceptors) {
+        public Builder interceptors(@NonNull Class<? extends EHiRouterInterceptor>... interceptors) {
             return (Builder) super.interceptors(interceptors);
         }
 
@@ -523,8 +523,8 @@ public class EHiRxRouter {
                                 } catch (Exception e) {
                                     onErrorEmitter(emitter, new UnknowException(e));
                                 }
-
                             }
+
                         });
 
                     } catch (TargetActivityNotFoundException e) {

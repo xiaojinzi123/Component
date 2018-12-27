@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
+import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.base.interceptor.LoginInterceptor;
+import com.ehi.base.view.BaseAct;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.impl.EHiRouter;
@@ -37,7 +38,7 @@ import io.reactivex.schedulers.Schedulers;
         value = ModuleConfig.App.TEST_ROUTER,
         desc = "测试跳转的界面"
 )
-public class TestRouterAct extends AppCompatActivity {
+public class TestRouterAct extends BaseAct {
 
     private TextView tv_detail;
 
@@ -434,4 +435,53 @@ public class TestRouterAct extends AppCompatActivity {
                 });
 
     }
+
+    public void testCallbackAfterFinish(View view) {
+//        EHiRxRouter
+//                .with(this)
+//                .host(ModuleConfig.System.NAME)
+//                .requestCode(123)
+//                .interceptors(DialogShowInterceptor.class)
+//                .path(ModuleConfig.System.CALL_PHONE)
+//                .call()
+//                .doOnDispose(new Action() {
+//                    @Override
+//                    public void run() throws Exception {
+//                        System.out.println("2313213");
+//                    }
+//                })
+//                .subscribe(new Action() {
+//                    @Override
+//                    public void run() throws Exception {
+//                        System.out.println("");
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        System.out.println("");
+//                    }
+//                });
+
+        EHiRxRouter
+                .with(this)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.CALL_PHONE)
+                .interceptors(DialogShowInterceptor.class)
+                .navigate(new EHiCallbackAdapter(){
+                    @Override
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
+                        super.onEvent(result, error);
+                    }
+                });
+
+        finish();
+    }
+
+    public void testFragmentJump(View view) {
+        EHiRouter.with(mContext)
+                .host(ModuleConfig.App.NAME)
+                .path(ModuleConfig.App.TEST_FRAGMENT_ROUTER)
+                .navigate();
+    }
+
 }

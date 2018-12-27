@@ -34,4 +34,10 @@ public interface EHiCallback {
     @MainThread
     void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error);
 
+    /**
+     * 被取消了
+     */
+    @MainThread
+    void onCancel();
+
 }

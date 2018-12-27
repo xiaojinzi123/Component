@@ -85,8 +85,8 @@ public class XFlowLayout extends ViewGroup {
                 if (mMaxLines >= 1 && mMaxLines <= lines) {
                     break;
                 }
-                lineStartIndex = i;
                 top += findMaxChildMaxHeight(lineStartIndex, lineEndIndex) + mVSpace;
+                lineStartIndex = i;
                 left = contentLeft;
                 lines++;
                 colums = 0;
@@ -165,8 +165,8 @@ public class XFlowLayout extends ViewGroup {
                 if (mMaxLines >= 1 && mMaxLines <= lines) {
                     break;
                 }
-                lineStartIndex = i;
                 top += findMaxChildMaxHeight(lineStartIndex, lineEndIndex) + mVSpace;
+                lineStartIndex = i;
                 left = contentLeft;
                 lines++;
                 colums = 0;

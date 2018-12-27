@@ -20,6 +20,7 @@ public class ComponentConfig {
         }
         ComponentConfig.application = application;
         ComponentConfig.isDebug = isDebug;
+        application.registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
     }
 
     public static boolean isDebug() {

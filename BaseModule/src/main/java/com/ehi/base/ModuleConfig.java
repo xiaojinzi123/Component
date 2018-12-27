@@ -23,6 +23,7 @@ public class ModuleConfig {
 
         // 测试跳转的界面
         public static final String TEST_ROUTER = "testRouter";
+        public static final String TEST_FRAGMENT_ROUTER = "testFragmentRouter";
         // 测试服务的界面
         public static final String TEST_SERVICE = "testService";
         // 测试拦截器的界面

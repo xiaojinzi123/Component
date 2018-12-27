@@ -1,9 +1,14 @@
 package com.ehi.component.impl;
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 
 import com.ehi.component.support.EHiErrorRouterInterceptor;
 
@@ -23,7 +28,11 @@ class EHiRouterUtil {
      * @param r
      */
     public static void postActionToMainThread(@NonNull Runnable r) {
-        h.post(r);
+        if (isMainThread()) {
+            r.run();
+        }else {
+            h.post(r);
+        }
     }
 
     /**
@@ -35,9 +44,15 @@ class EHiRouterUtil {
         return Thread.currentThread() == Looper.getMainLooper().getThread();
     }
 
+    /**
+     * 当请求对象构建出来以后调用的
+     *
+     * @param callback
+     * @param error
+     */
     public static void errorCallback(@Nullable final EHiCallback callback,
                                      @NonNull final Exception error) {
-        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+        if (isMainThread()) {
             errorCallbackOnMainThread(callback, error);
         } else {
             postActionToMainThread(new Runnable() {
@@ -49,6 +64,10 @@ class EHiRouterUtil {
         }
     }
 
+    /**
+     * @param callback
+     * @param error
+     */
     private static void errorCallbackOnMainThread(@Nullable final EHiCallback callback,
                                                   @NonNull final Exception error) {
         if (callback == null) {
@@ -83,8 +102,14 @@ class EHiRouterUtil {
         if (result == null) {
             return;
         }
+
+        if (isRequestUnavailabled(result.getRequest())) {
+            return;
+        }
+
         callback.onEvent(result, null);
         callback.onSuccess(result);
+
     }
 
     public static void deliveryError(@NonNull Exception error) {
@@ -97,6 +122,45 @@ class EHiRouterUtil {
             }
         }
 
+    }
+
+    private static boolean isRequestUnavailabled(@NonNull EHiRouterRequest originalRequest) {
+        Context context = originalRequest.context;
+        Fragment fragment = originalRequest.fragment;
+
+        if (context != null && context instanceof Activity) {
+            Activity activity = (Activity) context;
+            if (isActivityUnavailabled(activity)) {
+                return true;
+            }
+        }
+
+        if (fragment != null) {
+            if (fragment.isDetached()) {
+                return true;
+            }
+            FragmentActivity activity = fragment.getActivity();
+            if (activity == null) {
+                return true;
+            }
+            if (isActivityUnavailabled(activity)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isActivityUnavailabled(@NonNull Activity activity) {
+        boolean isUseful = true;
+        if (activity.isFinishing()) {
+            isUseful = false;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (activity.isDestroyed()) {
+                isUseful = false;
+            }
+        }
+        return !isUseful;
     }
 
 

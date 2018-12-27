@@ -129,7 +129,22 @@
                 android:textAllCaps="false"
                 android:textSize="10dp" />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="testCallbackAfterFinish"
+                android:text="测试finish后callback回调"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
         </com.ehi.componentdemo.view.XFlowLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="testFragmentJump"
+            android:text="Fragment中跳转测试"
+            android:textSize="12dp" />
 
         <Button
             android:layout_width="match_parent"

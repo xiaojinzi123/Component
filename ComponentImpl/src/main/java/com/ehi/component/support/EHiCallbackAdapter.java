@@ -27,4 +27,9 @@ public class EHiCallbackAdapter implements EHiCallback {
     public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
     }
 
+    @Override
+    @MainThread
+    public void onCancel() {
+    }
+
 }

@@ -15,6 +15,7 @@
         <activity android:name=".view.TestInterceptor" />
         <activity android:name=".view.TestServiceAct" />
         <activity android:name=".view.TestRouterAct" />
+        <activity android:name=".view.TestFragmentRouterAct" />
         <activity android:name=".view.MainAct">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

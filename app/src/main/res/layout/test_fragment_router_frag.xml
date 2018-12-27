@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.ehi.componentdemo.view.XFlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:h_space="0dp"
+        app:v_space="0dp">
+
+        <Button
+            android:id="@+id/normalJump"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="普通跳转"
+            android:textAllCaps="false"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/rxJumpGetData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="rxJumpGetData"
+            android:text="跳转获取数据(不用onActivityResult)"
+            android:textAllCaps="false"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/testCallbackAfterFinish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="rxJumpGetData"
+            android:text="测试finish后callback回调"
+            android:textAllCaps="false"
+            android:textSize="10dp" />
+
+    </com.ehi.componentdemo.view.XFlowLayout>
+
+    <Button
+        android:id="@+id/bt_clearInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="清空日志信息"
+        android:textSize="12dp" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="这里会显示所有的跳转结果"
+        android:textColor="#FF0000" />
+
+    <TextView
+        android:id="@+id/tv_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000" />
+
+</LinearLayout>

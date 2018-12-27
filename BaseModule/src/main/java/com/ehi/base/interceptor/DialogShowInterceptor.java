@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -24,6 +25,7 @@ public class DialogShowInterceptor implements EHiRouterInterceptor {
     public void intercept(final Chain chain) throws Exception {
 
         Context rawContext = chain.request().getRawContext();
+
         if (rawContext == null) {
             chain.callback().onError(new Exception("context is null"));
             return;
@@ -40,14 +42,24 @@ public class DialogShowInterceptor implements EHiRouterInterceptor {
                         return "test";
                     }
                 })
-                .delay(2, TimeUnit.SECONDS)
+                .delay(4, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
+                .doOnEvent(new BiConsumer<String, Throwable>() {
+                    @Override
+                    public void accept(String s, Throwable throwable) throws Exception {
+                        dialog.dismiss();
+                    }
+                })
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
-                        dialog.dismiss();
                         chain.proceed(chain.request());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        chain.callback().onError(new Exception("error"));
                     }
                 });
 
