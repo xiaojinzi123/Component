@@ -28,8 +28,6 @@ import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
-import io.reactivex.SingleSource;
-import io.reactivex.SingleTransformer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -277,34 +275,6 @@ public class EHiRxRouter {
         @Override
         public Builder query(@NonNull String queryName, double queryValue) {
             return (Builder) super.query(queryName, queryValue);
-        }
-
-        public <T> SingleTransformer<T, Intent> intentSingleTransformer() {
-            return new SingleTransformer<T, Intent>() {
-                @Override
-                public SingleSource<Intent> apply(Single<T> upstream) {
-                    return upstream.flatMap(new Function<T, SingleSource<? extends Intent>>() {
-                        @Override
-                        public SingleSource<Intent> apply(T t) throws Exception {
-                            return intentCall();
-                        }
-                    });
-                }
-            };
-        }
-
-        public <T> SingleTransformer<T, EHiActivityResult> activityResultSingleTransformer() {
-            return new SingleTransformer<T, EHiActivityResult>() {
-                @Override
-                public SingleSource<EHiActivityResult> apply(Single<T> upstream) {
-                    return upstream.flatMap(new Function<T, SingleSource<? extends EHiActivityResult>>() {
-                        @Override
-                        public SingleSource<EHiActivityResult> apply(T t) throws Exception {
-                            return activityResultCall();
-                        }
-                    });
-                }
-            };
         }
 
         private void onErrorEmitter(@NonNull final SingleEmitter<? extends Object> emitter,

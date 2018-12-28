@@ -26,6 +26,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.SingleTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
@@ -176,14 +177,19 @@ public class TestRouterAct extends BaseAct {
 
     public void rxJumpGetDataStartWithTask(final View view) {
 
-        SingleTransformer<String, Intent> transformer = EHiRxRouter
-                .with(this)
-                .host("component1")
-                .path("test")
-                .query("data", "rxJumpGetDataFromQuery")
-                .putString("data", "rxJumpGetDataFromBundle")
-                .requestCode(789)
-                .intentSingleTransformer();
+        SingleTransformer<String, Intent> transformer = new SingleTransformer<String,Intent>(){
+            @Override
+            public SingleSource<Intent> apply(Single<String> upstream) {
+                return EHiRxRouter
+                        .with(mContext)
+                        .host("component1")
+                        .path("test")
+                        .query("data", "rxJumpGetDataFromQuery")
+                        .putString("data", "rxJumpGetDataFromBundle")
+                        .requestCode(789)
+                        .intentCall();
+            }
+        };
 
         Single
                 .just("value")
@@ -220,7 +226,6 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void jumpWithInterceptor(View view) {
-
         EHiRxRouter
                 .with(this)
                 .host(ModuleConfig.Component1.NAME)
