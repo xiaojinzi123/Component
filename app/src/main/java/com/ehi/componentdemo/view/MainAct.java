@@ -60,20 +60,4 @@ public class MainAct extends AppCompatActivity {
                 .navigate();
     }
 
-    public void testInterceptor(View view) {
-        EHiRouter
-                .with(this)
-                .host(ModuleConfig.App.NAME)
-                .path(ModuleConfig.App.TEST_INTERCEPTOR)
-                .navigate();
-    }
-
-    public void testError(View view) {
-        EHiRouter
-                .with(this)
-                .host(ModuleConfig.App.NAME)
-                .path(ModuleConfig.App.TEST_ERROR)
-                .navigate();
-    }
-
 }

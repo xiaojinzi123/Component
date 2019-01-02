@@ -51,6 +51,10 @@ public class TestRouterAct extends BaseAct {
         tv_detail = findViewById(R.id.tv_detail);
     }
 
+    private void addInfo(@NonNull String info) {
+        tv_detail.setText(tv_detail.getText() + "\n\n" + info);
+    }
+
     private void addInfo(@Nullable EHiRouterResult routerResult, @Nullable Exception error, @NonNull String url, @Nullable Integer requestCode) {
         if (requestCode == null) {
             if (routerResult != null) {
@@ -74,8 +78,8 @@ public class TestRouterAct extends BaseAct {
     public void normalJump(View view) {
         EHiRouter
                 .with(TestRouterAct.this)
-                .host("component1")
-                .path("test")
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TEST)
                 .query("data", "normalJump")
                 .putString("name", "cxj1")
                 .putInt("age", 25)
@@ -96,8 +100,8 @@ public class TestRouterAct extends BaseAct {
 
         EHiRxRouter
                 .with(this)
-                .host("component1")
-                .path("test")
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TEST)
                 .query("data", "normalJumpTwice1")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
@@ -113,8 +117,8 @@ public class TestRouterAct extends BaseAct {
 
         EHiRxRouter
                 .with(this)
-                .host("component1")
-                .path("test")
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TEST)
                 .query("data", "normalJumpTwice2")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
@@ -134,8 +138,8 @@ public class TestRouterAct extends BaseAct {
 
         EHiRxRouter
                 .with(this)
-                .host("component1")
-                .path("test")
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TEST)
                 .query("data", "jumpGetData")
                 .requestCode(123)
                 .navigate(new EHiCallbackAdapter() {
@@ -156,8 +160,8 @@ public class TestRouterAct extends BaseAct {
 
         EHiRxRouter
                 .with(this)
-                .host("component1")
-                .path("test")
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TEST)
                 .query("data", "rxJumpGetData")
                 .requestCode(456)
                 .intentCall()
@@ -182,8 +186,8 @@ public class TestRouterAct extends BaseAct {
             public SingleSource<Intent> apply(Single<String> upstream) {
                 return EHiRxRouter
                         .with(mContext)
-                        .host("component1")
-                        .path("test")
+                        .host(ModuleConfig.Component1.NAME)
+                        .path(ModuleConfig.Component1.TEST)
                         .query("data", "rxJumpGetDataFromQuery")
                         .putString("data", "rxJumpGetDataFromBundle")
                         .requestCode(789)
@@ -388,14 +392,20 @@ public class TestRouterAct extends BaseAct {
 
         EHiRxRouter
                 .with(this)
-                .host("component1")
-                .path("test")
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TEST)
+                .requestCode(123)
                 .query("data", "testMatchesResultCode")
                 .resultCodeMatchCall(RESULT_OK)
                 .subscribe(new Action() {
                     @Override
                     public void run() throws Exception {
-
+                        addInfo("从" + ModuleConfig.Component1.NAME + "/"+ ModuleConfig.Component1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK");
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        addInfo("打算匹配 " + ModuleConfig.Component1.NAME + "/"+ ModuleConfig.Component1.TEST + "界面返回的 resultCode = Activity.RESULT_OK 失败,错误信息：" + throwable.getMessage());
                     }
                 });
 
@@ -411,14 +421,21 @@ public class TestRouterAct extends BaseAct {
                 .activityResultCall()
                 .subscribe(new Consumer<EHiActivityResult>() {
                     @Override
-                    public void accept(EHiActivityResult eHiActivityResult) throws Exception {
-                        System.out.println("12312312");
+                    public void accept(EHiActivityResult activityResult) throws Exception {
+                        addInfo("您从打电话界面回来啦,resultCode = " + activityResult.resultCode + ",resultCode = " + activityResult.resultCode);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        addInfo("跳转到打电话界面失败啦：" + throwable.getMessage());
                     }
                 });
 
     }
 
     public void testCallbackAfterFinish(View view) {
+
+        Toast.makeText(mContext, "在执行一个路由没完成的时候,界面销毁了,自动取消这个跳转", Toast.LENGTH_SHORT).show();
 
         EHiRxRouter
                 .with(this)

@@ -11,133 +11,139 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.ehi.componentdemo.view.XFlowLayout
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:h_space="0dp"
-            app:v_space="0dp">
+            android:layout_height="250dp">
 
-            <Button
-                android:layout_width="wrap_content"
+            <com.ehi.componentdemo.view.XFlowLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="openUriTest"
-                android:text="直接打开 EHi://component1/test?data=openUriTest \n uri 可以是后台下发的,可以是动态的"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                app:h_space="0dp"
+                app:v_space="0dp">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="normalJump"
-                android:text="普通跳转"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="openUriTest"
+                    android:text="直接打开 EHi://component1/test?data=openUriTest \n uri 可以是后台下发的,可以是动态的"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAllCaps="false"
-                android:textSize="10dp"
-                android:onClick="normalJumpTwice"
-                android:text="连续跳转两次,防止打开两次界面" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="normalJump"
+                    android:text="普通跳转"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="testGotoKotlin"
-                android:text="Kotlin模块"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize"
+                    android:onClick="normalJumpTwice"
+                    android:text="连续跳转两次,防止打开两次界面" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="testQueryPass"
-                android:text="传递 query 参数"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testGotoKotlin"
+                    android:text="Kotlin模块"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="jumpGetData"
-                android:text="跳转获取数据(用onActivityResult)"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testQueryPass"
+                    android:text="传递 query 参数"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="rxJumpGetData"
-                android:text="跳转获取数据(不用onActivityResult)"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="jumpGetData"
+                    android:text="跳转获取数据(用onActivityResult)"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="rxJumpGetDataStartWithTask"
-                android:text="耗时操作后跳转拿数据(不用onActivityResult)"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="rxJumpGetData"
+                    android:text="跳转获取数据(不用onActivityResult)"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="jumpWithInterceptor"
-                android:text="跳转自带多个拦截器"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="rxJumpGetDataStartWithTask"
+                    android:text="耗时操作后跳转拿数据(不用onActivityResult)"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="testLogin"
-                android:text="需要登录的界面"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="jumpWithInterceptor"
+                    android:text="跳转自带多个拦截器"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="testDialog"
-                android:text="耗时弹出Dialog"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testLogin"
+                    android:text="需要登录的界面"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="testCustomIntent"
-                android:text="自定义最终的Intent"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testDialog"
+                    android:text="耗时弹出Dialog"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="testMatchesResultCode"
-                android:text="匹配resultCode"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testCustomIntent"
+                    android:text="自定义最终的Intent"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="testCustomerCallPhone"
-                android:text="自定义解析,跳转到打电话界面"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testMatchesResultCode"
+                    android:text="匹配resultCode"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="testCallbackAfterFinish"
-                android:text="测试finish后callback回调"
-                android:textAllCaps="false"
-                android:textSize="10dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testCustomerCallPhone"
+                    android:text="自定义解析,跳转到打电话界面"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
 
-        </com.ehi.componentdemo.view.XFlowLayout>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testCallbackAfterFinish"
+                    android:text="测试finish后callback回调"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
+
+            </com.ehi.componentdemo.view.XFlowLayout>
+
+        </android.support.v4.widget.NestedScrollView>
 
         <Button
             android:layout_width="match_parent"

@@ -17,7 +17,7 @@ ext.versions = [
         glide              : "4.7.1",
         butterknife        : "8.7.0",
         gson               : "2.8.2",
-        rxjava             : "2.2.1",
+        rxjava             : "2.2.5",
         rxandroid          : "2.1.0",
         rxbinding          : "2.2.0",
         // 一嗨公共组件
@@ -26,7 +26,7 @@ ext.versions = [
         ehi_encryption     : "1.0.5",
         ehi_tools          : "1.0.9",
         ehi_picture_select : "1.0.8",
-        ehi_component      : "1.2.3",
+        ehi_component      : "1.4.3",
         // 开发者工具
         ehi_develop_tool   : "1.0.1"
 ]

@@ -10,7 +10,7 @@ import com.ehi.base.service.inter.component1.Component1Service;
 import com.ehi.component.anno.EHiServiceAnno;
 import com.ehi.component1.view.Component1Fragment;
 
-@EHiServiceAnno(value = {Component1Service.class}, singleTon = false)
+@EHiServiceAnno(value = {Component1Service.class})
 public class Component1ServiceImpl implements Component1Service {
 
     private Context context;

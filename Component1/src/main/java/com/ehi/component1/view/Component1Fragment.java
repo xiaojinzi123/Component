@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ehi.base.ModuleConfig;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component1.R;
@@ -33,8 +34,8 @@ public class Component1Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 EHiRouter.withFragment(Component1Fragment.this)
-                        .host("component2")
-                        .path("component2")
+                        .host(ModuleConfig.Component2.NAME)
+                        .path(ModuleConfig.Component2.MAIN)
                         .navigate();
             }
         });
@@ -43,8 +44,8 @@ public class Component1Fragment extends Fragment {
             public void onClick(View v) {
                 EHiRxRouter
                         .withFragment(Component1Fragment.this)
-                        .host("component1")
-                        .path("test")
+                        .host(ModuleConfig.Component1.NAME)
+                        .path(ModuleConfig.Component1.TEST)
                         .query("data", "rxJumpGetData")
                         .requestCode(456)
                         .intentCall()

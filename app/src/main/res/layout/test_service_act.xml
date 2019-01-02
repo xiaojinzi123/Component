@@ -9,10 +9,10 @@
 
     <Button
         android:layout_width="match_parent"
-        android:onClick="findComponent2"
+        android:onClick="findComponent2Service"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
-        android:text="寻找findComponent2(非单例,多次点我多次创建)" />
+        android:text="寻找findComponent2Service(非单例,多次点我多次创建)" />
 
     <Button
         android:layout_width="match_parent"
@@ -23,10 +23,10 @@
 
     <Button
         android:layout_width="match_parent"
-        android:onClick="findComponent1"
+        android:onClick="findComponent1Service"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
-        android:text="寻找findComponent1(单例,多次点我只创建一次)" />
+        android:text="寻找findComponent1Service(单例,多次点我只创建一次)" />
 
     <Button
         android:layout_width="match_parent"

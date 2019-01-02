@@ -51,7 +51,7 @@ public class TestServiceAct extends AppCompatActivity {
         service2.doSomeThing();
     }
 
-    public void findComponent2(View view) {
+    public void findComponent2Service(View view) {
         service2 = EHiService.get(Component2Service.class);
         if (service2 == null) {
             Toast.makeText(this, "Component2Service服务没找到", Toast.LENGTH_SHORT).show();
@@ -59,7 +59,7 @@ public class TestServiceAct extends AppCompatActivity {
         }
     }
 
-    public void findComponent1(View view) {
+    public void findComponent1Service(View view) {
         service1 = EHiService.get(Component1Service.class);
         if (service1 == null) {
             Toast.makeText(this, "Component1Service服务没找到", Toast.LENGTH_SHORT).show();

@@ -294,6 +294,13 @@ public class EHiRxRouter {
 
         }
 
+        /**
+         * 一个可以拿到 Intent 的 Observable
+         *
+         *
+         * @return
+         * @see #activityResultCall()
+         */
         public Single<Intent> intentCall() {
 
             return activityResultCall()
@@ -333,6 +340,7 @@ public class EHiRxRouter {
          *
          * @param expectedResultCode
          * @return
+         * @see #activityResultCall()
          */
         public Completable resultCodeMatchCall(final int expectedResultCode) {
             return activityResultCall()
@@ -352,6 +360,7 @@ public class EHiRxRouter {
          *
          * @param expectedResultCode
          * @return
+         * @see #activityResultCall()
          */
         public Single<Intent> intentResultCodeMatchCall(final int expectedResultCode) {
             return activityResultCall()
@@ -374,6 +383,11 @@ public class EHiRxRouter {
                     });
         }
 
+        /**
+         * 一个可以拿到 ActivityResult 的路由 Observable
+         *
+         * @return
+         */
         public Single<EHiActivityResult> activityResultCall() {
 
             return Single.create(new SingleOnSubscribe<EHiActivityResult>() {
@@ -453,6 +467,11 @@ public class EHiRxRouter {
 
         }
 
+        /**
+         * 一个完成状态的 Observable 的路由跳转
+         *
+         * @return
+         */
         public Completable call() {
             return Completable.create(new CompletableOnSubscribe() {
                 @Override
@@ -508,6 +527,11 @@ public class EHiRxRouter {
             });
         }
 
+        /**
+         * 检查参数
+         *
+         * @throws Exception
+         */
         private void onCheck() throws Exception {
             if (isFinish) {
                 throw new NavigationFailException("EHiRouter.Builder can't be used multiple times");

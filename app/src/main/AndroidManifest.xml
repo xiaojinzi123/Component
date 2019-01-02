@@ -14,7 +14,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".view.TestErrorAct"></activity>
         <activity android:name=".view.InfoAct" />
-        <activity android:name=".view.TestInterceptor" />
         <activity android:name=".view.TestServiceAct" />
         <activity android:name=".view.TestRouterAct" />
         <activity android:name=".view.TestFragmentRouterAct" />

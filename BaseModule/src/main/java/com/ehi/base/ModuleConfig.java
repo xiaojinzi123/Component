@@ -15,6 +15,9 @@ public class ModuleConfig {
         // 测试跳转的界面
         public static final String CALL_PHONE = "callPhone";
 
+        //
+        public static final String SYSTEM_APP_DETAIL = "appDetail";
+
     }
 
     public static class App {
@@ -26,8 +29,6 @@ public class ModuleConfig {
         public static final String TEST_FRAGMENT_ROUTER = "testFragmentRouter";
         // 测试服务的界面
         public static final String TEST_SERVICE = "testService";
-        // 测试拦截器的界面
-        public static final String TEST_INTERCEPTOR = "testInterceptor";
         // 测试错误页面
         public static final String TEST_ERROR = "testError";
         // 显示一个信息的界面

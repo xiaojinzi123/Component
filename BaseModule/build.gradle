@@ -23,6 +23,8 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.appcompat_v7
+    api libs.rxjava
+    api libs.rxandroid
 
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
         api "com.ehi:component-impl-rx:${rootProject.ext.component_version}"
