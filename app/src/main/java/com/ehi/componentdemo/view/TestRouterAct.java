@@ -452,6 +452,33 @@ public class TestRouterAct extends BaseAct {
         finish();
     }
 
+    public void testBeforAndAfterAction(View view) {
+
+        EHiRxRouter
+                .with(this)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.CALL_PHONE)
+                .befor(new com.ehi.component.support.Action() {
+                    @Override
+                    public void run() throws Exception {
+                        Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .after(new com.ehi.component.support.Action() {
+                    @Override
+                    public void run() throws Exception {
+                        Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
+                        super.onEvent(result, error);
+                    }
+                });
+
+    }
+
     public void testFragmentJump(View view) {
         EHiRouter.with(mContext)
                 .host(ModuleConfig.App.NAME)

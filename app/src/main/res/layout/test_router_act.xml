@@ -141,6 +141,14 @@
                     android:textAllCaps="false"
                     android:textSize="@dimen/test_router_textsize" />
 
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testBeforAndAfterAction"
+                    android:text="测试跳转前后Action"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
+
             </com.ehi.componentdemo.view.XFlowLayout>
 
         </android.support.v4.widget.NestedScrollView>

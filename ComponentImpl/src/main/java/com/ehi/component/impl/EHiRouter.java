@@ -19,6 +19,7 @@ import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
 import com.ehi.component.router.IComponentHostRouter;
+import com.ehi.component.support.Action;
 import com.ehi.component.support.Consumer;
 
 import java.io.Serializable;
@@ -175,15 +176,33 @@ public class EHiRouter {
 
         @Nullable
         private EHiRouterInterceptor[] interceptors;
+
+        @Nullable
         private Class<? extends EHiRouterInterceptor>[] classInterceptors;
 
-        @NonNull
+        @Nullable
         private Consumer<Intent> intentConsumer = null;
+
+        @Nullable
+        private Action beforAction = null;
+
+        @Nullable
+        private Action afterAction = null;
 
         /**
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
          */
         protected boolean isFinish = false;
+
+        public Builder befor(@NonNull Action action) {
+            this.beforAction = action;
+            return this;
+        }
+
+        public Builder after(@NonNull Action action) {
+            this.afterAction = action;
+            return this;
+        }
 
         public Builder intentConsumer(@NonNull Consumer<Intent> intentConsumer) {
             this.intentConsumer = intentConsumer;
@@ -467,6 +486,8 @@ public class EHiRouter {
                     .requestCode(requestCode)
                     .bundle(bundle)
                     .intentConsumer(intentConsumer)
+                    .befor(beforAction)
+                    .after(afterAction)
                     .build();
 
             return holder;
