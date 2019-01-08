@@ -1,5 +1,6 @@
 package com.ehi.componentdemo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
@@ -13,8 +14,7 @@ import com.ehi.component.impl.EHiRouterRequest;
 
 /**
  * @TODO: 下一步的计划, 路由的跳转完全可以自定义, 这样子就可以完美的融合之前写的那些 startActivity 了
- * @TODO: 跳转出错的时候,RxFragment有没有从列表中删除
- * 现在这个是鸡肋的
+ * @TODO: 跳转出错的时候,RxFragment有没有从列表中删除,出错的时候不会添加进去的,所以不会有问题
  */
 public class CustomerRouterImpl {
 
@@ -36,19 +36,20 @@ public class CustomerRouterImpl {
      */
     @EHiRouterAnno(host = ModuleConfig.System.NAME, value = ModuleConfig.System.SYSTEM_APP_DETAIL)
     public static void appDetail(@NonNull EHiRouterRequest request) {
+        Activity act = request.getActivity();
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + request.getRawContext().getPackageName()));
         if (request.requestCode == null) {
-            if (request.getRawActivity() == null) {
+            if (act == null) {
                 request.fragment.startActivity(intent);
             }else {
-                request.getRawActivity().startActivity(intent);
+                act.startActivity(intent);
             }
         } else {
-            if (request.getRawActivity() == null) {
+            if (act == null) {
                 request.fragment.startActivityForResult(intent, request.requestCode);
             }else {
-                request.getRawActivity().startActivityForResult(intent, request.requestCode);
+                act.startActivityForResult(intent, request.requestCode);
             }
         }
     }

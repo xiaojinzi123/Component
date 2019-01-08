@@ -61,14 +61,8 @@ public class EHiRouterRequest {
         }
         if (rawContext != null && rawContext instanceof Activity) {
             Activity activity = (Activity) rawContext;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                if (activity.isFinishing() || activity.isDestroyed()) {
-                    return null;
-                }
-            } else {
-                if (activity.isFinishing()) {
-                    return null;
-                }
+            if (isActivityDestoryed(activity)) {
+                return null;
             }
         }
         return rawContext;
@@ -80,7 +74,7 @@ public class EHiRouterRequest {
      * @return return null if Activity is destoried
      */
     @Nullable
-    public final Activity getRawActivity() {
+    public final Activity getActivity() {
         if (context == null) {
             return null;
         }
@@ -88,16 +82,44 @@ public class EHiRouterRequest {
             return null;
         }
         Activity rawActivity = (Activity) context;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            if (rawActivity.isFinishing() || rawActivity.isDestroyed()) {
-                return null;
-            }
-        } else {
-            if (rawActivity.isFinishing()) {
-                return null;
-            }
+        if (isActivityDestoryed(rawActivity)) {
+            return null;
         }
         return rawActivity;
+    }
+
+    /**
+     * get the Activity both from context and fragment
+     *
+     * @return return null if Activity is destoried
+     */
+    @Nullable
+    public final Activity getRawActivity() {
+
+        Activity rawActivity = getActivity();
+        if (rawActivity == null && fragment != null) {
+            rawActivity = fragment.getActivity();
+        }
+        if (isActivityDestoryed(rawActivity)) {
+            return null;
+        }
+        return rawActivity;
+    }
+
+    private boolean isActivityDestoryed(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (activity.isFinishing() || activity.isDestroyed()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (activity.isFinishing()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     public Builder toBuilder() {
