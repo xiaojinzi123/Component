@@ -17,6 +17,7 @@ import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
@@ -34,12 +35,17 @@ import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-@EHiRouterAnno(
-        host = ModuleConfig.App.NAME,
-        value = ModuleConfig.App.TEST_ROUTER,
-        desc = "测试跳转的界面"
-)
 public class TestRouterAct extends BaseAct {
+
+    @EHiRouterAnno(
+            host = ModuleConfig.App.NAME,
+            value = ModuleConfig.App.TEST_ROUTER,
+            desc = "测试跳转的界面"
+    )
+    public static void startActivity(@NonNull EHiRouterRequest request) {
+        Intent intent = new Intent(request.getRawContext(), TestRouterAct.class);
+        request.getRawContext().startActivity(intent);
+    }
 
     private TextView tv_detail;
 
@@ -428,6 +434,28 @@ public class TestRouterAct extends BaseAct {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         addInfo("跳转到打电话界面失败啦：" + throwable.getMessage());
+                    }
+                });
+
+    }
+
+    public void testCustomerJump(View view) {
+
+        EHiRxRouter
+                .with(this)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.SYSTEM_APP_DETAIL)
+                .requestCode(123)
+                .activityResultCall()
+                .subscribe(new Consumer<EHiActivityResult>() {
+                    @Override
+                    public void accept(EHiActivityResult activityResult) throws Exception {
+                        addInfo("您从App详情回来啦,resultCode = " + activityResult.resultCode + ",resultCode = " + activityResult.resultCode);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        addInfo("跳转到App详情失败啦：" + throwable.getMessage());
                     }
                 });
 

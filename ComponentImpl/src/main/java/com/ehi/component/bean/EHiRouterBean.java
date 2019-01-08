@@ -47,5 +47,11 @@ public class EHiRouterBean {
     @Nullable
     public CustomerIntentCall customerIntentCall;
 
+    /**
+     * 用户自定义的 跳转
+     */
+    @Nullable
+    public CustomerJump customerJump;
+
 
 }

@@ -129,7 +129,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="testCustomerCallPhone"
-                    android:text="自定义解析,跳转到打电话界面"
+                    android:text="自定义Intent,跳转到打电话界面"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testCustomerJump"
+                    android:text="自定义跳转,跳转到App详情"
                     android:textAllCaps="false"
                     android:textSize="@dimen/test_router_textsize" />
 

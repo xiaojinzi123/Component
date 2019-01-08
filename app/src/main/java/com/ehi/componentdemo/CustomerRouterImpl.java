@@ -12,7 +12,8 @@ import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouterRequest;
 
 /**
- * @TODO: 下一步的计划,路由的跳转完全可以自定义,这样子就可以完美的融合之前写的那些 startActivity 了
+ * @TODO: 下一步的计划, 路由的跳转完全可以自定义, 这样子就可以完美的融合之前写的那些 startActivity 了
+ * @TODO: 跳转出错的时候,RxFragment有没有从列表中删除
  * 现在这个是鸡肋的
  */
 public class CustomerRouterImpl {
@@ -34,10 +35,22 @@ public class CustomerRouterImpl {
      * @return
      */
     @EHiRouterAnno(host = ModuleConfig.System.NAME, value = ModuleConfig.System.SYSTEM_APP_DETAIL)
-    public static Intent appDetail(@NonNull EHiRouterRequest request) {
+    public static void appDetail(@NonNull EHiRouterRequest request) {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + request.getRawContext().getPackageName()));
-        return intent;
+        if (request.requestCode == null) {
+            if (request.getRawActivity() == null) {
+                request.fragment.startActivity(intent);
+            }else {
+                request.getRawActivity().startActivity(intent);
+            }
+        } else {
+            if (request.getRawActivity() == null) {
+                request.fragment.startActivityForResult(intent, request.requestCode);
+            }else {
+                request.getRawActivity().startActivityForResult(intent, request.requestCode);
+            }
+        }
     }
 
 }

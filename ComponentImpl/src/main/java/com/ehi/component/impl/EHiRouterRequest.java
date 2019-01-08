@@ -80,7 +80,7 @@ public class EHiRouterRequest {
      * @return return null if Activity is destoried
      */
     @Nullable
-    public final Context getRawActivity() {
+    public final Activity getRawActivity() {
         if (context == null) {
             return null;
         }
@@ -108,6 +108,8 @@ public class EHiRouterRequest {
         builder.fragment = fragment;
         builder.context = context;
         builder.intentConsumer = intentConsumer;
+        builder.befor = beforAction;
+        builder.after = afterAction;
         return builder;
     }
 
@@ -150,42 +152,42 @@ public class EHiRouterRequest {
         @Nullable
         private Action after;
 
-        public Builder context(@NonNull Context context) {
+        public Builder context(@Nullable Context context) {
             this.context = context;
             return this;
         }
 
-        public Builder fragment(@NonNull Fragment fragment) {
+        public Builder fragment(@Nullable Fragment fragment) {
             this.fragment = fragment;
             return this;
         }
 
-        public Builder uri(@NonNull Uri uri) {
+        public Builder uri(@Nullable Uri uri) {
             this.uri = uri;
             return this;
         }
 
-        public Builder requestCode(@NonNull Integer requestCode) {
+        public Builder requestCode(@Nullable Integer requestCode) {
             this.requestCode = requestCode;
             return this;
         }
 
-        public Builder bundle(@NonNull Bundle bundle) {
+        public Builder bundle(@Nullable Bundle bundle) {
             this.bundle = bundle;
             return this;
         }
 
-        public Builder intentConsumer(@NonNull Consumer<Intent> intentConsumer) {
+        public Builder intentConsumer(@Nullable Consumer<Intent> intentConsumer) {
             this.intentConsumer = intentConsumer;
             return this;
         }
 
-        public Builder befor(@NonNull Action action) {
+        public Builder befor(@Nullable Action action) {
             this.befor = action;
             return this;
         }
 
-        public Builder after(@NonNull Action action) {
+        public Builder after(@Nullable Action action) {
             this.after = action;
             return this;
         }

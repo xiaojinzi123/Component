@@ -12,6 +12,6 @@ public interface CustomerIntentCall {
      * @param request
      * @return
      */
-    Intent get(EHiRouterRequest request);
+    Intent get(EHiRouterRequest request) throws Exception;
 
 }

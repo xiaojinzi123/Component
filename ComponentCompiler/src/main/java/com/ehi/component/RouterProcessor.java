@@ -47,10 +47,8 @@ import javax.tools.Diagnostic;
 public class RouterProcessor extends AbstractProcessor {
 
     private static final String ROUTER_BEAN_NAME = "com.ehi.component.bean.EHiRouterBean";
-    private static final String INTERCEPTOR_UTIL_NAME = "com.ehi.component.impl.EHiRouterInterceptorUtil";
-    private static final String COMPONENT_CONFIG_NAME = "com.ehi.component.ComponentConfig";
     private static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.ehi.component.bean.CustomerIntentCall";
-    private static final String INTENT_CLASS_NAME = "android.content.Intent";
+    private static final String CUSTOMER_JUMP_CLASS_NAME = "com.ehi.component.bean.CustomerJump";
     private static final String ROUTER_REQUEST_CLASS_NAME = "com.ehi.component.impl.EHiRouterRequest";
 
     private TypeMirror typeString;
@@ -60,9 +58,14 @@ public class RouterProcessor extends AbstractProcessor {
     private Types mTypes;
     private Elements mElements;
     private TypeElement customerIntentCallTypeElement;
+    private TypeElement customerJumpTypeElement;
     private ClassName customerIntentCallClassName;
+    private ClassName customerJumpClassName;
 
+    private TypeElement exceptionTypeElement;
+    private ClassName exceptionClassName;
     private TypeElement intentTypeElement;
+    private TypeMirror intentTypeMirror;
     private TypeElement routerRequestTypeElement;
 
     // 在每一个 module 中配置的 HOST 的信息
@@ -78,10 +81,15 @@ public class RouterProcessor extends AbstractProcessor {
         mElements = processingEnv.getElementUtils();
 
         typeString = mElements.getTypeElement("java.lang.String").asType();
+        exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
+        exceptionClassName = ClassName.get(exceptionTypeElement);
         customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
-        intentTypeElement = mElements.getTypeElement(INTENT_CLASS_NAME);
+        customerJumpTypeElement = mElements.getTypeElement(CUSTOMER_JUMP_CLASS_NAME);
+        intentTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_INTENT);
+        intentTypeMirror = intentTypeElement.asType();
         routerRequestTypeElement = mElements.getTypeElement(ROUTER_REQUEST_CLASS_NAME);
         customerIntentCallClassName = ClassName.get(customerIntentCallTypeElement);
+        customerJumpClassName = ClassName.get(customerJumpTypeElement);
 
         Map<String, String> options = processingEnv.getOptions();
         if (options != null) {
@@ -131,8 +139,6 @@ public class RouterProcessor extends AbstractProcessor {
         for (Element element : routeElements) {
 
             mMessager.printMessage(Diagnostic.Kind.NOTE, "element == " + element.toString());
-
-            TypeMirror tm = element.asType();
 
             // 必须标记的是一种类型的元素或者是一个可执行的方法
 //            if (!(element instanceof TypeElement)) {
@@ -249,29 +255,24 @@ public class RouterProcessor extends AbstractProcessor {
                 // 可能是空的,因为注解可能标记在静态方法上
                 ClassName targetActivityClassName = null;
                 // 当标记在静态方法上的时候,这个不会为空,比如 "xxx.intentCreate"
-                String customerIntentCreatePath = null;
-
+                String customerIntentOrJumpPath = null;
+                TypeMirror customerReturnType = null;
+                // 注释的文本
                 String commentStr = null;
 
+                // 如果是标记在 Activity 上的
                 if (routerBean.getRawType() instanceof TypeElement) {
-
                     targetActivityClassName = ClassName.get((TypeElement) routerBean.getRawType());
                     commentStr = targetActivityClassName.toString();
-
-                } else if (routerBean.getRawType() instanceof ExecutableElement) {
-
+                } else if (routerBean.getRawType() instanceof ExecutableElement) { // 如果标记在静态方法上了
                     // 静态方法
                     ExecutableElement executableElement = (ExecutableElement) routerBean.getRawType();
-
+                    // 获取自定义的静态方法的返回类型
+                    customerReturnType = executableElement.getReturnType();
                     TypeElement declareClassType = (TypeElement) executableElement.getEnclosingElement();
-
-                    //throw new RuntimeException(declareClassType.toString() + "." + executableElement.getSimpleName());
-
-                    customerIntentCreatePath = declareClassType.toString() + "." + executableElement.getSimpleName();
-                    commentStr = customerIntentCreatePath;
-
+                    customerIntentOrJumpPath = declareClassType.toString() + "." + executableElement.getSimpleName();
+                    commentStr = customerIntentOrJumpPath;
                 }
-
 
                 String routerBeanName = "routerBean" + atomicInteger.incrementAndGet();
 
@@ -286,20 +287,37 @@ public class RouterProcessor extends AbstractProcessor {
                 if (targetActivityClassName != null) {
                     initMapMethodSpecBuilder.addStatement("$N.targetClass = $T.class", routerBeanName, targetActivityClassName);
                 }
-                if (customerIntentCreatePath != null) {
-                    TypeSpec intentCallTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(customerIntentCallClassName)
-                            .addMethod(
-                                    MethodSpec.methodBuilder("get")
-                                            .addParameter(TypeName.get(routerRequestTypeElement.asType()), "request", Modifier.FINAL)
-                                            .addAnnotation(Override.class)
-                                            .addModifiers(Modifier.PUBLIC)
-                                            .addStatement("return $N(request)", customerIntentCreatePath)
-                                            .returns(TypeName.get(intentTypeElement.asType()))
-                                            .build()
-                            )
-                            .build();
-                    initMapMethodSpecBuilder.addStatement("$N.customerIntentCall = $L", routerBeanName, intentCallTypeSpec);
+                if (customerIntentOrJumpPath != null) {
+                    if (intentTypeMirror.equals(customerReturnType)) { // 如果是自定义 Intent
+                        TypeSpec intentCallTypeSpec = TypeSpec.anonymousClassBuilder("")
+                                .addSuperinterface(customerIntentCallClassName)
+                                .addMethod(
+                                        MethodSpec.methodBuilder("get")
+                                                .addParameter(TypeName.get(routerRequestTypeElement.asType()), "request", Modifier.FINAL)
+                                                .addAnnotation(Override.class)
+                                                .addException(exceptionClassName)
+                                                .addModifiers(Modifier.PUBLIC)
+                                                .addStatement("return $N(request)", customerIntentOrJumpPath)
+                                                .returns(TypeName.get(intentTypeElement.asType()))
+                                                .build()
+                                )
+                                .build();
+                        initMapMethodSpecBuilder.addStatement("$N.customerIntentCall = $L", routerBeanName, intentCallTypeSpec);
+                    }else { // 自定义跳转的
+                        TypeSpec customerJumpTypeSpec = TypeSpec.anonymousClassBuilder("")
+                                .addSuperinterface(customerJumpClassName)
+                                .addMethod(
+                                        MethodSpec.methodBuilder("jump")
+                                                .addParameter(TypeName.get(routerRequestTypeElement.asType()), "request", Modifier.FINAL)
+                                                .addAnnotation(Override.class)
+                                                .addException(exceptionClassName)
+                                                .addModifiers(Modifier.PUBLIC)
+                                                .addStatement("$N(request)", customerIntentOrJumpPath)
+                                                .build()
+                                )
+                                .build();
+                        initMapMethodSpecBuilder.addStatement("$N.customerJump = $L", routerBeanName, customerJumpTypeSpec);
+                    }
                 }
                 if (routerBean.getInterceptors() != null && routerBean.getInterceptors().size() > 0) {
                     initMapMethodSpecBuilder.addStatement("$N.interceptors = new $T()", routerBeanName, ArrayList.class);

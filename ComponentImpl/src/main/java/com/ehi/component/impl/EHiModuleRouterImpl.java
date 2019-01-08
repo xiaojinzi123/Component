@@ -123,30 +123,47 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             throw new NavigationFailException("your fragment attached to Activity?");
         }
 
-        Intent intent = null;
-
-        if (target.targetClass != null) {
-            intent = new Intent(context, target.targetClass);
-        } else if (target.customerIntentCall != null) {
-            intent = target.customerIntentCall.get(routerRequest);
-        }
-
-        if (intent == null) {
-            throw new TargetActivityNotFoundException(uriString);
-        }
-
-        intent.putExtras(routerRequest.bundle);
-        QueryParameterSupport.put(intent, routerRequest.uri);
-
-        if (routerRequest.intentConsumer != null) {
-            routerRequest.intentConsumer.accept(intent);
-        }
-
         if (routerRequest.beforAction != null) {
             routerRequest.beforAction.run();
         }
 
-        jump(routerRequest, intent);
+        Intent intent = null;
+
+        if (target.customerJump != null) {
+            // 用于支持拿到 result 的 Fragment,如果不为空,传这个过去给自定义的地方让写代码的程序员跳转
+            Fragment rxFragment = findFragment(routerRequest);
+            if (rxFragment == null) {
+                target.customerJump.jump(routerRequest);
+            }else {
+                target.customerJump.jump(routerRequest
+                        .toBuilder()
+                        .context(null)
+                        .fragment(rxFragment)
+                        .build()
+                );
+            }
+        }else {
+
+            if (target.targetClass != null) {
+                intent = new Intent(context, target.targetClass);
+            } else if (target.customerIntentCall != null) {
+                intent = target.customerIntentCall.get(routerRequest);
+            }
+
+            if (intent == null) {
+                throw new TargetActivityNotFoundException(uriString);
+            }
+
+            intent.putExtras(routerRequest.bundle);
+            QueryParameterSupport.put(intent, routerRequest.uri);
+
+            if (routerRequest.intentConsumer != null) {
+                routerRequest.intentConsumer.accept(intent);
+            }
+
+            jump(routerRequest, intent);
+
+        }
 
         if (routerRequest.afterAction != null) {
             routerRequest.afterAction.run();
@@ -281,7 +298,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     @Nullable
     private Fragment findFragment(@NonNull Context context) {
         Fragment result = null;
-        if (context instanceof FragmentActivity) {
+        if (context != null && context instanceof FragmentActivity) {
             FragmentManager ft = ((FragmentActivity) context).getSupportFragmentManager();
             result = ft.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
         }
@@ -290,8 +307,20 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
     @Nullable
     private Fragment findFragment(@NonNull Fragment fragment) {
-        Fragment result = fragment.getChildFragmentManager().findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+        Fragment result = null;
+        if (fragment != null) {
+            result = fragment.getChildFragmentManager().findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+        }
         return result;
+    }
+
+    @Nullable
+    private Fragment findFragment(@NonNull EHiRouterRequest request) {
+        Fragment fragment = findFragment(request.context);
+        if (fragment == null) {
+            fragment = findFragment(request.fragment);
+        }
+        return fragment;
     }
 
     private String getUrlWithOutQuerys(String url) {
