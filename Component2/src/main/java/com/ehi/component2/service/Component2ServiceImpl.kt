@@ -21,6 +21,9 @@ class Component2ServiceImpl : Component2Service {
     }
 
     override fun doSomeThing() {
+        if (true) {
+            throw NullPointerException()
+        }
         Toast.makeText(app,"调用了服务 Component2Service的 doSomeThing 方法",Toast.LENGTH_SHORT).show();
     }
 

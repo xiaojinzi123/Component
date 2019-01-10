@@ -9,6 +9,13 @@
 
     <Button
         android:layout_width="match_parent"
+        android:onClick="rxServiceUse"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="RxService获取并且使用" />
+
+    <Button
+        android:layout_width="match_parent"
         android:onClick="findComponent2Service"
         android:layout_height="wrap_content"
         android:textAllCaps="false"

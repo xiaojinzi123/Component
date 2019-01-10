@@ -1,6 +1,6 @@
 package com.ehi.component;
 
-import com.ehi.component.anno.EHiInterceptorAnno;
+import com.ehi.component.anno.EHiGlobalInterceptorAnno;
 import com.ehi.component.bean.InterceptorBean;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
@@ -40,7 +40,7 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedAnnotationTypes({ComponentUtil.INTERCEPTOR_ANNO_CLASS_NAME})
+@SupportedAnnotationTypes({ComponentUtil.GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME})
 public class InterceptorProcessor extends BaseHostProcessor {
 
     private TypeElement interceptorUtilTypeElement;
@@ -68,9 +68,9 @@ public class InterceptorProcessor extends BaseHostProcessor {
 
         if (CollectionUtils.isNotEmpty(set)) {
 
-            Set<? extends Element> moduleAppElements = roundEnvironment.getElementsAnnotatedWith(EHiInterceptorAnno.class);
+            Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(EHiGlobalInterceptorAnno.class);
 
-            parseAnnotation(moduleAppElements);
+            parseAnnotation(elements);
 
             createImpl();
 
@@ -109,9 +109,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
 
             }
 
-            // 如果是一个 Application
-
-            EHiInterceptorAnno anno = element.getAnnotation(EHiInterceptorAnno.class);
+            EHiGlobalInterceptorAnno anno = element.getAnnotation(EHiGlobalInterceptorAnno.class);
 
             if (anno == null) {
                 continue;

@@ -1,6 +1,6 @@
 package com.ehi.user.interceptor;
 
-import com.ehi.component.anno.EHiInterceptorAnno;
+import com.ehi.component.anno.EHiGlobalInterceptorAnno;
 import com.ehi.component.impl.EHiRouterInterceptor;
 
 /**
@@ -8,7 +8,7 @@ import com.ehi.component.impl.EHiRouterInterceptor;
  *
  * @author : xiaojinzi 30212
  */
-@EHiInterceptorAnno(priority = 5)
+@EHiGlobalInterceptorAnno(priority = 5)
 public class UserInterceptor1 implements EHiRouterInterceptor {
 
     public UserInterceptor1() {

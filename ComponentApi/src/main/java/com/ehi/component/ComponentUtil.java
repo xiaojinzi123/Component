@@ -44,6 +44,7 @@ public class ComponentUtil {
      */
     public static final String INTERCEPTOR = "InterceptorGenerated";
 
+    public static final String GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiGlobalInterceptorAnno";
     public static final String INTERCEPTOR_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiInterceptorAnno";
     public static final String ROUTER_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiRouterAnno";
     public static final String MODULE_APP_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiModuleAppAnno";

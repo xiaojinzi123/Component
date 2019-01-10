@@ -7,11 +7,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.impl.service.EHiService;
 import com.ehi.base.service.inter.component1.Component1Service;
 import com.ehi.base.service.inter.component2.Component2Service;
 import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.impl.service.EHiRxService;
+import com.ehi.component.impl.service.EHiService;
 import com.ehi.componentdemo.R;
+
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * 测试服务的界面
@@ -65,6 +69,23 @@ public class TestServiceAct extends AppCompatActivity {
             Toast.makeText(this, "Component1Service服务没找到", Toast.LENGTH_SHORT).show();
             return;
         }
+    }
+
+    public void rxServiceUse(View view) {
+        EHiRxService.with(Component2Service.class)
+                .doOnSuccess(new Consumer<Component2Service>() {
+                    @Override
+                    public void accept(Component2Service service) throws Exception {
+                        service.doSomeThing();
+                    }
+                })
+                .ignoreElement()
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        System.out.println("完成了");
+                    }
+                });
     }
 
 }

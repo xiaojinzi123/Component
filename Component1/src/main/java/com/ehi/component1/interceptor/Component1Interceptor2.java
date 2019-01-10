@@ -2,7 +2,7 @@ package com.ehi.component1.interceptor;
 
 import android.app.Application;
 
-import com.ehi.component.anno.EHiInterceptorAnno;
+import com.ehi.component.anno.EHiGlobalInterceptorAnno;
 import com.ehi.component.impl.EHiRouterInterceptor;
 
 /**
@@ -10,7 +10,7 @@ import com.ehi.component.impl.EHiRouterInterceptor;
  *
  * @author : xiaojinzi 30212
  */
-@EHiInterceptorAnno(priority = 4)
+@EHiGlobalInterceptorAnno(priority = 4)
 public class Component1Interceptor2 implements EHiRouterInterceptor {
 
     public Component1Interceptor2(Application application) {
