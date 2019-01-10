@@ -1,16 +1,14 @@
-package com.ehi.base.interceptor;
+package com.ehi.component.help;
 
 import android.Manifest;
 
+import com.ehi.base.InterceptorConfig;
 import com.ehi.base.util.PermissionsCallback;
 import com.ehi.base.util.PermissionsUtil;
+import com.ehi.component.anno.EHiInterceptorAnno;
 import com.ehi.component.impl.EHiRouterInterceptor;
 
-/**
- * time   : 2018/12/28
- *
- * @author : xiaojinzi 30212
- */
+@EHiInterceptorAnno(InterceptorConfig.HELP_CALLPHOEPERMISION)
 public class CallPhoePermisionInterceptor implements EHiRouterInterceptor {
 
     @Override

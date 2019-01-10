@@ -38,7 +38,7 @@ public interface IComponentRouter {
     boolean isMatchUri(@NonNull Uri uri);
 
     /**
-     * 获取这个地址要执行的拦截器
+     * 获取这个目标要执行的拦截器
      *
      * @return
      */

@@ -25,4 +25,9 @@ public class Component1ServiceImpl implements Component1Service {
         return new Component1Fragment();
     }
 
+    @Override
+    public void doSomeThing() {
+        Toast.makeText(context, "调用了 doSomeThing 方法", Toast.LENGTH_SHORT).show();
+    }
+
 }

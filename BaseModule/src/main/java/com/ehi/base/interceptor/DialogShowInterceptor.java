@@ -3,6 +3,7 @@ package com.ehi.base.interceptor;
 import android.app.ProgressDialog;
 import android.content.Context;
 
+import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouterInterceptor;
 
 import java.util.concurrent.Callable;
@@ -15,6 +16,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ * 你可以声明这个拦截器使用 {@link EHiRouterAnno#interceptors()} 来使用,也可以通过
+ * {@link EHiRouterAnno#interceptorNames()} ()} 配合 {@link com.ehi.component.anno.EHiInterceptorAnno}
+ * 来使用
  * time   : 2018/12/04
  *
  * @author : xiaojinzi 30212

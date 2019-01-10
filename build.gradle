@@ -37,7 +37,7 @@ task clean(type: Delete) {
 apply from: "dependencies.gradle"
 
 ext {
-    component_version = "1.4.4.4"
+    component_version = "1.4.4.5"
     business_component_version = "1.3.6"
-    isDependOnline = "false"
+    isDependOnline = "true"
 }

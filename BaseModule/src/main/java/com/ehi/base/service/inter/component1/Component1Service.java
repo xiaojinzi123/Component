@@ -8,4 +8,6 @@ public interface Component1Service {
 
     Fragment getFragment();
 
+    void doSomeThing();
+
 }

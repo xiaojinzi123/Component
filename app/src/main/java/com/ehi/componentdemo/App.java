@@ -13,13 +13,19 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        ComponentConfig.init(this,true);
+        ComponentConfig.init(this,BuildConfig.DEBUG);
         EHiRxRouter.tryErrorCatch();
 
-        EHiModuleManager.getInstance().register(ModuleConfig.App.NAME);
-        EHiModuleManager.getInstance().register(ModuleConfig.Component1.NAME);
-        EHiModuleManager.getInstance().register(ModuleConfig.Component2.NAME);
-        EHiModuleManager.getInstance().register(ModuleConfig.User.NAME);
+        EHiModuleManager moduleManager = EHiModuleManager.getInstance();
+        moduleManager.register(ModuleConfig.App.NAME);
+        moduleManager.register(ModuleConfig.Component1.NAME);
+        moduleManager.register(ModuleConfig.Component2.NAME);
+        moduleManager.register(ModuleConfig.User.NAME);
+        moduleManager.register(ModuleConfig.Help.NAME);
+
+        if (BuildConfig.DEBUG) {
+            moduleManager.check();
+        }
 
     }
 }

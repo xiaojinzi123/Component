@@ -25,6 +25,7 @@ public interface ComponentConstants {
     String ANDROID_INTENT = "android.content.Intent";
     String JAVA_EXCEPTION = "java.lang.Exception";
     String JAVA_STRING = "java.lang.String";
+    String JAVA_MAP = "java.util.Map";
     String JAVA_LIST = "java.util.List";
     String JAVA_ARRAYLIST = "java.util.ArrayList";
 

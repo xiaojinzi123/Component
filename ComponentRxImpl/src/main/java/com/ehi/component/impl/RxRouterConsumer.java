@@ -3,6 +3,7 @@ package com.ehi.component.impl;
 import android.support.annotation.Nullable;
 
 import com.ehi.component.error.ActivityResultException;
+import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.ServiceInvokeException;
 import com.ehi.component.error.ServiceNotFoundException;
@@ -25,6 +26,7 @@ public class RxRouterConsumer<T extends Throwable> implements Consumer<T> {
             NavigationFailException.class,
             ActivityResultException.class,
             TargetActivityNotFoundException.class,
+            InterceptorNotFoundException.class,
             ServiceNotFoundException.class,
             ServiceInvokeException.class,
             UnknowException.class

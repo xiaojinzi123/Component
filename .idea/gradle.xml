@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/ComponentCompiler" />
             <option value="$PROJECT_DIR$/ComponentImpl" />
             <option value="$PROJECT_DIR$/ComponentRxImpl" />
+            <option value="$PROJECT_DIR$/HelpComponent" />
             <option value="$PROJECT_DIR$/UserComponent" />
             <option value="$PROJECT_DIR$/app" />
           </set>

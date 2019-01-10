@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * 支持缓存自定义拦截器,工具类
- * 目前就只有给 目标页面在 {@link EHiRouterAnno#interceptors()} 写的拦截器做缓存
+ * 目前就只有给 目标页面在 {@link EHiRouterAnno#interceptors()} or {@link EHiRouterAnno#interceptorNames()} 写的拦截器做缓存
  * <p>
  * time   : 2018/12/03
  *
@@ -40,17 +40,17 @@ public class EHiRouterInterceptorUtil {
                             break;
                         }
                         if (parameterTypes != null && parameterTypes.length == 1 && parameterTypes[0] == Application.class) {
-                            t = (T)constructor.newInstance(ComponentConfig.getApplication());
+                            t = (T) constructor.newInstance(ComponentConfig.getApplication());
                             break;
                         }
                         if (parameterTypes != null && parameterTypes.length == 1 && parameterTypes[0] == Context.class) {
-                            t = (T)constructor.newInstance(ComponentConfig.getApplication());
+                            t = (T) constructor.newInstance(ComponentConfig.getApplication());
                             break;
                         }
                     }
                     if (t == null) {
                         throw new InstantiationException("do you write default constructor or a constructor with parameter 'Application' or  a constructor with parameter 'Context' ");
-                    }else {
+                    } else {
                         map.put(tClass, t);
                     }
                 }

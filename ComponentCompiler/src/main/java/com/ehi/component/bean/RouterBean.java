@@ -15,7 +15,10 @@ public class RouterBean {
     private String host;
     private String path;
     private String desc;
+    // value是实现类的全类名
     private List<String> interceptors = new ArrayList<>(1);
+    // 拦截器的一个别名
+    private List<String> interceptorNames = new ArrayList<>(1);
     // 可是是一个Activity 类或者是一个静态方法
     private Element rawType;
 
@@ -55,4 +58,7 @@ public class RouterBean {
         return interceptors;
     }
 
+    public List<String> getInterceptorNames() {
+        return interceptorNames;
+    }
 }

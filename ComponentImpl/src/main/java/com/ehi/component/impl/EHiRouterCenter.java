@@ -14,7 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class EHiRouterCenter implements IComponentModuleRouter {
+/**
+ * {@hide}
+ *
+ * @hide
+ */
+public class EHiRouterCenter implements IComponentModuleRouter {
 
     private static final String TAG = "EHiRouterCenter";
 
@@ -99,8 +104,15 @@ class EHiRouterCenter implements IComponentModuleRouter {
         routerMap.remove(host);
     }
 
+    /**
+     * {@hide}
+     *
+     * @param host
+     * @return
+     * @hide
+     */
     @Nullable
-    private IComponentHostRouter findUiRouter(String host) {
+    public IComponentHostRouter findUiRouter(String host) {
 
         String className = ComponentUtil.genHostRouterClassName(host);
 

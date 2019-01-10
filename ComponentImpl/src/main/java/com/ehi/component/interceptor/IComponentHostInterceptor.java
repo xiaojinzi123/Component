@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.ehi.component.impl.interceptor.EHiInterceptorBean;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * time   : 2018/12/26
@@ -26,6 +27,14 @@ public interface IComponentHostInterceptor extends IComponentInterceptor {
      * @return
      */
     @Nullable
-    List<EHiInterceptorBean> interceptorList();
+    List<EHiInterceptorBean> globalInterceptorList();
+
+    /**
+     * 获取普通拦截器的所有名称
+     *
+     * @return
+     */
+    @Nullable
+    Set<String> getInterceptorNames();
 
 }

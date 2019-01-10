@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.CallSuper;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +14,10 @@ import android.support.v4.app.FragmentManager;
 
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.bean.EHiRouterBean;
+import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
+import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.QueryParameterSupport;
@@ -56,8 +59,23 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
      */
     private long preTargetTime;
 
+    /**
+     * 必须调用父类的方法
+     */
+    @CallSuper
     protected void initMap() {
         hasInitMap = true;
+    }
+
+    /**
+     * 获取路由表
+     *
+     * @return
+     */
+    public Map<String, EHiRouterBean> getRouterMap() {
+        initMap();
+        Map<String, EHiRouterBean> map = new HashMap<>(routerBeanMap);
+        return map;
     }
 
     @Override
@@ -134,7 +152,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             Fragment rxFragment = findFragment(routerRequest);
             if (rxFragment == null) {
                 target.customerJump.jump(routerRequest);
-            }else {
+            } else {
                 target.customerJump.jump(routerRequest
                         .toBuilder()
                         .context(null)
@@ -142,7 +160,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                         .build()
                 );
             }
-        }else {
+        } else {
 
             if (target.targetClass != null) {
                 intent = new Intent(context, target.targetClass);
@@ -230,19 +248,40 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         if (!hasInitMap) {
             initMap();
         }
+        // 获取目标对象
         String targetPath = getTargetPath(uri);
         EHiRouterBean routerBean = routerBeanMap.get(targetPath);
         if (routerBean == null) {
             return null;
         }
         List<Class<? extends EHiRouterInterceptor>> interceptors = routerBean.interceptors;
-        if (interceptors == null) {
+        List<String> interceptorNames = routerBean.interceptorNames;
+
+        // 如果没有拦截器直接返回 null
+        if ((interceptors == null || interceptors.size() == 0) && (interceptorNames == null || interceptorNames.size() == 0)) {
             return null;
         }
+
         List<EHiRouterInterceptor> result = new ArrayList<>();
-        for (Class<? extends EHiRouterInterceptor> interceptor : interceptors) {
-            result.add(EHiRouterInterceptorUtil.get(interceptor));
+        if (interceptors != null) {
+            for (Class<? extends EHiRouterInterceptor> interceptorClass : interceptors) {
+                EHiRouterInterceptor interceptor = EHiRouterInterceptorUtil.get(interceptorClass);
+                if (interceptor == null) {
+                    throw new InterceptorNotFoundException("className：" + interceptorClass);
+                }
+                result.add(interceptor);
+            }
         }
+        if (interceptorNames != null) {
+            for (String interceptorName : interceptorNames) {
+                EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(interceptorName);
+                if (interceptor == null) {
+                    throw new InterceptorNotFoundException("interceptorName：" + interceptorName);
+                }
+                result.add(interceptor);
+            }
+        }
+
         return result;
     }
 
@@ -327,7 +366,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         int index = url.indexOf("?");
         if (index > -1) {
             return url.substring(0, index);
-        }else {
+        } else {
             return url;
         }
     }

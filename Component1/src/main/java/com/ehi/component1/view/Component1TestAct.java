@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.support.QueryParameterSupport;
@@ -14,6 +15,7 @@ import com.ehi.component1.R;
 @EHiRouterAnno(
         host = ModuleConfig.Component1.NAME,
         value = ModuleConfig.Component1.TEST,
+        interceptorNames = InterceptorConfig.COMPONENT1_TEST,
         desc = "业务组件1的测试界面"
 )
 public class Component1TestAct extends AppCompatActivity {

@@ -72,10 +72,10 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void rxServiceUse(View view) {
-        EHiRxService.with(Component2Service.class)
-                .doOnSuccess(new Consumer<Component2Service>() {
+        EHiRxService.with(Component1Service.class)
+                .doOnSuccess(new Consumer<Component1Service>() {
                     @Override
-                    public void accept(Component2Service service) throws Exception {
+                    public void accept(Component1Service service) throws Exception {
                         service.doSomeThing();
                     }
                 })
@@ -83,7 +83,7 @@ public class TestServiceAct extends AppCompatActivity {
                 .subscribe(new Action() {
                     @Override
                     public void run() throws Exception {
-                        System.out.println("完成了");
+                        Toast.makeText(TestServiceAct.this, "完成服务的调用啦", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

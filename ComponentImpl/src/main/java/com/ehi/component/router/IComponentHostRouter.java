@@ -1,5 +1,9 @@
 package com.ehi.component.router;
 
+import com.ehi.component.bean.EHiRouterBean;
+
+import java.util.Map;
+
 /**
  * 组件之间实现跳转的接口
  * <p>
@@ -15,5 +19,7 @@ public interface IComponentHostRouter extends IComponentRouter {
      * @return
      */
     String getHost();
+
+    Map<String, EHiRouterBean> getRouterMap();
 
 }

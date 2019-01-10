@@ -1,15 +1,17 @@
-package com.ehi.base.interceptor;
+package com.ehi.user.interceptor;
 
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
 import com.ehi.base.service.inter.user.UserService;
+import com.ehi.component.anno.EHiInterceptorAnno;
+import com.ehi.component.impl.EHiRouterInterceptor;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.impl.service.EHiService;
-import com.ehi.component.impl.EHiRouterInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,15 +20,14 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * 其实你可以做的事情很多
- * <p>
  * time   : 2018/12/03
  *
  * @author : xiaojinzi 30212
  */
-public class LoginInterceptor implements EHiRouterInterceptor {
+@EHiInterceptorAnno(InterceptorConfig.USER_LOGIN)
+public class UserLoginInterceptor implements EHiRouterInterceptor {
 
-    public LoginInterceptor(Context app) {
+    public UserLoginInterceptor(Context app) {
     }
 
     @Override

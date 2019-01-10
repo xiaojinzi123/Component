@@ -36,6 +36,12 @@ public class EHiRouterBean {
     public List<Class<? extends EHiRouterInterceptor>> interceptors;
 
     /**
+     * 这是也是目标界面要执行的拦截器,不过这个是字符串表示的
+     * 更加的跨越模块,但是寻找可能就没有上面的方式来的直接了
+     */
+    public List<String> interceptorNames;
+
+    /**
      * 可能会生成文档之类的
      */
     @Nullable

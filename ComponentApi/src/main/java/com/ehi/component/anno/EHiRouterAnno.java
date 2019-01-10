@@ -34,6 +34,14 @@ public @interface EHiRouterAnno {
     Class[] interceptors() default {};
 
     /**
+     * 拦截器的名字的列表,可以指定其他模块的拦截器
+     * 这点是跨模块的,很棒的
+     *
+     * @return
+     */
+    String[] interceptorNames() default {};
+
+    /**
      * 描述信息
      *
      * @return

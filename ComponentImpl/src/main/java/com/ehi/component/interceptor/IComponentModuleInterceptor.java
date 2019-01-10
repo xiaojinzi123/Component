@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
  *
  * @author : xiaojinzi 30212
  */
-public interface IComponentModuleInterceptor {
+public interface IComponentModuleInterceptor extends IComponentInterceptor {
 
     /**
      * 注册每一个模块的拦截器
@@ -26,7 +26,7 @@ public interface IComponentModuleInterceptor {
     /**
      * 反注册模块的拦截器
      *
-     * @param service
+     * @param interceptor
      */
     void unregister(@NonNull IComponentHostInterceptor interceptor);
 

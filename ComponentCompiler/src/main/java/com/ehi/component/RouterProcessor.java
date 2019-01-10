@@ -51,7 +51,7 @@ public class RouterProcessor extends AbstractProcessor {
     private static final String CUSTOMER_JUMP_CLASS_NAME = "com.ehi.component.bean.CustomerJump";
     private static final String ROUTER_REQUEST_CLASS_NAME = "com.ehi.component.impl.EHiRouterRequest";
 
-    private TypeMirror typeString;
+    private TypeMirror stringTypeMirror;
 
     private Filer mFiler;
     private Messager mMessager;
@@ -62,9 +62,14 @@ public class RouterProcessor extends AbstractProcessor {
     private ClassName customerIntentCallClassName;
     private ClassName customerJumpClassName;
 
+    private TypeElement routerBeanTypeElement;
+    private TypeName routerBeanTypeName;
     private TypeElement exceptionTypeElement;
+    private TypeName stringTypeName;
     private ClassName exceptionClassName;
     private TypeElement intentTypeElement;
+    private TypeElement mapTypeElement;
+    private ClassName mapClassName;
     private TypeMirror intentTypeMirror;
     private TypeElement routerRequestTypeElement;
 
@@ -80,7 +85,12 @@ public class RouterProcessor extends AbstractProcessor {
         mTypes = processingEnv.getTypeUtils();
         mElements = processingEnv.getElementUtils();
 
-        typeString = mElements.getTypeElement("java.lang.String").asType();
+        routerBeanTypeElement = mElements.getTypeElement(ROUTER_BEAN_NAME);
+        routerBeanTypeName = TypeName.get(routerBeanTypeElement.asType());
+        stringTypeMirror = mElements.getTypeElement(ComponentConstants.JAVA_STRING).asType();
+        stringTypeName = TypeName.get(stringTypeMirror);
+        mapTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_MAP);
+        mapClassName = ClassName.get(mapTypeElement);
         exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
         exceptionClassName = ClassName.get(exceptionTypeElement);
         customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
@@ -188,7 +198,14 @@ public class RouterProcessor extends AbstractProcessor {
             routerBean.setPath(router.value());
             routerBean.setDesc(router.desc());
             routerBean.setRawType(element);
+            routerBean.getInterceptors().clear();
             routerBean.getInterceptors().addAll(getImplClassName(router));
+            if (router.interceptorNames() != null) {
+                routerBean.getInterceptorNames().clear();
+                for (String interceptorName : router.interceptorNames()) {
+                    routerBean.getInterceptorNames().add(interceptorName);
+                }
+            }
 
             routerMap.put(getHostAndPath(router.host(), router.value()), routerBean);
 
@@ -303,7 +320,7 @@ public class RouterProcessor extends AbstractProcessor {
                                 )
                                 .build();
                         initMapMethodSpecBuilder.addStatement("$N.customerIntentCall = $L", routerBeanName, intentCallTypeSpec);
-                    }else { // 自定义跳转的
+                    } else { // 自定义跳转的
                         TypeSpec customerJumpTypeSpec = TypeSpec.anonymousClassBuilder("")
                                 .addSuperinterface(customerJumpClassName)
                                 .addMethod(
@@ -325,6 +342,13 @@ public class RouterProcessor extends AbstractProcessor {
                         initMapMethodSpecBuilder.addStatement("$N.interceptors.add($T.class)", routerBeanName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
                     }
                 }
+                if (routerBean.getInterceptorNames() != null && routerBean.getInterceptorNames().size() > 0) {
+                    initMapMethodSpecBuilder.addStatement("$N.interceptorNames = new $T()", routerBeanName, ArrayList.class);
+                    for (String interceptorName : routerBean.getInterceptorNames()) {
+                        initMapMethodSpecBuilder.addStatement("$N.interceptorNames.add($S)", routerBeanName, interceptorName);
+                    }
+
+                }
                 initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
 
                 initMapMethodSpecBuilder.addCode("\n");
@@ -339,7 +363,7 @@ public class RouterProcessor extends AbstractProcessor {
 
     private MethodSpec generateInitHostMethod() {
 
-        TypeName returnType = TypeName.get(typeString);
+        TypeName returnType = TypeName.get(stringTypeMirror);
 
         MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("getHost")
                 .returns(returnType)

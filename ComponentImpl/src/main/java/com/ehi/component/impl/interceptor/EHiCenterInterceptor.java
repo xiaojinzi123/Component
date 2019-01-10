@@ -91,7 +91,7 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
         mInterceptorList.clear();
         List<EHiInterceptorBean> totalList = new ArrayList<>();
         for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
-            List<EHiInterceptorBean> list = entry.getValue().interceptorList();
+            List<EHiInterceptorBean> list = entry.getValue().globalInterceptorList();
             if (list == null) {
                 continue;
             }
@@ -136,6 +136,20 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
 
         return null;
 
+    }
+
+    @Nullable
+    @Override
+    public EHiRouterInterceptor getByName(@NonNull String name) {
+        for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
+            EHiRouterInterceptor interceptor = entry.getValue().getByName(name);
+            // 其实不应该找不到的, deBug的时候让它崩溃
+            if (interceptor == null) {
+            }else {
+                return interceptor;
+            }
+        }
+        return null;
     }
 
 }

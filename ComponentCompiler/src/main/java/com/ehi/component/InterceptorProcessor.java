@@ -1,6 +1,7 @@
 package com.ehi.component;
 
 import com.ehi.component.anno.EHiGlobalInterceptorAnno;
+import com.ehi.component.anno.EHiInterceptorAnno;
 import com.ehi.component.bean.InterceptorBean;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
@@ -14,9 +15,10 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -40,11 +42,10 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedAnnotationTypes({ComponentUtil.GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME})
+@SupportedAnnotationTypes({ComponentUtil.GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME, ComponentUtil.INTERCEPTOR_ANNO_CLASS_NAME})
 public class InterceptorProcessor extends BaseHostProcessor {
 
     private TypeElement interceptorUtilTypeElement;
-    private TypeElement routerTypeElement;
     private TypeElement interceptorBeanTypeElement;
     private TypeElement nullableTypeElement;
     private ClassName nullableClassName;
@@ -53,7 +54,6 @@ public class InterceptorProcessor extends BaseHostProcessor {
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         interceptorUtilTypeElement = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_UTIL_CLASS_NAME);
-        routerTypeElement = mElements.getTypeElement(ComponentConstants.EHIROUTER_CLASS_NAME);
         interceptorBeanTypeElement = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_BEAN_CLASS_NAME);
         nullableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_NULLABLE);
         nullableClassName = ClassName.get(nullableTypeElement);
@@ -68,9 +68,11 @@ public class InterceptorProcessor extends BaseHostProcessor {
 
         if (CollectionUtils.isNotEmpty(set)) {
 
-            Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(EHiGlobalInterceptorAnno.class);
+            Set<? extends Element> globalInterceptorElements = roundEnvironment.getElementsAnnotatedWith(EHiGlobalInterceptorAnno.class);
+            Set<? extends Element> interceptorElements = roundEnvironment.getElementsAnnotatedWith(EHiInterceptorAnno.class);
 
-            parseAnnotation(elements);
+            parseGlobalInterceptAnnotation(globalInterceptorElements);
+            parseNormalInterceptAnnotation(interceptorElements);
 
             createImpl();
 
@@ -81,32 +83,28 @@ public class InterceptorProcessor extends BaseHostProcessor {
 
     }
 
-    private List<InterceptorBean> mElementList = new ArrayList<>();
+    private List<InterceptorBean> mGlobalInterceptElementList = new ArrayList<>();
+    private Map<String, InterceptorBean> mNormalInterceptElementMap = new HashMap<>();
 
-    private void parseAnnotation(Set<? extends Element> moduleAppElements) {
+    private void parseGlobalInterceptAnnotation(Set<? extends Element> globalInterceptorElements) {
 
-        mElementList.clear();
+        mGlobalInterceptElementList.clear();
 
+        // 拦截器的接口
         TypeMirror typeInterceptor = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME).asType();
 
-        for (Element element : moduleAppElements) {
+        for (Element element : globalInterceptorElements) {
 
             TypeMirror tm = element.asType();
 
             if (!(element instanceof TypeElement)) { // 比如是类
-
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
-
                 continue;
-
             }
 
             if (!mTypes.isSubtype(tm, typeInterceptor)) { // 比如是拦截器接口的之类
-
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'EHiModuleAppAnno' annotation");
-
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " must implementation interface '" + ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME + "'");
                 continue;
-
             }
 
             EHiGlobalInterceptorAnno anno = element.getAnnotation(EHiGlobalInterceptorAnno.class);
@@ -115,22 +113,46 @@ public class InterceptorProcessor extends BaseHostProcessor {
                 continue;
             }
 
-            mElementList.add(new InterceptorBean(element, anno.priority()));
+            mGlobalInterceptElementList.add(new InterceptorBean(InterceptorBean.GLOBAL_INTERCEPTOR, element, anno.priority(), null));
 
         }
 
-        /*mElementList.sort(new Comparator<InterceptorBean>() {
-            @Override
-            public int compare(InterceptorBean o1, InterceptorBean o2) {
-                if (o1.priority == o2.priority) {
-                    return 0;
-                } else if (o1.priority > o2.priority) {
-                    return -1;
-                } else {
-                    return 1;
-                }
+    }
+
+    private void parseNormalInterceptAnnotation(Set<? extends Element> normalInterceptorElements) {
+
+        mNormalInterceptElementMap.clear();
+
+        // 拦截器的接口
+        TypeMirror typeInterceptor = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME).asType();
+
+        for (Element element : normalInterceptorElements) {
+
+            TypeMirror tm = element.asType();
+
+            if (!(element instanceof TypeElement)) { // 比如是类
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
+                continue;
             }
-        });*/
+
+            if (!mTypes.isSubtype(tm, typeInterceptor)) { // 比如是拦截器接口的之类
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " must implementation interface '" + ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME + "'");
+                continue;
+            }
+
+            EHiInterceptorAnno anno = element.getAnnotation(EHiInterceptorAnno.class);
+
+            if (anno == null) {
+                continue;
+            }
+
+            if (mNormalInterceptElementMap.containsKey(anno.value())) {
+                throw new RuntimeException("the interceptor's name '" + anno.value() + "' is exist");
+            }
+
+            mNormalInterceptElementMap.put(anno.value(), new InterceptorBean(InterceptorBean.NORMAL_INTERCEPTOR, element, 0, anno.value()));
+
+        }
 
     }
 
@@ -148,14 +170,16 @@ public class InterceptorProcessor extends BaseHostProcessor {
         ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.INTERCEPTOR_IMPL_CLASS_NAME));
 
         MethodSpec initHostMethod = generateInitHostMethod();
-        MethodSpec interceptorListMethod = generateInterceptorListMethod();
+        MethodSpec globalInterceptorListMethod = generateGlobalInterceptorListMethod();
+        MethodSpec normalInterceptorListMethod = generateNormalInterceptorInitMapMethod();
 
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 //.addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
                 .superclass(superClass)
                 .addMethod(initHostMethod)
-                .addMethod(interceptorListMethod)
+                .addMethod(globalInterceptorListMethod)
+                .addMethod(normalInterceptorListMethod)
                 .build();
 
         try {
@@ -171,62 +195,61 @@ public class InterceptorProcessor extends BaseHostProcessor {
 
     /**
      * @return
-     * @Nullable
-     * @Override public List<EHiInterceptorBean> interceptorList() {
-     * return null;
-     * }
      */
-    private MethodSpec generateInterceptorListMethod() {
+    private MethodSpec generateGlobalInterceptorListMethod() {
 
         TypeName returnType = ParameterizedTypeName.get(mClassNameList, TypeName.get(interceptorBeanTypeElement.asType()));
-        ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_APPLICATION));
 
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("interceptorList")
+        final MethodSpec.Builder globalInterceptorListMethodSpecBuilder = MethodSpec.methodBuilder("globalInterceptorList")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addAnnotation(nullableClassName)
                 .addModifiers(Modifier.PUBLIC);
 
-        if (mElementList.size() == 0) {
-            methodSpecBuilder.addStatement("return null");
+        if (mGlobalInterceptElementList.size() == 0) {
+            globalInterceptorListMethodSpecBuilder.addStatement("return null");
         } else {
 
-            final AtomicInteger atomicInteger = new AtomicInteger();
+            globalInterceptorListMethodSpecBuilder.addStatement("$T<$T> list = new $T<>()", mClassNameList, interceptorBeanTypeElement, mClassNameArrayList);
 
-            methodSpecBuilder.addStatement("$T<$T> list = new $T<>()", mClassNameList, interceptorBeanTypeElement, mClassNameArrayList);
-
-            mElementList.forEach(new Consumer<InterceptorBean>() {
+            mGlobalInterceptElementList.forEach(new Consumer<InterceptorBean>() {
                 @Override
                 public void accept(InterceptorBean interceptorBean) {
-
                     String implClassName = interceptorBean.element.toString();
                     TypeElement implTypeElement = mElements.getTypeElement(implClassName);
-                    methodSpecBuilder.addStatement("list.add(new $T($T.get($T.class),$L))", interceptorBeanTypeElement, interceptorUtilTypeElement, implTypeElement, interceptorBean.priority);
-
-                    // methodSpecBuilder.addStatement("$T.addRouterInterceptor($T.get($T.class))", routerTypeElement, interceptorUtilTypeElement, implTypeElement);
-                    // com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil.get($T.class)
-
+                    globalInterceptorListMethodSpecBuilder.addStatement("list.add(new $T($T.get($T.class),$L))", interceptorBeanTypeElement, interceptorUtilTypeElement, implTypeElement, interceptorBean.priority);
                 }
             });
 
+            globalInterceptorListMethodSpecBuilder.addStatement("return list");
 
-            methodSpecBuilder.addStatement("return list");
-
-        /*mElementList.forEach(new Consumer<InterceptorBean>() {
-            @Override
-            public void accept(InterceptorBean interceptorBean) {
-
-                String implClassName = interceptorBean.element.toString();
-                TypeElement implTypeElement = mElements.getTypeElement(implClassName);
-
-                methodSpecBuilder.addStatement("$T.addRouterInterceptor($T.get($T.class))", routerTypeElement, interceptorUtilTypeElement, implTypeElement);
-                // com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil.get($T.class)
-
-            }
-        });*/
         }
 
-        return methodSpecBuilder.build();
+        return globalInterceptorListMethodSpecBuilder.build();
+    }
+
+    private MethodSpec generateNormalInterceptorInitMapMethod() {
+
+        final MethodSpec.Builder normalInterceptorInitMapMethodSpecBuilder = MethodSpec.methodBuilder("initInterceptorMap")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PROTECTED);
+
+        normalInterceptorInitMapMethodSpecBuilder.addStatement("super.initInterceptorMap()");
+
+        if (mNormalInterceptElementMap.size() != 0) {
+
+            mNormalInterceptElementMap.values().forEach(new Consumer<InterceptorBean>() {
+                @Override
+                public void accept(InterceptorBean interceptorBean) {
+                    String implClassName = interceptorBean.element.toString();
+                    TypeElement implTypeElement = mElements.getTypeElement(implClassName);
+                    normalInterceptorInitMapMethodSpecBuilder.addStatement("interceptorMap.put($S, $T.class)", interceptorBean.name, implTypeElement);
+                }
+            });
+
+        }
+
+        return normalInterceptorInitMapMethodSpecBuilder.build();
     }
 
     private MethodSpec generateInitHostMethod() {

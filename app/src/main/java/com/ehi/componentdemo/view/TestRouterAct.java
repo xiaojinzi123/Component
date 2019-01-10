@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.interceptor.DialogShowInterceptor;
-import com.ehi.base.interceptor.LoginInterceptor;
 import com.ehi.base.view.BaseAct;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.bean.EHiActivityResult;
@@ -266,7 +266,7 @@ public class TestRouterAct extends BaseAct {
                                 });
                     }
                 })
-                .interceptors(LoginInterceptor.class)
+                .interceptorNames(InterceptorConfig.USER_LOGIN)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {

@@ -88,6 +88,11 @@ public class EHiRxRouter {
         }
 
         @Override
+        public Builder interceptorNames(@NonNull String... interceptors) {
+            return (Builder) super.interceptorNames(interceptors);
+        }
+
+        @Override
         public Builder requestCode(@Nullable Integer requestCode) {
             return (Builder) super.requestCode(requestCode);
         }

@@ -59,4 +59,8 @@ public class ModuleConfig {
 
     }
 
+    public static class Help {
+        public static final String NAME = "help";
+    }
+
 }
