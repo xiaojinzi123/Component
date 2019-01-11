@@ -1,7 +1,6 @@
 package com.ehi.component.impl;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 
@@ -17,7 +16,7 @@ public class EHiRouterResult implements Serializable {
      * 如果成功了,这个会有值
      */
     @NonNull
-    private EHiRouterRequest request;
+    private final EHiRouterRequest request;
 
     public EHiRouterResult(@NonNull EHiRouterRequest request) {
         this.request = request;
@@ -28,8 +27,5 @@ public class EHiRouterResult implements Serializable {
         return request;
     }
 
-    public void setRequest(@NonNull EHiRouterRequest request) {
-        this.request = request;
-    }
 
 }

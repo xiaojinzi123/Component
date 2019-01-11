@@ -26,7 +26,7 @@ public interface EHiCallback {
     void onError(@NonNull Exception error);
 
     /**
-     * 错误或者成功都会回调
+     * 错误或者成功都会回调,取消的时候不会回调
      *
      * @param result
      * @param error

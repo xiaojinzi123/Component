@@ -374,7 +374,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Component2.NAME)
                 .path(ModuleConfig.Component2.MAIN)
-                .intentConsumer(new com.ehi.component.support.Consumer<Intent>() {
+                .onIntentCreated(new com.ehi.component.support.Consumer<Intent>() {
                     @Override
                     public void accept(@NonNull Intent intent) throws Exception {
                         Toast.makeText(TestRouterAct.this, intent.toString(), Toast.LENGTH_SHORT).show();
@@ -475,6 +475,11 @@ public class TestRouterAct extends BaseAct {
                     public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
                         super.onEvent(result, error);
                     }
+
+                    @Override
+                    public void onCancel() {
+                        super.onCancel();
+                    }
                 });
 
         finish();
@@ -486,13 +491,13 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
-                .befor(new com.ehi.component.support.Action() {
+                .onBeforJump(new com.ehi.component.support.Action() {
                     @Override
                     public void run() throws Exception {
                         Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .after(new com.ehi.component.support.Action() {
+                .onAfterJump(new com.ehi.component.support.Action() {
                     @Override
                     public void run() throws Exception {
                         Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show();

@@ -50,7 +50,8 @@ public interface EHiRouterInterceptor {
     }
 
     /**
-     * 回调对象,错误和成功的方法均智能调用一次,多次调用只有第一次有用,其他会被忽略
+     * 回调对象,错误和成功的方法均只能调用一次,多次调用只有第一次有用,其他会被忽略
+     *
      */
     @MainThread
     interface Callback {
@@ -61,7 +62,7 @@ public interface EHiRouterInterceptor {
          * @param result
          */
         @MainThread
-        void onSuccess(EHiRouterExecuteResult result);
+        void onSuccess(EHiRouterResult result);
 
         /**
          * 错误的回调

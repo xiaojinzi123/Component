@@ -141,10 +141,6 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             throw new NavigationFailException("your fragment attached to Activity?");
         }
 
-        if (routerRequest.beforAction != null) {
-            routerRequest.beforAction.run();
-        }
-
         Intent intent = null;
 
         if (target.customerJump != null) {
@@ -183,8 +179,8 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         }
 
-        if (routerRequest.afterAction != null) {
-            routerRequest.afterAction.run();
+        if (routerRequest.afterJumpAction != null) {
+            routerRequest.afterJumpAction.run();
         }
 
     }

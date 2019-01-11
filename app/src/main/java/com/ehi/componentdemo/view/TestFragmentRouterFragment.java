@@ -124,8 +124,15 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                     public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
                         super.onEvent(result, error);
                     }
+
+                    @Override
+                    public void onCancel() {
+                        super.onCancel();
+                    }
                 });
+
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+
     }
 
 }

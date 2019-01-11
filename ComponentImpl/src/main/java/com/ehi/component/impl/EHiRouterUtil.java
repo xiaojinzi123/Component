@@ -46,6 +46,34 @@ class EHiRouterUtil {
      * 当请求对象构建出来以后调用的
      *
      * @param callback
+     */
+    public static void cancelCallback(@Nullable final EHiCallback callback) {
+        if (isMainThread()) {
+            cancelCallbackOnMainThread(callback);
+        } else {
+            postActionToMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    cancelCallbackOnMainThread(callback);
+                }
+            });
+        }
+    }
+
+    /**
+     * @param callback
+     */
+    private static void cancelCallbackOnMainThread(@Nullable final EHiCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        callback.onCancel();
+    }
+
+    /**
+     * 当请求对象构建出来以后调用的
+     *
+     * @param callback
      * @param error
      */
     public static void errorCallback(@Nullable final EHiCallback callback,

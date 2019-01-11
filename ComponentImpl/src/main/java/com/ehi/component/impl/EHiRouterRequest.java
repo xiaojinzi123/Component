@@ -41,10 +41,10 @@ public class EHiRouterRequest {
     public final Consumer<Intent> intentConsumer;
 
     @Nullable
-    public final Action beforAction;
+    public final Action beforJumpAction;
 
     @Nullable
-    public final Action afterAction;
+    public final Action afterJumpAction;
 
     /**
      * get the Context
@@ -106,6 +106,12 @@ public class EHiRouterRequest {
         return rawActivity;
     }
 
+    /**
+     * Activity 是否被销毁了
+     *
+     * @param activity
+     * @return
+     */
     private boolean isActivityDestoryed(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             if (activity.isFinishing() || activity.isDestroyed()) {
@@ -130,8 +136,8 @@ public class EHiRouterRequest {
         builder.fragment = fragment;
         builder.context = context;
         builder.intentConsumer = intentConsumer;
-        builder.befor = beforAction;
-        builder.after = afterAction;
+        builder.beforJumpAction = beforJumpAction;
+        builder.afterJumpAction = afterJumpAction;
         return builder;
     }
 
@@ -144,8 +150,8 @@ public class EHiRouterRequest {
             this.bundle.putAll(builder.bundle);
         }
         intentConsumer = builder.intentConsumer;
-        beforAction = builder.befor;
-        afterAction = builder.after;
+        beforJumpAction = builder.beforJumpAction;
+        afterJumpAction = builder.afterJumpAction;
     }
 
     public static class Builder {
@@ -169,10 +175,10 @@ public class EHiRouterRequest {
         private Consumer<Intent> intentConsumer;
 
         @Nullable
-        private Action befor;
+        private Action beforJumpAction;
 
         @Nullable
-        private Action after;
+        private Action afterJumpAction;
 
         public Builder context(@Nullable Context context) {
             this.context = context;
@@ -204,13 +210,13 @@ public class EHiRouterRequest {
             return this;
         }
 
-        public Builder befor(@Nullable Action action) {
-            this.befor = action;
+        public Builder beforJumpAction(@Nullable Action action) {
+            this.beforJumpAction = action;
             return this;
         }
 
-        public Builder after(@Nullable Action action) {
-            this.after = action;
+        public Builder afterJumpAction(@Nullable Action action) {
+            this.afterJumpAction = action;
             return this;
         }
 

@@ -186,27 +186,36 @@ public class EHiRouter {
         private Consumer<Intent> intentConsumer = null;
 
         @Nullable
-        private Action beforAction = null;
+        private Action beforJumpAction = null;
 
         @Nullable
-        private Action afterAction = null;
+        private Action afterJumpAction = null;
 
         /**
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
          */
         protected boolean isFinish = false;
 
-        public Builder befor(@NonNull Action action) {
-            this.beforAction = action;
+        public Builder onBeforJump(@NonNull Action action) {
+            this.beforJumpAction = action;
             return this;
         }
 
-        public Builder after(@NonNull Action action) {
-            this.afterAction = action;
+        public Builder onAfterJump(@NonNull Action action) {
+            this.afterJumpAction = action;
             return this;
         }
 
-        public Builder intentConsumer(@NonNull Consumer<Intent> intentConsumer) {
+        /**
+         * 当不是自定义跳转的时候, Intent 由框架生成,所以可以回调这个接口
+         * 当自定义跳转,这个回调不会回调的
+         *
+         * @param intentConsumer 这个参数是框架自动构建的,里面有跳转需要的所有参数和数据,这里就是给用户一个
+         *                       更改的机会,但是最好别改参数之类的信息,这里提供出来其实是可以让你调用Intent
+         *                       的 {@link Intent#addFlags(int)} 等方法,并不是给你修改内部的 bundle 的
+         * @return
+         */
+        public Builder onIntentCreated(@NonNull Consumer<Intent> intentConsumer) {
             this.intentConsumer = intentConsumer;
             return this;
         }
@@ -493,8 +502,8 @@ public class EHiRouter {
                     .requestCode(requestCode)
                     .bundle(bundle)
                     .intentConsumer(intentConsumer)
-                    .befor(beforAction)
-                    .after(afterAction)
+                    .beforJumpAction(beforJumpAction)
+                    .afterJumpAction(afterJumpAction)
                     .build();
 
             return holder;
@@ -556,7 +565,7 @@ public class EHiRouter {
                     interceptorCallbackList.add(interceptorCallback);
                 }
 
-                realNavigate(originalRequest, interceptors, classInterceptors,nameInterceptors, interceptorCallback);
+                realNavigate(originalRequest, interceptors, classInterceptors, nameInterceptors, interceptorCallback);
 
             } catch (Exception e) { // 发生路由错误的时候
                 EHiRouterUtil.deliveryError(e);
@@ -660,9 +669,9 @@ public class EHiRouter {
             @Nullable
             private EHiCallback mCallback;
 
-            // 最原始的请求
+            // 最原始的请求,用户构建的,不会更改的
             @NonNull
-            private EHiRouterRequest mOriginalRequest;
+            private final EHiRouterRequest mOriginalRequest;
 
             /**
              * 标记是否完成,出错或者成功都算是完成了,不能再继续调用了
@@ -684,14 +693,13 @@ public class EHiRouter {
             }
 
             @Override
-            public void onSuccess(EHiRouterExecuteResult result) {
+            public void onSuccess(EHiRouterResult result) {
                 synchronized (this) {
                     if (isEnd()) {
                         return;
                     }
                     isComplete = true;
-                    // 会在主线程中回调接口
-                    EHiRouterUtil.successCallback(mCallback, new EHiRouterResult(result.request));
+                    EHiRouterUtil.successCallback(mCallback, result);
                 }
             }
 
@@ -724,7 +732,12 @@ public class EHiRouter {
             @Override
             public void cancel() {
                 synchronized (this) {
+                    if (isEnd()) {
+                        return;
+                    }
+                    // 标记取消成功
                     isCanceled = true;
+                    EHiRouterUtil.cancelCallback(mCallback);
                 }
             }
         }
@@ -770,8 +783,17 @@ public class EHiRouter {
             public void intercept(final Chain chain) throws Exception {
 
                 try {
-                    EHiRouterCenter.getInstance().openUri(chain.request());
-                    chain.callback().onSuccess(new EHiRouterExecuteResult(chain.request()));
+                    // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
+                    EHiRouterRequest routerRequest = chain.request();
+                    if (routerRequest.beforJumpAction != null) {
+                        routerRequest.beforJumpAction.run();
+                    }
+                    // 真正执行跳转的逻辑
+                    EHiRouterCenter.getInstance().openUri(routerRequest);
+                    if (routerRequest.afterJumpAction != null) {
+                        routerRequest.afterJumpAction.run();
+                    }
+                    chain.callback().onSuccess(new EHiRouterResult(routerRequest));
                 } catch (Exception e) {
                     chain.callback().onError(e);
                 }
