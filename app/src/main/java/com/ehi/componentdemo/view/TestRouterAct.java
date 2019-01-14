@@ -78,7 +78,9 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void openUriTest(View view) {
-        EHiRouter.open(this, "EHi://component1/test?data=openUriTest");
+        EHiRouter.with(this)
+                .url("EHi://component1/test?data=openUriTest")
+                .navigate();
     }
 
     public void normalJump(View view) {
@@ -516,7 +518,19 @@ public class TestRouterAct extends BaseAct {
         EHiRouter.with(mContext)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_FRAGMENT_ROUTER)
-                .navigate();
+                .navigate(new EHiCallbackAdapter(){
+                    @Override
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
+                        super.onEvent(result, error);
+                        finish();
+                    }
+
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        super.onSuccess(result);
+                    }
+                });
     }
+
 
 }

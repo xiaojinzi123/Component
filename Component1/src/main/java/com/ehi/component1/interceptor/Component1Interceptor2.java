@@ -14,7 +14,6 @@ import com.ehi.component.impl.EHiRouterInterceptor;
 public class Component1Interceptor2 implements EHiRouterInterceptor {
 
     public Component1Interceptor2(Application application) {
-        System.out.println("123123123");
     }
 
     @Override

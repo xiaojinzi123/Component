@@ -17,6 +17,7 @@ import com.ehi.component.error.ActivityResultException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.error.UnknowException;
+import com.ehi.component.support.Action;
 import com.ehi.component.support.EHiCallbackAdapter;
 
 import java.io.Serializable;
@@ -68,13 +69,18 @@ public class EHiRxRouter {
         }
 
         @Override
-        public Builder host(@NonNull String host) {
-            return (Builder) super.host(host);
+        public Builder onBeforJump(@NonNull Action action) {
+            return (Builder) super.onBeforJump(action);
         }
 
         @Override
-        public Builder path(@NonNull String path) {
-            return (Builder) super.path(path);
+        public Builder onAfterJump(@NonNull Action action) {
+            return (Builder) super.onAfterJump(action);
+        }
+
+        @Override
+        public Builder onIntentCreated(@NonNull com.ehi.component.support.Consumer<Intent> intentConsumer) {
+            return (Builder) super.onIntentCreated(intentConsumer);
         }
 
         @Override
@@ -93,12 +99,27 @@ public class EHiRxRouter {
         }
 
         @Override
+        public Builder url(@NonNull String url) {
+            return (Builder) super.url(url);
+        }
+
+        @Override
+        public Builder host(@NonNull String host) {
+            return (Builder) super.host(host);
+        }
+
+        @Override
+        public Builder path(@NonNull String path) {
+            return (Builder) super.path(path);
+        }
+
+        @Override
         public Builder requestCode(@Nullable Integer requestCode) {
             return (Builder) super.requestCode(requestCode);
         }
 
         @Override
-        public Builder putBundle(@NonNull String key, @NonNull Bundle bundle) {
+        public Builder putBundle(@NonNull String key, @Nullable Bundle bundle) {
             return (Builder) super.putBundle(key, bundle);
         }
 

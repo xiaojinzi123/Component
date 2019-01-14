@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 整个路由框架,整体都是在主线程中执行的,在拦截器中提供了 callback 机制
+ * 所以有耗时的操作可以在拦截器中去开子线程执行然后在回调中继续下一个拦截器
+ *
  * 这个类必须放在 {@link ComponentUtil#IMPL_OUTPUT_PKG} 包下面
  * 这个类作为框架对外的一个使用的类,里面会很多易用的方法
  * <p>
@@ -84,52 +87,6 @@ public class EHiRouter {
 
     public static Builder withFragment(@NonNull Fragment fragment) {
         return new Builder(fragment, null);
-    }
-
-    public static void open(@NonNull Context context, @NonNull String url) {
-        new Builder(context, url).navigate();
-    }
-
-    public static void open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode) {
-        new Builder(context, url)
-                .requestCode(requestCode)
-                .navigate();
-    }
-
-    public static void open(@NonNull Context context, @NonNull String url, @Nullable Bundle bundle) {
-        new Builder(context, url)
-                .putAll(bundle == null ? new Bundle() : bundle)
-                .navigate();
-    }
-
-    public static void open(@NonNull Context context, @NonNull String url, @Nullable Integer requestCode, @Nullable Bundle bundle) {
-        new Builder(context, url)
-                .putAll(bundle == null ? new Bundle() : bundle)
-                .requestCode(requestCode)
-                .navigate();
-    }
-
-    public static void fopen(@NonNull Fragment fragment, @NonNull String url) {
-        new Builder(fragment, url).navigate();
-    }
-
-    public static void fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Integer requestCode) {
-        new Builder(fragment, url)
-                .requestCode(requestCode)
-                .navigate();
-    }
-
-    public static void fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle) {
-        new Builder(fragment, url)
-                .putAll(bundle == null ? new Bundle() : bundle)
-                .navigate();
-    }
-
-    public static void fopen(@NonNull Fragment fragment, @NonNull String url, @Nullable Bundle bundle, @Nullable Integer requestCode) {
-        new Builder(fragment, url)
-                .putAll(bundle == null ? new Bundle() : bundle)
-                .requestCode(requestCode)
-                .navigate();
     }
 
     public static boolean isMatchUri(@NonNull Uri uri) {
@@ -240,24 +197,31 @@ public class EHiRouter {
             return this;
         }
 
+        public Builder url(@NonNull String url) {
+            checkStringNullPointer(url, "url");
+            this.url = url;
+            return this;
+        }
+
         public Builder host(@NonNull String host) {
-            checkStringNullPointer(host, "host", "do you forget call host() to set host?");
+            checkStringNullPointer(host, "host");
             this.host = host;
             return this;
         }
 
         public Builder path(@NonNull String path) {
-            checkStringNullPointer(path, "path", "do you forget call path() to set path?");
+            checkStringNullPointer(path, "path");
             this.path = path;
             return this;
         }
 
-        public Builder putBundle(@NonNull String key, @NonNull Bundle bundle) {
+        public Builder putBundle(@NonNull String key, @Nullable Bundle bundle) {
             this.bundle.putBundle(key, bundle);
             return this;
         }
 
         public Builder putAll(@NonNull Bundle bundle) {
+            checkNullPointer(bundle, "bundle");
             this.bundle.putAll(bundle);
             return this;
         }
@@ -601,17 +565,18 @@ public class EHiRouter {
                                   @Nullable String[] customNameInterceptors,
                                   @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
 
+            // 拿到共有的拦截器
             List<EHiRouterInterceptor> routerInterceptors = EHiCenterInterceptor.getInstance().getInterceptorList();
 
             // 预计算个数,可能不足, +1 的拦截器是扫尾的一个拦截器,是正确的行为
             // 这个值是为了创建集合的时候个数能正好,不会导致列表扩容
-            int totalCount = (customInterceptors == null ? 0 : customInterceptors.length) +
+            /*int totalCount = (customInterceptors == null ? 0 : customInterceptors.length) +
                     (customClassInterceptors == null ? 0 : customClassInterceptors.length) +
                     (customNameInterceptors == null ? 0 : customNameInterceptors.length) +
-                    routerInterceptors.size() + 1;
+                    routerInterceptors.size() + 1;*/
 
-            // 自定义拦截器
-            final List<EHiRouterInterceptor> interceptors = new ArrayList(totalCount);
+            // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
+            final List<EHiRouterInterceptor> interceptors = new ArrayList(8);
 
             if (customInterceptors != null) {
                 for (EHiRouterInterceptor customInterceptor : customInterceptors) {
@@ -651,8 +616,24 @@ public class EHiRouter {
 
             // 公共拦截器
             interceptors.addAll(routerInterceptors);
-            // 扫尾拦截器
-            interceptors.add(new TargetInterceptorsInterceptor());
+
+            // 扫尾拦截器,内部会添加目标要求执行的拦截器和真正执行跳转的拦截器
+            interceptors.add(new EHiRouterInterceptor() {
+                @Override
+                public void intercept(Chain nextChain) throws Exception {
+                    // 这个地址要执行的拦截器,这里取的时候一定要注意了,不能拿最原始的那个 request,因为上面的拦截器都能更改 request,
+                    // 导致最终跳转的界面和你拿到的拦截器不匹配,所以这里一定是拿上一个拦截器传给你的 request 对象
+                    List<EHiRouterInterceptor> targetInterceptors = EHiRouterCenter.getInstance().interceptors(nextChain.request().uri);
+                    if (targetInterceptors != null && targetInterceptors.size() > 0) {
+                        interceptors.addAll(targetInterceptors);
+                    }
+                    // 真正的执行跳转的拦截器
+                    interceptors.add(new RealInterceptor());
+                    // 执行下一个拦截器,正好是上面代码添加的拦截器
+                    nextChain.proceed(nextChain.request());
+                }
+            });
+
             // 创建执行器
             final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest, callback);
             // 执行
@@ -743,7 +724,7 @@ public class EHiRouter {
         }
 
         /**
-         * 这个扫尾拦截器是为了连接目标界面的拦截器
+         * 这个扫尾拦截器是为了连接目标界面的拦截器,这个拦截器对象执行的目标界面
          */
         private class TargetInterceptorsInterceptor implements EHiRouterInterceptor {
 
@@ -754,21 +735,6 @@ public class EHiRouter {
              */
             @Override
             public void intercept(final Chain nextChain) throws Exception {
-                // 走拦截器
-                final List<EHiRouterInterceptor> interceptors = new ArrayList();
-                // 这个地址要执行的拦截器
-                List<EHiRouterInterceptor> targetInterceptors = EHiRouterCenter.getInstance().interceptors(nextChain.request().uri);
-                if (targetInterceptors != null && targetInterceptors.size() > 0) {
-                    for (EHiRouterInterceptor interceptor : targetInterceptors) {
-                        interceptors.add(interceptor);
-                    }
-                }
-                // 真正的执行跳转的拦截器
-                interceptors.add(new RealInterceptor());
-                // 创建执行器
-                final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, nextChain.request(), nextChain.callback());
-                // 执行
-                chain.proceed(nextChain.request());
 
             }
 

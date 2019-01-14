@@ -25,9 +25,6 @@ public class CustomerRouterImpl {
     )
     public static Intent callPhoneIntent(@NonNull EHiRouterRequest request) {
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "15857913627"));
-        if (true) {
-            throw new NullPointerException();
-        }
         return intent;
     }
 
