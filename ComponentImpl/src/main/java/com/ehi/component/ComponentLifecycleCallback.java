@@ -2,7 +2,14 @@ package com.ehi.component;
 
 import android.app.Activity;
 import android.app.Application;
+import android.arch.lifecycle.GenericLifecycleObserver;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
 import com.ehi.component.impl.EHiRouter;
 
@@ -13,7 +20,27 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        System.out.println("ComponentLifecycleCallback.onActivityCreated");
+        if (activity instanceof FragmentActivity) {
+            FragmentActivity fragmentActivity = (FragmentActivity) activity;
+            final FragmentManager supportFragmentManager = fragmentActivity.getSupportFragmentManager();
+
+            final FragmentManager.FragmentLifecycleCallbacks fragmentLifecycleCallbacks = new FragmentManager.FragmentLifecycleCallbacks() {
+                @Override
+                public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
+                    super.onFragmentDestroyed(fm, f);
+                    EHiRouter.cancel(f);
+                }
+            };
+            fragmentActivity.getLifecycle().addObserver(new GenericLifecycleObserver() {
+                @Override
+                public void onStateChanged(LifecycleOwner source, Lifecycle.Event event) {
+                    if (Lifecycle.Event.ON_DESTROY == event) {
+                        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks);
+                    }
+                }
+            });
+            supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);
+        }
     }
 
     @Override

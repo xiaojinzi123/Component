@@ -6,11 +6,10 @@ apply plugin: 'com.github.dcendents.android-maven'
 archivesBaseName = "impl"
 
 android {
-    compileSdkVersion 27
-
+    compileSdkVersion versions.android_compile_sdk
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 27
+        minSdkVersion versions.android_min_sdk
+        targetSdkVersion versions.android_target_sdk
         versionCode 1
         versionName "1.0"
     }

@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion versions.android_compile_sdk
     defaultConfig {
         applicationId "com.ehi.componentdemo"
-        minSdkVersion 14
-        targetSdkVersion 27
+        minSdkVersion versions.android_min_sdk
+        targetSdkVersion versions.android_target_sdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

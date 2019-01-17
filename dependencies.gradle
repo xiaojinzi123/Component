@@ -1,12 +1,11 @@
 ext.versions = [
         // 系统级别的版本号
-        android_compile_sdk: 27,
-        android_min_sdk    : 19,
-        android_target_sdk : 24,
+        android_compile_sdk: 28,
+        android_min_sdk    : 14,
+        android_target_sdk : 28,
         version_code       : 6150,
         version_name       : "6.1.5",
-        build_tools        : "27.0.2",
-        support_lib        : "27.1.1",
+        support_lib        : "28.0.0",
         // for test
         mockitoVersion     : "2.21.0",
         junit              : "4.12",

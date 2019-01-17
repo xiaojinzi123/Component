@@ -114,6 +114,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
     }
 
     public void testCallbackAfterFinish() {
+
         EHiRxRouter
                 .withFragment(this)
                 .host(ModuleConfig.System.NAME)
