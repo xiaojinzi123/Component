@@ -1,4 +1,6 @@
-include ':app', ':HelpComponent',
+include ':buildSrc',
+        ':app',
+        ':HelpComponent',
         ':ComponentRxImpl',
         ':Component1',
         ':Component2',

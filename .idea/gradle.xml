@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/HelpComponent" />
             <option value="$PROJECT_DIR$/UserComponent" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/buildSrc" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

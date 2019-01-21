@@ -1,4 +1,4 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.ehi.test'
 
 android {
     compileSdkVersion versions.android_compile_sdk
@@ -30,6 +30,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.constraintLayout
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation libs.junit
     implementation libs.appcompat_v7
     api project(":BaseModule")
