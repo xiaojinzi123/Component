@@ -62,7 +62,7 @@ class RunPlugin implements Plugin<Project> {
         boolean isMainModule = currentModuleName.equals(mainModule)
         if (isMainModule) {
             isRunAlone = true
-        }else {
+        } else {
             isRunAlone = (isRunAloneStr == null || isRunAloneStr.trim().length() == 0) ? false : Boolean.parseBoolean(isRunAloneStr)
         }
         if (isRunAlone && assembleTask != null) {
@@ -78,12 +78,11 @@ class RunPlugin implements Plugin<Project> {
         // 根据配置添加各种组件依赖，并且自动化生成组件加载代码
         if (isRunAlone) {
             project.apply plugin: 'com.android.application'
-            if (!currentModuleName.equals(currentAssembleModuleName)) {
+            // 如果当前的模块的名字和当前编译的模块的名字一样
+            if (!isMainModule && currentModuleName.equals(currentAssembleModuleName)) {
                 project.android.sourceSets {
                     main {
-                        if (!isMainModule) {
-                            manifest.srcFile 'src/main/runalone/AndroidManifest.xml'
-                        }
+                        manifest.srcFile 'src/main/runalone/AndroidManifest.xml'
                         java.srcDirs = ['src/main/java', 'src/main/runalone/java']
                         res.srcDirs = ['src/main/res', 'src/main/runalone/res']
                         assets.srcDirs = ['src/main/assets', 'src/main/runalone/assets']

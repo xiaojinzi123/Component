@@ -2,9 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ehi.component1">
 
-    <application>
+    <application
+        android:name=".runalone.App"
+        android:theme="@style/AppTheme">
 
-        <activity android:name=".debug.MainActActivity">
+        <activity android:name=".runalone.MainActActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,4 +1,4 @@
-package com.ehi.component1.debug;
+package com.ehi.component1.runalone;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,4 +12,5 @@ public class MainActActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.component1_debug_main_act);
     }
+
 }
