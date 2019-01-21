@@ -14,6 +14,7 @@ import android.util.SparseArray;
 
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
+import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
@@ -595,7 +596,7 @@ public class EHiRouter {
                     }
                     EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(customNameInterceptor);
                     if (interceptor == null) {
-                        callback.onError(new Exception("interceptor '" + customNameInterceptor + "' can't be found"));
+                        callback.onError(new InterceptorNotFoundException("interceptor '" + customNameInterceptor + "' can't be found"));
                         return;
                     } else {
                         interceptors.add(interceptor);

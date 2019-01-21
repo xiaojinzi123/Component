@@ -60,26 +60,28 @@ class RunPlugin implements Plugin<Project> {
         String mainModule = project.rootProject.property(MAIN_MODULE)
         log("mainModule = " + mainModule)
         boolean isMainModule = currentModuleName.equals(mainModule)
+        log("isMainModule = " + isMainModule)
         if (isMainModule) {
             isRunAlone = true
         } else {
             isRunAlone = (isRunAloneStr == null || isRunAloneStr.trim().length() == 0) ? false : Boolean.parseBoolean(isRunAloneStr)
-        }
-        if (isRunAlone && assembleTask != null) {
-            //对于要编译的组件和主项目，isRunAlone修改为true，其他组件都强制修改为false
-            //这就意味着组件不能引用主项目，这在层级结构里面也是这么规定的
-            if (!currentModuleName.equals(currentAssembleModuleName) && !isMainModule) {
-                isRunAlone = false
+            log("isRunAlone1 = " + isRunAlone)
+            if (isRunAlone && assembleTask != null) {
+                //对于要编译的组件和主项目，isRunAlone修改为true，其他组件都强制修改为false
+                //这就意味着组件不能引用主项目，这在层级结构里面也是这么规定的
+                if (!currentModuleName.equals(currentAssembleModuleName)) {
+                    //isRunAlone = false
+                }
             }
         }
 
-        log("isRunAlone = " + isRunAlone)
+        log("isRunAlone2 = " + isRunAlone)
 
         // 根据配置添加各种组件依赖，并且自动化生成组件加载代码
         if (isRunAlone) {
             project.apply plugin: 'com.android.application'
             // 如果当前的模块的名字和当前编译的模块的名字一样
-            if (!isMainModule && currentModuleName.equals(currentAssembleModuleName)) {
+            if (!isMainModule) {
                 project.android.sourceSets {
                     main {
                         manifest.srcFile 'src/main/runalone/AndroidManifest.xml'
