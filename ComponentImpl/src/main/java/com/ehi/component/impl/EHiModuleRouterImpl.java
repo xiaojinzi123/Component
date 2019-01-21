@@ -145,6 +145,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
         if (target.customerJump != null) {
             // 用于支持拿到 result 的 Fragment,如果不为空,传这个过去给自定义的地方让写代码的程序员跳转
+            // 这个如果不为空,一定要替换原有的传给用户,不然就拿不到 Result 了
             Fragment rxFragment = findFragment(routerRequest);
             if (rxFragment == null) {
                 target.customerJump.jump(routerRequest);
@@ -185,6 +186,12 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
     }
 
+    /**
+     * 拿到 Intent 之后真正的跳转
+     *
+     * @param routerRequest
+     * @param intent
+     */
     private void jump(@NonNull EHiRouterRequest routerRequest, Intent intent) {
 
         if (routerRequest.requestCode == null) { // 如果是 startActivity

@@ -34,11 +34,8 @@ public class DialogShowInterceptor implements EHiRouterInterceptor {
             chain.callback().onError(new Exception("context is null"));
             return;
         }
-
         final ProgressDialog dialog = ProgressDialog.show(rawContext, "温馨提示", "耗时操作进行中,2秒后结束", true, false);
-
         dialog.show();
-
         Single
                 .fromCallable(new Callable<String>() {
                     @Override
