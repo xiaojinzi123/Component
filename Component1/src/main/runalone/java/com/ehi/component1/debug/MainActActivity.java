@@ -1,7 +1,7 @@
 package com.ehi.component1.debug;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.ehi.component1.R;
 
