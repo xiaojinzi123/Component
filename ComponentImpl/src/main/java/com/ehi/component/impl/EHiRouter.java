@@ -1,6 +1,7 @@
 package com.ehi.component.impl;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -51,7 +52,8 @@ public class EHiRouter {
 
     static Collection<EHiErrorRouterInterceptor> errorRouterInterceptors = Collections.synchronizedCollection(new ArrayList<EHiErrorRouterInterceptor>(0));
 
-    private static List<Builder.InterceptorCallbackImpl> interceptorCallbackList = new ArrayList<>();
+    // 支持取消的一个 Callback 集合
+    private static List<Builder.InterceptorCallback> mCallbackList = new ArrayList<>();
 
     public static void clearErrorRouterInterceptor() {
         errorRouterInterceptors.clear();
@@ -487,7 +489,8 @@ public class EHiRouter {
         @MainThread
         public synchronized void navigate(@Nullable final EHiCallback callback) {
 
-            // 检测是否是 ui 线程
+            // 检测是否是 ui 线程,在 EHiRxRouter 中也有检测这个线程的,但是我们不能去掉其中一个,因为这是两个不同的库,而且
+            // EHiRxRouter 在调用 navigate 之前会有 Fragment 的操作
             if (EHiRouterUtil.isMainThread() == false) {
                 EHiRouterUtil.errorCallback(callback, new NavigationFailException("EHiRouter must run on main thread"));
                 return;
@@ -508,16 +511,16 @@ public class EHiRouter {
                 final EHiRouterRequest originalRequest = generateRouterRequest();
 
                 // 创建整个拦截器到最终跳转需要使用的 Callback
-                final InterceptorCallbackImpl interceptorCallback = new InterceptorCallbackImpl(originalRequest, callback);
+                final InterceptorCallback interceptorCallback = new InterceptorCallback(originalRequest, callback);
 
                 // Fragment 的销毁的自动取消
                 if (originalRequest.fragment != null) {
-                    interceptorCallbackList.add(interceptorCallback);
+                    mCallbackList.add(interceptorCallback);
                 }
 
                 // Activity 的自动取消
                 if (originalRequest.context != null && originalRequest.context instanceof Activity) {
-                    interceptorCallbackList.add(interceptorCallback);
+                    mCallbackList.add(interceptorCallback);
                 }
 
                 realNavigate(originalRequest, interceptors, classInterceptors, nameInterceptors, interceptorCallback);
@@ -598,7 +601,7 @@ public class EHiRouter {
                     }
                     EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(customNameInterceptor);
                     if (interceptor == null) {
-                        callback.onError(new InterceptorNotFoundException("url：" + (originalRequest.uri == null ? "" : originalRequest.uri.toString()) + ",interceptor '" + customNameInterceptor + "' can't be found"));
+                        callback.onError(new InterceptorNotFoundException("can't find the interceptor and it's name is" + customNameInterceptor + ",target url is" + originalRequest.uri.toString()));
                         return;
                     } else {
                         interceptors.add(interceptor);
@@ -639,7 +642,7 @@ public class EHiRouter {
         /**
          * 这个拦截器的 Callback 是所有拦截器执行过程中会使用的一个 Callback,这是唯一的一个,每个拦截器对象拿到的此对象都是一样的
          */
-        private class InterceptorCallbackImpl implements EHiRouterInterceptor.Callback {
+        private class InterceptorCallback implements EHiRouterInterceptor.Callback {
 
             // 回调
             @Nullable
@@ -668,7 +671,7 @@ public class EHiRouter {
                 return isComplete || isCanceled;
             }
 
-            public InterceptorCallbackImpl(@NonNull EHiRouterRequest originalRequest, @Nullable EHiCallback callback) {
+            public InterceptorCallback(@NonNull EHiRouterRequest originalRequest, @Nullable EHiCallback callback) {
                 this.mOriginalRequest = originalRequest;
                 this.mCallback = callback;
             }
@@ -831,12 +834,12 @@ public class EHiRouter {
      */
     @MainThread
     public static void cancel(@NonNull Activity act) {
-        synchronized (interceptorCallbackList) {
-            for (int i = interceptorCallbackList.size() - 1; i >= 0; i--) {
-                Builder.InterceptorCallbackImpl interceptorCallback = interceptorCallbackList.get(i);
-                if (act == interceptorCallback.mOriginalRequest.context) {
-                    interceptorCallback.cancel();
-                    interceptorCallbackList.remove(i);
+        synchronized (mCallbackList) {
+            for (int i = mCallbackList.size() - 1; i >= 0; i--) {
+                Builder.InterceptorCallback callback = mCallbackList.get(i);
+                if (act == callback.mOriginalRequest.context) {
+                    callback.cancel();
+                    mCallbackList.remove(i);
                 }
             }
         }
@@ -844,12 +847,12 @@ public class EHiRouter {
 
     @MainThread
     public static void cancel(@NonNull Fragment fragment) {
-        synchronized (interceptorCallbackList) {
-            for (int i = interceptorCallbackList.size() - 1; i >= 0; i--) {
-                Builder.InterceptorCallbackImpl interceptorCallback = interceptorCallbackList.get(i);
+        synchronized (mCallbackList) {
+            for (int i = mCallbackList.size() - 1; i >= 0; i--) {
+                Builder.InterceptorCallback interceptorCallback = mCallbackList.get(i);
                 if (fragment == interceptorCallback.mOriginalRequest.fragment) {
                     interceptorCallback.cancel();
-                    interceptorCallbackList.remove(i);
+                    mCallbackList.remove(i);
                 }
             }
         }

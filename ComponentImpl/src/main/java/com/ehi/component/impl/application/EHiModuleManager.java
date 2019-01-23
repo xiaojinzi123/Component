@@ -57,6 +57,15 @@ public class EHiModuleManager implements IComponentModuleApplication {
         register(moduleApplication);
     }
 
+    public void registerArr(@NonNull String... hosts) {
+        if (hosts != null) {
+            for (String host : hosts) {
+                IComponentHostApplication moduleApplication = findModuleApplication(host);
+                register(moduleApplication);
+            }
+        }
+    }
+
     @Override
     public void unregister(IComponentHostApplication moduleApp) {
         unregister(moduleApp.getHost());
@@ -91,7 +100,6 @@ public class EHiModuleManager implements IComponentModuleApplication {
     }
 
     /**
-     *
      * 使用者应该在开发阶段调用这个函数来检查以下的问题：
      * 1.路由表在不同的子路由表中是否有重复
      * 2.服务在不同模块中的声明是否也有重复的名称
@@ -101,7 +109,7 @@ public class EHiModuleManager implements IComponentModuleApplication {
         checkInterceptor();
     }
 
-    private void checkRouter(){
+    private void checkRouter() {
         if (moduleApplicationMap == null || moduleApplicationMap.isEmpty()) {
             return;
         }
@@ -125,7 +133,7 @@ public class EHiModuleManager implements IComponentModuleApplication {
         }
     }
 
-    private void checkInterceptor(){
+    private void checkInterceptor() {
         Set<String> set = new HashSet<>();
         for (String moduleName : moduleApplicationMap.keySet()) {
             IComponentHostInterceptor moduleInterceptor = EHiCenterInterceptor.getInstance().findModuleInterceptor(moduleName);

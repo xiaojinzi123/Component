@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.ehi.test'
 
 android {
     compileSdkVersion versions.android_compile_sdk
@@ -32,11 +33,11 @@ dependencies {
     implementation libs.constraintLayout
     testImplementation libs.junit
 
-    api project(":BaseModule")
-    api project(":Component1")
-    api project(":Component2")
-    api project(":HelpComponent")
-    api project(":UserComponent")
+    api project(':ModuleBase')
+    api project(':Module1')
+    api project(':Module2')
+    api project(':ModuleHelp')
+    // api project(':ModuleUser')
 
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
         annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"

@@ -8,15 +8,15 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/BaseModule" />
-            <option value="$PROJECT_DIR$/Component1" />
-            <option value="$PROJECT_DIR$/Component2" />
             <option value="$PROJECT_DIR$/ComponentApi" />
             <option value="$PROJECT_DIR$/ComponentCompiler" />
             <option value="$PROJECT_DIR$/ComponentImpl" />
             <option value="$PROJECT_DIR$/ComponentRxImpl" />
-            <option value="$PROJECT_DIR$/HelpComponent" />
-            <option value="$PROJECT_DIR$/UserComponent" />
+            <option value="$PROJECT_DIR$/Module1" />
+            <option value="$PROJECT_DIR$/Module2" />
+            <option value="$PROJECT_DIR$/ModuleBase" />
+            <option value="$PROJECT_DIR$/ModuleHelp" />
+            <option value="$PROJECT_DIR$/ModuleUser" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/buildSrc" />
           </set>

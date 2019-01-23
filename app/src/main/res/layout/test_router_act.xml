@@ -165,6 +165,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="testFragmentJump"
+            android:textAllCaps="false"
             android:text="Fragment中跳转测试"
             android:textSize="12dp" />
 

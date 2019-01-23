@@ -12,20 +12,16 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        // 初始化组件化相关
         ComponentConfig.init(this,BuildConfig.DEBUG);
         EHiRxRouter.tryErrorCatch();
-
-        EHiModuleManager moduleManager = EHiModuleManager.getInstance();
-        moduleManager.register(ModuleConfig.App.NAME);
-        moduleManager.register(ModuleConfig.Component1.NAME);
-        moduleManager.register(ModuleConfig.Component2.NAME);
-        moduleManager.register(ModuleConfig.User.NAME);
-        moduleManager.register(ModuleConfig.Help.NAME);
-
+        EHiModuleManager.getInstance().registerArr(
+                ModuleConfig.App.NAME,ModuleConfig.Component1.NAME,
+                ModuleConfig.Component2.NAME,ModuleConfig.User.NAME,
+                ModuleConfig.Help.NAME
+        );
         if (BuildConfig.DEBUG) {
-            moduleManager.check();
+            EHiModuleManager.getInstance().check();
         }
-
     }
 }

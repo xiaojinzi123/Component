@@ -223,7 +223,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             for (Class<? extends EHiRouterInterceptor> interceptorClass : interceptors) {
                 EHiRouterInterceptor interceptor = EHiRouterInterceptorUtil.get(interceptorClass);
                 if (interceptor == null) {
-                    throw new InterceptorNotFoundException("url：" + uri.toString() + ",className：" + interceptorClass);
+                    throw new InterceptorNotFoundException("can't find the interceptor and it's className is" + interceptorClass + ",target url is" + uri.toString());
                 }
                 result.add(interceptor);
             }
@@ -232,7 +232,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             for (String interceptorName : interceptorNames) {
                 EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(interceptorName);
                 if (interceptor == null) {
-                    throw new InterceptorNotFoundException("url：" + uri.toString() + ",className：" + interceptorName);
+                    throw new InterceptorNotFoundException("can't find the interceptor and it's name is" + interceptorName + ",target url is" + uri.toString());
                 }
                 result.add(interceptor);
             }

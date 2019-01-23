@@ -83,27 +83,27 @@ class RunPlugin implements Plugin<Project> {
 
         // 根据配置添加各种组件依赖，并且自动化生成组件加载代码
         if (isRunAlone) {
-            project.apply plugin: 'com.android.application'
+            //project.apply plugin: 'com.android.application'
             // 如果当前的模块的名字和当前编译的模块的名字一样
             if (!isMainModule) {
-                project.android.sourceSets {
-                    main {
-                        manifest.srcFile 'src/main/runalone/AndroidManifest.xml'
-                        java.srcDirs = ['src/main/java', 'src/main/runalone/java']
-                        res.srcDirs = ['src/main/res', 'src/main/runalone/res']
-                        assets.srcDirs = ['src/main/assets', 'src/main/runalone/assets']
-                        jniLibs.srcDirs = ['src/main/jniLibs', 'src/main/runalone/jniLibs']
-                    }
-                }
+//                project.android.sourceSets {
+//                    main {
+//                        manifest.srcFile 'src/main/runalone/AndroidManifest.xml'
+//                        java.srcDirs = ['src/main/java', 'src/main/runalone/java']
+//                        res.srcDirs = ['src/main/res', 'src/main/runalone/res']
+//                        assets.srcDirs = ['src/main/assets', 'src/main/runalone/assets']
+//                        jniLibs.srcDirs = ['src/main/jniLibs', 'src/main/runalone/jniLibs']
+//                    }
+//                }
             }
             if (assembleTask != null && currentModuleName.equals(currentAssembleModuleName)) {
                 log("prepare to dependOn lib")
-                compileComponents(assembleTask, project)
+//                compileComponents(assembleTask, project)
                 //project.android.registerTransform(new ComCodeTransform(project))
             }
             log("apply plugin is com.android.application")
         } else {
-            project.apply plugin: 'com.android.library'
+            //project.apply plugin: 'com.android.library'
             log("apply plugin is com.android.library")
         }
 

@@ -9,12 +9,12 @@ import android.support.annotation.Nullable;
 
 import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
+import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouterRequest;
 
 /**
- * @TODO: 下一步的计划, 路由的跳转完全可以自定义, 这样子就可以完美的融合之前写的那些 startActivity 了
- * @TODO: 跳转出错的时候,RxFragment有没有从列表中删除,出错的时候不会添加进去的,所以不会有问题
+ *
  */
 public class CustomerRouterImpl {
 
@@ -34,7 +34,10 @@ public class CustomerRouterImpl {
      * @param request
      * @return
      */
-    @EHiRouterAnno(host = ModuleConfig.System.NAME, value = ModuleConfig.System.SYSTEM_APP_DETAIL)
+    @EHiRouterAnno(
+            host = ModuleConfig.System.NAME,
+            value = ModuleConfig.System.SYSTEM_APP_DETAIL
+    )
     public static void appDetail(@NonNull EHiRouterRequest request) {
         Activity act = request.getActivity();
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);

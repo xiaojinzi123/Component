@@ -35,7 +35,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation libs.appcompat_v7
-    api project(":BaseModule")
+    api project(':ModuleBase')
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
         annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
     } else {

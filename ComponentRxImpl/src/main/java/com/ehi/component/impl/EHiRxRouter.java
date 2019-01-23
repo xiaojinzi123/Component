@@ -14,6 +14,7 @@ import android.util.SparseArray;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.error.ActivityResultException;
+import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.error.UnknowException;
@@ -47,7 +48,7 @@ public class EHiRxRouter {
      */
     public static void tryErrorCatch() {
         Consumer<? super Throwable> preErrorHandler = RxJavaPlugins.getErrorHandler();
-        RxJavaPlugins.setErrorHandler(new RxRouterConsumer(preErrorHandler));
+        RxJavaPlugins.setErrorHandler(new RxErrorConsumer(preErrorHandler));
     }
 
     public static Builder with(@NonNull Context context) {
@@ -303,26 +304,8 @@ public class EHiRxRouter {
             return (Builder) super.query(queryName, queryValue);
         }
 
-        private void onErrorEmitter(@NonNull final SingleEmitter<? extends Object> emitter,
-                                    @NonNull Exception e) {
-            if (emitter == null || emitter.isDisposed()) {
-                return;
-            }
-            emitter.onError(e);
-        }
-
-        private void onErrorEmitter(@NonNull final CompletableEmitter emitter,
-                                    @NonNull Exception e) {
-            if (emitter == null || emitter.isDisposed()) {
-                return;
-            }
-            emitter.onError(e);
-
-        }
-
         /**
          * 一个可以拿到 Intent 的 Observable
-         *
          *
          * @return
          * @see #activityResultCall()
@@ -415,19 +398,16 @@ public class EHiRxRouter {
          * @return
          */
         public Single<EHiActivityResult> activityResultCall() {
-
             return Single.create(new SingleOnSubscribe<EHiActivityResult>() {
                 @Override
                 public void subscribe(final SingleEmitter<EHiActivityResult> emitter) throws Exception {
-
                     if (emitter.isDisposed()) {
                         return;
                     }
-
                     try {
-
-                        onCheck();
-
+                        // 检查操作
+                        onCheck(true);
+                        // 声明fragment
                         FragmentManager fm = null;
                         if (context == null) {
                             fm = fragment.getChildFragmentManager();
@@ -451,7 +431,7 @@ public class EHiRxRouter {
                         final int mRequesetCode = requestCode;
 
                         if (rxFragment.isContainsSingleEmitter(mRequesetCode)) {
-                            onErrorEmitter(emitter, new NavigationFailException("request&result code: " + requestCode + " can't be same"));
+                            Help.onErrorEmitter(emitter, new NavigationFailException("request&result code: " + requestCode + " can't be same"));
                         }
 
                         navigate(new EHiCallbackAdapter() {
@@ -468,29 +448,16 @@ public class EHiRxRouter {
                                             throw new NavigationFailException("host = " + mHost + ",path = " + mPath);
                                         }
                                     }
-                                } catch (TargetActivityNotFoundException e) {
-                                    onErrorEmitter(emitter, e);
-                                } catch (NavigationFailException e) {
-                                    onErrorEmitter(emitter, e);
                                 } catch (Exception e) {
-                                    onErrorEmitter(emitter, new UnknowException(e));
+                                    Help.onErrorSolve(emitter, e);
                                 }
-
                             }
                         });
-
-                    } catch (TargetActivityNotFoundException e) {
-                        onErrorEmitter(emitter, e);
-                    } catch (NavigationFailException e) {
-                        onErrorEmitter(emitter, e);
                     } catch (Exception e) {
-                        onErrorEmitter(emitter, new UnknowException(e));
+                        Help.onErrorSolve(emitter, e);
                     }
-
                 }
             });
-
-
         }
 
         /**
@@ -502,19 +469,15 @@ public class EHiRxRouter {
             return Completable.create(new CompletableOnSubscribe() {
                 @Override
                 public void subscribe(final CompletableEmitter emitter) throws Exception {
-
                     if (emitter.isDisposed()) {
                         return;
                     }
-
                     try {
-
-                        onCheck();
-
+                        // 参数检查
+                        onCheck(false);
                         // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
                         final String mHost = host;
                         final String mPath = path;
-
                         navigate(new EHiCallbackAdapter() {
                             @Override
                             public void onEvent(@Nullable EHiRouterResult routerResult, @Nullable Exception error) {
@@ -530,23 +493,15 @@ public class EHiRxRouter {
                                             throw new NavigationFailException("host = " + mHost + ",path = " + mPath);
                                         }
                                     }
-                                } catch (TargetActivityNotFoundException e) {
-                                    onErrorEmitter(emitter, e);
-                                } catch (NavigationFailException e) {
-                                    onErrorEmitter(emitter, e);
                                 } catch (Exception e) {
-                                    onErrorEmitter(emitter, new UnknowException(e));
+                                    Help.onErrorSolve(emitter, e);
                                 }
                             }
 
                         });
 
-                    } catch (TargetActivityNotFoundException e) {
-                        onErrorEmitter(emitter, e);
-                    } catch (NavigationFailException e) {
-                        onErrorEmitter(emitter, e);
                     } catch (Exception e) {
-                        onErrorEmitter(emitter, new UnknowException(e));
+                        Help.onErrorSolve(emitter, e);
                     }
 
                 }
@@ -558,7 +513,7 @@ public class EHiRxRouter {
          *
          * @throws Exception
          */
-        private void onCheck() throws Exception {
+        private void onCheck(boolean isForResult) throws Exception {
             if (isFinish) {
                 throw new NavigationFailException("EHiRouter.Builder can't be used multiple times");
             }
@@ -575,9 +530,62 @@ public class EHiRxRouter {
                 throw new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity"));
             }
 
-            if (requestCode == null) {
+            if (isForResult && requestCode == null) {
                 throw new NavigationFailException(new NullPointerException("requestCode must not be null for router"));
             }
+        }
+
+    }
+
+    private static class Help {
+        /**
+         * 错误处理
+         */
+        private static void onErrorSolve(@NonNull final SingleEmitter<? extends Object> emitter, @NonNull Exception e) {
+            if (e instanceof InterceptorNotFoundException) {
+                onErrorEmitter(emitter, e);
+            } else if (e instanceof NavigationFailException) {
+                onErrorEmitter(emitter, e);
+            } else if (e instanceof TargetActivityNotFoundException) {
+                onErrorEmitter(emitter, e);
+            } else if (e instanceof ActivityResultException) {
+                onErrorEmitter(emitter, e);
+            } else {
+                onErrorEmitter(emitter, new UnknowException(e));
+            }
+        }
+        /**
+         * 错误处理
+         */
+        private static void onErrorSolve(@NonNull CompletableEmitter emitter, @NonNull Exception e) {
+            if (e instanceof InterceptorNotFoundException) {
+                onErrorEmitter(emitter, e);
+            } else if (e instanceof NavigationFailException) {
+                onErrorEmitter(emitter, e);
+            } else if (e instanceof TargetActivityNotFoundException) {
+                onErrorEmitter(emitter, e);
+            } else if (e instanceof ActivityResultException) {
+                onErrorEmitter(emitter, e);
+            } else {
+                onErrorEmitter(emitter, new UnknowException(e));
+            }
+        }
+
+        private static void onErrorEmitter(@NonNull final SingleEmitter<? extends Object> emitter,
+                                    @NonNull Exception e) {
+            if (emitter == null || emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(e);
+        }
+
+        private static void onErrorEmitter(@NonNull final CompletableEmitter emitter,
+                                    @NonNull Exception e) {
+            if (emitter == null || emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(e);
+
         }
 
     }

@@ -20,7 +20,7 @@ import io.reactivex.functions.Consumer;
  *
  * @author : xiaojinzi 30212
  */
-public class RxRouterConsumer<T extends Throwable> implements Consumer<T> {
+public class RxErrorConsumer<T extends Throwable> implements Consumer<T> {
 
     private static final Class IGNORE_ERROR_CLASSED[] = {
             NavigationFailException.class,
@@ -36,7 +36,7 @@ public class RxRouterConsumer<T extends Throwable> implements Consumer<T> {
     @Nullable
     private Consumer<T> preConsumer = null;
 
-    public RxRouterConsumer(Consumer<T> preConsumer) {
+    public RxErrorConsumer(Consumer<T> preConsumer) {
         this.preConsumer = preConsumer;
     }
 
