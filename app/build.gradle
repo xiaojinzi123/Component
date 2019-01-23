@@ -1,5 +1,4 @@
-//apply plugin: 'com.android.application'
-apply plugin: 'com.ehi.test'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion versions.android_compile_sdk
@@ -34,6 +33,10 @@ dependencies {
     testImplementation libs.junit
 
     api project(":BaseModule")
+    api project(":Component1")
+    api project(":Component2")
+    api project(":HelpComponent")
+    api project(":UserComponent")
 
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
         annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"

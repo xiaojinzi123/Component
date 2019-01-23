@@ -14,6 +14,12 @@ public class ComponentConfig {
     private static boolean isDebug = false;
     private static Application application = null;
 
+    /**
+     * 初始化
+     *
+     * @param application App 的 Application
+     * @param isDebug     是否是debug模式
+     */
     public static void init(@NonNull Application application, boolean isDebug) {
         if (application == null) {
             throw new NullPointerException("the Application is null");

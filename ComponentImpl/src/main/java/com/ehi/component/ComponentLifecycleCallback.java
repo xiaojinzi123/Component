@@ -2,9 +2,10 @@ package com.ehi.component;
 
 import android.app.Activity;
 import android.app.Application;
-import android.arch.lifecycle.GenericLifecycleObserver;
 import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -23,7 +24,6 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
         if (activity instanceof FragmentActivity) {
             FragmentActivity fragmentActivity = (FragmentActivity) activity;
             final FragmentManager supportFragmentManager = fragmentActivity.getSupportFragmentManager();
-
             final FragmentManager.FragmentLifecycleCallbacks fragmentLifecycleCallbacks = new FragmentManager.FragmentLifecycleCallbacks() {
                 @Override
                 public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
@@ -31,12 +31,10 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
                     EHiRouter.cancel(f);
                 }
             };
-            fragmentActivity.getLifecycle().addObserver(new GenericLifecycleObserver() {
-                @Override
-                public void onStateChanged(LifecycleOwner source, Lifecycle.Event event) {
-                    if (Lifecycle.Event.ON_DESTROY == event) {
-                        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks);
-                    }
+            fragmentActivity.getLifecycle().addObserver(new LifecycleObserver() {
+                @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+                public void onStateChanged(LifecycleOwner source) {
+                    supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks);
                 }
             });
             supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);

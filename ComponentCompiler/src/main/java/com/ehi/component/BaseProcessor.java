@@ -11,6 +11,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 /**
+ * 基础的注解驱动器,帮助获取一些常用的信息
  * time   : 2018/12/26
  *
  * @author : xiaojinzi 30212

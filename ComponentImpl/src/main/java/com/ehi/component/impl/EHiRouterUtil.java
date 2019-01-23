@@ -104,6 +104,7 @@ class EHiRouterUtil {
         }
         callback.onEvent(null, error);
         callback.onError(error);
+
     }
 
     public static void successCallback(@Nullable final EHiCallback callback,

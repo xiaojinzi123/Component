@@ -15,14 +15,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -35,38 +31,29 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
+/**
+ * 负责处理 {@link EHiServiceAnno}
+ */
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes({ComponentUtil.SERVICE_ANNO_CLASS_NAME})
-public class ServiceProcessor extends AbstractProcessor {
+public class ServiceProcessor extends BaseHostProcessor {
 
     private static final String SERVICE_SEPER_NAME1 = "com.ehi.component.service.IServiceLoad";
     private static final String SERVICE_SEPER_NAME2 = "com.ehi.component.service.SingletonService";
-
-    private TypeMirror typeString;
 
     private TypeElement typeElementServiceContainer;
 
     private ClassName classNameServiceContainer;
 
-    private TypeElement typeElementService1;
-    private TypeElement typeElementService2;
+    private TypeElement service1TypeElement;
+    private TypeElement service2TypeElement;
 
-    private ClassName classNameService1;
-    private ClassName classNameService2;
-
-    private Filer mFiler;
-    private Messager mMessager;
-    private Types mTypes;
-    private Elements mElements;
-
-    // 在每一个 module 中配置的 HOST 的信息
-    private String componentHost = null;
+    private ClassName service1ClassName;
+    private ClassName service2ClassName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -74,31 +61,17 @@ public class ServiceProcessor extends AbstractProcessor {
 
         mFiler = processingEnv.getFiler();
         mMessager = processingEnvironment.getMessager();
-        mTypes = processingEnv.getTypeUtils();
         mElements = processingEnv.getElementUtils();
-        typeString = mElements.getTypeElement("java.lang.String").asType();
 
         typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.EHISERVICE_CLASS_NAME);
 
         classNameServiceContainer = ClassName.get(typeElementServiceContainer);
 
-        typeElementService1 = mElements.getTypeElement(SERVICE_SEPER_NAME1);
-        typeElementService2 = mElements.getTypeElement(SERVICE_SEPER_NAME2);
+        service1TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME1);
+        service2TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME2);
 
-        classNameService1 = ClassName.get(typeElementService1);
-        classNameService2 = ClassName.get(typeElementService2);
-
-        Map<String, String> options = processingEnv.getOptions();
-
-        if (options != null) {
-            componentHost = options.get("HOST");
-        }
-
-        if (componentHost == null || "".equals(componentHost)) {
-            ErrorPrintUtil.printHostNull(mMessager);
-            return;
-        }
-
+        service1ClassName = ClassName.get(service1TypeElement);
+        service2ClassName = ClassName.get(service2TypeElement);
 
     }
 
@@ -225,7 +198,7 @@ public class ServiceProcessor extends AbstractProcessor {
                 if (anno.singleTon()) {
 
                     TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(classNameService2, TypeName.get(serviceImplTypeElement.asType())))
+                            .addSuperinterface(ParameterizedTypeName.get(service2ClassName, TypeName.get(serviceImplTypeElement.asType())))
                             .addMethod(
                                     MethodSpec.methodBuilder("getRaw")
                                             .addAnnotation(Override.class)
@@ -235,11 +208,11 @@ public class ServiceProcessor extends AbstractProcessor {
                                             .build()
                             )
                             .build();
-                    methodSpecBuilder.addStatement("$T $N = $L", classNameService1, implName, innerTypeSpec);
+                    methodSpecBuilder.addStatement("$T $N = $L", service1ClassName, implName, innerTypeSpec);
 
                 } else {
                     TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(classNameService1, TypeName.get(serviceImplTypeElement.asType())))
+                            .addSuperinterface(ParameterizedTypeName.get(service1ClassName, TypeName.get(serviceImplTypeElement.asType())))
                             .addMethod(
                                     MethodSpec.methodBuilder("get")
                                             .addAnnotation(Override.class)
@@ -249,7 +222,7 @@ public class ServiceProcessor extends AbstractProcessor {
                                             .build()
                             )
                             .build();
-                    methodSpecBuilder.addStatement("$T $N = $L", classNameService1, implName, innerTypeSpec);
+                    methodSpecBuilder.addStatement("$T $N = $L", service1ClassName, implName, innerTypeSpec);
                 }
 
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
@@ -290,7 +263,7 @@ public class ServiceProcessor extends AbstractProcessor {
 
     private MethodSpec generateInitHostMethod() {
 
-        TypeName returnType = TypeName.get(typeString);
+        TypeName returnType = TypeName.get(mTypeElementString.asType());
 
         MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("getHost")
                 .returns(returnType)

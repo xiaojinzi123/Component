@@ -49,17 +49,6 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
     protected boolean hasInitMap = false;
 
     /**
-     * 上一次跳转的界面的 Uri
-     */
-    @Nullable
-    private String preTargetStrUri = null;
-
-    /**
-     * 记录上一个界面跳转的时间
-     */
-    private long preTargetTime;
-
-    /**
      * 必须调用父类的方法
      */
     @CallSuper
@@ -92,23 +81,19 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
      */
     @MainThread
     private void doOpenUri(@NonNull final EHiRouterRequest routerRequest) throws Exception {
-
         if (!hasInitMap) {
             initMap();
         }
-
         if (EHiRouterUtil.isMainThread() == false) {
             throw new NavigationFailException("EHiRouter must run on main thread");
         }
-
         if (routerRequest.uri == null) {
-            throw new TargetActivityNotFoundException("target Uri is null");
+            throw new NavigationFailException("target Uri is null");
         }
 
         // 参数检测完毕
 
         EHiRouterBean target = getTarget(routerRequest.uri);
-
         // EHi://component1/test?data=xxxx
         String uriString = routerRequest.uri.toString();
 
@@ -116,16 +101,6 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         if (target == null) {
             throw new TargetActivityNotFoundException(uriString);
         }
-
-        // 防止重复跳转同一个界面
-        if (getUrlWithOutQuerys(uriString).equals(preTargetStrUri) && (System.currentTimeMillis() - preTargetTime) < 1000) { // 如果跳转的是同一个界面
-            throw new NavigationFailException("target activity can't launch twice In a second");
-        }
-
-        // 保存目前跳转过去的界面
-        preTargetStrUri = getUrlWithOutQuerys(uriString);
-        preTargetTime = System.currentTimeMillis();
-
         if (routerRequest.context == null && routerRequest.fragment == null) {
             throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nEHiRouter.with(Context) or EHiRouter.withFragment(Fragment)");
         }
@@ -135,14 +110,12 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         if (context == null) {
             context = routerRequest.fragment.getContext();
         }
-
         // 如果 Context 和 Fragment 中的 Context 都是 null
         if (context == null) {
             throw new NavigationFailException("your fragment attached to Activity?");
         }
 
         Intent intent = null;
-
         if (target.customerJump != null) {
             // 用于支持拿到 result 的 Fragment,如果不为空,传这个过去给自定义的地方让写代码的程序员跳转
             // 这个如果不为空,一定要替换原有的传给用户,不然就拿不到 Result 了
@@ -158,32 +131,24 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                 );
             }
         } else {
-
             if (target.targetClass != null) {
                 intent = new Intent(context, target.targetClass);
             } else if (target.customerIntentCall != null) {
                 intent = target.customerIntentCall.get(routerRequest);
             }
-
             if (intent == null) {
                 throw new TargetActivityNotFoundException(uriString);
             }
-
             intent.putExtras(routerRequest.bundle);
             QueryParameterSupport.put(intent, routerRequest.uri);
-
             if (routerRequest.intentConsumer != null) {
                 routerRequest.intentConsumer.accept(intent);
             }
-
             jump(routerRequest, intent);
-
         }
-
         if (routerRequest.afterJumpAction != null) {
             routerRequest.afterJumpAction.run();
         }
-
     }
 
     /**
@@ -193,9 +158,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
      * @param intent
      */
     private void jump(@NonNull EHiRouterRequest routerRequest, Intent intent) {
-
         if (routerRequest.requestCode == null) { // 如果是 startActivity
-
             if (routerRequest.context != null) {
                 routerRequest.context.startActivity(intent);
             } else if (routerRequest.fragment != null) {
@@ -203,12 +166,9 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             } else {
                 throw new NavigationFailException("the context or fragment both are null");
             }
-
         } else {
-
             // 使用 context 跳转 startActivityForResult
             if (routerRequest.context != null) {
-
                 Fragment rxFragment = findFragment(routerRequest.context);
                 if (rxFragment != null) {
                     rxFragment.startActivityForResult(intent, routerRequest.requestCode);
@@ -217,9 +177,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                 } else {
                     throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
                 }
-
             } else if (routerRequest.fragment != null) { // 使用 Fragment 跳转
-
                 Fragment rxFragment = findFragment(routerRequest.fragment);
                 if (rxFragment != null) {
                     rxFragment.startActivityForResult(intent, routerRequest.requestCode);
@@ -229,20 +187,15 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             } else {
                 throw new NavigationFailException("the context or fragment both are null");
             }
-
         }
-
     }
 
     @Override
     public synchronized boolean isMatchUri(@NonNull Uri uri) {
-
         if (!hasInitMap) {
             initMap();
         }
-
         return getTarget(uri) == null ? false : true;
-
     }
 
     @Nullable
@@ -270,7 +223,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             for (Class<? extends EHiRouterInterceptor> interceptorClass : interceptors) {
                 EHiRouterInterceptor interceptor = EHiRouterInterceptorUtil.get(interceptorClass);
                 if (interceptor == null) {
-                    throw new InterceptorNotFoundException("className：" + interceptorClass);
+                    throw new InterceptorNotFoundException("url：" + uri.toString() + ",className：" + interceptorClass);
                 }
                 result.add(interceptor);
             }
@@ -279,12 +232,11 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             for (String interceptorName : interceptorNames) {
                 EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(interceptorName);
                 if (interceptor == null) {
-                    throw new InterceptorNotFoundException("interceptorName：" + interceptorName);
+                    throw new InterceptorNotFoundException("url：" + uri.toString() + ",className：" + interceptorName);
                 }
                 result.add(interceptor);
             }
         }
-
         return result;
     }
 
@@ -303,32 +255,17 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
 
     @Nullable
     private EHiRouterBean getTarget(@NonNull Uri uri) {
-
         // "/component1/test" 不含host
         String targetPath = uri.getEncodedPath();
 
         if (targetPath == null || "".equals(targetPath)) {
             return null;
         }
-
         if (targetPath.charAt(0) != '/') {
             targetPath = "/" + targetPath;
         }
-
         targetPath = uri.getHost() + targetPath;
-
         return routerBeanMap.get(targetPath);
-
-//        for (Map.Entry<String, EHiRouterBean> entry : routerBeanMap.entrySet()) {
-//            if (entry.getKey() == null || "".equals(entry.getKey())) {
-//                continue;
-//            }
-//            if (entry.getKey().equals(targetPath)) {
-//                targetClass = entry.getValue().targetClass;
-//                break;
-//            }
-//        }
-
     }
 
     /**

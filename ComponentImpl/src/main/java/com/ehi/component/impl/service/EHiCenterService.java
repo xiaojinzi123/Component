@@ -65,23 +65,16 @@ public class EHiCenterService implements IComponentModuleService {
 
     @Nullable
     public IComponentHostService findModuleService(String host) {
-
         String className = ComponentUtil.genHostServiceClassName(host);
-
         try {
             Class<?> clazz = Class.forName(className);
-
             IComponentHostService instance = (IComponentHostService) clazz.newInstance();
-
             return instance;
-
         } catch (ClassNotFoundException e) {
         } catch (IllegalAccessException e) {
         } catch (InstantiationException e) {
         }
-
         return null;
-
     }
 
 }

@@ -34,36 +34,28 @@ abstract class EHiModuleApplicationImpl implements IComponentHostApplication {
 
     @Override
     public void onCreate(@NonNull Application app) {
-
         if (!hasInitList) {
             initList();
         }
-
         if (moduleAppList == null) {
             return;
         }
-
         for (IComponentApplication application : moduleAppList) {
             application.onCreate(app);
         }
-
     }
 
     @Override
     public void onDestory() {
-
         if (!hasInitList) {
             initList();
         }
-
         if (moduleAppList == null) {
             return;
         }
-
         for (IComponentApplication application : moduleAppList) {
             application.onDestory();
         }
-
     }
 
 }

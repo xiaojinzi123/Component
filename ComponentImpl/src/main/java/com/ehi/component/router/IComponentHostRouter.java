@@ -20,6 +20,11 @@ public interface IComponentHostRouter extends IComponentRouter {
      */
     String getHost();
 
+    /**
+     * 获取路由表,用于检查
+     *
+     * @return
+     */
     Map<String, EHiRouterBean> getRouterMap();
 
 }

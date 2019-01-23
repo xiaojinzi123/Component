@@ -17,6 +17,7 @@ import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
+import com.ehi.component.impl.interceptor.EHiOpenOnceInterceptor;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.Action;
@@ -33,7 +34,7 @@ import java.util.Map;
 /**
  * 整个路由框架,整体都是在主线程中执行的,在拦截器中提供了 callback 机制
  * 所以有耗时的操作可以在拦截器中去开子线程执行然后在回调中继续下一个拦截器
- *
+ * <p>
  * 这个类必须放在 {@link ComponentUtil#IMPL_OUTPUT_PKG} 包下面
  * 这个类作为框架对外的一个使用的类,里面会很多易用的方法
  * <p>
@@ -556,7 +557,7 @@ public class EHiRouter {
                                   @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
 
             // 拿到共有的拦截器
-            List<EHiRouterInterceptor> routerInterceptors = EHiCenterInterceptor.getInstance().getInterceptorList();
+            List<EHiRouterInterceptor> publicInterceptors = EHiCenterInterceptor.getInstance().getInterceptorList();
 
             // 预计算个数,可能不足, +1 的拦截器是扫尾的一个拦截器,是正确的行为
             // 这个值是为了创建集合的时候个数能正好,不会导致列表扩容
@@ -567,13 +568,15 @@ public class EHiRouter {
 
             // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
             final List<EHiRouterInterceptor> interceptors = new ArrayList(8);
+            interceptors.add(EHiOpenOnceInterceptor.getInstance());
+
+            // ------------------------------添加自定义拦截器------------------------------start
 
             if (customInterceptors != null) {
                 for (EHiRouterInterceptor customInterceptor : customInterceptors) {
                     interceptors.add(customInterceptor);
                 }
             }
-
             if (customClassInterceptors != null) {
                 for (Class<? extends EHiRouterInterceptor> customClassInterceptor : customClassInterceptors) {
                     if (customClassInterceptor == null) {
@@ -588,7 +591,6 @@ public class EHiRouter {
                     }
                 }
             }
-
             if (customNameInterceptors != null) {
                 for (String customNameInterceptor : customNameInterceptors) {
                     if (customNameInterceptor == null) {
@@ -596,7 +598,7 @@ public class EHiRouter {
                     }
                     EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(customNameInterceptor);
                     if (interceptor == null) {
-                        callback.onError(new InterceptorNotFoundException("interceptor '" + customNameInterceptor + "' can't be found"));
+                        callback.onError(new InterceptorNotFoundException("url：" + (originalRequest.uri == null ? "" : originalRequest.uri.toString()) + ",interceptor '" + customNameInterceptor + "' can't be found"));
                         return;
                     } else {
                         interceptors.add(interceptor);
@@ -604,8 +606,10 @@ public class EHiRouter {
                 }
             }
 
+            // ------------------------------添加自定义拦截器------------------------------end
+
             // 公共拦截器
-            interceptors.addAll(routerInterceptors);
+            interceptors.addAll(publicInterceptors);
 
             // 扫尾拦截器,内部会添加目标要求执行的拦截器和真正执行跳转的拦截器
             interceptors.add(new EHiRouterInterceptor() {
@@ -626,6 +630,7 @@ public class EHiRouter {
 
             // 创建执行器
             final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest, callback);
+
             // 执行
             chain.proceed(originalRequest);
 
@@ -654,6 +659,11 @@ public class EHiRouter {
              */
             private boolean isCanceled;
 
+            /**
+             * 标记这次路由请求是否完毕
+             *
+             * @return
+             */
             private boolean isEnd() {
                 return isComplete || isCanceled;
             }
@@ -714,30 +724,12 @@ public class EHiRouter {
         }
 
         /**
-         * 这个扫尾拦截器是为了连接目标界面的拦截器,这个拦截器对象执行的目标界面
-         */
-        private class TargetInterceptorsInterceptor implements EHiRouterInterceptor {
-
-            /**
-             * @param nextChain 这个虽然名字叫这个,但是这个执行器里面有上一个拦截器传给你的 request
-             * @return
-             * @throws Exception
-             */
-            @Override
-            public void intercept(final Chain nextChain) throws Exception {
-
-            }
-
-        }
-
-        /**
          * 实现拦截器列表中的最后一环,内部去执行了跳转的代码,并且切换了线程执行,当前线程会停住
          */
         private class RealInterceptor implements EHiRouterInterceptor {
 
             @Override
             public void intercept(final Chain chain) throws Exception {
-
                 try {
                     // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
                     EHiRouterRequest routerRequest = chain.request();
@@ -753,7 +745,6 @@ public class EHiRouter {
                 } catch (Exception e) {
                     chain.callback().onError(e);
                 }
-
             }
 
         }
@@ -764,7 +755,6 @@ public class EHiRouter {
          * 然后调用当前拦截器的 intercept 方法
          */
         private class InterceptorChain implements EHiRouterInterceptor.Chain {
-
             @NonNull
             private EHiRouterRequest mOriginalRequest;
             @NonNull
@@ -851,6 +841,7 @@ public class EHiRouter {
             }
         }
     }
+
     @MainThread
     public static void cancel(@NonNull Fragment fragment) {
         synchronized (interceptorCallbackList) {

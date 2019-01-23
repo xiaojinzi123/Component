@@ -34,6 +34,10 @@ class RunPlugin implements Plugin<Project> {
         // 要最先获取
         currentModuleName = project.path.replace(":", "")
 
+        log("project.gradle.startParameter.includedBuilds=" + project.gradle.startParameter.includedBuilds)
+        log("project.gradle.startParameter.taskRequests===" + project.gradle.startParameter.taskRequests)
+        log("project.rootProject.projectDir--------------=" + project.rootProject.projectDir)
+        log("project.gradle.startParameter.projectDir----=" + project.gradle.startParameter.projectDir)
         log("currentModuleName=" + currentModuleName)
         log("project.gradle.startParameter.taskNames=" + project.gradle.startParameter.taskNames)
         log("project.path=" + project.path)
@@ -42,7 +46,7 @@ class RunPlugin implements Plugin<Project> {
         // 1.当运行 App,那么依赖的所有模块都会被执行这个插件,那么每一个插件都能获取到同一个 moduleName=app
         // 2.当运行 Lib 的时候, moduleName="LibName" 这个就是业务模块的名称了
         // may null
-        AssembleTask assembleTask = getTaskInfo(project.gradle.startParameter.taskNames)
+        AssembleTask assembleTask = getCurrentAssembleTaskInfo(project.gradle.startParameter.taskNames)
         if (assembleTask != null) {
             log("assembleTask.isDebug=" + assembleTask.isDebug)
             log("assembleTask.moduleName=" + assembleTask.moduleName)
@@ -129,8 +133,13 @@ class RunPlugin implements Plugin<Project> {
         log("currentAssembleModuleName = " + currentAssembleModuleName)
     }
 
+    /**
+     * 获取当前编译的模块名称
+     * @param taskNames
+     * @return
+     */
     @javax.annotation.Nullable
-    private AssembleTask getTaskInfo(List<String> taskNames) {
+    private AssembleTask getCurrentAssembleTaskInfo(List<String> taskNames) {
         for (String task : taskNames) {
             if (task.toUpperCase().contains("ASSEMBLE")
                     || task.contains("aR")

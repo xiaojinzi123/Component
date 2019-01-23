@@ -30,6 +30,9 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
+/**
+ * 负责处理 {@link EHiModuleAppAnno}
+ */
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
@@ -38,7 +41,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
 
     private TypeElement eHiCenterInterceptorTypeElement;
     private TypeElement ehiCenterServiceTypeElement;
-    private TypeElement ehiRouter;
+    private TypeElement ehiRouterTypeElement;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -46,7 +49,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
 
         eHiCenterInterceptorTypeElement = mElements.getTypeElement(ComponentConstants.EHICENTERINTERCEPTOR_CLASS_NAME);
         ehiCenterServiceTypeElement = mElements.getTypeElement(ComponentConstants.EHICENTERSERVICE_CLASS_NAME);
-        ehiRouter = mElements.getTypeElement(ComponentConstants.EHIROUTER_CLASS_NAME);
+        ehiRouterTypeElement = mElements.getTypeElement(ComponentConstants.EHIROUTER_CLASS_NAME);
 
     }
 
@@ -196,7 +199,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addModifiers(Modifier.PUBLIC);
 
         methodSpecBuilder.addStatement("super.onCreate(application)");
-        methodSpecBuilder.addStatement("$T.register(getHost())",ehiRouter);
+        methodSpecBuilder.addStatement("$T.register(getHost())", ehiRouterTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", ehiCenterServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", eHiCenterInterceptorTypeElement);
 

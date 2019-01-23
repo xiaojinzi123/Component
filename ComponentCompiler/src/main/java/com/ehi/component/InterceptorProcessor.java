@@ -35,6 +35,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
 /**
+ * 处理拦截器的注解驱动器,目的是为了处理 {@link EHiGlobalInterceptorAnno} 和 {@link EHiInterceptorAnno}
  * time   : 2018/12/26
  *
  * @author : xiaojinzi 30212

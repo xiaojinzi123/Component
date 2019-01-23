@@ -76,25 +76,18 @@ public class EHiModuleManager implements IComponentModuleApplication {
 
     @Nullable
     public static IComponentHostApplication findModuleApplication(String host) {
-
         String className = ComponentUtil.genHostModuleApplicationClassName(host);
-
         try {
-
             Class<?> clazz = Class.forName(className);
             /*Constructor<?> constructor = clazz.getConstructor();
             constructor.setAccessible(true);*/
             IComponentHostApplication instance = (IComponentHostApplication) clazz.newInstance();
-
             return instance;
-
         } catch (ClassNotFoundException e) {
         } catch (IllegalAccessException e) {
         } catch (InstantiationException e) {
         }
-
         return null;
-
     }
 
     /**
@@ -133,7 +126,6 @@ public class EHiModuleManager implements IComponentModuleApplication {
     }
 
     private void checkInterceptor(){
-
         Set<String> set = new HashSet<>();
         for (String moduleName : moduleApplicationMap.keySet()) {
             IComponentHostInterceptor moduleInterceptor = EHiCenterInterceptor.getInstance().findModuleInterceptor(moduleName);

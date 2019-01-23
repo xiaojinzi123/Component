@@ -87,7 +87,6 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
      * 按顺序弄好所有拦截器
      */
     private void loadAllInterceptor() {
-
         mInterceptorList.clear();
         List<EHiInterceptorBean> totalList = new ArrayList<>();
         for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
@@ -97,7 +96,6 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
             }
             totalList.addAll(list);
         }
-
         Collections.sort(totalList, new Comparator<EHiInterceptorBean>() {
             @Override
             public int compare(EHiInterceptorBean o1, EHiInterceptorBean o2) {
@@ -110,32 +108,23 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
                 }
             }
         });
-
         for (EHiInterceptorBean interceptorBean : totalList) {
             mInterceptorList.add(interceptorBean.interceptor);
         }
-
     }
 
     @Nullable
     public IComponentHostInterceptor findModuleInterceptor(String host) {
-
         String className = ComponentUtil.genHostInterceptorClassName(host);
-
         try {
             Class<?> clazz = Class.forName(className);
-
             IComponentHostInterceptor instance = (IComponentHostInterceptor) clazz.newInstance();
-
             return instance;
-
         } catch (ClassNotFoundException e) {
         } catch (IllegalAccessException e) {
         } catch (InstantiationException e) {
         }
-
         return null;
-
     }
 
     @Nullable

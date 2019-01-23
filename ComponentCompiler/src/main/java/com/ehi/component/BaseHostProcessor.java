@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.annotation.processing.ProcessingEnvironment;
 
 /**
+ * 获取 HOST 属性
  * time   : 2018/12/26
  *
  * @author : xiaojinzi 30212

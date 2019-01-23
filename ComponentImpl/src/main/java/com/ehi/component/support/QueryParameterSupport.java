@@ -26,19 +26,15 @@ public class QueryParameterSupport {
 
     @Nullable
     public static String getString(@NonNull Intent intent, @NonNull String key, String defaultValue) {
-
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
-
         // may be null
         String value = routerParameterBundle.getString(PREFIX + key);
-
         if (value == null) {
             return defaultValue;
         }
-
         return value;
     }
 
@@ -49,19 +45,15 @@ public class QueryParameterSupport {
 
     @Nullable
     public static Integer getInt(@NonNull Intent intent, @NonNull String key, Integer defaultValue) {
-
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
-
         // may be null
         String value = routerParameterBundle.getString(PREFIX + key);
-
         if (value == null) {
             return defaultValue;
         }
-
         try {
             return Integer.valueOf(value);
         } catch (Exception ignore) {
@@ -76,25 +68,21 @@ public class QueryParameterSupport {
 
     @Nullable
     public static Long getLong(@NonNull Intent intent, @NonNull String key, Long defaultValue) {
-
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
-
         // may be null
         String value = routerParameterBundle.getString(PREFIX + key);
 
         if (value == null) {
             return defaultValue;
         }
-
         try {
             return Long.valueOf(value);
         } catch (Exception ignore) {
             return defaultValue;
         }
-
     }
 
     @Nullable
@@ -104,19 +92,15 @@ public class QueryParameterSupport {
 
     @Nullable
     public static Double getDouble(@NonNull Intent intent, @NonNull String key, Double defaultValue) {
-
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
-
         // may be null
         String value = routerParameterBundle.getString(PREFIX + key);
-
         if (value == null) {
             return defaultValue;
         }
-
         try {
             return Double.valueOf(value);
         } catch (Exception ignore) {
@@ -131,19 +115,16 @@ public class QueryParameterSupport {
 
     @Nullable
     public static Float getFloat(@NonNull Intent intent, @NonNull String key, Float defaultValue) {
-
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
-
         // may be null
         String value = routerParameterBundle.getString(PREFIX + key);
 
         if (value == null) {
             return defaultValue;
         }
-
         try {
             return Float.valueOf(value);
         } catch (Exception ignore) {
@@ -158,19 +139,15 @@ public class QueryParameterSupport {
 
     @Nullable
     public static Boolean getBoolean(@NonNull Intent intent, @NonNull String key, Boolean defaultValue) {
-
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
-
         // may be null
         String value = routerParameterBundle.getString(PREFIX + key);
-
         if (value == null) {
             return defaultValue;
         }
-
         try {
             return Boolean.valueOf(value);
         } catch (Exception ignore) {
@@ -185,19 +162,15 @@ public class QueryParameterSupport {
 
     @Nullable
     public static Short getShort(@NonNull Intent intent, @NonNull String key, Short defaultValue) {
-
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
-
         // may be null
         String value = routerParameterBundle.getString(PREFIX + key);
-
         if (value == null) {
             return defaultValue;
         }
-
         try {
             return Short.valueOf(value);
         } catch (Exception ignore) {
@@ -212,19 +185,15 @@ public class QueryParameterSupport {
 
     @Nullable
     public static Byte getByte(@NonNull Intent intent, @NonNull String key, Byte defaultValue) {
-
         Bundle routerParameterBundle = intent.getBundleExtra(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
-
         // may be null
         String value = routerParameterBundle.getString(PREFIX + key);
-
         if (value == null) {
             return defaultValue;
         }
-
         try {
             return Byte.valueOf(value);
         } catch (Exception ignore) {

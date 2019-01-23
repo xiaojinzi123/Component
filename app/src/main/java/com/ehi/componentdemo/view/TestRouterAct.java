@@ -518,19 +518,7 @@ public class TestRouterAct extends BaseAct {
         EHiRouter.with(mContext)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_FRAGMENT_ROUTER)
-                .navigate(new EHiCallbackAdapter(){
-                    @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
-                        super.onEvent(result, error);
-                        finish();
-                    }
-
-                    @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
-                        super.onSuccess(result);
-                    }
-                });
+                .navigate();
     }
-
 
 }
