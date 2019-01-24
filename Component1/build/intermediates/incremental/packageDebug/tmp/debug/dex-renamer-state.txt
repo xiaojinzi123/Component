@@ -1,4 +1,0 @@
-#Tue Jan 22 10:34:05 CST 2019
-base.0=/Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component1/build/intermediates/dex/debug/mergeDexDebug/out
-path.0=classes.dex
-renamed.0=classes.dex
