@@ -12,10 +12,10 @@ public class ModuleConfig {
 
         public static final String NAME = "system";
 
-        // 测试跳转的界面
+        // 测试跳转到打电话的界面
         public static final String CALL_PHONE = "callPhone";
 
-        //
+        // 测试跳转到 APP 详情界面
         public static final String SYSTEM_APP_DETAIL = "appDetail";
 
     }

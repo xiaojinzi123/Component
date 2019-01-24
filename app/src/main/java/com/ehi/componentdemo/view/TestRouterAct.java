@@ -13,6 +13,7 @@ import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.base.view.BaseAct;
+import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.impl.EHiRouter;
@@ -189,7 +190,7 @@ public class TestRouterAct extends BaseAct {
 
     public void rxJumpGetDataStartWithTask(final View view) {
 
-        SingleTransformer<String, Intent> transformer = new SingleTransformer<String,Intent>(){
+        SingleTransformer<String, Intent> transformer = new SingleTransformer<String, Intent>() {
             @Override
             public SingleSource<Intent> apply(Single<String> upstream) {
                 return EHiRxRouter
@@ -408,12 +409,12 @@ public class TestRouterAct extends BaseAct {
                 .subscribe(new Action() {
                     @Override
                     public void run() throws Exception {
-                        addInfo("从" + ModuleConfig.Component1.NAME + "/"+ ModuleConfig.Component1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK");
+                        addInfo("从" + ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK");
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        addInfo("打算匹配 " + ModuleConfig.Component1.NAME + "/"+ ModuleConfig.Component1.TEST + "界面返回的 resultCode = Activity.RESULT_OK 失败,错误信息：" + throwable.getMessage());
+                        addInfo("打算匹配 " + ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST + "界面返回的 resultCode = Activity.RESULT_OK 失败,错误信息：" + throwable.getMessage());
                     }
                 });
 
@@ -465,8 +466,6 @@ public class TestRouterAct extends BaseAct {
 
     public void testCallbackAfterFinish(View view) {
 
-        Toast.makeText(mContext, "在执行一个路由没完成的时候,界面销毁了,自动取消这个跳转", Toast.LENGTH_SHORT).show();
-
         EHiRxRouter
                 .with(this)
                 .host(ModuleConfig.System.NAME)
@@ -476,11 +475,13 @@ public class TestRouterAct extends BaseAct {
                     @Override
                     public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
                         super.onEvent(result, error);
+                        // 这里的代码不会被调用
                     }
 
                     @Override
                     public void onCancel() {
                         super.onCancel();
+                        Toast.makeText(ComponentConfig.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
                     }
                 });
 

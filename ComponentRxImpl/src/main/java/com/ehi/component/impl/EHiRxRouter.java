@@ -452,6 +452,12 @@ public class EHiRxRouter {
                                     Help.onErrorSolve(emitter, e);
                                 }
                             }
+
+                            @Override
+                            public void onCancel() {
+                                super.onCancel();
+                            }
+
                         });
                     } catch (Exception e) {
                         Help.onErrorSolve(emitter, e);

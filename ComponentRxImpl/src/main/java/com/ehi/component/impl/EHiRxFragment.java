@@ -58,7 +58,6 @@ public final class EHiRxFragment extends Fragment {
     }
 
     public void setSingleEmitter(@NonNull SingleEmitter<EHiActivityResult> singleEmitter, @NonNull int requestCode) throws ActivityResultException {
-
         if (isContainsSingleEmitter(requestCode)) {
             throw new ActivityResultException("request&result code: " + requestCode + " can't be same");
         }

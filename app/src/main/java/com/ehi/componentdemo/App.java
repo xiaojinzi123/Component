@@ -24,4 +24,5 @@ public class App extends Application {
             EHiModuleManager.getInstance().check();
         }
     }
+
 }
