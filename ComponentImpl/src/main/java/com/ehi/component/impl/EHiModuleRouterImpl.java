@@ -106,16 +106,16 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         }
 
         // do startActivity
-        Context context = routerRequest.context;
-        if (context == null) {
-            context = routerRequest.fragment.getContext();
-        }
+        Context context = routerRequest.getRawContext();
         // 如果 Context 和 Fragment 中的 Context 都是 null
         if (context == null) {
-            throw new NavigationFailException("your fragment attached to Activity?");
+            throw new NavigationFailException("do your fragment attached to Activity or forget to call 'EHiRouter.with()'method");
         }
 
-        Intent intent = null;
+        // 转化 query 到 bundle,这句话不能随便放,因为这句话之前是因为拦截器可以修改 routerRequest 对象中的参数或者整个对象
+        // 所以直接当所有拦截器都执行完毕的时候,在确定要跳转了,这个 query 参数可以往 bundle 里面存了
+        QueryParameterSupport.putQueryBundleToBundle(routerRequest.bundle,routerRequest.uri);
+
         if (target.customerJump != null) {
             // 用于支持拿到 result 的 Fragment,如果不为空,传这个过去给自定义的地方让写代码的程序员跳转
             // 这个如果不为空,一定要替换原有的传给用户,不然就拿不到 Result 了
@@ -131,6 +131,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                 );
             }
         } else {
+            Intent intent = null;
             if (target.targetClass != null) {
                 intent = new Intent(context, target.targetClass);
             } else if (target.customerIntentCall != null) {
@@ -140,7 +141,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
                 throw new TargetActivityNotFoundException(uriString);
             }
             intent.putExtras(routerRequest.bundle);
-            QueryParameterSupport.put(intent, routerRequest.uri);
+
             if (routerRequest.intentConsumer != null) {
                 routerRequest.intentConsumer.accept(intent);
             }
@@ -223,7 +224,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             for (Class<? extends EHiRouterInterceptor> interceptorClass : interceptors) {
                 EHiRouterInterceptor interceptor = EHiRouterInterceptorUtil.get(interceptorClass);
                 if (interceptor == null) {
-                    throw new InterceptorNotFoundException("can't find the interceptor and it's className is" + interceptorClass + ",target url is" + uri.toString());
+                    throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + uri.toString());
                 }
                 result.add(interceptor);
             }
@@ -232,7 +233,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             for (String interceptorName : interceptorNames) {
                 EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(interceptorName);
                 if (interceptor == null) {
-                    throw new InterceptorNotFoundException("can't find the interceptor and it's name is" + interceptorName + ",target url is" + uri.toString());
+                    throw new InterceptorNotFoundException("can't find the interceptor and it's name is " + interceptorName + ",target url is " + uri.toString());
                 }
                 result.add(interceptor);
             }

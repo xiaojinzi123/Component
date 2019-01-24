@@ -37,7 +37,7 @@ dependencies {
     api project(':Module1')
     api project(':Module2')
     api project(':ModuleHelp')
-    // api project(':ModuleUser')
+    api project(':ModuleUser')
 
     if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
         annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"

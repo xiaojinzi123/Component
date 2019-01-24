@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.support.QueryParameterSupport;
+import com.ehi.component.support.ParameterSupport;
 import com.ehi.component1.R;
 
 @EHiRouterAnno(
@@ -27,7 +27,7 @@ public class Component1TestAct extends AppCompatActivity {
         setContentView(R.layout.component1_test_act);
 
         TextView tv_data = findViewById(R.id.tv_data);
-        tv_data.setText(QueryParameterSupport.getString(getIntent(), "data"));
+        tv_data.setText(ParameterSupport.getString(getIntent(), "data"));
 
         String data = getIntent().getStringExtra("data");
 

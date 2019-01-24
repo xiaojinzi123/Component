@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.support.QueryParameterSupport;
+import com.ehi.component.support.ParameterSupport;
 import com.ehi.componentdemo.R;
 
 @EHiRouterAnno(host = ModuleConfig.App.NAME,value = ModuleConfig.App.INFO)
@@ -17,7 +17,7 @@ public class InfoAct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info_act);
 
-        String data = QueryParameterSupport.getString(getIntent(), "data");
+        String data = ParameterSupport.getString(getIntent(), "data");
         ((TextView) findViewById(R.id.tv)).setText(data);
 
     }

@@ -1,2 +1,0 @@
-@todo: 下一步的计划, 路由的跳转完全可以自定义,最好能兼容之前写的参数 这样子就可以完美的融合之前写的那些 startActivity 了
-@todo: EHiRxRouter 中如果requestCode 相同的情况处理还不够

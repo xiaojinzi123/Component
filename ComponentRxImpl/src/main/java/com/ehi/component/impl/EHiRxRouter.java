@@ -357,7 +357,7 @@ public class EHiRxRouter {
                         @Override
                         public void accept(EHiActivityResult activityResult) throws Exception {
                             if (activityResult.resultCode != expectedResultCode) {
-                                throw new ActivityResultException("the resultCode is not matching " + requestCode);
+                                throw new ActivityResultException("the resultCode is not matching " + expectedResultCode);
                             }
                         }
                     })
@@ -377,7 +377,7 @@ public class EHiRxRouter {
                         @Override
                         public void accept(EHiActivityResult activityResult) throws Exception {
                             if (activityResult.resultCode != expectedResultCode) {
-                                throw new ActivityResultException("the resultCode is not matching " + requestCode);
+                                throw new ActivityResultException("the resultCode is not matching " + expectedResultCode);
                             }
                             if (activityResult.data == null) {
                                 throw new ActivityResultException("the intent result data is null");

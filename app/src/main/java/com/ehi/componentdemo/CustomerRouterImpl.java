@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 
 import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
-import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouterRequest;
 
@@ -45,13 +44,13 @@ public class CustomerRouterImpl {
         if (request.requestCode == null) {
             if (act == null) {
                 request.fragment.startActivity(intent);
-            }else {
+            } else {
                 act.startActivity(intent);
             }
         } else {
             if (act == null) {
                 request.fragment.startActivityForResult(intent, request.requestCode);
-            }else {
+            } else {
                 act.startActivityForResult(intent, request.requestCode);
             }
         }

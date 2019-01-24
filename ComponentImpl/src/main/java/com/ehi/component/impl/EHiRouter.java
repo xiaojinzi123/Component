@@ -1,7 +1,6 @@
 package com.ehi.component.impl;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -458,6 +457,10 @@ public class EHiRouter {
                 uri = Uri.parse(url);
             }
 
+            if (uri == null) {
+                throw new NullPointerException("the parameter 'uri' is null");
+            }
+
             if (context == null && fragment == null) {
                 throw new NullPointerException("the parameter 'context' or 'fragment' both are null");
             }
@@ -601,7 +604,7 @@ public class EHiRouter {
                     }
                     EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(customNameInterceptor);
                     if (interceptor == null) {
-                        callback.onError(new InterceptorNotFoundException("can't find the interceptor and it's name is" + customNameInterceptor + ",target url is" + originalRequest.uri.toString()));
+                        callback.onError(new InterceptorNotFoundException("can't find the interceptor and it's name is " + customNameInterceptor + ",target url is " + originalRequest.uri.toString()));
                         return;
                     } else {
                         interceptors.add(interceptor);
