@@ -1,0 +1,47 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:2:1-10:12
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:2:1-10:12
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:2:1-10:12
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:2:1-10:12
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:2:1-10:12
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:2:1-10:12
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:2:1-10:12
+	package
+		ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:3:5-33
+		INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+		INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+		ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:2:1-10:12
+		INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+		ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:2:1-10:12
+		INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:2:11-69
+application
+ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:5:5-8:19
+activity#com.ehi.component2.view.Component2Act
+ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:6:9-56
+	android:name
+		ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:6:19-53
+activity#com.ehi.component2.view.Component2TestAct
+ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:7:9-69
+	android:name
+		ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml:7:19-57
+uses-sdk
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+		ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+		INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+		ADDED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml
+		INJECTED from /Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component2/src/main/AndroidManifest.xml

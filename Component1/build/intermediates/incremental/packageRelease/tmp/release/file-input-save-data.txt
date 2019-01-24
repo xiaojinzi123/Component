@@ -1,0 +1,7 @@
+#Internal package file, do not edit.
+#Tue Jan 22 10:34:14 CST 2019
+0.baseType=DIRECTORY
+0.base=/Users/cxj/Code/android/EHiTfs/EHiComponentDemo/Component1/build/intermediates/dex/release/mergeDexRelease/out
+0.path=classes.dex
+0.set=DEX
+count=1
