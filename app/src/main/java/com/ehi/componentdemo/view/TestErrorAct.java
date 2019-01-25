@@ -39,7 +39,7 @@ public class TestErrorAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@NonNull Exception error) {
+                    public void onError(@NonNull Throwable error) {
                         System.out.println("onError");
                     }
                 });

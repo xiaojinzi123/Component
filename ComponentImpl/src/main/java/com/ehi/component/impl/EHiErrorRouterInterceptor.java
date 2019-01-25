@@ -14,6 +14,6 @@ public interface EHiErrorRouterInterceptor {
      * @param e
      */
     @MainThread
-    void onRouterError(Exception e) throws Exception;
+    void onRouterError(Throwable e) throws Exception;
 
 }

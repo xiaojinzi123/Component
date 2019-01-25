@@ -70,7 +70,7 @@ public interface EHiRouterInterceptor {
          * @param error
          */
         @MainThread
-        void onError(Exception error);
+        void onError(Throwable error);
 
         /**
          * 是否完成了
@@ -89,6 +89,9 @@ public interface EHiRouterInterceptor {
 
     }
 
+    /**
+     * 默认实现
+     */
     class CallbackAdapter implements Callback {
 
         @NonNull
@@ -106,7 +109,7 @@ public interface EHiRouterInterceptor {
 
         @Override
         @CallSuper
-        public void onError(Exception error) {
+        public void onError(Throwable error) {
             mCallback.onError(error);
         }
 

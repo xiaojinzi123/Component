@@ -671,7 +671,7 @@ public class EHiRouter {
             }
 
             @Override
-            public void onError(Exception error) {
+            public void onError(Throwable error) {
                 synchronized (this) {
                     if (isEnd()) {
                         return;

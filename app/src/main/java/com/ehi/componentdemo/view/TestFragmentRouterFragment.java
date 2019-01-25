@@ -58,7 +58,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
         }
     }
 
-    private void addInfo(@Nullable EHiRouterResult routerResult, @Nullable Exception error, @NonNull String url, @Nullable Integer requestCode) {
+    private void addInfo(@Nullable EHiRouterResult routerResult, @Nullable Throwable error, @NonNull String url, @Nullable Integer requestCode) {
         if (requestCode == null) {
             if (routerResult != null) {
                 tv_detail.setText(tv_detail.getText() + "\n\n普通跳转成功,目标:" + url);
@@ -110,7 +110,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                     }
 
                     @Override
-                    public void onError(@NonNull Exception error) {
+                    public void onError(@NonNull Throwable error) {
                         addInfo(null, error, "component1/test?data=normalJump", null);
                     }
                 });
@@ -125,7 +125,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .interceptors(DialogShowInterceptor.class)
                 .navigate(new EHiCallbackAdapter(){
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Throwable error) {
                         super.onEvent(result, error);
                     }
 

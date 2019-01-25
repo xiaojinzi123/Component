@@ -86,7 +86,7 @@ class EHiRouterUtil {
      * @param error
      */
     public static void errorCallback(@Nullable final EHiCallback callback,
-                                     @NonNull final Exception error) {
+                                     @NonNull final Throwable error) {
         if (isMainThread()) {
             errorCallbackOnMainThread(callback, error);
         } else {
@@ -104,7 +104,7 @@ class EHiRouterUtil {
      * @param error
      */
     private static void errorCallbackOnMainThread(@Nullable final EHiCallback callback,
-                                                  @NonNull final Exception error) {
+                                                  @NonNull final Throwable error) {
         if (callback == null) {
             return;
         }
@@ -148,7 +148,7 @@ class EHiRouterUtil {
 
     }
 
-    public static void deliveryError(@NonNull Exception error) {
+    public static void deliveryError(@NonNull Throwable error) {
 
         for (EHiErrorRouterInterceptor interceptor : EHiRouter.errorRouterInterceptors) {
             try {

@@ -23,7 +23,7 @@ public interface EHiCallback {
      * @param error
      */
     @MainThread
-    void onError(@NonNull Exception error);
+    void onError(@NonNull Throwable error);
 
     /**
      * 错误或者成功都会回调,取消的时候不会回调
@@ -32,7 +32,7 @@ public interface EHiCallback {
      * @param error
      */
     @MainThread
-    void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error);
+    void onEvent(@Nullable EHiRouterResult result, @Nullable Throwable error);
 
     /**
      * 被取消了

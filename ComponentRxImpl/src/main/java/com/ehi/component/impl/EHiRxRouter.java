@@ -435,7 +435,7 @@ public class EHiRxRouter {
                         // 导航拿到 NavigationDisposable 对象
                         final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
                             @Override
-                            public void onEvent(@Nullable final EHiRouterResult routerResult, @Nullable Exception error) {
+                            public void onEvent(@Nullable final EHiRouterResult routerResult, @Nullable Throwable error) {
                                 try {
                                     if (routerResult != null) {
                                         LogUtil.log(TAG, "路由成功：" + routerResult.getRequest().uri.toString());
@@ -521,7 +521,7 @@ public class EHiRxRouter {
                         final String mPath = path;
                         final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
                             @Override
-                            public void onEvent(@Nullable EHiRouterResult routerResult, @Nullable Exception error) {
+                            public void onEvent(@Nullable EHiRouterResult routerResult, @Nullable Throwable error) {
                                 try {
                                     if (routerResult != null) {
                                         if (emitter != null && !emitter.isDisposed()) {
@@ -534,7 +534,7 @@ public class EHiRxRouter {
                                             throw new NavigationFailException("host = " + mHost + ",path = " + mPath);
                                         }
                                     }
-                                } catch (Exception e) {
+                                } catch (Throwable e) {
                                     Help.onErrorSolve(emitter, e);
                                 }
                             }
@@ -630,7 +630,7 @@ public class EHiRxRouter {
         /**
          * 错误处理
          */
-        private static void onErrorSolve(@NonNull final SingleEmitter<? extends Object> emitter, @NonNull Exception e) {
+        private static void onErrorSolve(@NonNull final SingleEmitter<? extends Object> emitter, @NonNull Throwable e) {
             if (e instanceof InterceptorNotFoundException) {
                 onErrorEmitter(emitter, e);
             } else if (e instanceof NavigationFailException) {
@@ -647,7 +647,7 @@ public class EHiRxRouter {
         /**
          * 错误处理
          */
-        private static void onErrorSolve(@NonNull CompletableEmitter emitter, @NonNull Exception e) {
+        private static void onErrorSolve(@NonNull CompletableEmitter emitter, @NonNull Throwable e) {
             if (e instanceof InterceptorNotFoundException) {
                 onErrorEmitter(emitter, e);
             } else if (e instanceof NavigationFailException) {
@@ -662,7 +662,7 @@ public class EHiRxRouter {
         }
 
         private static void onErrorEmitter(@NonNull final SingleEmitter<? extends Object> emitter,
-                                           @NonNull Exception e) {
+                                           @NonNull Throwable e) {
             if (emitter == null || emitter.isDisposed()) {
                 return;
             }
@@ -670,7 +670,7 @@ public class EHiRxRouter {
         }
 
         private static void onErrorEmitter(@NonNull final CompletableEmitter emitter,
-                                           @NonNull Exception e) {
+                                           @NonNull Throwable e) {
             if (emitter == null || emitter.isDisposed()) {
                 return;
             }

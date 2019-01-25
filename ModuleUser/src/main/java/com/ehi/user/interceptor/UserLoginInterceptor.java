@@ -9,6 +9,7 @@ import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
 import com.ehi.base.service.inter.user.UserService;
 import com.ehi.component.anno.EHiInterceptorAnno;
+import com.ehi.component.error.ServiceNotFoundException;
 import com.ehi.component.impl.EHiRouterInterceptor;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.impl.service.EHiService;
@@ -32,17 +33,14 @@ public class UserLoginInterceptor implements EHiRouterInterceptor {
 
     @Override
     public void intercept(final Chain chain) throws Exception {
-
         final Context context = chain.request().context == null ? chain.request().fragment.getContext() : chain.request().context;
         UserService userService = EHiService.get(UserService.class);
-
         if (chain.request().uri.toString().contains("user/login")) {
             chain.proceed(chain.request());
             return;
         }
-
         if (userService == null) {
-            chain.callback().onError(new Exception("can't found UserService"));
+            chain.callback().onError(new ServiceNotFoundException("can't found UserService"));
             return;
         }else if(userService.isLogin()) {
             Toast.makeText(context, "已经登录,正在帮您跳转,", Toast.LENGTH_SHORT).show();
@@ -50,7 +48,6 @@ public class UserLoginInterceptor implements EHiRouterInterceptor {
             return;
         } else {
             Toast.makeText(context, "目标界面需要登录,拦截器帮您跳转到登录界面登录,", Toast.LENGTH_SHORT).show();
-
             EHiRxRouter.with(context)
                     .host(ModuleConfig.User.NAME)
                     .path(ModuleConfig.User.LOGIN)
@@ -81,7 +78,6 @@ public class UserLoginInterceptor implements EHiRouterInterceptor {
                             chain.callback().onError(new Exception("login fail"));
                         }
                     });
-
         }
 
     }

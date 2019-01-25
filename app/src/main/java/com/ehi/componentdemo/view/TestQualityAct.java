@@ -57,12 +57,12 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@NonNull Exception error) {
+                    public void onError(@NonNull Throwable error) {
                         ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(error));
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Throwable error) {
                         ToastUtil.toastLong("测试失败\n路由失败：onEvent方法");
                     }
 
@@ -143,12 +143,12 @@ public class TestQualityAct extends AppCompatActivity {
                 .subscribe(new Consumer<Intent>() {
                     @Override
                     public void accept(Intent intent) throws Exception {
-                        ToastUtil.toastShort("测试失败,onSuccess");
+                        ToastUtil.toastShort("测试失败\n,onSuccess");
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        ToastUtil.toastShort("测试成功,onError：" + Utils.getRealMessage(throwable));
+                        ToastUtil.toastShort("测试成功\n,onError：" + Utils.getRealMessage(throwable));
                     }
                 });
     }
@@ -164,12 +164,12 @@ public class TestQualityAct extends AppCompatActivity {
                 .subscribe(new Consumer<Intent>() {
                     @Override
                     public void accept(Intent intent) throws Exception {
-                        ToastUtil.toastShort("测试失败,onSuccess");
+                        ToastUtil.toastShort("测试失败\n,onSuccess");
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        ToastUtil.toastShort("测试成功,onError：" + Utils.getRealMessage(throwable));
+                        ToastUtil.toastShort("测试成功\n,onError：" + Utils.getRealMessage(throwable));
                     }
                 });
     }
@@ -222,12 +222,12 @@ public class TestQualityAct extends AppCompatActivity {
                 .subscribe(new Consumer<Intent>() {
                     @Override
                     public void accept(Intent intent) throws Exception {
-                        ToastUtil.toastShort("测试失败,onSuccess");
+                        ToastUtil.toastShort("测试失败\n,onSuccess");
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        ToastUtil.toastShort("测试成功,onError：" + Utils.getRealMessage(throwable));
+                        ToastUtil.toastShort("测试成功\n,onError：" + Utils.getRealMessage(throwable));
                     }
                 });
     }
@@ -242,12 +242,12 @@ public class TestQualityAct extends AppCompatActivity {
                 .subscribe(new Consumer<Intent>() {
                     @Override
                     public void accept(Intent intent) throws Exception {
-                        ToastUtil.toastShort("测试失败,onSuccess");
+                        ToastUtil.toastShort("测试失败\n,onSuccess");
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        ToastUtil.toastShort("测试成功,onError：" + Utils.getRealMessage(throwable));
+                        ToastUtil.toastShort("测试成功\n,onError：" + Utils.getRealMessage(throwable));
                     }
                 });
     }
@@ -265,12 +265,12 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@NonNull Exception error) {
+                    public void onError(@NonNull Throwable error) {
                         ToastUtil.toastLong("测试成功\n路由失败：" + Utils.getRealMessage(error));
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Throwable error) {
                         ToastUtil.toastLong("测试失败\n路由失败：onEvent方法");
                     }
 
@@ -296,12 +296,12 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@NonNull Exception error) {
+                    public void onError(@NonNull Throwable error) {
                         ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(error));
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Throwable error) {
                     }
 
                     @Override
@@ -311,6 +311,5 @@ public class TestQualityAct extends AppCompatActivity {
                 });
         finish();
     }
-
 
 }
