@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.TestQualityAct">
+
+    <com.ehi.componentdemo.view.XFlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:h_space="0dp"
+        app:v_space="0dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="cancelImmediately"
+            android:textAllCaps="false"
+            android:text="测试立马取消路由"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="cancelImmediatelyWithGetRx"
+            android:textAllCaps="false"
+            android:text="测试rx取消"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="cancelImmediatelyWithGetIntent"
+            android:textAllCaps="false"
+            android:text="测试获取Intent取消"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="withoutHostOrPath1"
+            android:textAllCaps="false"
+            android:text="测试不填写host"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="withoutHostOrPath2"
+            android:textAllCaps="false"
+            android:text="测试不填写path"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="useSameRequestCode"
+            android:textAllCaps="false"
+            android:text="测试使用同一个requestCode"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="getIntentWithoutRequestCode"
+            android:textAllCaps="false"
+            android:text="测试获取Intent不填写requestCode"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="cancelAuto1"
+            android:textAllCaps="false"
+            android:text="测试自动取消路由(因为finish在最终跳转之后所以不能正常取消)"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="cancelAuto2"
+            android:textAllCaps="false"
+            android:text="测试自动取消路由(因为finish在最终跳转之前所以能正常取消)"
+            android:textSize="@dimen/test_quality_textsize" />
+
+    </com.ehi.componentdemo.view.XFlowLayout>
+
+</LinearLayout>

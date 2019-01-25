@@ -22,6 +22,7 @@ import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.Action;
 import com.ehi.component.support.Consumer;
+import com.ehi.component.support.NavigationDisposable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class EHiRouter {
     static Collection<EHiErrorRouterInterceptor> errorRouterInterceptors = Collections.synchronizedCollection(new ArrayList<EHiErrorRouterInterceptor>(0));
 
     // 支持取消的一个 Callback 集合
-    private static List<Builder.InterceptorCallback> mCallbackList = new ArrayList<>();
+    private static List<NavigationDisposable> mNavigationDisposableList = new ArrayList<>();
 
     public static void clearErrorRouterInterceptor() {
         errorRouterInterceptors.clear();
@@ -435,36 +436,26 @@ public class EHiRouter {
          */
         @NonNull
         protected EHiRouterRequest generateRouterRequest() throws Exception {
-
             Uri uri = null;
-
             if (url == null) {
-
                 Uri.Builder uriBuilder = new Uri.Builder();
-
                 uriBuilder
                         .scheme("EHi")
                         .authority(checkStringNullPointer(host, "host", "do you forget call host() to set host?"))
                         .path(checkStringNullPointer(path, "path", "do you forget call path() to set path?"));
-
                 for (Map.Entry<String, String> entry : queryMap.entrySet()) {
                     uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
                 }
-
                 uri = uriBuilder.build();
-
             } else {
                 uri = Uri.parse(url);
             }
-
             if (uri == null) {
                 throw new NullPointerException("the parameter 'uri' is null");
             }
-
             if (context == null && fragment == null) {
                 throw new NullPointerException("the parameter 'context' or 'fragment' both are null");
             }
-
             EHiRouterRequest holder = new EHiRouterRequest.Builder()
                     .context(context)
                     .fragment(fragment)
@@ -475,59 +466,52 @@ public class EHiRouter {
                     .beforJumpAction(beforJumpAction)
                     .afterJumpAction(afterJumpAction)
                     .build();
-
             return holder;
-
         }
 
-        public void navigate() {
-            navigate(null);
+        public NavigationDisposable navigate() {
+            return navigate(null);
         }
 
         /**
          * 执行跳转的具体逻辑,必须在主线程中执行
          *
-         * @return
+         * @param callback 回调
+         * @return 返回一个 NavigationDisposable 可以取消路由或者获取原始request对象
          */
         @MainThread
-        public synchronized void navigate(@Nullable final EHiCallback callback) {
-
+        @NonNull
+        public synchronized NavigationDisposable navigate(@Nullable final EHiCallback callback) {
             // 检测是否是 ui 线程,在 EHiRxRouter 中也有检测这个线程的,但是我们不能去掉其中一个,因为这是两个不同的库,而且
             // EHiRxRouter 在调用 navigate 之前会有 Fragment 的操作
             if (EHiRouterUtil.isMainThread() == false) {
                 EHiRouterUtil.errorCallback(callback, new NavigationFailException("EHiRouter must run on main thread"));
-                return;
+                return NavigationDisposable.EMPTY;
             }
-
             // 一个 Builder 不能被使用多次
             if (isFinish) {
                 EHiRouterUtil.errorCallback(callback, new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
-                return;
+                return NavigationDisposable.EMPTY;
             }
-
             // 标记这个 builder 已经不能使用了
             isFinish = true;
-
             try {
-
                 // 构建请求对象
                 final EHiRouterRequest originalRequest = generateRouterRequest();
-
                 // 创建整个拦截器到最终跳转需要使用的 Callback
                 final InterceptorCallback interceptorCallback = new InterceptorCallback(originalRequest, callback);
-
                 // Fragment 的销毁的自动取消
                 if (originalRequest.fragment != null) {
-                    mCallbackList.add(interceptorCallback);
+                    mNavigationDisposableList.add(interceptorCallback);
                 }
-
                 // Activity 的自动取消
                 if (originalRequest.context != null && originalRequest.context instanceof Activity) {
-                    mCallbackList.add(interceptorCallback);
+                    mNavigationDisposableList.add(interceptorCallback);
                 }
-
+                // 真正的去执行路由
                 realNavigate(originalRequest, interceptors, classInterceptors, nameInterceptors, interceptorCallback);
-
+                // 返回对象
+                return interceptorCallback;
             } catch (Exception e) { // 发生路由错误的时候
                 EHiRouterUtil.deliveryError(e);
                 EHiRouterUtil.errorCallback(callback, e);
@@ -542,8 +526,7 @@ public class EHiRouter {
                 queryMap = null;
                 bundle = null;
             }
-
-
+            return NavigationDisposable.EMPTY;
         }
 
         /**
@@ -574,6 +557,7 @@ public class EHiRouter {
 
             // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
             final List<EHiRouterInterceptor> interceptors = new ArrayList(8);
+            // 添加两个内置拦截器
             interceptors.add(EHiOpenOnceInterceptor.getInstance());
 
             // ------------------------------添加自定义拦截器------------------------------start
@@ -616,7 +600,6 @@ public class EHiRouter {
 
             // 公共拦截器
             interceptors.addAll(publicInterceptors);
-
             // 扫尾拦截器,内部会添加目标要求执行的拦截器和真正执行跳转的拦截器
             interceptors.add(new EHiRouterInterceptor() {
                 @Override
@@ -633,19 +616,16 @@ public class EHiRouter {
                     nextChain.proceed(nextChain.request());
                 }
             });
-
             // 创建执行器
             final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest, callback);
-
             // 执行
             chain.proceed(originalRequest);
-
         }
 
         /**
          * 这个拦截器的 Callback 是所有拦截器执行过程中会使用的一个 Callback,这是唯一的一个,每个拦截器对象拿到的此对象都是一样的
          */
-        private class InterceptorCallback implements EHiRouterInterceptor.Callback {
+        private class InterceptorCallback implements EHiRouterInterceptor.Callback, NavigationDisposable {
 
             // 回调
             @Nullable
@@ -716,6 +696,12 @@ public class EHiRouter {
                 }
             }
 
+            @NonNull
+            @Override
+            public EHiRouterRequest request() {
+                return mOriginalRequest;
+            }
+
             @Override
             public void cancel() {
                 synchronized (this) {
@@ -724,7 +710,7 @@ public class EHiRouter {
                     }
                     // 标记取消成功
                     isCanceled = true;
-                    EHiRouterUtil.cancelCallback(mCallback);
+                    EHiRouterUtil.cancelCallback(mOriginalRequest, mCallback);
                 }
             }
         }
@@ -798,34 +784,41 @@ public class EHiRouter {
             }
 
             @Override
-            public void proceed(final EHiRouterRequest request) throws Exception {
+            public void proceed(final EHiRouterRequest request) {
+                proceed(request, mCallback);
+            }
+
+            public void proceed(@NonNull final EHiRouterRequest request, @NonNull final EHiRouterInterceptor.Callback callback) {
                 // ui 线程上执行
-                EHiRouterUtil.postActionToMainThread(new Runnable() {
+                EHiRouterUtil.postActionToMainThreadAnyway(new Runnable() {
                     @Override
                     public void run() {
-                        if (callback().isComplete() || callback().isCanceled()) {
-                            return;
-                        }
-                        ++calls;
-                        if (mIndex >= mInterceptors.size()) {
-                            callback().onError(new NavigationFailException(new IndexOutOfBoundsException("size = " + mInterceptors.size() + ",index = " + mIndex)));
-                        } else if (calls > 1) { // 调用了两次
-                            callback().onError(new NavigationFailException("interceptor " + mInterceptors.get(mIndex - 1) + " must call proceed() exactly once"));
-                        } else {
-                            // 当拦截器最后一个的时候,就不是这个类了,是 RealInterceptor 了
-                            InterceptorChain next = new InterceptorChain(mInterceptors, mIndex + 1, request, mCallback);
-                            // current Interceptor
-                            EHiRouterInterceptor interceptor = mInterceptors.get(mIndex);
-                            try {
-                                interceptor.intercept(next);
-                            } catch (Exception e) {
-                                callback().onError(e);
+                        try {
+                            if (callback().isComplete() || callback().isCanceled()) {
+                                return;
                             }
+                            if (request == null) {
+                                callback().onError(new NavigationFailException("the reqest is null,you can't call 'proceed' method with null,such as 'chain.proceed(null)'"));
+                                return;
+                            }
+                            ++calls;
+                            if (mIndex >= mInterceptors.size()) {
+                                callback().onError(new NavigationFailException(new IndexOutOfBoundsException("size = " + mInterceptors.size() + ",index = " + mIndex)));
+                            } else if (calls > 1) { // 调用了两次
+                                callback().onError(new NavigationFailException("interceptor " + mInterceptors.get(mIndex - 1) + " must call proceed() exactly once"));
+                            } else {
+                                // 当拦截器最后一个的时候,就不是这个类了,是 RealInterceptor 了
+                                InterceptorChain next = new InterceptorChain(mInterceptors, mIndex + 1, request, callback);
+                                // current Interceptor
+                                EHiRouterInterceptor interceptor = mInterceptors.get(mIndex);
+                                interceptor.intercept(next);
+                            }
+                        } catch (Exception e) {
+                            callback().onError(e);
                         }
                     }
                 });
             }
-
         }
 
     }
@@ -837,12 +830,12 @@ public class EHiRouter {
      */
     @MainThread
     public static void cancel(@NonNull Activity act) {
-        synchronized (mCallbackList) {
-            for (int i = mCallbackList.size() - 1; i >= 0; i--) {
-                Builder.InterceptorCallback callback = mCallbackList.get(i);
-                if (act == callback.mOriginalRequest.context) {
-                    callback.cancel();
-                    mCallbackList.remove(i);
+        synchronized (mNavigationDisposableList) {
+            for (int i = mNavigationDisposableList.size() - 1; i >= 0; i--) {
+                NavigationDisposable disposable = mNavigationDisposableList.get(i);
+                if (act == disposable.request().context) {
+                    disposable.cancel();
+                    mNavigationDisposableList.remove(i);
                 }
             }
         }
@@ -850,12 +843,12 @@ public class EHiRouter {
 
     @MainThread
     public static void cancel(@NonNull Fragment fragment) {
-        synchronized (mCallbackList) {
-            for (int i = mCallbackList.size() - 1; i >= 0; i--) {
-                Builder.InterceptorCallback interceptorCallback = mCallbackList.get(i);
-                if (fragment == interceptorCallback.mOriginalRequest.fragment) {
-                    interceptorCallback.cancel();
-                    mCallbackList.remove(i);
+        synchronized (mNavigationDisposableList) {
+            for (int i = mNavigationDisposableList.size() - 1; i >= 0; i--) {
+                NavigationDisposable disposable = mNavigationDisposableList.get(i);
+                if (fragment == disposable.request().fragment) {
+                    disposable.cancel();
+                    mNavigationDisposableList.remove(i);
                 }
             }
         }

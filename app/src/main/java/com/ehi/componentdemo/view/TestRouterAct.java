@@ -22,6 +22,7 @@ import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
+import com.ehi.component.support.NavigationDisposable;
 import com.ehi.componentdemo.R;
 
 import java.util.concurrent.Callable;
@@ -80,7 +81,7 @@ public class TestRouterAct extends BaseAct {
 
     public void openUriTest(View view) {
         EHiRouter.with(this)
-                .url("EHi://component1/test?data=openUriTest")
+                .url("EHi://component1/testQuery?name=我是名称&pass=我是密码")
                 .navigate();
     }
 
@@ -420,6 +421,48 @@ public class TestRouterAct extends BaseAct {
 
     }
 
+    public void testUseRequestCodeTiwce(View v) {
+
+        EHiRxRouter
+                .with(this)
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TEST)
+                .requestCode(123)
+                .query("data", "testUseRequestCodeTiwce1")
+                .resultCodeMatchCall(RESULT_OK)
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        addInfo("从" + ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK");
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        addInfo("错误信息：" + throwable.getMessage());
+                    }
+                });
+
+        EHiRxRouter
+                .with(this)
+                .host(ModuleConfig.Component1.NAME)
+                .path(ModuleConfig.Component1.TEST_DIALOG)
+                .requestCode(123)
+                .query("data", "testUseRequestCodeTiwce2")
+                .resultCodeMatchCall(RESULT_OK)
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        addInfo("从" + ModuleConfig.Component1.NAME + "/" + ModuleConfig.Component1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK");
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        addInfo("错误信息：" + throwable.getMessage());
+                    }
+                });
+
+    }
+
     public void testCustomerCallPhone(View view) {
 
         EHiRxRouter
@@ -466,7 +509,7 @@ public class TestRouterAct extends BaseAct {
 
     public void testCallbackAfterFinish(View view) {
 
-        EHiRxRouter
+        NavigationDisposable navigationDisposable = EHiRxRouter
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
@@ -479,11 +522,13 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onCancel() {
-                        super.onCancel();
+                    public void onCancel(@NonNull EHiRouterRequest request) {
+                        super.onCancel(request);
                         Toast.makeText(ComponentConfig.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        //navigationDisposable.cancel();
 
         finish();
     }

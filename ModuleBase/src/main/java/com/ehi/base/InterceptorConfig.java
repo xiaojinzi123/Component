@@ -7,7 +7,6 @@ package com.ehi.base;
  */
 public class InterceptorConfig {
 
-    public static final String COMPONENT1_TEST = "component1.test";
     public static final String USER_LOGIN = "user.login";
     public static final String HELP_CALLPHOEPERMISION = "help.callPhoePermision";
 

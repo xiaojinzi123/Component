@@ -28,7 +28,7 @@ public interface EHiCallback {
     /**
      * 错误或者成功都会回调,取消的时候不会回调
      *
-     * @param result
+     * @param result 需要判断是否为空
      * @param error
      */
     @MainThread
@@ -38,6 +38,6 @@ public interface EHiCallback {
      * 被取消了
      */
     @MainThread
-    void onCancel();
+    void onCancel(@NonNull EHiRouterRequest request);
 
 }

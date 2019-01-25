@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.ehi.component.impl.EHiCallback;
+import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 
 /**
@@ -24,12 +25,12 @@ public class EHiCallbackAdapter implements EHiCallback {
 
     @Override
     @MainThread
-    public void onEvent(@Nullable EHiRouterResult result, @Nullable Exception error) {
+    public void onEvent(@NonNull EHiRouterResult result, @Nullable Exception error) {
     }
 
     @Override
     @MainThread
-    public void onCancel() {
+    public void onCancel(@NonNull EHiRouterRequest request) {
     }
 
 }

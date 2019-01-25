@@ -26,6 +26,8 @@ public class ModuleConfig {
 
         // 测试跳转的界面
         public static final String TEST_ROUTER = "testRouter";
+        // 测试代码质量的界面
+        public static final String TEST_QUALITY = "testQuality";
         public static final String TEST_FRAGMENT_ROUTER = "testFragmentRouter";
         // 测试服务的界面
         public static final String TEST_SERVICE = "testService";

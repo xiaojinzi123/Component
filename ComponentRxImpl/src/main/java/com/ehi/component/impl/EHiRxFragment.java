@@ -5,15 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.ehi.component.bean.EHiActivityResult;
-import com.ehi.component.error.ActivityResultException;
+import com.ehi.component.support.Consumer;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import io.reactivex.SingleEmitter;
+import java.util.Set;
 
 /**
  * 跳转界面拿数据结合 RxJava2 的 Fragment
+ * 同一个 EHiRxFragment 内承载的路由请求的 requestCode 不能同时相同,单个重复是可以的,同一个
+ * requestCode 被连续使用两次,这两次的路由都在进行中,这种情况是被明确禁止的
  * <p>
  * time   : 2018/11/03
  *
@@ -23,7 +24,7 @@ import io.reactivex.SingleEmitter;
 public final class EHiRxFragment extends Fragment {
 
     @NonNull
-    private Map<Integer, SingleEmitter<EHiActivityResult>> singleEmitterMap = new HashMap<>();
+    private Map<EHiRouterRequest, Consumer<EHiActivityResult>> singleEmitterMap = new HashMap<>();
 
     @Override
     public void onDestroy() {
@@ -38,30 +39,42 @@ public final class EHiRxFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         // 根据 requestCode 获取发射器
-        SingleEmitter<EHiActivityResult> singleEmitter = singleEmitterMap.get(requestCode);
-
-        if (singleEmitter != null) {
-            if (!singleEmitter.isDisposed()) {
-                singleEmitter.onSuccess(new EHiActivityResult(requestCode, resultCode, data));
-                /*if (data == null) {
-                    singleEmitter.onError(new IntentResultException("the result data is null"));
-                } else {
-                    singleEmitter.onSuccess(data);
-                }*/
+        Consumer<EHiActivityResult> findConsumer = null;
+        EHiRouterRequest findRequest = null;
+        // 找出 requestCode 一样的那个
+        Set<EHiRouterRequest> keySet = singleEmitterMap.keySet();
+        for (EHiRouterRequest request : keySet) {
+            if (request.requestCode != null && request.requestCode.equals(requestCode)) {
+                findRequest = request;
+                break;
             }
         }
-        singleEmitterMap.remove(requestCode);
-    }
-
-    public boolean isContainsSingleEmitter(int requestCode) {
-        return singleEmitterMap.containsKey(requestCode);
-    }
-
-    public void setSingleEmitter(@NonNull SingleEmitter<EHiActivityResult> singleEmitter, @NonNull int requestCode) throws ActivityResultException {
-        if (isContainsSingleEmitter(requestCode)) {
-            throw new ActivityResultException("request&result code: " + requestCode + " can't be same");
+        if (findRequest != null) {
+            findConsumer = singleEmitterMap.get(findRequest);
         }
-        singleEmitterMap.put(requestCode, singleEmitter);
+        if (findConsumer != null) {
+            try {
+                findConsumer.accept(new EHiActivityResult(requestCode, resultCode, data));
+            } catch (Exception ignore) {
+                // ignore
+            }
+        }
+        if (findRequest != null) {
+            singleEmitterMap.remove(findRequest);
+        }
+    }
+
+    public boolean isContainsSingleEmitter(@NonNull EHiRouterRequest request) {
+        return singleEmitterMap.containsKey(request);
+    }
+
+    public void setSingleEmitter(@NonNull EHiRouterRequest request, @NonNull Consumer<EHiActivityResult> consumer) {
+        // 检测是否重复的在这个方法调用之前被检查掉了
+        singleEmitterMap.put(request, consumer);
+    }
+
+    public void cancal(@NonNull int requestCode) {
+        singleEmitterMap.remove(requestCode);
     }
 
 }

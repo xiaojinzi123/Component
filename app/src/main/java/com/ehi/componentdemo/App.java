@@ -13,11 +13,11 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         // 初始化组件化相关
-        ComponentConfig.init(this,BuildConfig.DEBUG);
+        ComponentConfig.init(this, BuildConfig.DEBUG);
         EHiRxRouter.tryErrorCatch();
         EHiModuleManager.getInstance().registerArr(
-                ModuleConfig.App.NAME,ModuleConfig.Component1.NAME,
-                ModuleConfig.Component2.NAME,ModuleConfig.User.NAME,
+                ModuleConfig.App.NAME, ModuleConfig.Component1.NAME,
+                ModuleConfig.Component2.NAME, ModuleConfig.User.NAME,
                 ModuleConfig.Help.NAME
         );
         if (BuildConfig.DEBUG) {

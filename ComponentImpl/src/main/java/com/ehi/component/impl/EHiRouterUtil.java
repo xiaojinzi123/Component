@@ -28,9 +28,18 @@ class EHiRouterUtil {
     public static void postActionToMainThread(@NonNull Runnable r) {
         if (isMainThread()) {
             r.run();
-        }else {
+        } else {
             h.post(r);
         }
+    }
+
+    /**
+     * 在主线程执行任务,和上面的方法唯一的区别就是一定是post过去的
+     *
+     * @param r
+     */
+    public static void postActionToMainThreadAnyway(@NonNull Runnable r) {
+        h.post(r);
     }
 
     /**
@@ -47,14 +56,14 @@ class EHiRouterUtil {
      *
      * @param callback
      */
-    public static void cancelCallback(@Nullable final EHiCallback callback) {
+    public static void cancelCallback(@NonNull final EHiRouterRequest request, @Nullable final EHiCallback callback) {
         if (isMainThread()) {
-            cancelCallbackOnMainThread(callback);
+            cancelCallbackOnMainThread(request, callback);
         } else {
             postActionToMainThread(new Runnable() {
                 @Override
                 public void run() {
-                    cancelCallbackOnMainThread(callback);
+                    cancelCallbackOnMainThread(request, callback);
                 }
             });
         }
@@ -63,11 +72,11 @@ class EHiRouterUtil {
     /**
      * @param callback
      */
-    private static void cancelCallbackOnMainThread(@Nullable final EHiCallback callback) {
+    private static void cancelCallbackOnMainThread(@NonNull EHiRouterRequest request, @Nullable final EHiCallback callback) {
         if (callback == null) {
             return;
         }
-        callback.onCancel();
+        callback.onCancel(request);
     }
 
     /**

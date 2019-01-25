@@ -27,9 +27,7 @@ public class DialogShowInterceptor implements EHiRouterInterceptor {
 
     @Override
     public void intercept(final Chain chain) throws Exception {
-
         Context rawContext = chain.request().getRawContext();
-
         if (rawContext == null) {
             chain.callback().onError(new Exception("context is null"));
             return;

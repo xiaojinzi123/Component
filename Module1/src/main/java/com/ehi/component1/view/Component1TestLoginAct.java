@@ -8,6 +8,9 @@ import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component1.R;
 
+/**
+ * 这个是一个测试登录的界面
+ */
 @EHiRouterAnno(
         host = ModuleConfig.Component1.NAME,
         value = ModuleConfig.Component1.TEST_LOGIN,

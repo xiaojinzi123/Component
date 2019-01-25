@@ -1,5 +1,6 @@
 package com.ehi.component.impl;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
@@ -45,13 +46,12 @@ public interface EHiRouterInterceptor {
          * @return
          */
         @MainThread
-        void proceed(EHiRouterRequest request) throws Exception;
+        void proceed(@NonNull EHiRouterRequest request);
 
     }
 
     /**
      * 回调对象,错误和成功的方法均只能调用一次,多次调用只有第一次有用,其他会被忽略
-     *
      */
     @MainThread
     interface Callback {
@@ -87,10 +87,38 @@ public interface EHiRouterInterceptor {
          */
         boolean isCanceled();
 
-        /**
-         * 取消
-         */
-        void cancel();
+    }
+
+    class CallbackAdapter implements Callback {
+
+        @NonNull
+        protected Callback mCallback;
+
+        public CallbackAdapter(@NonNull Callback callback) {
+            this.mCallback = callback;
+        }
+
+        @Override
+        @CallSuper
+        public void onSuccess(EHiRouterResult result) {
+            mCallback.onSuccess(result);
+        }
+
+        @Override
+        @CallSuper
+        public void onError(Exception error) {
+            mCallback.onError(error);
+        }
+
+        @Override
+        public boolean isComplete() {
+            return mCallback.isComplete();
+        }
+
+        @Override
+        public boolean isCanceled() {
+            return mCallback.isCanceled();
+        }
 
     }
 

@@ -15,6 +15,7 @@ import com.ehi.base.ModuleConfig;
 import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
@@ -129,8 +130,8 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                     }
 
                     @Override
-                    public void onCancel() {
-                        super.onCancel();
+                    public void onCancel(@NonNull EHiRouterRequest request) {
+                        super.onCancel(request);
                         Toast.makeText(ComponentConfig.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
                     }
                 });

@@ -20,9 +20,14 @@ import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.error.UnknowException;
 import com.ehi.component.support.Action;
 import com.ehi.component.support.EHiCallbackAdapter;
+import com.ehi.component.support.LogUtil;
+import com.ehi.component.support.NavigationDisposable;
+import com.ehi.component.support.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -30,6 +35,7 @@ import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
+import io.reactivex.functions.Cancellable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -42,6 +48,8 @@ import io.reactivex.plugins.RxJavaPlugins;
  * @author : xiaojinzi 30212
  */
 public class EHiRxRouter {
+
+    public static final String TAG = "EHiRxRouter";
 
     /**
      * 必须初始化的时候调用,错误就会自动抓住
@@ -311,7 +319,6 @@ public class EHiRxRouter {
          * @see #activityResultCall()
          */
         public Single<Intent> intentCall() {
-
             return activityResultCall()
                     .doOnSuccess(new Consumer<EHiActivityResult>() {
                         @Override
@@ -327,7 +334,6 @@ public class EHiRxRouter {
                             return activityResult.data;
                         }
                     });
-
         }
 
         public Single<Integer> resultCodeCall() {
@@ -401,10 +407,10 @@ public class EHiRxRouter {
             return Single.create(new SingleOnSubscribe<EHiActivityResult>() {
                 @Override
                 public void subscribe(final SingleEmitter<EHiActivityResult> emitter) throws Exception {
-                    if (emitter.isDisposed()) {
-                        return;
-                    }
                     try {
+                        if (emitter.isDisposed()) {
+                            return;
+                        }
                         // 检查操作
                         onCheck(true);
                         // 声明fragment
@@ -414,7 +420,6 @@ public class EHiRxRouter {
                         } else {
                             fm = ((FragmentActivity) context).getSupportFragmentManager();
                         }
-
                         // 寻找是否添加过 Fragment
                         EHiRxFragment findRxFragment = (EHiRxFragment) fm.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
                         if (findRxFragment == null) {
@@ -424,42 +429,72 @@ public class EHiRxRouter {
                                     .commitNow();
                         }
                         final EHiRxFragment rxFragment = findRxFragment;
-
                         // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
                         final String mHost = host;
                         final String mPath = path;
-                        final int mRequesetCode = requestCode;
-
-                        if (rxFragment.isContainsSingleEmitter(mRequesetCode)) {
-                            Help.onErrorEmitter(emitter, new NavigationFailException("request&result code: " + requestCode + " can't be same"));
-                        }
-
-                        navigate(new EHiCallbackAdapter() {
+                        // 导航拿到 NavigationDisposable 对象
+                        final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
                             @Override
-                            public void onEvent(@Nullable EHiRouterResult routerResult, @Nullable Exception error) {
+                            public void onEvent(@Nullable final EHiRouterResult routerResult, @Nullable Exception error) {
                                 try {
                                     if (routerResult != null) {
-                                        // 设置ActivityResult回调的发射器
-                                        rxFragment.setSingleEmitter(emitter, mRequesetCode);
+                                        LogUtil.log(TAG, "路由成功：" + routerResult.getRequest().uri.toString());
+                                        // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
+                                        rxFragment.setSingleEmitter(routerResult.getRequest(), new com.ehi.component.support.Consumer<EHiActivityResult>() {
+                                            @Override
+                                            public void accept(@NonNull EHiActivityResult result) throws Exception {
+                                                Help.removeRequestCode(routerResult.getRequest());
+                                                if (emitter != null) {
+                                                    if (!emitter.isDisposed()) {
+                                                        emitter.onSuccess(result);
+                                                    }
+                                                }
+                                            }
+                                        });
                                     } else {
+                                        LogUtil.log(TAG, "路由失败：" + "host = " + mHost + ",path = " + mPath);
                                         if (error != null) {
-                                            throw error;
+                                            Help.onErrorSolve(emitter, error);
                                         } else {
-                                            throw new NavigationFailException("host = " + mHost + ",path = " + mPath);
+                                            Help.onErrorSolve(emitter, new NavigationFailException("host = " + mHost + ",path = " + mPath));
                                         }
                                     }
                                 } catch (Exception e) {
                                     Help.onErrorSolve(emitter, e);
                                 }
                             }
-
                             @Override
-                            public void onCancel() {
-                                super.onCancel();
+                            public void onCancel(@NonNull EHiRouterRequest request) {
+                                super.onCancel(request);
+                                LogUtil.log(TAG, "路由取消：" + request.uri.toString());
+                                if (request.requestCode != null) {
+                                    rxFragment.cancal(request.requestCode);
+                                }
+                                Help.removeRequestCode(request);
                             }
 
                         });
+                        // 设置取消
+                        emitter.setCancellable(new Cancellable() {
+                            @Override
+                            public void cancel() throws Exception {
+                                navigationDisposable.cancel();
+                            }
+                        });
+                        // 现在可以检测 requestCode 是否重复
+                        boolean isExist = Help.isExist(navigationDisposable);
+                        if (isExist) { // 如果存在直接取消这个路由任务,然后直接返回错误
+                            LogUtil.log(TAG, "同一个界面不同的路由不可同时使用相同的requestCode");
+                            navigationDisposable.cancel();
+                            throw new NavigationFailException("request&result code is " +
+                                    navigationDisposable.request().requestCode + " is exist and " +
+                                    "uri is " + navigationDisposable.request().uri.toString());
+                        } else {
+                            Help.addRequestCode(navigationDisposable.request());
+                        }
+
                     } catch (Exception e) {
+                        LogUtil.log(TAG, "路由失败：" + Utils.getRealMessage(e));
                         Help.onErrorSolve(emitter, e);
                     }
                 }
@@ -475,16 +510,16 @@ public class EHiRxRouter {
             return Completable.create(new CompletableOnSubscribe() {
                 @Override
                 public void subscribe(final CompletableEmitter emitter) throws Exception {
-                    if (emitter.isDisposed()) {
-                        return;
-                    }
                     try {
+                        if (emitter.isDisposed()) {
+                            return;
+                        }
                         // 参数检查
                         onCheck(false);
                         // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
                         final String mHost = host;
                         final String mPath = path;
-                        navigate(new EHiCallbackAdapter() {
+                        final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
                             @Override
                             public void onEvent(@Nullable EHiRouterResult routerResult, @Nullable Exception error) {
                                 try {
@@ -504,6 +539,17 @@ public class EHiRxRouter {
                                 }
                             }
 
+                            @Override
+                            public void onCancel(@NonNull EHiRouterRequest request) {
+                                super.onCancel(request);
+                            }
+                        });
+                        // 设置取消
+                        emitter.setCancellable(new Cancellable() {
+                            @Override
+                            public void cancel() throws Exception {
+                                navigationDisposable.cancel();
+                            }
                         });
 
                     } catch (Exception e) {
@@ -523,19 +569,15 @@ public class EHiRxRouter {
             if (isFinish) {
                 throw new NavigationFailException("EHiRouter.Builder can't be used multiple times");
             }
-
             if (EHiRouterUtil.isMainThread() == false) {
                 throw new NavigationFailException("EHiRxRouter must run on main thread");
             }
-
             if (context == null && fragment == null) {
                 throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router"));
             }
-
             if (context != null && (context instanceof FragmentActivity) == false) {
                 throw new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity"));
             }
-
             if (isForResult && requestCode == null) {
                 throw new NavigationFailException(new NullPointerException("requestCode must not be null for router"));
             }
@@ -544,6 +586,47 @@ public class EHiRxRouter {
     }
 
     private static class Help {
+
+        private static Set<String> mRequestCodeSet = new HashSet<>();
+
+        public static boolean isExist(NavigationDisposable disposable) {
+            if (disposable == null || disposable.request() == null || disposable.request().requestCode == null) {
+                return false;
+            }
+            EHiRouterRequest request = disposable.request();
+            Integer requestCode = request.requestCode;
+            if (request.context != null) {
+                return mRequestCodeSet.contains(request.context.getClass().getName() + requestCode);
+            } else if (request.fragment != null) {
+                return mRequestCodeSet.contains(request.fragment.getClass().getName() + requestCode);
+            }
+            return false;
+        }
+
+        public static void addRequestCode(EHiRouterRequest request) {
+            if (request == null || request.requestCode == null) {
+                return;
+            }
+            Integer requestCode = request.requestCode;
+            if (request.context != null) {
+                mRequestCodeSet.add(request.context.getClass().getName() + requestCode);
+            } else if (request.fragment != null) {
+                mRequestCodeSet.add(request.fragment.getClass().getName() + requestCode);
+            }
+        }
+
+        public static void removeRequestCode(EHiRouterRequest request) {
+            if (request == null || request.requestCode == null) {
+                return;
+            }
+            Integer requestCode = request.requestCode;
+            if (request.context != null) {
+                mRequestCodeSet.remove(request.context.getClass().getName() + requestCode);
+            } else if (request.fragment != null) {
+                mRequestCodeSet.remove(request.fragment.getClass().getName() + requestCode);
+            }
+        }
+
         /**
          * 错误处理
          */
@@ -560,6 +643,7 @@ public class EHiRxRouter {
                 onErrorEmitter(emitter, new UnknowException(e));
             }
         }
+
         /**
          * 错误处理
          */
@@ -578,7 +662,7 @@ public class EHiRxRouter {
         }
 
         private static void onErrorEmitter(@NonNull final SingleEmitter<? extends Object> emitter,
-                                    @NonNull Exception e) {
+                                           @NonNull Exception e) {
             if (emitter == null || emitter.isDisposed()) {
                 return;
             }
@@ -586,7 +670,7 @@ public class EHiRxRouter {
         }
 
         private static void onErrorEmitter(@NonNull final CompletableEmitter emitter,
-                                    @NonNull Exception e) {
+                                           @NonNull Exception e) {
             if (emitter == null || emitter.isDisposed()) {
                 return;
             }

@@ -7,7 +7,7 @@ package com.ehi.component.error;
  *
  * @author : xiaojinzi 30212
  */
-public class ActivityResultException extends Exception {
+public class ActivityResultException extends RuntimeException {
 
     public ActivityResultException() {
     }

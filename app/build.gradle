@@ -31,6 +31,7 @@ dependencies {
     implementation libs.appcompat_v7
     implementation libs.support_annotations
     implementation libs.constraintLayout
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation libs.junit
 
     api project(':ModuleBase')
