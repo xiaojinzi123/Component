@@ -46,7 +46,7 @@ import javax.tools.Diagnostic;
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes({ComponentUtil.ROUTER_ANNO_CLASS_NAME})
-public class RouterProcessor extends AbstractProcessor {
+public class RouterProcessor extends BaseHostProcessor {
 
     private static final int ANNO_TARGET_INVALID = -1;
     private static final String ROUTER_BEAN_NAME = "com.ehi.component.bean.EHiRouterBean";
@@ -54,12 +54,6 @@ public class RouterProcessor extends AbstractProcessor {
     private static final String CUSTOMER_JUMP_CLASS_NAME = "com.ehi.component.bean.CustomerJump";
     private static final String ROUTER_REQUEST_CLASS_NAME = "com.ehi.component.impl.EHiRouterRequest";
 
-    private TypeMirror stringTypeMirror;
-
-    private Filer mFiler;
-    private Messager mMessager;
-    private Types mTypes;
-    private Elements mElements;
     private TypeElement customerIntentCallTypeElement;
     private TypeElement customerJumpTypeElement;
     private ClassName customerIntentCallClassName;
@@ -68,7 +62,6 @@ public class RouterProcessor extends AbstractProcessor {
     private TypeElement routerBeanTypeElement;
     private TypeName routerBeanTypeName;
     private TypeElement exceptionTypeElement;
-    private TypeName stringTypeName;
     private ClassName exceptionClassName;
     private TypeElement intentTypeElement;
     private TypeElement mapTypeElement;
@@ -101,8 +94,6 @@ public class RouterProcessor extends AbstractProcessor {
 
         routerBeanTypeElement = mElements.getTypeElement(ROUTER_BEAN_NAME);
         routerBeanTypeName = TypeName.get(routerBeanTypeElement.asType());
-        stringTypeMirror = mElements.getTypeElement(ComponentConstants.JAVA_STRING).asType();
-        stringTypeName = TypeName.get(stringTypeMirror);
         mapTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_MAP);
         mapClassName = ClassName.get(mapTypeElement);
         exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
@@ -311,17 +302,16 @@ public class RouterProcessor extends AbstractProcessor {
                 generateStaticMethodCall(routerBean, routerBeanName, initMapMethodSpecBuilder);
                 // 拦截器的代码的生成
                 if (routerBean.getInterceptors() != null && routerBean.getInterceptors().size() > 0) {
-                    initMapMethodSpecBuilder.addStatement("$N.interceptors = new $T()", routerBeanName, ArrayList.class);
+                    initMapMethodSpecBuilder.addStatement("$N.interceptors = new $T($L)", routerBeanName, ArrayList.class, routerBean.getInterceptors().size());
                     for (String interceptorClassName : routerBean.getInterceptors()) {
                         initMapMethodSpecBuilder.addStatement("$N.interceptors.add($T.class)", routerBeanName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
                     }
                 }
                 if (routerBean.getInterceptorNames() != null && routerBean.getInterceptorNames().size() > 0) {
-                    initMapMethodSpecBuilder.addStatement("$N.interceptorNames = new $T()", routerBeanName, ArrayList.class);
+                    initMapMethodSpecBuilder.addStatement("$N.interceptorNames = new $T($L)", routerBeanName, ArrayList.class, routerBean.getInterceptorNames().size());
                     for (String interceptorName : routerBean.getInterceptorNames()) {
                         initMapMethodSpecBuilder.addStatement("$N.interceptorNames.add($S)", routerBeanName, interceptorName);
                     }
-
                 }
                 initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
                 initMapMethodSpecBuilder.addCode("\n");
@@ -335,7 +325,7 @@ public class RouterProcessor extends AbstractProcessor {
 
     private MethodSpec generateInitHostMethod() {
 
-        TypeName returnType = TypeName.get(stringTypeMirror);
+        TypeName returnType = mClassNameString;
 
         MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("getHost")
                 .returns(returnType)
@@ -394,7 +384,7 @@ public class RouterProcessor extends AbstractProcessor {
         methodSpecBuilder.addCode("\n");
         methodSpecBuilder.addComment("---------------------------" + commentStr + "---------------------------");
         methodSpecBuilder.addCode("\n");
-        methodSpecBuilder.addStatement("$N $N = new $N()", ROUTER_BEAN_NAME, routerBeanName, ROUTER_BEAN_NAME);
+        methodSpecBuilder.addStatement("$T $N = new $T()", routerBeanTypeElement, routerBeanName, routerBeanTypeElement);
         methodSpecBuilder.addStatement("$N.host = $S", routerBeanName, routerBean.getHost());
         methodSpecBuilder.addStatement("$N.path = $S", routerBeanName, routerBean.getPath());
         methodSpecBuilder.addStatement("$N.desc = $S", routerBeanName, routerBean.getDesc());
@@ -426,7 +416,7 @@ public class RouterProcessor extends AbstractProcessor {
         methodSpecBuilder.addCode("\n");
         methodSpecBuilder.addComment("---------------------------" + commentStr + "---------------------------");
         methodSpecBuilder.addCode("\n");
-        methodSpecBuilder.addStatement("$N $N = new $N()", ROUTER_BEAN_NAME, routerBeanName, ROUTER_BEAN_NAME);
+        methodSpecBuilder.addStatement("$T $N = new $T()", routerBeanTypeElement, routerBeanName, routerBeanTypeElement);
         methodSpecBuilder.addStatement("$N.host = $S", routerBeanName, routerBean.getHost());
         methodSpecBuilder.addStatement("$N.path = $S", routerBeanName, routerBean.getPath());
         methodSpecBuilder.addStatement("$N.desc = $S", routerBeanName, routerBean.getDesc());
@@ -448,6 +438,7 @@ public class RouterProcessor extends AbstractProcessor {
                             jumpMethodBuilder.build()
                     )
                     .build();
+            // 添加一个匿名内部类
             methodSpecBuilder.addStatement("$N.customerIntentCall = $L", routerBeanName, intentCallTypeSpec);
         } else { // 自定义跳转的
 
@@ -502,7 +493,7 @@ public class RouterProcessor extends AbstractProcessor {
                 // 如果要的是 request 对象
                 if (variableElement.asType().equals(routerRequestTypeMirror)) {
                     parameterSB.append("request");
-                } else if (parameterTypeName.equals(stringTypeName)) { // 如果是一个 String
+                } else if (parameterTypeName.equals(mClassNameString)) { // 如果是一个 String
                     EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
                     jumpMethodBuilder.addStatement("String $N = $T.getString(request.bundle,$S)", parameterName, parameterSupportTypeMirror, parameterAnno.value());
                     parameterSB.append(parameterName);
@@ -548,7 +539,6 @@ public class RouterProcessor extends AbstractProcessor {
                     jumpMethodBuilder.endControlFlow();
                     parameterSB.append(parameterName);
                 }
-                mMessager.printMessage(Diagnostic.Kind.NOTE, "generateStaticMethodCall.element = " + parameterTypeName);
             }
         }
         if (isReturnIntent) {

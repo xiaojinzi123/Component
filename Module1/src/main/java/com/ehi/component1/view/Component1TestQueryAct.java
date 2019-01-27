@@ -17,8 +17,8 @@ import com.ehi.component1.R;
 public class Component1TestQueryAct extends AppCompatActivity {
 
     @EHiRouterAnno(
-            host = ModuleConfig.Component1.NAME,
-            value = ModuleConfig.Component1.TEST_QUERY
+            host = ModuleConfig.Module1.NAME,
+            value = ModuleConfig.Module1.TEST_QUERY
     )
     public static Intent createIntent(EHiRouterRequest request) {
         Intent intent = new Intent(request.getRawContext(), Component1TestQueryAct.class);

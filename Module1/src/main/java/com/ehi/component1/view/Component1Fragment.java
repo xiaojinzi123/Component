@@ -34,8 +34,8 @@ public class Component1Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 EHiRouter.withFragment(Component1Fragment.this)
-                        .host(ModuleConfig.Component2.NAME)
-                        .path(ModuleConfig.Component2.MAIN)
+                        .host(ModuleConfig.Module2.NAME)
+                        .path(ModuleConfig.Module2.MAIN)
                         .navigate();
             }
         });
@@ -44,8 +44,8 @@ public class Component1Fragment extends Fragment {
             public void onClick(View v) {
                 EHiRxRouter
                         .withFragment(Component1Fragment.this)
-                        .host(ModuleConfig.Component1.NAME)
-                        .path(ModuleConfig.Component1.TEST)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST)
                         .query("data", "rxJumpGetData")
                         .requestCode(456)
                         .intentCall()

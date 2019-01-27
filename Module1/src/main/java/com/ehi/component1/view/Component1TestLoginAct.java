@@ -12,8 +12,8 @@ import com.ehi.component1.R;
  * 这个是一个测试登录的界面
  */
 @EHiRouterAnno(
-        host = ModuleConfig.Component1.NAME,
-        value = ModuleConfig.Component1.TEST_LOGIN,
+        host = ModuleConfig.Module1.NAME,
+        value = ModuleConfig.Module1.TEST_LOGIN,
         interceptorNames = InterceptorConfig.USER_LOGIN
 )
 public class Component1TestLoginAct extends AppCompatActivity {

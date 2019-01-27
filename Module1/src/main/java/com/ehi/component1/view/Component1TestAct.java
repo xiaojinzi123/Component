@@ -15,8 +15,8 @@ import com.ehi.component1.R;
  * 这个界面用于显示传递过来的 Data 数据,并且返回一个Result
  */
 @EHiRouterAnno(
-        host = ModuleConfig.Component1.NAME,
-        value = ModuleConfig.Component1.TEST,
+        host = ModuleConfig.Module1.NAME,
+        value = ModuleConfig.Module1.TEST,
         desc = "业务组件1的测试界面"
 )
 public class Component1TestAct extends AppCompatActivity {
@@ -32,7 +32,7 @@ public class Component1TestAct extends AppCompatActivity {
 
     public void returnData(View view) {
         Intent intent = new Intent();
-        intent.putExtra("data", "this is the return data，requestData is + " + ParameterSupport.getString(getIntent(), "data"));
+        intent.putExtra("data", "this is the return data，requestData is " + ParameterSupport.getString(getIntent(), "data"));
         setResult(RESULT_OK, intent);
         finish();
     }

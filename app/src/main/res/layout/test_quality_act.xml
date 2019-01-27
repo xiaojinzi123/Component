@@ -85,6 +85,22 @@
             android:text="测试自动取消路由(因为finish在最终跳转之前所以能正常取消)"
             android:textSize="@dimen/test_quality_textsize" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="targetNotFound"
+            android:textAllCaps="false"
+            android:text="目标不存在测试"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="cancelAfterRouter"
+            android:textAllCaps="false"
+            android:text="路由成功后取消"
+            android:textSize="@dimen/test_quality_textsize" />
+
     </com.ehi.componentdemo.view.XFlowLayout>
 
 </LinearLayout>

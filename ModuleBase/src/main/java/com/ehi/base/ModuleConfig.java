@@ -35,9 +35,11 @@ public class ModuleConfig {
         public static final String TEST_ERROR = "testError";
         // 显示一个信息的界面
         public static final String INFO = "info";
+
+        public static final String NOT_FOUND_TEST = "notFountTest";
     }
 
-    public static class Component1 {
+    public static class Module1 {
 
         public static final String NAME = "component1";
         public static final String TEST = "test";
@@ -47,7 +49,7 @@ public class ModuleConfig {
 
     }
 
-    public static class Component2 {
+    public static class Module2 {
 
         public static final String NAME = "component2";
         public static final String MAIN = "main";

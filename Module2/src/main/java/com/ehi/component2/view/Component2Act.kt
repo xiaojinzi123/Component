@@ -8,7 +8,7 @@ import com.ehi.component.support.ParameterSupport
 import com.ehi.component2.R
 import kotlinx.android.synthetic.main.component2_act.*
 
-@EHiRouterAnno(host = ModuleConfig.Component2.NAME, value = ModuleConfig.Component2.MAIN, desc = " 业务组件2的主界面 ")
+@EHiRouterAnno(host = ModuleConfig.Module2.NAME, value = ModuleConfig.Module2.MAIN, desc = " 业务组件2的主界面 ")
 class Component2Act : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -17,6 +17,7 @@ import com.ehi.component.impl.EHiRouterInterceptor;
 import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
+import com.ehi.component.support.EHiCallbackAdapter;
 import com.ehi.component.support.NavigationDisposable;
 import com.ehi.component.support.Utils;
 import com.ehi.componentdemo.R;
@@ -31,6 +32,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
+/**
+ * 测试代码质量的界面
+ */
 @EHiRouterAnno(
         host = ModuleConfig.App.NAME,
         value = ModuleConfig.App.TEST_QUALITY,
@@ -47,8 +51,8 @@ public class TestQualityAct extends AppCompatActivity {
     public void cancelImmediately(View view) {
         NavigationDisposable navigationDisposable = EHiRouter
                 .with(this)
-                .host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TEST)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
                 .query("data", "cancelImmediately")
                 .navigate(new EHiCallback() {
                     @Override
@@ -77,8 +81,8 @@ public class TestQualityAct extends AppCompatActivity {
     public void cancelImmediatelyWithGetRx(View view) {
         Disposable disposable = EHiRxRouter
                 .with(this)
-                .host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TEST)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
                 .requestCode(123)
                 .query("data", "cancelImmediately")
                 .call()
@@ -106,8 +110,8 @@ public class TestQualityAct extends AppCompatActivity {
 
         Disposable disposable = EHiRxRouter
                 .with(this)
-                .host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TEST)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
                 .requestCode(123)
                 .query("data", "cancelImmediately")
                 .intentCall()
@@ -135,8 +139,8 @@ public class TestQualityAct extends AppCompatActivity {
     public void withoutHostOrPath1(View view) {
         EHiRxRouter
                 .with(this)
-                //.host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TEST)
+                //.host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
                 .requestCode(123)
                 .query("data", "withoutHostOrPath1")
                 .intentCall()
@@ -156,8 +160,8 @@ public class TestQualityAct extends AppCompatActivity {
     public void withoutHostOrPath2(View view) {
         EHiRxRouter
                 .with(this)
-                .host(ModuleConfig.Component1.NAME)
-                //.path(ModuleConfig.Component1.TEST)
+                .host(ModuleConfig.Module1.NAME)
+                //.path(ModuleConfig.Module1.TEST)
                 .requestCode(123)
                 .query("data", "withoutHostOrPath1")
                 .intentCall()
@@ -177,8 +181,8 @@ public class TestQualityAct extends AppCompatActivity {
     public void useSameRequestCode(View view) {
         EHiRxRouter
                 .with(this)
-                .host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TEST)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
                 .requestCode(123)
                 .interceptors(new EHiRouterInterceptor() {
                     @Override
@@ -235,8 +239,8 @@ public class TestQualityAct extends AppCompatActivity {
     public void getIntentWithoutRequestCode(View view) {
         EHiRxRouter
                 .with(this)
-                .host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TEST)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
                 .query("data", "getIntentWithoutRequestCode")
                 .intentCall()
                 .subscribe(new Consumer<Intent>() {
@@ -255,10 +259,10 @@ public class TestQualityAct extends AppCompatActivity {
     public void cancelAuto1(View view) {
         EHiRouter
                 .with(this)
-                .host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TEST)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
                 .query("data", "cancelAuto")
-                .navigate(new EHiCallback() {
+                .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
@@ -267,11 +271,6 @@ public class TestQualityAct extends AppCompatActivity {
                     @Override
                     public void onError(@NonNull Throwable error) {
                         ToastUtil.toastLong("测试成功\n路由失败：" + Utils.getRealMessage(error));
-                    }
-
-                    @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Throwable error) {
-                        ToastUtil.toastLong("测试失败\n路由失败：onEvent方法");
                     }
 
                     @Override
@@ -285,8 +284,8 @@ public class TestQualityAct extends AppCompatActivity {
     public void cancelAuto2(View view) {
         EHiRouter
                 .with(this)
-                .host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TEST)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
                 .interceptors(TimeConsumingInterceptor.class)
                 .query("data", "cancelAuto")
                 .navigate(new EHiCallback() {
@@ -310,6 +309,62 @@ public class TestQualityAct extends AppCompatActivity {
                     }
                 });
         finish();
+    }
+
+    public void targetNotFound(View view) {
+        EHiRouter
+                .with(this)
+                .host(ModuleConfig.App.NAME)
+                .path(ModuleConfig.App.NOT_FOUND_TEST)
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        ToastUtil.toastShort("测试失败\n路由成功");
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable error) {
+                        ToastUtil.toastLong("测试成功\n路由失败：\n" + Utils.getRealThrowable(error).getClass().getSimpleName() + ":" + Utils.getRealMessage(error));
+                    }
+
+                    @Override
+                    public void onCancel(@NonNull EHiRouterRequest request) {
+                        ToastUtil.toastShort("测试失败\n自动被取消了");
+                    }
+                });
+    }
+
+    private NavigationDisposable temp = null;
+
+    public void cancelAfterRouter(View view) {
+        temp = EHiRouter
+                .with(this)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        ToastUtil.toastShort("测试成功\n路由成功");
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable error) {
+                        ToastUtil.toastLong("测试失败\n路由失败：\n" + Utils.getRealThrowable(error).getClass().getSimpleName() + ":" + Utils.getRealMessage(error));
+                    }
+
+                    @Override
+                    public void onCancel(@NonNull EHiRouterRequest request) {
+                        ToastUtil.toastShort("测试失败\n自动被取消了");
+                    }
+
+                    @Override
+                    public void onEvent(@NonNull EHiRouterResult result, @Nullable Throwable error) {
+                        super.onEvent(result, error);
+                        if (temp != null) {
+                            temp.cancel();
+                        }
+                    }
+                });
     }
 
 }

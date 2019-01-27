@@ -6,6 +6,10 @@ import android.support.annotation.Nullable;
 
 /**
  * 当路由完成的时候,回调这个接口
+ * 所有的调用顺序整理：
+ * 1.{@link #onSuccess(EHiRouterResult)} --> {@link #onEvent(EHiRouterResult, Throwable)}
+ * 2.{@link #onError(Throwable)} --> {@link #onEvent(EHiRouterResult, Throwable)}
+ * 3.被取消的时候：{@link #onCancel(EHiRouterRequest)}
  */
 public interface EHiCallback {
 

@@ -22,4 +22,11 @@ public class Utils {
         return throwable.getMessage();
     }
 
+    public static Throwable getRealThrowable(@NonNull Throwable throwable) {
+        while (throwable.getCause() != null) {
+            throwable = throwable.getCause();
+        }
+        return throwable;
+    }
+
 }

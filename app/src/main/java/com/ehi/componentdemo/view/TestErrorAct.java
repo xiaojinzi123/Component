@@ -30,8 +30,8 @@ public class TestErrorAct extends AppCompatActivity {
     public void testError1(View view) {
         EHiRouter
                 .with(this)
-                .host(ModuleConfig.Component1.NAME)
-                .path(ModuleConfig.Component1.TEST_DIALOG)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_DIALOG)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {

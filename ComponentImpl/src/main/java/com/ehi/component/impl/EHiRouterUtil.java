@@ -111,8 +111,8 @@ class EHiRouterUtil {
         if (error == null) {
             return;
         }
-        callback.onEvent(null, error);
         callback.onError(error);
+        callback.onEvent(null, error);
 
     }
 
@@ -143,8 +143,8 @@ class EHiRouterUtil {
             return;
         }
 
-        callback.onEvent(result, null);
         callback.onSuccess(result);
+        callback.onEvent(result, null);
 
     }
 
