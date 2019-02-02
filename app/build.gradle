@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.ehi.test'
 
 android {
     compileSdkVersion versions.android_compile_sdk
