@@ -27,8 +27,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.appcompat_v7
     compileOnly libs.rxjava
-    if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
+    if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         api "com.ehi:component-impl:${rootProject.ext.component_version}"
+    } else if (Boolean.parseBoolean(rootProject.ext.isDependJitpackOnline)) {
+        annotationProcessor "com.github.xiaojinzi123.Component:impl:${rootProject.ext.component_jitpack_version}"
     } else {
         api project(':ComponentImpl')
     }

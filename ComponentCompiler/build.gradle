@@ -15,9 +15,11 @@ dependencies{
     compile 'com.squareup:javapoet:1.11.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'org.apache.commons:commons-collections4:4.1'
-    if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
+    if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         compile "com.ehi:component-api:${rootProject.ext.component_version}"
-    }else {
+    }else if (Boolean.parseBoolean(rootProject.ext.isDependJitpackOnline)) {
+        annotationProcessor "com.github.xiaojinzi123.Component:annotation:${rootProject.ext.component_jitpack_version}"
+    } else {
         compile project(':ComponentApi')
     }
 }

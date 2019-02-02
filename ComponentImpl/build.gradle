@@ -26,8 +26,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.appcompat_v7
-    if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
+    if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         api "com.ehi:component-api:${rootProject.ext.component_version}"
+    } else if (Boolean.parseBoolean(rootProject.ext.isDependJitpackOnline)) {
+        annotationProcessor "com.github.xiaojinzi123.Component:annotation:${rootProject.ext.component_jitpack_version}"
     } else {
         api project(':ComponentApi')
     }

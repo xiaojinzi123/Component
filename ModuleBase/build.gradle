@@ -25,7 +25,7 @@ dependencies {
     api libs.rxjava
     api libs.rxandroid
 
-    if (Boolean.parseBoolean(rootProject.ext.isDependOnline)) {
+    if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         api "com.ehi:component-impl-rx:${rootProject.ext.component_version}"
     }else {
         api project(':ComponentRxImpl')
