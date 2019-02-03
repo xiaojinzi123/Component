@@ -1,8 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
-apply plugin: 'com.github.dcendents.android-maven'
-
 archivesBaseName = "impl"
 
 android {
@@ -29,7 +27,7 @@ dependencies {
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         api "com.ehi:component-api:${rootProject.ext.component_version}"
     } else if (Boolean.parseBoolean(rootProject.ext.isDependJitpackOnline)) {
-        annotationProcessor "com.github.xiaojinzi123.Component:annotation:${rootProject.ext.component_jitpack_version}"
+        api project(':ComponentApi')
     } else {
         api project(':ComponentApi')
     }
