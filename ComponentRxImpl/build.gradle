@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
-apply plugin: 'com.github.dcendents.android-maven'
 
 archivesBaseName = "impl-rx"
 
@@ -28,8 +27,8 @@ dependencies {
     compileOnly libs.rxjava
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         api "com.ehi:component-impl:${rootProject.ext.component_version}"
-    } else if (Boolean.parseBoolean(rootProject.ext.isDependJitpackOnline)) {
-        api project(':ComponentImpl')
+    } else if (Boolean.parseBoolean(rootProject.ext.isDependXiaojinziMavenOnline)) {
+        api "com.xiaojinzi.component:impl:${rootProject.ext.component_xiaojinzi_version}"
     } else {
         api project(':ComponentImpl')
     }
@@ -48,13 +47,22 @@ uploadArchives {
     repositories {
         mavenDeployer {
 
-            repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
-                authentication(userName: "admin", password: "admin123")
+            if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
+                repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
+                    authentication(userName: "admin", password: "admin123")
+                }
+                pom.groupId = 'com.ehi'
+                pom.artifactId = 'component-impl-rx'
+                pom.version = "${rootProject.ext.component_version}"
+            }else {
+                repository(url: "http://xiaojinzi.tpddns.cn:18081/repository/maven-releases/") {
+                    authentication(userName: "admin", password: "admin123")
+                }
+                pom.groupId = 'com.xiaojinzi.component'
+                pom.artifactId = 'impl-rx'
+                pom.version = "${rootProject.ext.component_xiaojinzi_version}"
             }
 
-            pom.groupId = 'com.ehi'
-            pom.artifactId = 'component-impl-rx'
-            pom.version = "${rootProject.ext.component_version}"
             pom.project {
                 licenses {
                     license {

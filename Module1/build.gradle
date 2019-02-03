@@ -36,8 +36,8 @@ dependencies {
     api project(':ModuleBase')
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
-    } else if (Boolean.parseBoolean(rootProject.ext.isDependJitpackOnline)) {
-        annotationProcessor "com.github.xiaojinzi123.Component:compiler:${rootProject.ext.component_jitpack_version}"
+    } else if (Boolean.parseBoolean(rootProject.ext.isDependXiaojinziMavenOnline)) {
+        annotationProcessor "com.xiaojinzi.component:compiler:${rootProject.ext.component_xiaojinzi_version}"
     } else {
         annotationProcessor project(':ComponentCompiler')
     }

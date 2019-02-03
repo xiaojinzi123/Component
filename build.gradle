@@ -10,8 +10,6 @@ buildscript {
     }
 
     dependencies {
-        // for jitpack upload
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1' // Add this line
         classpath 'com.android.tools.build:gradle:3.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -20,13 +18,10 @@ buildscript {
 allprojects {
     repositories {
         // 公司私有的maven服务器
-        mavenLocal()
         google()
         jcenter()
-        maven { url 'https://www.jitpack.io' }
+        maven { url 'http://xiaojinzi.tpddns.cn:18081/repository/maven-releases/' }
         maven { url 'http://192.168.9.230:8081/repository/app-releases/' }
-        // app 的库会在公司的服务器和这个服务器上都会上传一份,保证app 端能依赖下来公共库
-        //maven { url 'http://192.168.5.105:8081/repository/maven-releases/' }
     }
 }
 
@@ -38,8 +33,8 @@ apply from: "dependencies.gradle"
 
 ext {
     component_version = "1.4.5"
-    component_jitpack_version = "1.0-snapshot"
+    component_xiaojinzi_version = "1.0"
     business_component_version = "1.3.6"
     isDependMavenOnline = "false"
-    isDependJitpackOnline = "true"
+    isDependXiaojinziMavenOnline = "true"
 }
