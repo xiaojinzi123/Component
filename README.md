@@ -2,8 +2,6 @@
 
 ### 依赖
 
-**对外的发布版本请看 [Component](https://www.jitpack.io/#xiaojinzi123/Component),里面有所有的依赖**
-
 在主工程的 build.gradle 中添加 maven 地址：
 
 ```
