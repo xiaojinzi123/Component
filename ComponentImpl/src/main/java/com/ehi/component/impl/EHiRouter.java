@@ -48,7 +48,7 @@ public class EHiRouter {
     /**
      * 类的标志
      */
-    private static String TAG = "EHiRouter";
+    public static String TAG = "EHiRouter";
 
     static Collection<EHiErrorRouterInterceptor> errorRouterInterceptors = Collections.synchronizedCollection(new ArrayList<EHiErrorRouterInterceptor>(0));
 

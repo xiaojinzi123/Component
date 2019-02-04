@@ -28,6 +28,10 @@ public class EHiRouterRequest {
     @Nullable
     public final Fragment fragment;
 
+    /**
+     * 这是一个很重要的参数,一定不可以为空,如果这个为空了,一定不能继续下去,因为很多地方直接使用这个参数的,不做空判断的
+     * 而且这个参数不可以为空的
+     */
     @NonNull
     public final Uri uri;
 
@@ -47,17 +51,17 @@ public class EHiRouterRequest {
     public final Action afterJumpAction;
 
     /**
-     * get the Context
+     * 获取上下文
      *
-     * @return return null if Activity is destoried
+     * @return 当 Activity 已经销毁了就返回 null
      */
     @Nullable
     public final Context getRawContext() {
         Context rawContext = null;
-        if (context == null) {
-            rawContext = fragment.getContext();
-        } else {
+        if (context != null) {
             rawContext = context;
+        } else if(fragment != null) {
+            rawContext = fragment.getContext();
         }
         if (rawContext != null && rawContext instanceof Activity) {
             Activity activity = (Activity) rawContext;
@@ -69,9 +73,9 @@ public class EHiRouterRequest {
     }
 
     /**
-     * get the Activity
+     * 获取 Activity
      *
-     * @return return null if Activity is destoried
+     * @return 如果 Activity 销毁了就会返回 null
      */
     @Nullable
     public final Activity getActivity() {
@@ -89,9 +93,9 @@ public class EHiRouterRequest {
     }
 
     /**
-     * get the Activity both from context and fragment
+     * 从参数 context 和 fragment 获取 Activity,
      *
-     * @return return null if Activity is destoried
+     * @return 如果 activity 已经销毁并且 fragment 销毁了就会返回 null
      */
     @Nullable
     public final Activity getRawActivity() {

@@ -430,15 +430,12 @@ public class EHiRxRouter {
                         }
                         final EHiRxFragment rxFragment = findRxFragment;
                         // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
-                        final String mHost = host;
-                        final String mPath = path;
                         // 导航拿到 NavigationDisposable 对象
                         // 可能是一个 空实现
                         final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
                             @Override
                             public void onSuccess(@NonNull final EHiRouterResult routerResult) {
                                 super.onSuccess(routerResult);
-                                LogUtil.log(TAG, "路由成功：" + routerResult.getOriginalRequest().uri.toString());
                                 // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
                                 rxFragment.setSingleEmitter(routerResult.getOriginalRequest(), new com.ehi.component.support.Consumer<EHiActivityResult>() {
                                     @Override
@@ -456,7 +453,6 @@ public class EHiRxRouter {
                             @Override
                             public void onError(@NonNull EHiRouterErrorResult errorResult) {
                                 super.onError(errorResult);
-                                LogUtil.log(TAG, "路由失败：" + "host = " + mHost + ",path = " + mPath);
                                 Help.removeRequestCode(errorResult.getOriginalRequest());
                                 Help.onErrorSolve(emitter, errorResult.getError());
                             }
@@ -464,7 +460,6 @@ public class EHiRxRouter {
                             @Override
                             public void onCancel(@NonNull EHiRouterRequest request) {
                                 super.onCancel(request);
-                                LogUtil.log(TAG, "路由取消：" + request.uri.toString());
                                 if (request.requestCode != null) {
                                     rxFragment.cancal(request.requestCode);
                                 }
@@ -482,7 +477,6 @@ public class EHiRxRouter {
                         // 现在可以检测 requestCode 是否重复
                         boolean isExist = Help.isExist(navigationDisposable);
                         if (isExist) { // 如果存在直接取消这个路由任务,然后直接返回错误
-                            LogUtil.log(TAG, "同一个界面不同的路由不可同时使用相同的requestCode");
                             navigationDisposable.cancel();
                             throw new NavigationFailException("request&result code is " +
                                     navigationDisposable.request().requestCode + " is exist and " +
@@ -523,7 +517,6 @@ public class EHiRxRouter {
                             @Override
                             public void onSuccess(@NonNull EHiRouterResult routerResult) {
                                 super.onSuccess(routerResult);
-                                LogUtil.log(TAG, "路由成功：" + routerResult.getOriginalRequest().uri.toString());
                                 if (emitter != null && !emitter.isDisposed()) {
                                     emitter.onComplete();
                                 }
@@ -532,14 +525,12 @@ public class EHiRxRouter {
                             @Override
                             public void onError(@NonNull EHiRouterErrorResult errorResult) {
                                 super.onError(errorResult);
-                                LogUtil.log(TAG, "路由失败：" + "host = " + mHost + ",path = " + mPath);
                                 Help.onErrorSolve(emitter, errorResult.getError());
                             }
 
                             @Override
                             public void onCancel(@NonNull EHiRouterRequest request) {
                                 super.onCancel(request);
-                                LogUtil.log(TAG, "路由取消：" + request.uri.toString());
                             }
                         });
                         // 设置取消

@@ -10,6 +10,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
+import com.ehi.component.support.LogUtil;
+import com.ehi.component.support.Utils;
+
 /**
  * 路由的工具类,内部都是一些help方法
  */
@@ -72,7 +75,9 @@ class EHiRouterUtil {
     /**
      * @param callback
      */
-    private static void cancelCallbackOnMainThread(@NonNull EHiRouterRequest request, @Nullable final EHiCallback callback) {
+    private static void cancelCallbackOnMainThread(@NonNull EHiRouterRequest request,
+                                                   @Nullable final EHiCallback callback) {
+        LogUtil.log(EHiRouter.TAG, "路由取消：" + request.uri.toString());
         if (callback == null) {
             return;
         }
@@ -105,10 +110,15 @@ class EHiRouterUtil {
      */
     private static void errorCallbackOnMainThread(@Nullable final EHiCallback callback,
                                                   @NonNull final EHiRouterErrorResult errorResult) {
-        if (callback == null) {
+        if (errorResult == null) {
             return;
         }
-        if (errorResult == null) {
+        if (errorResult.getOriginalRequest() == null) {
+            LogUtil.log(EHiRouter.TAG, "路由失败：" + Utils.getRealMessage(errorResult.getError()));
+        }else {
+            LogUtil.log(EHiRouter.TAG, "路由失败：" + errorResult.getOriginalRequest().uri.toString() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
+        }
+        if (callback == null) {
             return;
         }
         callback.onError(errorResult);
@@ -131,14 +141,15 @@ class EHiRouterUtil {
 
     public static void successCallbackOnMainThread(@Nullable final EHiCallback callback,
                                                    @NonNull final EHiRouterResult result) {
-        if (callback == null) {
-            return;
-        }
         if (result == null) {
             return;
         }
-
-        if (isRequestUnavailabled(result.getFinalRequest())) {
+        LogUtil.log(EHiRouter.TAG, "路由成功：" + result.getOriginalRequest().uri.toString());
+        if (callback == null) {
+            return;
+        }
+        // 如果请求的界面已经gg了
+        if (isRequestUnavailabled(result.getOriginalRequest())) {
             return;
         }
         callback.onSuccess(result);
