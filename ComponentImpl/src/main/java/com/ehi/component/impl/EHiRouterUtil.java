@@ -86,14 +86,15 @@ class EHiRouterUtil {
      * @param error
      */
     public static void errorCallback(@Nullable final EHiCallback callback,
+                                     @Nullable final EHiRouterRequest originalRequest,
                                      @NonNull final Throwable error) {
         if (isMainThread()) {
-            errorCallbackOnMainThread(callback, error);
+            errorCallbackOnMainThread(callback, originalRequest, error);
         } else {
             postActionToMainThread(new Runnable() {
                 @Override
                 public void run() {
-                    errorCallbackOnMainThread(callback, error);
+                    errorCallbackOnMainThread(callback, originalRequest, error);
                 }
             });
         }
@@ -104,6 +105,7 @@ class EHiRouterUtil {
      * @param error
      */
     private static void errorCallbackOnMainThread(@Nullable final EHiCallback callback,
+                                                  @Nullable final EHiRouterRequest originalRequest,
                                                   @NonNull final Throwable error) {
         if (callback == null) {
             return;
@@ -111,9 +113,8 @@ class EHiRouterUtil {
         if (error == null) {
             return;
         }
-        callback.onError(error);
-        callback.onEvent(null, error);
-
+        callback.onError(originalRequest, error);
+        callback.onEvent(originalRequest, null, error);
     }
 
     public static void successCallback(@Nullable final EHiCallback callback,
@@ -139,17 +140,14 @@ class EHiRouterUtil {
             return;
         }
 
-        if (isRequestUnavailabled(result.getRequest())) {
+        if (isRequestUnavailabled(result.getFinalRequest())) {
             return;
         }
-
         callback.onSuccess(result);
-        callback.onEvent(result, null);
-
+        callback.onEvent(result.getOriginalRequest(), result, null);
     }
 
     public static void deliveryError(@NonNull Throwable error) {
-
         for (EHiErrorRouterInterceptor interceptor : EHiRouter.errorRouterInterceptors) {
             try {
                 interceptor.onRouterError(error);
@@ -157,20 +155,17 @@ class EHiRouterUtil {
                 // do nothing
             }
         }
-
     }
 
     private static boolean isRequestUnavailabled(@NonNull EHiRouterRequest originalRequest) {
         Context context = originalRequest.context;
         Fragment fragment = originalRequest.fragment;
-
         if (context != null && context instanceof Activity) {
             Activity activity = (Activity) context;
             if (isActivityUnavailabled(activity)) {
                 return true;
             }
         }
-
         if (fragment != null) {
             if (fragment.isDetached()) {
                 return true;

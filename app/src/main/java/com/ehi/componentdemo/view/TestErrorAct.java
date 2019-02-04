@@ -2,12 +2,14 @@ package com.ehi.componentdemo.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.support.EHiCallbackAdapter;
 import com.ehi.componentdemo.R;
@@ -39,7 +41,7 @@ public class TestErrorAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@NonNull Throwable error) {
+                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
                         System.out.println("onError");
                     }
                 });

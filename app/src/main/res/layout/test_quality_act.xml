@@ -64,6 +64,14 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="useSameRequestCode1"
+            android:textAllCaps="false"
+            android:text="测试使用同一个requestCode(点击我两次)"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="getIntentWithoutRequestCode"
             android:textAllCaps="false"
             android:text="测试获取Intent不填写requestCode"

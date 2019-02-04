@@ -433,36 +433,34 @@ public class EHiRxRouter {
                         final String mHost = host;
                         final String mPath = path;
                         // 导航拿到 NavigationDisposable 对象
+                        // 可能是一个 空实现
                         final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
                             @Override
-                            public void onEvent(@Nullable final EHiRouterResult routerResult, @Nullable Throwable error) {
-                                try {
-                                    if (routerResult != null) {
-                                        LogUtil.log(TAG, "路由成功：" + routerResult.getRequest().uri.toString());
-                                        // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
-                                        rxFragment.setSingleEmitter(routerResult.getRequest(), new com.ehi.component.support.Consumer<EHiActivityResult>() {
-                                            @Override
-                                            public void accept(@NonNull EHiActivityResult result) throws Exception {
-                                                Help.removeRequestCode(routerResult.getRequest());
-                                                if (emitter != null) {
-                                                    if (!emitter.isDisposed()) {
-                                                        emitter.onSuccess(result);
-                                                    }
-                                                }
+                            public void onSuccess(@NonNull final EHiRouterResult routerResult) {
+                                super.onSuccess(routerResult);
+                                LogUtil.log(TAG, "路由成功：" + routerResult.getOriginalRequest().uri.toString());
+                                // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
+                                rxFragment.setSingleEmitter(routerResult.getOriginalRequest(), new com.ehi.component.support.Consumer<EHiActivityResult>() {
+                                    @Override
+                                    public void accept(@NonNull EHiActivityResult result) throws Exception {
+                                        Help.removeRequestCode(routerResult.getOriginalRequest());
+                                        if (emitter != null) {
+                                            if (!emitter.isDisposed()) {
+                                                emitter.onSuccess(result);
                                             }
-                                        });
-                                    } else {
-                                        LogUtil.log(TAG, "路由失败：" + "host = " + mHost + ",path = " + mPath);
-                                        if (error != null) {
-                                            Help.onErrorSolve(emitter, error);
-                                        } else {
-                                            Help.onErrorSolve(emitter, new NavigationFailException("host = " + mHost + ",path = " + mPath));
                                         }
                                     }
-                                } catch (Exception e) {
-                                    Help.onErrorSolve(emitter, e);
-                                }
+                                });
                             }
+
+                            @Override
+                            public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
+                                super.onError(originalRequest, error);
+                                LogUtil.log(TAG, "路由失败：" + "host = " + mHost + ",path = " + mPath);
+                                Help.removeRequestCode(originalRequest);
+                                Help.onErrorSolve(emitter, error);
+                            }
+
                             @Override
                             public void onCancel(@NonNull EHiRouterRequest request) {
                                 super.onCancel(request);
@@ -519,29 +517,29 @@ public class EHiRxRouter {
                         // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
                         final String mHost = host;
                         final String mPath = path;
+                        // 导航拿到 NavigationDisposable 对象
+                        // 可能是一个 空实现
                         final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
                             @Override
-                            public void onEvent(@Nullable EHiRouterResult routerResult, @Nullable Throwable error) {
-                                try {
-                                    if (routerResult != null) {
-                                        if (emitter != null && !emitter.isDisposed()) {
-                                            emitter.onComplete();
-                                        }
-                                    } else {
-                                        if (error != null) {
-                                            throw error;
-                                        } else {
-                                            throw new NavigationFailException("host = " + mHost + ",path = " + mPath);
-                                        }
-                                    }
-                                } catch (Throwable e) {
-                                    Help.onErrorSolve(emitter, e);
+                            public void onSuccess(@NonNull EHiRouterResult routerResult) {
+                                super.onSuccess(routerResult);
+                                LogUtil.log(TAG, "路由成功：" + routerResult.getOriginalRequest().uri.toString());
+                                if (emitter != null && !emitter.isDisposed()) {
+                                    emitter.onComplete();
                                 }
+                            }
+
+                            @Override
+                            public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
+                                super.onError(originalRequest, error);
+                                LogUtil.log(TAG, "路由失败：" + "host = " + mHost + ",path = " + mPath);
+                                Help.onErrorSolve(emitter, error);
                             }
 
                             @Override
                             public void onCancel(@NonNull EHiRouterRequest request) {
                                 super.onCancel(request);
+                                LogUtil.log(TAG, "路由取消：" + request.uri.toString());
                             }
                         });
                         // 设置取消
@@ -553,6 +551,7 @@ public class EHiRxRouter {
                         });
 
                     } catch (Exception e) {
+                        LogUtil.log(TAG, "路由失败：" + Utils.getRealMessage(e));
                         Help.onErrorSolve(emitter, e);
                     }
 
@@ -587,12 +586,16 @@ public class EHiRxRouter {
 
     private static class Help {
 
+        /**
+         * 和{@link EHiRxFragment} 配套使用
+         */
         private static Set<String> mRequestCodeSet = new HashSet<>();
 
-        public static boolean isExist(NavigationDisposable disposable) {
+        public static boolean isExist(@NonNull NavigationDisposable disposable) {
             if (disposable == null || disposable.request() == null || disposable.request().requestCode == null) {
                 return false;
             }
+            // 拿到请求对象
             EHiRouterRequest request = disposable.request();
             Integer requestCode = request.requestCode;
             if (request.context != null) {
@@ -615,7 +618,7 @@ public class EHiRxRouter {
             }
         }
 
-        public static void removeRequestCode(EHiRouterRequest request) {
+        public static void removeRequestCode(@Nullable EHiRouterRequest request) {
             if (request == null || request.requestCode == null) {
                 return;
             }

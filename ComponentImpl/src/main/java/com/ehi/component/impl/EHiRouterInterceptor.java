@@ -58,6 +58,8 @@ public interface EHiRouterInterceptor {
 
         /**
          * 成功的回调
+         * {@link #onSuccess(EHiRouterResult)} 和 {@link #onError(Throwable)} 都有且只能调用一次,多次调用
+         * 的时候第一次调用为准,其他的忽略
          *
          * @param result
          */
@@ -66,6 +68,8 @@ public interface EHiRouterInterceptor {
 
         /**
          * 错误的回调
+         * {@link #onSuccess(EHiRouterResult)} 和 {@link #onError(Throwable)} 都有且只能调用一次,多次调用
+         * 的时候第一次调用为准,其他的忽略
          *
          * @param error
          */

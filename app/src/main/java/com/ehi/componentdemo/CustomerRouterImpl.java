@@ -19,7 +19,8 @@ public class CustomerRouterImpl {
 
     @Nullable
     @EHiRouterAnno(
-            host = ModuleConfig.System.NAME, value = ModuleConfig.System.CALL_PHONE,
+            host = ModuleConfig.System.NAME,
+            value = ModuleConfig.System.CALL_PHONE,
             interceptorNames = InterceptorConfig.HELP_CALLPHOEPERMISION
     )
     public static Intent callPhoneIntent(@NonNull EHiRouterRequest request) {

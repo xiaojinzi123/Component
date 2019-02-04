@@ -19,13 +19,11 @@ public class EHiCallbackAdapter implements EHiCallback {
     }
 
     @Override
-    @MainThread
-    public void onError(@NonNull Throwable error) {
+    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
     }
 
     @Override
-    @MainThread
-    public void onEvent(@NonNull EHiRouterResult result, @Nullable Throwable error) {
+    public void onEvent(@Nullable EHiRouterRequest originalRequest, @Nullable EHiRouterResult routerResult, @Nullable Throwable error) {
     }
 
     @Override

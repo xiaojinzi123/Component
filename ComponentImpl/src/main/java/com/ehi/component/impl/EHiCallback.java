@@ -4,6 +4,8 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.ehi.component.support.NavigationDisposable;
+
 /**
  * 当路由完成的时候,回调这个接口
  * 所有的调用顺序整理：
@@ -24,22 +26,24 @@ public interface EHiCallback {
     /**
      * 当路由错误的时候,回调
      *
-     * @param error
+     * @param originalRequest 原始请求
+     * @param error           发生的错误
      */
     @MainThread
-    void onError(@NonNull Throwable error);
+    void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error);
 
     /**
-     * 错误或者成功都会回调,取消的时候不会回调
+     * @param originalRequest 原始请求,可能为 null
+     * @param result          路由成功时候的返回对象
+     * @param error           发生的错误
+     */
+    @MainThread
+    void onEvent(@Nullable EHiRouterRequest originalRequest, @Nullable EHiRouterResult result, @Nullable Throwable error);
+
+    /**
+     * 当真正被取消的时候调用这个方法
      *
-     * @param result 需要判断是否为空
-     * @param error
-     */
-    @MainThread
-    void onEvent(@Nullable EHiRouterResult result, @Nullable Throwable error);
-
-    /**
-     * 被取消了
+     * @param request 最原始的请求
      */
     @MainThread
     void onCancel(@NonNull EHiRouterRequest request);

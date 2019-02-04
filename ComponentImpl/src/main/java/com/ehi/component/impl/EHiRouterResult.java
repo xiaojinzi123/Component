@@ -12,20 +12,43 @@ import java.io.Serializable;
  */
 public class EHiRouterResult implements Serializable {
 
+    @NonNull
+    private final EHiRouterRequest mOriginalRequest;
+
     /**
-     * 如果成功了,这个会有值
+     * 如果成功了,这个会有值,这个可能不是最原始的请求啦,可能是拦截器修改过或者
+     * 整个 request 对象都被改了
      */
     @NonNull
-    private final EHiRouterRequest request;
+    private final EHiRouterRequest mFinalRequest;
 
-    public EHiRouterResult(@NonNull EHiRouterRequest request) {
-        this.request = request;
+    /**
+     * @param originalRequest 最原始的请求
+     * @param finalRequest    可能修改过的请求,也可能是和原始请求一样
+     */
+    public EHiRouterResult(@NonNull EHiRouterRequest originalRequest, @NonNull EHiRouterRequest finalRequest) {
+        this.mOriginalRequest = originalRequest;
+        this.mFinalRequest = finalRequest;
     }
 
+    /**
+     * 最原始的请求
+     *
+     * @return 最原始的请求
+     */
     @NonNull
-    public EHiRouterRequest getRequest() {
-        return request;
+    public EHiRouterRequest getOriginalRequest() {
+        return mOriginalRequest;
     }
 
+    /**
+     * 获取可能由拦截器修改过的 request 对象,大部分没有被修改的其实就是最原始的 request 对象
+     *
+     * @return
+     */
+    @NonNull
+    public EHiRouterRequest getFinalRequest() {
+        return mFinalRequest;
+    }
 
 }

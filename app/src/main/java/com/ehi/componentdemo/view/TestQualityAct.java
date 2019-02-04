@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
 import com.ehi.base.interceptor.TimeConsumingInterceptor;
@@ -54,19 +55,19 @@ public class TestQualityAct extends AppCompatActivity {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .query("data", "cancelImmediately")
-                .navigate(new EHiCallback() {
+                .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
                     }
 
                     @Override
-                    public void onError(@NonNull Throwable error) {
+                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
                         ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(error));
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Throwable error) {
+                    public void onEvent(@Nullable EHiRouterRequest originalRequest, @Nullable EHiRouterResult result, @Nullable Throwable error) {
                         ToastUtil.toastLong("测试失败\n路由失败：onEvent方法");
                     }
 
@@ -221,7 +222,34 @@ public class TestQualityAct extends AppCompatActivity {
 
                     }
                 })
-                .query("data", "withoutHostOrPath1")
+                .query("data", "useSameRequestCode")
+                .intentCall()
+                .subscribe(new Consumer<Intent>() {
+                    @Override
+                    public void accept(Intent intent) throws Exception {
+                        ToastUtil.toastShort("测试失败\n,onSuccess");
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        ToastUtil.toastShort("测试成功\n,onError：" + Utils.getRealMessage(throwable));
+                    }
+                });
+    }
+
+    public void useSameRequestCode1(View view) {
+        EHiRxRouter
+                .with(this)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
+                .requestCode(123)
+                .interceptors(new EHiRouterInterceptor() {
+                    @Override
+                    public void intercept(Chain chain) throws Exception {
+                        chain.callback().onError(new RuntimeException("NO passing"));
+                    }
+                })
+                .query("data", "useSameRequestCode1")
                 .intentCall()
                 .subscribe(new Consumer<Intent>() {
                     @Override
@@ -269,7 +297,7 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@NonNull Throwable error) {
+                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
                         ToastUtil.toastLong("测试成功\n路由失败：" + Utils.getRealMessage(error));
                     }
 
@@ -288,19 +316,19 @@ public class TestQualityAct extends AppCompatActivity {
                 .path(ModuleConfig.Module1.TEST)
                 .interceptors(TimeConsumingInterceptor.class)
                 .query("data", "cancelAuto")
-                .navigate(new EHiCallback() {
+                .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
                     }
 
                     @Override
-                    public void onError(@NonNull Throwable error) {
+                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
                         ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(error));
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Throwable error) {
+                    public void onEvent(@Nullable EHiRouterRequest originalRequest, @Nullable EHiRouterResult result, @Nullable Throwable error) {
                     }
 
                     @Override
@@ -323,7 +351,7 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@NonNull Throwable error) {
+                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
                         ToastUtil.toastLong("测试成功\n路由失败：\n" + Utils.getRealThrowable(error).getClass().getSimpleName() + ":" + Utils.getRealMessage(error));
                     }
 
@@ -341,14 +369,14 @@ public class TestQualityAct extends AppCompatActivity {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new EHiCallback() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
                         ToastUtil.toastShort("测试成功\n路由成功");
                     }
 
                     @Override
-                    public void onError(@NonNull Throwable error) {
+                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
                         ToastUtil.toastLong("测试失败\n路由失败：\n" + Utils.getRealThrowable(error).getClass().getSimpleName() + ":" + Utils.getRealMessage(error));
                     }
 
@@ -358,8 +386,7 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onEvent(@NonNull EHiRouterResult result, @Nullable Throwable error) {
-                        super.onEvent(result, error);
+                    public void onEvent(@Nullable EHiRouterRequest originalRequest, @NonNull EHiRouterResult result, @Nullable Throwable error) {
                         if (temp != null) {
                             temp.cancel();
                         }

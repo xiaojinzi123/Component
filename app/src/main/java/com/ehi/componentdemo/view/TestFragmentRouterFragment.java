@@ -110,7 +110,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                     }
 
                     @Override
-                    public void onError(@NonNull Throwable error) {
+                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
                         addInfo(null, error, "component1/test?data=normalJump", null);
                     }
                 });
@@ -125,8 +125,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .interceptors(DialogShowInterceptor.class)
                 .navigate(new EHiCallbackAdapter(){
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable Throwable error) {
-                        super.onEvent(result, error);
+                    public void onEvent(@Nullable EHiRouterRequest originalRequest, @Nullable EHiRouterResult result, @Nullable Throwable error) {
                     }
 
                     @Override

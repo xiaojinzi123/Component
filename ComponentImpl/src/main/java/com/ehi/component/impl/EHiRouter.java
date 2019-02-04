@@ -469,6 +469,10 @@ public class EHiRouter {
             return holder;
         }
 
+        /**
+         * @return 返回的对象有可能是一个空实现对象 {@link NavigationDisposable#EMPTY}
+         */
+        @NonNull
         public NavigationDisposable navigate() {
             return navigate(null);
         }
@@ -477,7 +481,7 @@ public class EHiRouter {
          * 执行跳转的具体逻辑,必须在主线程中执行
          *
          * @param callback 回调
-         * @return 返回一个 NavigationDisposable 可以取消路由或者获取原始request对象
+         * @return 返回的对象有可能是一个空实现对象 {@link NavigationDisposable#EMPTY},可以取消路由或者获取原始request对象
          */
         @MainThread
         @NonNull
@@ -485,19 +489,21 @@ public class EHiRouter {
             // 检测是否是 ui 线程,在 EHiRxRouter 中也有检测这个线程的,但是我们不能去掉其中一个,因为这是两个不同的库,而且
             // EHiRxRouter 在调用 navigate 之前会有 Fragment 的操作
             if (EHiRouterUtil.isMainThread() == false) {
-                EHiRouterUtil.errorCallback(callback, new NavigationFailException("EHiRouter must run on main thread"));
+                EHiRouterUtil.errorCallback(callback, null, new NavigationFailException("EHiRouter must run on main thread"));
                 return NavigationDisposable.EMPTY;
             }
             // 一个 Builder 不能被使用多次
             if (isFinish) {
-                EHiRouterUtil.errorCallback(callback, new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
+                EHiRouterUtil.errorCallback(callback, null, new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
                 return NavigationDisposable.EMPTY;
             }
             // 标记这个 builder 已经不能使用了
             isFinish = true;
+            // 构建请求对象
+            EHiRouterRequest originalRequest = null;
             try {
                 // 构建请求对象
-                final EHiRouterRequest originalRequest = generateRouterRequest();
+                originalRequest = generateRouterRequest();
                 // 创建整个拦截器到最终跳转需要使用的 Callback
                 final InterceptorCallback interceptorCallback = new InterceptorCallback(originalRequest, callback);
                 // Fragment 的销毁的自动取消
@@ -514,7 +520,7 @@ public class EHiRouter {
                 return interceptorCallback;
             } catch (Exception e) { // 发生路由错误的时候
                 EHiRouterUtil.deliveryError(e);
-                EHiRouterUtil.errorCallback(callback, e);
+                EHiRouterUtil.errorCallback(callback, originalRequest, e);
             } finally {
                 // 释放资源
                 url = null;
@@ -539,7 +545,7 @@ public class EHiRouter {
          * @throws Exception
          */
         @MainThread
-        private void realNavigate(@NonNull EHiRouterRequest originalRequest,
+        private void realNavigate(@NonNull final EHiRouterRequest originalRequest,
                                   @Nullable EHiRouterInterceptor[] customInterceptors,
                                   @Nullable Class<? extends EHiRouterInterceptor>[] customClassInterceptors,
                                   @Nullable String[] customNameInterceptors,
@@ -611,7 +617,7 @@ public class EHiRouter {
                         interceptors.addAll(targetInterceptors);
                     }
                     // 真正的执行跳转的拦截器
-                    interceptors.add(new RealInterceptor());
+                    interceptors.add(new RealInterceptor(originalRequest));
                     // 执行下一个拦截器,正好是上面代码添加的拦截器
                     nextChain.proceed(nextChain.request());
                 }
@@ -678,7 +684,7 @@ public class EHiRouter {
                     }
                     isComplete = true;
                     EHiRouterUtil.deliveryError(error);
-                    EHiRouterUtil.errorCallback(mCallback, error);
+                    EHiRouterUtil.errorCallback(mCallback, mOriginalRequest, error);
                 }
             }
 
@@ -720,20 +726,27 @@ public class EHiRouter {
          */
         private class RealInterceptor implements EHiRouterInterceptor {
 
+            @NonNull
+            private final EHiRouterRequest mOriginalRequest;
+
+            public RealInterceptor(@NonNull EHiRouterRequest originalRequest) {
+                mOriginalRequest = originalRequest;
+            }
+
             @Override
             public void intercept(final Chain chain) throws Exception {
                 try {
                     // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
-                    EHiRouterRequest routerRequest = chain.request();
-                    if (routerRequest.beforJumpAction != null) {
-                        routerRequest.beforJumpAction.run();
+                    EHiRouterRequest finalRequest = chain.request();
+                    if (finalRequest.beforJumpAction != null) {
+                        finalRequest.beforJumpAction.run();
                     }
                     // 真正执行跳转的逻辑
-                    EHiRouterCenter.getInstance().openUri(routerRequest);
-                    if (routerRequest.afterJumpAction != null) {
-                        routerRequest.afterJumpAction.run();
+                    EHiRouterCenter.getInstance().openUri(finalRequest);
+                    if (finalRequest.afterJumpAction != null) {
+                        finalRequest.afterJumpAction.run();
                     }
-                    chain.callback().onSuccess(new EHiRouterResult(routerRequest));
+                    chain.callback().onSuccess(new EHiRouterResult(mOriginalRequest, finalRequest));
                 } catch (Exception e) {
                     chain.callback().onError(e);
                 }
@@ -747,16 +760,35 @@ public class EHiRouter {
          * 然后调用当前拦截器的 intercept 方法
          */
         private class InterceptorChain implements EHiRouterInterceptor.Chain {
+
+            /**
+             * 每一个拦截器执行器 {@link EHiRouterInterceptor.Chain}
+             * 都会有上一个拦截器给的 request 对象或者初始化的一个 request,用于在下一个拦截器
+             * 中获取到 request 对象,并且支持拦截器自定义修改 request 对象或者直接创建一个新的传给下一个拦截器执行器
+             */
             @NonNull
-            private EHiRouterRequest mOriginalRequest;
+            private final EHiRouterRequest mRequest;
+
+            /**
+             * 这个是拦截器的回调,这个用户不能自定义,一直都是一个对象
+             */
             @NonNull
-            private EHiRouterInterceptor.Callback mCallback;
-            // 拦截器列表
+            private final EHiRouterInterceptor.Callback mCallback;
+
+            /**
+             * 拦截器列表,所有要执行的拦截器列表
+             */
             @NonNull
-            private List<EHiRouterInterceptor> mInterceptors;
-            // 拦截器的下标
-            private int mIndex;
-            // 调用的次数
+            private final List<EHiRouterInterceptor> mInterceptors;
+
+            /**
+             * 拦截器的下标
+             */
+            private final int mIndex;
+
+            /**
+             * 调用的次数,如果超过1次就做相应的错误处理
+             */
             private int calls;
 
             /**
@@ -765,17 +797,18 @@ public class EHiRouter {
              * @param request      第一次这个对象是不需要的
              * @param callback
              */
-            public InterceptorChain(@NonNull List<EHiRouterInterceptor> interceptors, int index, @NonNull EHiRouterRequest request, EHiRouterInterceptor.Callback callback) {
+            public InterceptorChain(@NonNull List<EHiRouterInterceptor> interceptors, int index,
+                                    @NonNull EHiRouterRequest request, EHiRouterInterceptor.Callback callback) {
                 this.mInterceptors = interceptors;
                 this.mIndex = index;
-                this.mOriginalRequest = request;
+                this.mRequest = request;
                 this.mCallback = callback;
             }
 
             @Override
             public EHiRouterRequest request() {
                 // 第一个拦截器的
-                return mOriginalRequest;
+                return mRequest;
             }
 
             @Override

@@ -36,5 +36,5 @@ ext {
     component_xiaojinzi_version = "1.0"
     business_component_version = "1.3.6"
     isDependMavenOnline = "false"
-    isDependXiaojinziMavenOnline = "true"
+    isDependXiaojinziMavenOnline = "false"
 }
