@@ -1,83 +1,3 @@
-## 组件化的几个重点
-
-组件化的方式很多,但是每一个组件化都必须有这三点,我们做组件化只要保证做到这三点其实就是做了组件化了
-
-- 业务组件之间的隔离                    
-```
-项目拆分成多个 module
-```
-- 业务组件之间的服务的提供
-```
-某个业务组件中的服务如何让别人使用
-也可以理解为平行没有依赖关系的模块A和B之间,A如何向B提供A业务模块的功能
-```
-- 业务组件之间的跳转
-```
-路由
-```
-- 基础组件的下沉                          
- ```
-比如：(实体对象,网络请求模块,数据库,本地存储.....)
-```
-- 业务组件加载和卸载的生命周期    
-```
-业务组件的生命周期(为每一个业务模块带去类似于Application的概念)
-```
-
-```
-业务组件的动态的加载和卸载,比如像大公司的 App,后台能下发指令,下架某一个模块,比如 滴滴 在顺风车出现问题的情况下,下架手机上的顺风车的功能
-这就是 '业务组件加载和卸载的生命周期' 可以做到的事情
-```
-
-## 示例代码
-
-github地址：[组件化示例项目](https://github.com/xiaojinzi123/ComponentDemo)
-
-这个项目里面实现了组件化的方案,并且使用组件化方案写了一个 Demo,整个项目架构如下:
-
-![image.png](https://i.loli.net/2019/02/02/5c555e58d0c3e.jpg)
-
-- app 
-```
-壳工程
-```
-- ModuleBase
-```
-基础库工程
-```
-- Module1 
-```
-业务组件1
-```
-- Module2 
-```
-业务组件2
-```
-- ModuleUser
-```
-用户业务模块
-```
-- ModuleHelp
-```
-帮助业务模块
-```
-- ComponentApi 
-```
-组件化的注解Api
-```
-- ComponentCompiler 
-```
-组件化的注解Api注解驱动器
-```
-- ComponentImpl 
-```
-组件化的基础实现
-```
-- ComponentRxImpl 
-```
-组件化结合Rxjava2的实现,这个ComponentRxImpl实现中会有一个很好用的功能,基于ComponentApiImpl扩展
-```
-
 ## 组件化的使用
 
 ### 依赖
@@ -91,12 +11,13 @@ maven { url 'http://xiaojinzi.tpddns.cn:18081/repository/maven-releases/' }
 ```
 
 在基础工程 BaseModule 中添加依赖：(版本号强烈建议你可以先写+,拉下来之后再写死)
+
 ```java
-api "com.xiaojinzi.component:impl:1.0"
+api "com.xiaojinzi.component:impl:+"
 ```
 或者 RxJava2的实现
 ```java
-api "com.xiaojinzi.component:impl-rx:1.0"
+api "com.xiaojinzi.component:impl-rx:+"
 ```
 强烈建议使用 Rx 版本,基础版本很多功能不及 Rx版本,强烈建议
 各个业务组件会依赖 BaseModule,所以自动会有上述的依赖
@@ -531,9 +452,94 @@ public class Component1ServiceImpl implements Component1Service {
 
 ![image.png](https://i.loli.net/2019/01/11/5c3825917a1fb.jpg)
 
+## 组件化的几个重点
+
+组件化的方式很多,但是每一个组件化都必须有这三点,我们做组件化只要保证做到这三点其实就是做了组件化了
+
+- 业务组件之间的隔离                    
+```
+项目拆分成多个 module
+```
+- 业务组件之间的服务的提供
+```
+某个业务组件中的服务如何让别人使用
+也可以理解为平行没有依赖关系的模块A和B之间,A如何向B提供A业务模块的功能
+```
+- 业务组件之间的跳转
+```
+路由
+```
+- 基础组件的下沉                          
+ ```
+比如：(实体对象,网络请求模块,数据库,本地存储.....)
+```
+- 业务组件加载和卸载的生命周期    
+```
+业务组件的生命周期(为每一个业务模块带去类似于Application的概念)
+```
+
+```
+业务组件的动态的加载和卸载,比如像大公司的 App,后台能下发指令,下架某一个模块,比如 滴滴 在顺风车出现问题的情况下,下架手机上的顺风车的功能
+这就是 '业务组件加载和卸载的生命周期' 可以做到的事情
+```
+
+## 示例代码
+
+github地址：[组件化示例项目](https://github.com/xiaojinzi123/ComponentDemo)
+
+这个项目里面实现了组件化的方案,并且使用组件化方案写了一个 Demo,整个项目架构如下:
+
+![image.png](https://i.loli.net/2019/02/02/5c555e58d0c3e.jpg)
+
+- app 
+```
+壳工程
+```
+- ModuleBase
+```
+基础库工程
+```
+- Module1 
+```
+业务组件1
+```
+- Module2 
+```
+业务组件2
+```
+- ModuleUser
+```
+用户业务模块
+```
+- ModuleHelp
+```
+帮助业务模块
+```
+- ComponentApi 
+```
+组件化的注解Api
+```
+- ComponentCompiler 
+```
+组件化的注解Api注解驱动器
+```
+- ComponentImpl 
+```
+组件化的基础实现
+```
+- ComponentRxImpl 
+```
+组件化结合Rxjava2的实现,这个ComponentRxImpl实现中会有一个很好用的功能,基于ComponentApiImpl扩展
+```
+
 ## **特别注意**
 
 任何一个组件化框架,在跳转这件事情上,都需要额外的小心,下面是示例代码：
+
+### 注意运行线程
+
+由于框架在路由的开始的时候可能需要操作 Fragment,所以必须在主线程上执行,所以这点还请注意
+本来没有返回值的话还能在子线程上走,我帮您切换到主线程上,但是还有一个返回值,所以没办法,只能在主线程了
 
 ### 没组件化之前跳转
 

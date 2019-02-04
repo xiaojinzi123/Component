@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.ehi.component.error.ActivityResultException;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
+import com.ehi.component.error.NotRunOnMainThreadException;
 import com.ehi.component.error.ServiceInvokeException;
 import com.ehi.component.error.ServiceNotFoundException;
 import com.ehi.component.error.TargetActivityNotFoundException;
@@ -23,6 +24,7 @@ import io.reactivex.functions.Consumer;
 public class RxErrorConsumer<T extends Throwable> implements Consumer<T> {
 
     private static final Class IGNORE_ERROR_CLASSED[] = {
+            NotRunOnMainThreadException.class,
             NavigationFailException.class,
             ActivityResultException.class,
             TargetActivityNotFoundException.class,

@@ -16,6 +16,7 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
+import com.ehi.component.error.NotRunOnMainThreadException;
 import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
 import com.ehi.component.impl.interceptor.EHiOpenOnceInterceptor;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
@@ -437,6 +438,26 @@ public class EHiRouter {
         }
 
         /**
+         * 路由前的检查
+         *
+         * @throws Exception
+         */
+        protected void onCheck() throws Exception {
+            // 必须运行在主线程
+            if (EHiRouterUtil.isMainThread() == false) {
+                throw new NotRunOnMainThreadException("EHiRouter must run on main thread");
+            }
+            // 一个 Builder 不能被使用多次
+            if (isFinish) {
+                throw new NavigationFailException("EHiRouter.Builder can't be used multiple times");
+            }
+            // 检查上下文和fragment
+            if (context == null && fragment == null) {
+                throw new NullPointerException("the parameter 'context' or 'fragment' both are null");
+            }
+        }
+
+        /**
          * 构建请求对象,这个构建是必须的,不能错误的,如果出错了,直接崩溃掉,因为连最基本的信息都不全没法进行下一步的操作
          *
          * @return
@@ -460,9 +481,6 @@ public class EHiRouter {
             }
             if (uri == null) {
                 throw new NullPointerException("the parameter 'uri' is null");
-            }
-            if (context == null && fragment == null) {
-                throw new NullPointerException("the parameter 'context' or 'fragment' both are null");
             }
             EHiRouterRequest holder = new EHiRouterRequest.Builder()
                     .context(context)
@@ -494,22 +512,13 @@ public class EHiRouter {
         @MainThread
         @NonNull
         public synchronized NavigationDisposable navigate(@Nullable final EHiCallback callback) {
-            // 检测是否是 ui 线程,在 EHiRxRouter 中也有检测这个线程的,但是我们不能去掉其中一个,因为这是两个不同的库,而且
-            // EHiRxRouter 在调用 navigate 之前会有 Fragment 的操作
-            if (EHiRouterUtil.isMainThread() == false) {
-                EHiRouterUtil.errorCallback(callback, new EHiRouterErrorResult(new NavigationFailException("EHiRouter must run on main thread")));
-                return NavigationDisposable.EMPTY;
-            }
-            // 一个 Builder 不能被使用多次
-            if (isFinish) {
-                EHiRouterUtil.errorCallback(callback, new EHiRouterErrorResult(new NavigationFailException("EHiRouter.Builder can't be used multiple times")));
-                return NavigationDisposable.EMPTY;
-            }
-            // 标记这个 builder 已经不能使用了
-            isFinish = true;
             // 构建请求对象
             EHiRouterRequest originalRequest = null;
             try {
+                // 路由前的检查
+                onCheck();
+                // 标记这个 builder 已经不能使用了
+                isFinish = true;
                 // 构建请求对象
                 originalRequest = generateRouterRequest();
                 // 创建整个拦截器到最终跳转需要使用的 Callback

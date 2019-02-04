@@ -16,6 +16,7 @@ import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.error.ActivityResultException;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
+import com.ehi.component.error.NotRunOnMainThreadException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.error.UnknowException;
 import com.ehi.component.support.Action;
@@ -551,16 +552,16 @@ public class EHiRxRouter {
         }
 
         /**
-         * 检查参数
+         * 检查参数,这个方法和父类的 {@link #onCheck()} 很多项目都一样的,但是没办法
+         * 这里的检查是需要提前检查的
+         * 父类的检查是调用 {@link #navigate(EHiCallback)}方法的时候调用 {@link #onCheck()} 检查的
+         * 这个类是调用 {@link #navigate(EHiCallback)} 方法之前检查的,而且检查的项目虽然基本一样,但是有所差别
          *
          * @throws Exception
          */
         private void onCheck(boolean isForResult) throws Exception {
-            if (isFinish) {
-                throw new NavigationFailException("EHiRouter.Builder can't be used multiple times");
-            }
             if (EHiRouterUtil.isMainThread() == false) {
-                throw new NavigationFailException("EHiRxRouter must run on main thread");
+                throw new NotRunOnMainThreadException("EHiRxRouter must run on main thread");
             }
             if (context == null && fragment == null) {
                 throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router"));

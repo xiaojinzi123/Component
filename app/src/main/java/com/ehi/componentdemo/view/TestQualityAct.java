@@ -11,6 +11,7 @@ import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
 import com.ehi.base.interceptor.TimeConsumingInterceptor;
+import com.ehi.base.view.BaseAct;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiCallback;
 import com.ehi.component.impl.EHiRouter;
@@ -42,7 +43,7 @@ import io.reactivex.schedulers.Schedulers;
         value = ModuleConfig.App.TEST_QUALITY,
         desc = "测试代码质量的界面"
 )
-public class TestQualityAct extends AppCompatActivity {
+public class TestQualityAct extends BaseAct {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -393,6 +394,62 @@ public class TestQualityAct extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void runOnChildThread(View view) {
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                EHiRouter
+                        .with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST)
+                        .query("data", "cancelAuto")
+                        .navigate(new EHiCallbackAdapter() {
+                            @Override
+                            public void onSuccess(@NonNull EHiRouterResult result) {
+                                ToastUtil.toastShort("测试失败\n路由成功");
+                            }
+
+                            @Override
+                            public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                                ToastUtil.toastLong("测试成功\n路由失败：" + Utils.getRealMessage(errorResult.getError()));
+                            }
+
+                            @Override
+                            public void onCancel(@NonNull EHiRouterRequest request) {
+                                ToastUtil.toastShort("测试失败\n自动被取消了");
+                            }
+                        });
+            }
+        }.start();
+    }
+
+    public void runOnChildThread1(View view) {
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                EHiRxRouter
+                        .with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST)
+                        .query("data", "cancelAuto")
+                        .call()
+                        .subscribe(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                ToastUtil.toastShort("测试失败\n,onSuccess");
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                ToastUtil.toastShort("测试成功\n,onError：" + Utils.getRealMessage(throwable));
+                            }
+                        });
+            }
+        }.start();
     }
 
 }

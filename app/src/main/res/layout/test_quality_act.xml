@@ -109,6 +109,22 @@
             android:text="路由成功后取消"
             android:textSize="@dimen/test_quality_textsize" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="runOnChildThread"
+            android:textAllCaps="false"
+            android:text="在子线程中执行"
+            android:textSize="@dimen/test_quality_textsize" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="runOnChildThread1"
+            android:textAllCaps="false"
+            android:text="在子线程中执行(RxRouter)"
+            android:textSize="@dimen/test_quality_textsize" />
+
     </com.ehi.componentdemo.view.XFlowLayout>
 
 </LinearLayout>
