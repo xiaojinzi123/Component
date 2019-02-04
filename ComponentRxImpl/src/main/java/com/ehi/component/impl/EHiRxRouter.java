@@ -454,11 +454,11 @@ public class EHiRxRouter {
                             }
 
                             @Override
-                            public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                                super.onError(originalRequest, error);
+                            public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                                super.onError(errorResult);
                                 LogUtil.log(TAG, "路由失败：" + "host = " + mHost + ",path = " + mPath);
-                                Help.removeRequestCode(originalRequest);
-                                Help.onErrorSolve(emitter, error);
+                                Help.removeRequestCode(errorResult.getOriginalRequest());
+                                Help.onErrorSolve(emitter, errorResult.getError());
                             }
 
                             @Override
@@ -530,10 +530,10 @@ public class EHiRxRouter {
                             }
 
                             @Override
-                            public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                                super.onError(originalRequest, error);
+                            public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                                super.onError(errorResult);
                                 LogUtil.log(TAG, "路由失败：" + "host = " + mHost + ",path = " + mPath);
-                                Help.onErrorSolve(emitter, error);
+                                Help.onErrorSolve(emitter, errorResult.getError());
                             }
 
                             @Override

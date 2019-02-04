@@ -489,12 +489,12 @@ public class EHiRouter {
             // 检测是否是 ui 线程,在 EHiRxRouter 中也有检测这个线程的,但是我们不能去掉其中一个,因为这是两个不同的库,而且
             // EHiRxRouter 在调用 navigate 之前会有 Fragment 的操作
             if (EHiRouterUtil.isMainThread() == false) {
-                EHiRouterUtil.errorCallback(callback, null, new NavigationFailException("EHiRouter must run on main thread"));
+                EHiRouterUtil.errorCallback(callback, new EHiRouterErrorResult(new NavigationFailException("EHiRouter must run on main thread")));
                 return NavigationDisposable.EMPTY;
             }
             // 一个 Builder 不能被使用多次
             if (isFinish) {
-                EHiRouterUtil.errorCallback(callback, null, new NavigationFailException("EHiRouter.Builder can't be used multiple times"));
+                EHiRouterUtil.errorCallback(callback, new EHiRouterErrorResult(new NavigationFailException("EHiRouter.Builder can't be used multiple times")));
                 return NavigationDisposable.EMPTY;
             }
             // 标记这个 builder 已经不能使用了
@@ -520,7 +520,7 @@ public class EHiRouter {
                 return interceptorCallback;
             } catch (Exception e) { // 发生路由错误的时候
                 EHiRouterUtil.deliveryError(e);
-                EHiRouterUtil.errorCallback(callback, originalRequest, e);
+                EHiRouterUtil.errorCallback(callback, new EHiRouterErrorResult(originalRequest, e));
             } finally {
                 // 释放资源
                 url = null;
@@ -684,7 +684,7 @@ public class EHiRouter {
                     }
                     isComplete = true;
                     EHiRouterUtil.deliveryError(error);
-                    EHiRouterUtil.errorCallback(mCallback, mOriginalRequest, error);
+                    EHiRouterUtil.errorCallback(mCallback, new EHiRouterErrorResult(mOriginalRequest, error));
                 }
             }
 

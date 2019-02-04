@@ -15,6 +15,7 @@ import com.ehi.base.ModuleConfig;
 import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
@@ -110,8 +111,8 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, "component1/test?data=normalJump", null);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), "component1/test?data=normalJump", null);
                     }
                 });
     }
@@ -125,7 +126,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .interceptors(DialogShowInterceptor.class)
                 .navigate(new EHiCallbackAdapter(){
                     @Override
-                    public void onEvent(@Nullable EHiRouterRequest originalRequest, @Nullable EHiRouterResult result, @Nullable Throwable error) {
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
                     }
 
                     @Override

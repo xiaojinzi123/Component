@@ -9,6 +9,7 @@ import android.view.View;
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.support.EHiCallbackAdapter;
@@ -41,7 +42,7 @@ public class TestErrorAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
                         System.out.println("onError");
                     }
                 });

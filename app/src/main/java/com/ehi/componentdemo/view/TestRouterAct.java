@@ -17,6 +17,7 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterInterceptor;
 import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
@@ -100,8 +101,8 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, "component1/test?data=normalJump", null);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), "component1/test?data=normalJump", null);
                     }
                 });
     }
@@ -120,8 +121,8 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, "component1/test?data=normalJumpTwice1", null);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), "component1/test?data=normalJumpTwice1", null);
                     }
                 });
 
@@ -137,8 +138,8 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, "component1/test?data=normalJumpTwice2", null);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), "component1/test?data=normalJumpTwice2", null);
                     }
                 });
 
@@ -159,8 +160,8 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, "component1/test?data=jumpGetData", 123);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), "component1/test?data=jumpGetData", 123);
                     }
                 });
 
@@ -278,8 +279,8 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, "component1/test?data=jumpWithInterceptor", 123);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), "component1/test?data=jumpWithInterceptor", 123);
                     }
                 });
     }
@@ -312,8 +313,8 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_QUERY, null);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_QUERY, null);
                     }
                 });
     }
@@ -330,8 +331,8 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_LOGIN, null);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_LOGIN, null);
                     }
                 });
     }
@@ -348,8 +349,8 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_DIALOG, null);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_DIALOG, null);
                     }
                 });
     }
@@ -366,8 +367,8 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
                     }
                 });
     }
@@ -391,8 +392,8 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        addInfo(null, error, ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
                     }
                 });
 
@@ -516,7 +517,7 @@ public class TestRouterAct extends BaseAct {
                 .interceptors(DialogShowInterceptor.class)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onEvent(@Nullable EHiRouterRequest originalRequest, @Nullable EHiRouterResult result, @Nullable Throwable error) {
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
                         // 这里的代码不会被调用
                     }
 
@@ -552,7 +553,7 @@ public class TestRouterAct extends BaseAct {
                 })
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onEvent(@Nullable EHiRouterRequest originalRequest, @Nullable EHiRouterResult result, @Nullable Throwable error) {
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
                     }
                 });
 

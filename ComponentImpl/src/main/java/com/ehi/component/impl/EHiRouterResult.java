@@ -5,13 +5,16 @@ import android.support.annotation.NonNull;
 import java.io.Serializable;
 
 /**
- * 这个类表示一次路由的返回结果对象
+ * 这个类表示一次成功路由的返回结果对象
  * time   : 2018/11/10
  *
  * @author : xiaojinzi 30212
  */
-public class EHiRouterResult implements Serializable {
+public class EHiRouterResult {
 
+    /**
+     * 最原始的请求,谁都更改不了的,而且不可能为空在这里
+     */
     @NonNull
     private final EHiRouterRequest mOriginalRequest;
 

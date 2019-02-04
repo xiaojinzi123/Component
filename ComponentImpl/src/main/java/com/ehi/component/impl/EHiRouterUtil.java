@@ -83,18 +83,17 @@ class EHiRouterUtil {
      * 当请求对象构建出来以后调用的
      *
      * @param callback
-     * @param error
+     * @param errorResult
      */
     public static void errorCallback(@Nullable final EHiCallback callback,
-                                     @Nullable final EHiRouterRequest originalRequest,
-                                     @NonNull final Throwable error) {
+                                     @NonNull final EHiRouterErrorResult errorResult) {
         if (isMainThread()) {
-            errorCallbackOnMainThread(callback, originalRequest, error);
+            errorCallbackOnMainThread(callback, errorResult);
         } else {
             postActionToMainThread(new Runnable() {
                 @Override
                 public void run() {
-                    errorCallbackOnMainThread(callback, originalRequest, error);
+                    errorCallbackOnMainThread(callback, errorResult);
                 }
             });
         }
@@ -102,19 +101,18 @@ class EHiRouterUtil {
 
     /**
      * @param callback
-     * @param error
+     * @param errorResult
      */
     private static void errorCallbackOnMainThread(@Nullable final EHiCallback callback,
-                                                  @Nullable final EHiRouterRequest originalRequest,
-                                                  @NonNull final Throwable error) {
+                                                  @NonNull final EHiRouterErrorResult errorResult) {
         if (callback == null) {
             return;
         }
-        if (error == null) {
+        if (errorResult == null) {
             return;
         }
-        callback.onError(originalRequest, error);
-        callback.onEvent(originalRequest, null, error);
+        callback.onError(errorResult);
+        callback.onEvent(null, errorResult);
     }
 
     public static void successCallback(@Nullable final EHiCallback callback,
@@ -144,7 +142,7 @@ class EHiRouterUtil {
             return;
         }
         callback.onSuccess(result);
-        callback.onEvent(result.getOriginalRequest(), result, null);
+        callback.onEvent(result, null);
     }
 
     public static void deliveryError(@NonNull Throwable error) {

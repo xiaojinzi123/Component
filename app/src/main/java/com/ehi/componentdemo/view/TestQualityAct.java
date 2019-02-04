@@ -14,6 +14,7 @@ import com.ehi.base.interceptor.TimeConsumingInterceptor;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiCallback;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterInterceptor;
 import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
@@ -62,12 +63,12 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(error));
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(errorResult.getError()));
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterRequest originalRequest, @Nullable EHiRouterResult result, @Nullable Throwable error) {
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
                         ToastUtil.toastLong("测试失败\n路由失败：onEvent方法");
                     }
 
@@ -297,8 +298,8 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        ToastUtil.toastLong("测试成功\n路由失败：" + Utils.getRealMessage(error));
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        ToastUtil.toastLong("测试成功\n路由失败：" + Utils.getRealMessage(errorResult.getError()));
                     }
 
                     @Override
@@ -323,12 +324,12 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(error));
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(errorResult.getError()));
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterRequest originalRequest, @Nullable EHiRouterResult result, @Nullable Throwable error) {
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
                     }
 
                     @Override
@@ -351,8 +352,8 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        ToastUtil.toastLong("测试成功\n路由失败：\n" + Utils.getRealThrowable(error).getClass().getSimpleName() + ":" + Utils.getRealMessage(error));
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        ToastUtil.toastLong("测试成功\n路由失败：\n" + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
                     }
 
                     @Override
@@ -369,15 +370,15 @@ public class TestQualityAct extends AppCompatActivity {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
-                .navigate(new EHiCallback() {
+                .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
                         ToastUtil.toastShort("测试成功\n路由成功");
                     }
 
                     @Override
-                    public void onError(@Nullable EHiRouterRequest originalRequest, @NonNull Throwable error) {
-                        ToastUtil.toastLong("测试失败\n路由失败：\n" + Utils.getRealThrowable(error).getClass().getSimpleName() + ":" + Utils.getRealMessage(error));
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        ToastUtil.toastLong("测试失败\n路由失败：\n" + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
                     }
 
                     @Override
@@ -386,7 +387,7 @@ public class TestQualityAct extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterRequest originalRequest, @NonNull EHiRouterResult result, @Nullable Throwable error) {
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
                         if (temp != null) {
                             temp.cancel();
                         }
