@@ -50,22 +50,30 @@ public class EHiRouter {
      */
     public static String TAG = "EHiRouter";
 
-    static Collection<EHiErrorRouterInterceptor> errorRouterInterceptors = Collections.synchronizedCollection(new ArrayList<EHiErrorRouterInterceptor>(0));
+    /**
+     * 路由的监听器
+     */
+    static Collection<EHiRouterListener> routerListeners = Collections.synchronizedCollection(new ArrayList<EHiRouterListener>(0));
 
     // 支持取消的一个 Callback 集合
     private static List<NavigationDisposable> mNavigationDisposableList = new ArrayList<>();
 
-    public static void clearErrorRouterInterceptor() {
-        errorRouterInterceptors.clear();
+    public static void clearRouterListeners() {
+        routerListeners.clear();
     }
 
-    public static void addErrorRouterInterceptor(@NonNull EHiErrorRouterInterceptor interceptor) {
-
-        if (errorRouterInterceptors.contains(interceptor)) {
+    public static void addRouterListener(@NonNull EHiRouterListener listener) {
+        if (routerListeners.contains(listener)) {
             return;
         }
-        errorRouterInterceptors.add(interceptor);
+        routerListeners.add(listener);
+    }
 
+    public static void removeRouterListener(@NonNull EHiRouterListener listener) {
+        if (listener == null) {
+            return;
+        }
+        routerListeners.remove(listener);
     }
 
     public static void register(IComponentHostRouter router) {
@@ -519,8 +527,8 @@ public class EHiRouter {
                 // 返回对象
                 return interceptorCallback;
             } catch (Exception e) { // 发生路由错误的时候
-                EHiRouterUtil.deliveryError(e);
-                EHiRouterUtil.errorCallback(callback, new EHiRouterErrorResult(originalRequest, e));
+                EHiRouterErrorResult errorResult = new EHiRouterErrorResult(originalRequest, e);
+                EHiRouterUtil.errorCallback(callback, errorResult);
             } finally {
                 // 释放资源
                 url = null;
@@ -683,8 +691,8 @@ public class EHiRouter {
                         return;
                     }
                     isComplete = true;
-                    EHiRouterUtil.deliveryError(error);
-                    EHiRouterUtil.errorCallback(mCallback, new EHiRouterErrorResult(mOriginalRequest, error));
+                    EHiRouterErrorResult errorResult = new EHiRouterErrorResult(mOriginalRequest, error);
+                    EHiRouterUtil.errorCallback(mCallback, errorResult);
                 }
             }
 

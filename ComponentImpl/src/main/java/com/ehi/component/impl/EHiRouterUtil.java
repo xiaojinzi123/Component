@@ -70,6 +70,7 @@ class EHiRouterUtil {
                 }
             });
         }
+        deliveryListener(null, null, request);
     }
 
     /**
@@ -102,6 +103,7 @@ class EHiRouterUtil {
                 }
             });
         }
+        deliveryListener(null, errorResult, null);
     }
 
     /**
@@ -115,7 +117,7 @@ class EHiRouterUtil {
         }
         if (errorResult.getOriginalRequest() == null) {
             LogUtil.log(EHiRouter.TAG, "路由失败：" + Utils.getRealMessage(errorResult.getError()));
-        }else {
+        } else {
             LogUtil.log(EHiRouter.TAG, "路由失败：" + errorResult.getOriginalRequest().uri.toString() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
         }
         if (callback == null) {
@@ -126,17 +128,18 @@ class EHiRouterUtil {
     }
 
     public static void successCallback(@Nullable final EHiCallback callback,
-                                       @NonNull final EHiRouterResult result) {
+                                       @NonNull final EHiRouterResult successResult) {
         if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
-            successCallbackOnMainThread(callback, result);
+            successCallbackOnMainThread(callback, successResult);
         } else {
             postActionToMainThread(new Runnable() {
                 @Override
                 public void run() {
-                    successCallbackOnMainThread(callback, result);
+                    successCallbackOnMainThread(callback, successResult);
                 }
             });
         }
+        deliveryListener(successResult, null, null);
     }
 
     public static void successCallbackOnMainThread(@Nullable final EHiCallback callback,
@@ -156,10 +159,35 @@ class EHiRouterUtil {
         callback.onEvent(result, null);
     }
 
-    public static void deliveryError(@NonNull Throwable error) {
-        for (EHiErrorRouterInterceptor interceptor : EHiRouter.errorRouterInterceptors) {
+    public static void deliveryListener(@Nullable final EHiRouterResult successResult,
+                                        @Nullable final EHiRouterErrorResult errorResult,
+                                        @Nullable final EHiRouterRequest cancelRequest) {
+        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+            deliveryListenerOnMainThread(successResult, errorResult, cancelRequest);
+        } else {
+            postActionToMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    deliveryListenerOnMainThread(successResult, errorResult, cancelRequest);
+                }
+            });
+        }
+    }
+
+    public static void deliveryListenerOnMainThread(@Nullable final EHiRouterResult successResult,
+                                                    @Nullable final EHiRouterErrorResult errorResult,
+                                                    @Nullable final EHiRouterRequest cancelRequest) {
+        for (EHiRouterListener interceptor : EHiRouter.routerListeners) {
             try {
-                interceptor.onRouterError(error);
+                if (successResult != null) {
+                    interceptor.onSuccess(successResult);
+                }
+                if (errorResult != null) {
+                    interceptor.onError(errorResult);
+                }
+                if (cancelRequest != null) {
+                    interceptor.onCancel(cancelRequest);
+                }
             } catch (Exception ignore) {
                 // do nothing
             }
