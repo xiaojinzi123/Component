@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.AnyThread;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.Action;
 import com.ehi.component.support.Consumer;
 import com.ehi.component.support.NavigationDisposable;
+import com.ehi.component.support.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  * 整个路由框架,整体都是在主线程中执行的,在拦截器中提供了 callback 机制
@@ -56,8 +59,8 @@ public class EHiRouter {
      */
     static Collection<EHiRouterListener> routerListeners = Collections.synchronizedCollection(new ArrayList<EHiRouterListener>(0));
 
-    // 支持取消的一个 Callback 集合
-    private static List<NavigationDisposable> mNavigationDisposableList = new ArrayList<>();
+    // 支持取消的一个 Callback 集合,需要线程安全
+    private static List<NavigationDisposable> mNavigationDisposableList = new Vector<>();
 
     public static void clearRouterListeners() {
         routerListeners.clear();
@@ -444,9 +447,9 @@ public class EHiRouter {
          */
         protected void onCheck() throws Exception {
             // 必须运行在主线程
-            if (EHiRouterUtil.isMainThread() == false) {
-                throw new NotRunOnMainThreadException("EHiRouter must run on main thread");
-            }
+//            if (Utils.isMainThread() == false) {
+//                throw new NotRunOnMainThreadException("EHiRouter must run on main thread");
+//            }
             // 一个 Builder 不能被使用多次
             if (isFinish) {
                 throw new NavigationFailException("EHiRouter.Builder can't be used multiple times");
@@ -561,7 +564,7 @@ public class EHiRouter {
          * @param callback                回调对象
          * @throws Exception
          */
-        @MainThread
+        @AnyThread
         private void realNavigate(@NonNull final EHiRouterRequest originalRequest,
                                   @Nullable EHiRouterInterceptor[] customInterceptors,
                                   @Nullable Class<? extends EHiRouterInterceptor>[] customClassInterceptors,
@@ -570,13 +573,6 @@ public class EHiRouter {
 
             // 拿到共有的拦截器
             List<EHiRouterInterceptor> publicInterceptors = EHiCenterInterceptor.getInstance().getInterceptorList();
-
-            // 预计算个数,可能不足, +1 的拦截器是扫尾的一个拦截器,是正确的行为
-            // 这个值是为了创建集合的时候个数能正好,不会导致列表扩容
-            /*int totalCount = (customInterceptors == null ? 0 : customInterceptors.length) +
-                    (customClassInterceptors == null ? 0 : customClassInterceptors.length) +
-                    (customNameInterceptors == null ? 0 : customNameInterceptors.length) +
-                    routerInterceptors.size() + 1;*/
 
             // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
             final List<EHiRouterInterceptor> interceptors = new ArrayList(8);
@@ -840,7 +836,7 @@ public class EHiRouter {
 
             public void proceed(@NonNull final EHiRouterRequest request, @NonNull final EHiRouterInterceptor.Callback callback) {
                 // ui 线程上执行
-                EHiRouterUtil.postActionToMainThreadAnyway(new Runnable() {
+                Utils.postActionToMainThreadAnyway(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -861,6 +857,7 @@ public class EHiRouter {
                                 InterceptorChain next = new InterceptorChain(mInterceptors, mIndex + 1, request, callback);
                                 // current Interceptor
                                 EHiRouterInterceptor interceptor = mInterceptors.get(mIndex);
+                                // 用户自定义的部分,必须在主线程
                                 interceptor.intercept(next);
                             }
                         } catch (Exception e) {

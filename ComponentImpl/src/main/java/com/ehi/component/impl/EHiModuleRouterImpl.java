@@ -21,6 +21,7 @@ import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.QueryParameterSupport;
+import com.ehi.component.support.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,7 +85,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         if (!hasInitMap) {
             initMap();
         }
-        if (EHiRouterUtil.isMainThread() == false) {
+        if (Utils.isMainThread() == false) {
             throw new NavigationFailException("EHiRouter must run on main thread");
         }
         if (routerRequest.uri == null) {

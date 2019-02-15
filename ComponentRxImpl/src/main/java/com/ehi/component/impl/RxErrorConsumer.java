@@ -6,6 +6,7 @@ import com.ehi.component.error.ActivityResultException;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.NotRunOnMainThreadException;
+import com.ehi.component.error.RxJavaException;
 import com.ehi.component.error.ServiceInvokeException;
 import com.ehi.component.error.ServiceNotFoundException;
 import com.ehi.component.error.TargetActivityNotFoundException;
@@ -31,6 +32,7 @@ public class RxErrorConsumer<T extends Throwable> implements Consumer<T> {
             InterceptorNotFoundException.class,
             ServiceNotFoundException.class,
             ServiceInvokeException.class,
+            RxJavaException.class,
             UnknowException.class
     };
 
@@ -44,7 +46,6 @@ public class RxErrorConsumer<T extends Throwable> implements Consumer<T> {
 
     @Override
     public void accept(T throwable) throws Exception {
-
         Throwable currThrowable = throwable;
         if (currThrowable != null) {
             do {
@@ -53,10 +54,10 @@ public class RxErrorConsumer<T extends Throwable> implements Consumer<T> {
                         return;
                     }
                 }
+                // 拿到 cause,接着判断
                 currThrowable = currThrowable.getCause();
             } while (currThrowable != null);
         }
-
         if (preConsumer != null) {
             preConsumer.accept(throwable);
             return;

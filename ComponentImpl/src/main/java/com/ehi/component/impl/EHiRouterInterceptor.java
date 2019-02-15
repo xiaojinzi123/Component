@@ -1,8 +1,10 @@
 package com.ehi.component.impl;
 
+import android.support.annotation.AnyThread;
 import android.support.annotation.CallSuper;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 /**
  * 路由跳转的拦截器
@@ -45,7 +47,7 @@ public interface EHiRouterInterceptor {
          *
          * @return
          */
-        @MainThread
+        @AnyThread
         void proceed(@NonNull EHiRouterRequest request);
 
     }
@@ -63,7 +65,7 @@ public interface EHiRouterInterceptor {
          *
          * @param result
          */
-        @MainThread
+        @AnyThread
         void onSuccess(EHiRouterResult result);
 
         /**
@@ -73,7 +75,7 @@ public interface EHiRouterInterceptor {
          *
          * @param error
          */
-        @MainThread
+        @AnyThread
         void onError(Throwable error);
 
         /**
@@ -81,7 +83,6 @@ public interface EHiRouterInterceptor {
          *
          * @return
          */
-        @MainThread
         boolean isComplete();
 
         /**

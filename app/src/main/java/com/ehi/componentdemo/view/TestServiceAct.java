@@ -12,10 +12,16 @@ import com.ehi.base.service.inter.component2.Component2Service;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.service.EHiRxService;
 import com.ehi.component.impl.service.EHiService;
+import com.ehi.component.support.Utils;
 import com.ehi.componentdemo.R;
 
+import io.reactivex.Scheduler;
+import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 测试服务的界面
@@ -73,17 +79,23 @@ public class TestServiceAct extends AppCompatActivity {
 
     public void rxServiceUse(View view) {
         EHiRxService.with(Component1Service.class)
-                .doOnSuccess(new Consumer<Component1Service>() {
+                .flatMap(new Function<Component1Service, SingleSource<String>>() {
                     @Override
-                    public void accept(Component1Service service) throws Exception {
-                        service.doSomeThing();
+                    public SingleSource<String> apply(Component1Service service) throws Exception {
+                        return service.testError();
                     }
                 })
-                .ignoreElement()
-                .subscribe(new Action() {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<String>() {
                     @Override
-                    public void run() throws Exception {
-                        Toast.makeText(TestServiceAct.this, "完成服务的调用啦", Toast.LENGTH_SHORT).show();
+                    public void accept(String s) throws Exception {
+                        Toast.makeText(TestServiceAct.this, "完成服务的调用啦,内容是：" + s, Toast.LENGTH_SHORT).show();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Toast.makeText(TestServiceAct.this, "可以不用处理的错误,错误信息：" + Utils.getRealThrowable(throwable).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

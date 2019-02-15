@@ -3,8 +3,6 @@ package com.ehi.component.impl;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,41 +16,7 @@ import com.ehi.component.support.Utils;
  */
 class EHiRouterUtil {
 
-    /**
-     * 主线程的Handler
-     */
-    private static Handler h = new Handler(Looper.getMainLooper());
 
-    /**
-     * 在主线程执行任务
-     *
-     * @param r
-     */
-    public static void postActionToMainThread(@NonNull Runnable r) {
-        if (isMainThread()) {
-            r.run();
-        } else {
-            h.post(r);
-        }
-    }
-
-    /**
-     * 在主线程执行任务,和上面的方法唯一的区别就是一定是post过去的
-     *
-     * @param r
-     */
-    public static void postActionToMainThreadAnyway(@NonNull Runnable r) {
-        h.post(r);
-    }
-
-    /**
-     * 是否是主线程
-     *
-     * @return
-     */
-    public static boolean isMainThread() {
-        return Thread.currentThread() == Looper.getMainLooper().getThread();
-    }
 
     /**
      * 当请求对象构建出来以后调用的
@@ -60,10 +24,10 @@ class EHiRouterUtil {
      * @param callback
      */
     public static void cancelCallback(@NonNull final EHiRouterRequest request, @Nullable final EHiCallback callback) {
-        if (isMainThread()) {
+        if (Utils.isMainThread()) {
             cancelCallbackOnMainThread(request, callback);
         } else {
-            postActionToMainThread(new Runnable() {
+            Utils.postActionToMainThreadAnyway(new Runnable() {
                 @Override
                 public void run() {
                     cancelCallbackOnMainThread(request, callback);
@@ -93,10 +57,10 @@ class EHiRouterUtil {
      */
     public static void errorCallback(@Nullable final EHiCallback callback,
                                      @NonNull final EHiRouterErrorResult errorResult) {
-        if (isMainThread()) {
+        if (Utils.isMainThread()) {
             errorCallbackOnMainThread(callback, errorResult);
         } else {
-            postActionToMainThread(new Runnable() {
+            Utils.postActionToMainThreadAnyway(new Runnable() {
                 @Override
                 public void run() {
                     errorCallbackOnMainThread(callback, errorResult);
@@ -129,10 +93,10 @@ class EHiRouterUtil {
 
     public static void successCallback(@Nullable final EHiCallback callback,
                                        @NonNull final EHiRouterResult successResult) {
-        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+        if (Utils.isMainThread()) {
             successCallbackOnMainThread(callback, successResult);
         } else {
-            postActionToMainThread(new Runnable() {
+            Utils.postActionToMainThreadAnyway(new Runnable() {
                 @Override
                 public void run() {
                     successCallbackOnMainThread(callback, successResult);
@@ -162,10 +126,10 @@ class EHiRouterUtil {
     public static void deliveryListener(@Nullable final EHiRouterResult successResult,
                                         @Nullable final EHiRouterErrorResult errorResult,
                                         @Nullable final EHiRouterRequest cancelRequest) {
-        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+        if (Utils.isMainThread()) {
             deliveryListenerOnMainThread(successResult, errorResult, cancelRequest);
         } else {
-            postActionToMainThread(new Runnable() {
+            Utils.postActionToMainThreadAnyway(new Runnable() {
                 @Override
                 public void run() {
                     deliveryListenerOnMainThread(successResult, errorResult, cancelRequest);

@@ -317,7 +317,7 @@ public class TestQualityAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .interceptors(TimeConsumingInterceptor.class)
-                .query("data", "cancelAuto")
+                .query("data", "cancelAuto2")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
@@ -346,6 +346,7 @@ public class TestQualityAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.NOT_FOUND_TEST)
+                .query("data", "targetNotFound")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
@@ -371,6 +372,7 @@ public class TestQualityAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
+                .query("data", "cancelAfterRouter")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
@@ -397,7 +399,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void runOnChildThread(View view) {
-        new Thread(){
+        new Thread("child thread"){
             @Override
             public void run() {
                 super.run();
@@ -405,16 +407,17 @@ public class TestQualityAct extends BaseAct {
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST)
-                        .query("data", "cancelAuto")
+                        .interceptorNames(InterceptorConfig.USER_LOGIN)
+                        .query("data", "runOnChildThread")
                         .navigate(new EHiCallbackAdapter() {
                             @Override
                             public void onSuccess(@NonNull EHiRouterResult result) {
-                                ToastUtil.toastShort("测试失败\n路由成功");
+                                ToastUtil.toastShort("测试成功\n路由成功");
                             }
 
                             @Override
                             public void onError(@NonNull EHiRouterErrorResult errorResult) {
-                                ToastUtil.toastLong("测试成功\n路由失败：" + Utils.getRealMessage(errorResult.getError()));
+                                ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(errorResult.getError()));
                             }
 
                             @Override
@@ -435,17 +438,17 @@ public class TestQualityAct extends BaseAct {
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST)
-                        .query("data", "cancelAuto")
+                        .query("data", "runOnChildThread1")
                         .call()
                         .subscribe(new Action() {
                             @Override
                             public void run() throws Exception {
-                                ToastUtil.toastShort("测试失败\n,onSuccess");
+                                ToastUtil.toastShort("测试成功\n,onSuccess");
                             }
                         }, new Consumer<Throwable>() {
                             @Override
                             public void accept(Throwable throwable) throws Exception {
-                                ToastUtil.toastShort("测试成功\n,onError：" + Utils.getRealMessage(throwable));
+                                ToastUtil.toastShort("测试失败\n,onError：" + Utils.getRealMessage(throwable));
                             }
                         });
             }
