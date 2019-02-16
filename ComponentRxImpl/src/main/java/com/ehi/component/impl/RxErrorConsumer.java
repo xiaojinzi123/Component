@@ -24,6 +24,9 @@ import io.reactivex.functions.Consumer;
  */
 public class RxErrorConsumer<T extends Throwable> implements Consumer<T> {
 
+    /**
+     * 如果使用者不想处理错误的话,这些错误都可以被默认忽略
+     */
     private static final Class IGNORE_ERROR_CLASSED[] = {
             NotRunOnMainThreadException.class,
             NavigationFailException.class,

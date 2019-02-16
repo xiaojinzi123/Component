@@ -483,10 +483,10 @@ public class EHiRxRouter {
                                 if (isExist) { // 如果存在直接取消这个路由任务,然后直接返回错误
                                     navigationDisposable.cancel();
                                     throw new NavigationFailException("request&result code is " +
-                                            navigationDisposable.request().requestCode + " is exist and " +
-                                            "uri is " + navigationDisposable.request().uri.toString());
+                                            navigationDisposable.originalRequest().requestCode + " is exist and " +
+                                            "uri is " + navigationDisposable.originalRequest().uri.toString());
                                 } else {
-                                    Help.addRequestCode(navigationDisposable.request());
+                                    Help.addRequestCode(navigationDisposable.originalRequest());
                                 }
 
                             } catch (Exception e) {
@@ -569,9 +569,9 @@ public class EHiRxRouter {
          * @throws Exception
          */
         private void onCheck(boolean isForResult) throws Exception {
-            if (Utils.isMainThread() == false) {
+            /*if (Utils.isMainThread() == false) {
                 throw new NotRunOnMainThreadException("EHiRxRouter must run on main thread");
-            }
+            }*/
             if (context == null && fragment == null) {
                 throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router"));
             }
@@ -593,11 +593,11 @@ public class EHiRxRouter {
         private static Set<String> mRequestCodeSet = new HashSet<>();
 
         public static boolean isExist(@NonNull NavigationDisposable disposable) {
-            if (disposable == null || disposable.request() == null || disposable.request().requestCode == null) {
+            if (disposable == null || disposable.originalRequest() == null || disposable.originalRequest().requestCode == null) {
                 return false;
             }
             // 拿到请求对象
-            EHiRouterRequest request = disposable.request();
+            EHiRouterRequest request = disposable.originalRequest();
             Integer requestCode = request.requestCode;
             if (request.context != null) {
                 return mRequestCodeSet.contains(request.context.getClass().getName() + requestCode);
@@ -607,7 +607,7 @@ public class EHiRxRouter {
             return false;
         }
 
-        public static void addRequestCode(EHiRouterRequest request) {
+        public static void addRequestCode(@Nullable EHiRouterRequest request) {
             if (request == null || request.requestCode == null) {
                 return;
             }

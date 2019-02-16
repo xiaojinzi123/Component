@@ -17,7 +17,6 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
-import com.ehi.component.error.NotRunOnMainThreadException;
 import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
 import com.ehi.component.impl.interceptor.EHiOpenOnceInterceptor;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
@@ -717,11 +716,12 @@ public class EHiRouter {
 
             @NonNull
             @Override
-            public EHiRouterRequest request() {
+            public EHiRouterRequest originalRequest() {
                 return mOriginalRequest;
             }
 
             @Override
+            @AnyThread
             public void cancel() {
                 synchronized (this) {
                     if (isEnd()) {
@@ -880,7 +880,7 @@ public class EHiRouter {
         synchronized (mNavigationDisposableList) {
             for (int i = mNavigationDisposableList.size() - 1; i >= 0; i--) {
                 NavigationDisposable disposable = mNavigationDisposableList.get(i);
-                if (act == disposable.request().context) {
+                if (act == disposable.originalRequest().context) {
                     disposable.cancel();
                     mNavigationDisposableList.remove(i);
                 }
@@ -893,7 +893,7 @@ public class EHiRouter {
         synchronized (mNavigationDisposableList) {
             for (int i = mNavigationDisposableList.size() - 1; i >= 0; i--) {
                 NavigationDisposable disposable = mNavigationDisposableList.get(i);
-                if (fragment == disposable.request().fragment) {
+                if (fragment == disposable.originalRequest().fragment) {
                     disposable.cancel();
                     mNavigationDisposableList.remove(i);
                 }
