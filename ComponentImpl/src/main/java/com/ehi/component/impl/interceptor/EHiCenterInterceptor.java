@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 中央拦截器
  * time   : 2018/12/26
  *
  * @author : xiaojinzi 30212
@@ -98,6 +99,7 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
     private void loadAllInterceptor() {
         mGlobalInterceptorList.clear();
         List<EHiInterceptorBean> totalList = new ArrayList<>();
+        // 加载各个子拦截器对象中的拦截器列表
         for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
             List<EHiInterceptorBean> list = entry.getValue().globalInterceptorList();
             if (list == null) {
@@ -105,6 +107,7 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
             }
             totalList.addAll(list);
         }
+        // 排序所有的拦截器对象,按照优先级排序
         Collections.sort(totalList, new Comparator<EHiInterceptorBean>() {
             @Override
             public int compare(EHiInterceptorBean o1, EHiInterceptorBean o2) {
