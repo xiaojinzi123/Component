@@ -40,18 +40,27 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
         return instance;
     }
 
+    /**
+     * 子拦截器对象管理 map
+     */
     private Map<String, IComponentHostInterceptor> moduleInterceptorMap = new HashMap<>();
 
-    private List<EHiRouterInterceptor> mInterceptorList = new ArrayList<>();
+    /**
+     * 公共的拦截器列表
+     */
+    private List<EHiRouterInterceptor> mGlobalInterceptorList = new ArrayList<>();
 
+    /**
+     * 是否公共的拦截器列表发生变化
+     */
     private boolean isInterceptorListHaveChange = false;
 
-    public List<EHiRouterInterceptor> getInterceptorList() {
+    public List<EHiRouterInterceptor> getGlobalInterceptorList() {
         if (isInterceptorListHaveChange) {
             loadAllInterceptor();
             isInterceptorListHaveChange = false;
         }
-        return mInterceptorList;
+        return mGlobalInterceptorList;
     }
 
     @Override
@@ -87,7 +96,7 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
      * 按顺序弄好所有拦截器
      */
     private void loadAllInterceptor() {
-        mInterceptorList.clear();
+        mGlobalInterceptorList.clear();
         List<EHiInterceptorBean> totalList = new ArrayList<>();
         for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
             List<EHiInterceptorBean> list = entry.getValue().globalInterceptorList();
@@ -109,7 +118,7 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
             }
         });
         for (EHiInterceptorBean interceptorBean : totalList) {
-            mInterceptorList.add(interceptorBean.interceptor);
+            mGlobalInterceptorList.add(interceptorBean.interceptor);
         }
     }
 
@@ -129,16 +138,23 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
 
     @Nullable
     @Override
-    public EHiRouterInterceptor getByName(@NonNull String name) {
-        for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
-            EHiRouterInterceptor interceptor = entry.getValue().getByName(name);
-            // 其实不应该找不到的, deBug的时候让它崩溃
-            if (interceptor == null) {
-            }else {
-                return interceptor;
+    public EHiRouterInterceptor getByName(@NonNull String interceptorName) {
+        EHiRouterInterceptor result = EHiRouterInterceptorUtil.get(interceptorName);
+        if (result == null) { // 如果缓存中没有去每一个子拦截器对象中找,找到存到缓存中
+            for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
+                EHiRouterInterceptor interceptor = entry.getValue().getByName(interceptorName);
+                // 其实不应该找不到的, deBug的时候让它崩溃
+                if (interceptor == null) {
+                } else {
+                    result = interceptor;
+                    break;
+                }
+            }
+            if (result != null) {
+                EHiRouterInterceptorUtil.putCache(interceptorName, result);
             }
         }
-        return null;
+        return result;
     }
 
 }

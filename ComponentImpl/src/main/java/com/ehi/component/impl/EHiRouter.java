@@ -571,14 +571,12 @@ public class EHiRouter {
                                   @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
 
             // 拿到共有的拦截器
-            List<EHiRouterInterceptor> publicInterceptors = EHiCenterInterceptor.getInstance().getInterceptorList();
+            List<EHiRouterInterceptor> publicInterceptors = EHiCenterInterceptor.getInstance().getGlobalInterceptorList();
             // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
             final List<EHiRouterInterceptor> interceptors = new ArrayList(8);
             // 添加内置拦截器
             interceptors.add(EHiOpenOnceInterceptor.getInstance());
-
-            // ------------------------------添加自定义拦截器------------------------------start
-
+            // -------------------------------------------------------添加自定义拦截器-------------------------------------------------start
             if (customInterceptors != null) {
                 for (EHiRouterInterceptor customInterceptor : customInterceptors) {
                     interceptors.add(customInterceptor);
