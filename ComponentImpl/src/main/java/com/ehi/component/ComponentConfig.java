@@ -26,6 +26,7 @@ public class ComponentConfig {
         }
         ComponentConfig.application = application;
         ComponentConfig.isDebug = isDebug;
+        // 注册
         application.registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
     }
 

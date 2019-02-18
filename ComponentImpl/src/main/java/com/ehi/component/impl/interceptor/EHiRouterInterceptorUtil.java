@@ -26,9 +26,7 @@ public class EHiRouterInterceptorUtil {
 
     @Nullable
     public static synchronized <T> T get(@NonNull Class<T> tClass) {
-
         T t = (T) map.get(tClass);
-
         if (t == null) {
             try {
                 Constructor<?>[] constructors = tClass.getConstructors();
@@ -61,7 +59,6 @@ public class EHiRouterInterceptorUtil {
             }
 
         }
-
         return t;
     }
 

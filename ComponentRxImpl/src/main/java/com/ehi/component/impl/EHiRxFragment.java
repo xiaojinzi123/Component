@@ -62,6 +62,7 @@ public final class EHiRxFragment extends Fragment {
         if (findRequest != null) {
             singleEmitterMap.remove(findRequest);
         }
+
     }
 
     public boolean isContainsSingleEmitter(@NonNull EHiRouterRequest request) {

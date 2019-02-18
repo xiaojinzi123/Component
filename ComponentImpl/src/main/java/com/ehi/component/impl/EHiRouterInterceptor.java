@@ -4,12 +4,10 @@ import android.support.annotation.AnyThread;
 import android.support.annotation.CallSuper;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
 
 /**
  * 路由跳转的拦截器
  */
-@MainThread
 public interface EHiRouterInterceptor {
 
     /**
@@ -83,6 +81,7 @@ public interface EHiRouterInterceptor {
          *
          * @return
          */
+        @AnyThread
         boolean isComplete();
 
         /**
@@ -90,6 +89,7 @@ public interface EHiRouterInterceptor {
          *
          * @return
          */
+        @AnyThread
         boolean isCanceled();
 
     }

@@ -21,9 +21,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -38,8 +35,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 @AutoService(Processor.class)
@@ -49,6 +44,7 @@ import javax.tools.Diagnostic;
 public class RouterProcessor extends BaseHostProcessor {
 
     private static final int ANNO_TARGET_INVALID = -1;
+
     private static final String ROUTER_BEAN_NAME = "com.ehi.component.bean.EHiRouterBean";
     private static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.ehi.component.bean.CustomerIntentCall";
     private static final String CUSTOMER_JUMP_CLASS_NAME = "com.ehi.component.bean.CustomerJump";
@@ -119,34 +115,24 @@ public class RouterProcessor extends BaseHostProcessor {
         if (options != null) {
             componentHost = options.get("HOST");
         }
-
         if (componentHost == null || "".equals(componentHost)) {
             ErrorPrintUtil.printHostNull(mMessager);
             return;
         }
-
         mMessager.printMessage(Diagnostic.Kind.NOTE, "RouterProcessor.componentHost = " + componentHost);
 
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-
         if (CollectionUtils.isNotEmpty(set)) {
-
             Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(EHiRouterAnno.class);
-
             mMessager.printMessage(Diagnostic.Kind.NOTE, " >>> size = " + (routeElements == null ? 0 : routeElements.size()));
-
             parseRouterAnno(routeElements);
-
             createRouterImpl();
-
             return true;
         }
-
         return false;
-
     }
 
     private Map<String, RouterBean> routerMap = new HashMap<>();
@@ -163,36 +149,15 @@ public class RouterProcessor extends BaseHostProcessor {
         for (Element element : routeElements) {
 
             mMessager.printMessage(Diagnostic.Kind.NOTE, "element == " + element.toString());
-
-            // 必须标记的是一种类型的元素或者是一个可执行的方法
-//            if (!(element instanceof TypeElement)) {
-//
-//                throw new RuntimeException(element + " is not a 'TypeElement' ");
-//
-//            }
-//
-//            // 必须标记在 Activity 上
-//            if (!mTypes.isSubtype(tm, typeActivity)) {
-//
-//                throw new RuntimeException(element + " can't use 'EHiRouterAnno' annotation");
-//
-//            }
-
             // 如果是一个Activity 才会走到这里
-
             EHiRouterAnno router = element.getAnnotation(EHiRouterAnno.class);
-
             if (router == null) {
                 continue;
             }
-
             if (router.value() == null || "".equals(router.value())) {
-
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value can;t be null or empty string");
                 continue;
-
             }
-
             // 如果有host那就必须满足规范
             if (router.host() == null || "".equals(router.host())) {
             } else {
@@ -200,13 +165,11 @@ public class RouterProcessor extends BaseHostProcessor {
                     mMessager.printMessage(Diagnostic.Kind.ERROR, "the host value '" + router.host() + "' can't contains '/'");
                 }
             }
-
             if (routerMap.containsKey(getHostAndPath(router.host(), router.value()))) {
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value is alreay exist");
                 continue;
 
             }
-
             RouterBean routerBean = new RouterBean();
             routerBean.setHost(router.host());
             routerBean.setPath(router.value());
@@ -220,11 +183,8 @@ public class RouterProcessor extends BaseHostProcessor {
                     routerBean.getInterceptorNames().add(interceptorName);
                 }
             }
-
             routerMap.put(getHostAndPath(router.host(), router.value()), routerBean);
-
             mMessager.printMessage(Diagnostic.Kind.NOTE, "router.value() = " + router.value() + ",Activity = " + element);
-
         }
 
     }
@@ -235,7 +195,6 @@ public class RouterProcessor extends BaseHostProcessor {
     private void createRouterImpl() {
 
         String claName = ComponentUtil.genHostRouterClassName(componentHost);
-
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf("."));
 
@@ -244,10 +203,8 @@ public class RouterProcessor extends BaseHostProcessor {
 
         // superClassName
         ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.UIROUTER_IMPL_CLASS_NAME));
-
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();
-
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 //.addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
@@ -256,7 +213,6 @@ public class RouterProcessor extends BaseHostProcessor {
                 .addMethod(initMapMethod)
                 .addJavadoc(componentHost + "业务模块的路由表\n")
                 .build();
-
         try {
             JavaFile.builder(pkg, typeSpec)
                     .indent("    ")
@@ -268,15 +224,14 @@ public class RouterProcessor extends BaseHostProcessor {
     }
 
     private MethodSpec generateInitMapMethod() {
-        TypeName returnType = TypeName.VOID;
 
+        TypeName returnType = TypeName.VOID;
         final MethodSpec.Builder initMapMethodSpecBuilder = MethodSpec.methodBuilder("initMap")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
 
         initMapMethodSpecBuilder.addStatement("super.initMap()");
-
         routerMap.forEach(new BiConsumer<String, com.ehi.component.bean.RouterBean>() {
             @Override
             public void accept(String key, RouterBean routerBean) {
@@ -317,24 +272,22 @@ public class RouterProcessor extends BaseHostProcessor {
                 initMapMethodSpecBuilder.addCode("\n");
             }
         });
-
         initMapMethodSpecBuilder.addJavadoc("初始化路由表的数据\n");
-
         return initMapMethodSpecBuilder.build();
+
     }
 
     private MethodSpec generateInitHostMethod() {
 
         TypeName returnType = mClassNameString;
-
         MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("getHost")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
 
         openUriMethodSpecBuilder.addStatement("return $S", componentHost);
-
         return openUriMethodSpecBuilder.build();
+
     }
 
     private String getHostAndPath(String host, String path) {
@@ -342,11 +295,9 @@ public class RouterProcessor extends BaseHostProcessor {
         if (host == null || "".equals(host)) {
             host = componentHost;
         }
-
         if (path != null && path.length() > 0 && path.charAt(0) != '/') {
             path = "/" + path;
         }
-
         return host + path;
 
     }

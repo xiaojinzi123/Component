@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 public @interface EHiGlobalInterceptorAnno {
 
     /**
-     * 定义优先级
+     * 定义优先级,值越大优先级越高
      *
      * @return
      */

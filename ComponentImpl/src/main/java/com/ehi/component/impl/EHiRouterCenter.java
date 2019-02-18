@@ -79,13 +79,10 @@ public class EHiRouterCenter implements IComponentModuleRouter {
 
     @Override
     public void register(@NonNull IComponentHostRouter router) {
-
         if (router == null) {
             return;
         }
-
         routerMap.put(router.getHost(), router);
-
     }
 
     @Override
@@ -113,23 +110,16 @@ public class EHiRouterCenter implements IComponentModuleRouter {
      */
     @Nullable
     public IComponentHostRouter findUiRouter(String host) {
-
         String className = ComponentUtil.genHostRouterClassName(host);
-
         try {
             Class<?> clazz = Class.forName(className);
-
             IComponentHostRouter instance = (IComponentHostRouter) clazz.newInstance();
-
             return instance;
-
         } catch (ClassNotFoundException e) {
         } catch (IllegalAccessException e) {
         } catch (InstantiationException e) {
         }
-
         return null;
-
     }
 
 }

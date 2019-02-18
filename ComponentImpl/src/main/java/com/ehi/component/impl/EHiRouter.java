@@ -572,10 +572,9 @@ public class EHiRouter {
 
             // 拿到共有的拦截器
             List<EHiRouterInterceptor> publicInterceptors = EHiCenterInterceptor.getInstance().getInterceptorList();
-
             // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
             final List<EHiRouterInterceptor> interceptors = new ArrayList(8);
-            // 添加两个内置拦截器
+            // 添加内置拦截器
             interceptors.add(EHiOpenOnceInterceptor.getInstance());
 
             // ------------------------------添加自定义拦截器------------------------------start
@@ -638,6 +637,7 @@ public class EHiRouter {
             final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest, callback);
             // 执行
             chain.proceed(originalRequest);
+
         }
 
         /**
@@ -645,11 +645,15 @@ public class EHiRouter {
          */
         private class InterceptorCallback implements EHiRouterInterceptor.Callback, NavigationDisposable {
 
-            // 回调
+            /**
+             * 用户的回调
+             */
             @Nullable
             private EHiCallback mCallback;
 
-            // 最原始的请求,用户构建的,不会更改的
+            /**
+             * 最原始的请求,用户构建的,不会更改的
+             */
             @NonNull
             private final EHiRouterRequest mOriginalRequest;
 

@@ -21,7 +21,6 @@ import io.reactivex.Maybe;
 import io.reactivex.MaybeSource;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
@@ -48,7 +47,6 @@ public class EHiRxService extends EHiService {
         return Single.fromCallable(new Callable<T>() {
             @Override
             public T call() throws Exception {
-
                 T tempImpl = null;
                 if (Utils.isMainThread()) {
                     tempImpl = get(tClass);

@@ -22,7 +22,7 @@ public interface IComponentHostInterceptor extends IComponentInterceptor {
     String getHost();
 
     /**
-     * 获取拦截器列表
+     * 获取全局的拦截器列表
      *
      * @return
      */
@@ -30,7 +30,7 @@ public interface IComponentHostInterceptor extends IComponentInterceptor {
     List<EHiInterceptorBean> globalInterceptorList();
 
     /**
-     * 获取普通拦截器的所有名称
+     * 获取普通拦截器的所有名称,然后后面会根据名称来寻找拦截器
      *
      * @return
      */
