@@ -6,6 +6,7 @@ import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.impl.EHiRouterInterceptor;
 
 /**
+ * 这个拦截器必须在其他任何一个拦截器之前执行
  * 从根本上限制同一个界面在一秒钟内只能打开一次,这个拦截器会被框架最先执行
  * time   : 2019/01/23
  *
