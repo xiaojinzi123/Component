@@ -16,6 +16,7 @@ import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterErrorResult;
+import com.ehi.component.impl.EHiRouterInterceptor;
 import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
@@ -40,6 +41,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
         contentView.findViewById(R.id.normalJump).setOnClickListener(this);
         contentView.findViewById(R.id.rxJumpGetData).setOnClickListener(this);
         contentView.findViewById(R.id.testCallbackAfterFinish).setOnClickListener(this);
+        contentView.findViewById(R.id.testCallbackAfterFinishActivity).setOnClickListener(this);
         contentView.findViewById(R.id.bt_clearInfo).setOnClickListener(this);
         tv_detail = contentView.findViewById(R.id.tv_detail);
         return contentView;
@@ -54,6 +56,8 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
             normalJump();
         } else if (viewId == R.id.testCallbackAfterFinish) {
             testCallbackAfterFinish();
+        } else if (viewId == R.id.testCallbackAfterFinishActivity) {
+            testCallbackAfterFinishActivity();
         } else if (viewId == R.id.bt_clearInfo) {
             tv_detail.setText("");
         }
@@ -118,7 +122,6 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
     }
 
     public void testCallbackAfterFinish() {
-
         EHiRxRouter
                 .withFragment(this)
                 .host(ModuleConfig.System.NAME)
@@ -137,7 +140,43 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 });
 
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+    }
 
+    public void testCallbackAfterFinishActivity() {
+        EHiRxRouter
+                .withFragment(this)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.CALL_PHONE)
+                .interceptors(new EHiRouterInterceptor() {
+                    @Override
+                    public void intercept(final Chain chain) throws Exception {
+                        new Thread(){
+                            @Override
+                            public void run() {
+                                super.run();
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                }
+                                chain.proceed(chain.request());
+                            }
+                        }.start();
+                    }
+                })
+                .interceptors(DialogShowInterceptor.class)
+                .navigate(new EHiCallbackAdapter(){
+                    @Override
+                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
+                        Toast.makeText(ComponentConfig.getApplication(), "onEvent", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCancel(@NonNull EHiRouterRequest request) {
+                        super.onCancel(request);
+                        Toast.makeText(ComponentConfig.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        getActivity().finish();
     }
 
 }

@@ -44,6 +44,9 @@ public class EHiRouterCenter implements IComponentModuleRouter {
     @Override
     @MainThread
     public void openUri(@NonNull EHiRouterRequest routerRequest) throws Exception {
+        // 理论上,这里可以通过 host 直接拿到对应的 IComponentHostRouter 对象,然后调用 openUri 完成功能
+        // 但是为了兼容渐进式组件化,没法一步就把某一个模块的代码都抽离出来,所以存在某一个 IComponentHostRouter
+        // 中存在多个 host 的路由数据
         for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
             if (entry.getValue().isMatchUri(routerRequest.uri)) {
                 entry.getValue().openUri(routerRequest);
@@ -55,6 +58,7 @@ public class EHiRouterCenter implements IComponentModuleRouter {
 
     @Override
     public synchronized boolean isMatchUri(@NonNull Uri uri) {
+        // 循环的理由同 openUri 方法
         for (String key : routerMap.keySet()) {
             IComponentHostRouter router = routerMap.get(key);
             if (router.isMatchUri(uri)) {
