@@ -22,7 +22,7 @@ public interface IComponentHostInterceptor extends IComponentInterceptor {
     String getHost();
 
     /**
-     * 获取全局的拦截器列表
+     * 获取全局的拦截器列表,外面使用的地方做了缓存
      *
      * @return
      */
