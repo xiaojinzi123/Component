@@ -83,11 +83,6 @@ public class RouterProcessor extends BaseHostProcessor {
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
 
-        mFiler = processingEnv.getFiler();
-        mMessager = processingEnvironment.getMessager();
-        mTypes = processingEnv.getTypeUtils();
-        mElements = processingEnv.getElementUtils();
-
         routerBeanTypeElement = mElements.getTypeElement(ROUTER_BEAN_NAME);
         routerBeanTypeName = TypeName.get(routerBeanTypeElement.asType());
         mapTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_MAP);
@@ -111,7 +106,7 @@ public class RouterProcessor extends BaseHostProcessor {
         parcelableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_PARCELABLE);
         parcelableTypeMirror = parcelableTypeElement.asType();
 
-        Map<String, String> options = processingEnv.getOptions();
+        final Map<String, String> options = processingEnv.getOptions();
         if (options != null) {
             componentHost = options.get("HOST");
         }
@@ -120,13 +115,12 @@ public class RouterProcessor extends BaseHostProcessor {
             return;
         }
         mMessager.printMessage(Diagnostic.Kind.NOTE, "RouterProcessor.componentHost = " + componentHost);
-
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         if (CollectionUtils.isNotEmpty(set)) {
-            Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(EHiRouterAnno.class);
+            final Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(EHiRouterAnno.class);
             mMessager.printMessage(Diagnostic.Kind.NOTE, " >>> size = " + (routeElements == null ? 0 : routeElements.size()));
             parseRouterAnno(routeElements);
             createRouterImpl();
@@ -135,7 +129,7 @@ public class RouterProcessor extends BaseHostProcessor {
         return false;
     }
 
-    private Map<String, RouterBean> routerMap = new HashMap<>();
+    private final Map<String, RouterBean> routerMap = new HashMap<>();
 
     /**
      * 解析注解
@@ -143,14 +137,11 @@ public class RouterProcessor extends BaseHostProcessor {
      * @param routeElements
      */
     private void parseRouterAnno(Set<? extends Element> routeElements) {
-
         TypeMirror typeActivity = mElements.getTypeElement(ComponentConstants.ACTIVITY).asType();
-
         for (Element element : routeElements) {
-
             mMessager.printMessage(Diagnostic.Kind.NOTE, "element == " + element.toString());
             // 如果是一个Activity 才会走到这里
-            EHiRouterAnno router = element.getAnnotation(EHiRouterAnno.class);
+            final EHiRouterAnno router = element.getAnnotation(EHiRouterAnno.class);
             if (router == null) {
                 continue;
             }
@@ -159,18 +150,15 @@ public class RouterProcessor extends BaseHostProcessor {
                 continue;
             }
             // 如果有host那就必须满足规范
-            if (router.host() == null || "".equals(router.host())) {
-            } else {
+            if (router.host() != null && !"".equals(router.host())) {
                 if (router.host().contains("/")) {
                     mMessager.printMessage(Diagnostic.Kind.ERROR, "the host value '" + router.host() + "' can't contains '/'");
                 }
             }
             if (routerMap.containsKey(getHostAndPath(router.host(), router.value()))) {
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value is alreay exist");
-                continue;
-
             }
-            RouterBean routerBean = new RouterBean();
+            final RouterBean routerBean = new RouterBean();
             routerBean.setHost(router.host());
             routerBean.setPath(router.value());
             routerBean.setDesc(router.desc());
@@ -186,23 +174,19 @@ public class RouterProcessor extends BaseHostProcessor {
             routerMap.put(getHostAndPath(router.host(), router.value()), routerBean);
             mMessager.printMessage(Diagnostic.Kind.NOTE, "router.value() = " + router.value() + ",Activity = " + element);
         }
-
     }
 
     /**
      * 生成路由
      */
     private void createRouterImpl() {
-
-        String claName = ComponentUtil.genHostRouterClassName(componentHost);
+        final String claName = ComponentUtil.genHostRouterClassName(componentHost);
         //pkg
-        String pkg = claName.substring(0, claName.lastIndexOf("."));
-
+        final String pkg = claName.substring(0, claName.lastIndexOf("."));
         //simpleName
-        String cn = claName.substring(claName.lastIndexOf(".") + 1);
-
+        final String cn = claName.substring(claName.lastIndexOf(".") + 1);
         // superClassName
-        ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.UIROUTER_IMPL_CLASS_NAME));
+        final ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.UIROUTER_IMPL_CLASS_NAME));
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
@@ -220,7 +204,6 @@ public class RouterProcessor extends BaseHostProcessor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private MethodSpec generateInitMapMethod() {
@@ -291,7 +274,6 @@ public class RouterProcessor extends BaseHostProcessor {
     }
 
     private String getHostAndPath(String host, String path) {
-
         if (host == null || "".equals(host)) {
             host = componentHost;
         }
@@ -299,20 +281,19 @@ public class RouterProcessor extends BaseHostProcessor {
             path = "/" + path;
         }
         return host + path;
-
     }
 
     private List<String> getImplClassName(EHiRouterAnno anno) {
         List<String> implClassNames = new ArrayList<>();
         try {
             implClassNames.clear();
-            Class[] interceptors = anno.interceptors();
+            final Class[] interceptors = anno.interceptors();//这里会报错，此时在catch中获取到拦截器的全类名
             for (Class interceptor : interceptors) {
                 implClassNames.add(interceptor.getName());
             }
         } catch (MirroredTypesException e) {
             implClassNames.clear();
-            List<? extends TypeMirror> typeMirrors = e.getTypeMirrors();
+            final List<? extends TypeMirror> typeMirrors = e.getTypeMirrors();
             for (TypeMirror typeMirror : typeMirrors) {
                 implClassNames.add(typeMirror.toString());
             }

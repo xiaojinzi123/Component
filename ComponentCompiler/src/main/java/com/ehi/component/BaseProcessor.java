@@ -36,7 +36,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
         super.init(processingEnvironment);
 
         mFiler = processingEnv.getFiler();
-        mMessager = processingEnvironment.getMessager();
+        mMessager = processingEnv.getMessager();
         mTypes = processingEnv.getTypeUtils();
         mElements = processingEnv.getElementUtils();
 
