@@ -43,8 +43,6 @@ import javax.tools.Diagnostic;
 @SupportedAnnotationTypes({ComponentUtil.ROUTER_ANNO_CLASS_NAME})
 public class RouterProcessor extends BaseHostProcessor {
 
-    private static final int ANNO_TARGET_INVALID = -1;
-
     private static final String ROUTER_BEAN_NAME = "com.ehi.component.bean.EHiRouterBean";
     private static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.ehi.component.bean.CustomerIntentCall";
     private static final String CUSTOMER_JUMP_CLASS_NAME = "com.ehi.component.bean.CustomerJump";
@@ -56,17 +54,14 @@ public class RouterProcessor extends BaseHostProcessor {
     private ClassName customerJumpClassName;
 
     private TypeElement routerBeanTypeElement;
-    private TypeName routerBeanTypeName;
     private TypeElement exceptionTypeElement;
     private ClassName exceptionClassName;
     private TypeElement intentTypeElement;
     private TypeElement mapTypeElement;
-    private ClassName mapClassName;
     private TypeMirror intentTypeMirror;
     private TypeElement routerRequestTypeElement;
     private TypeMirror routerRequestTypeMirror;
     private TypeElement queryParameterSupportTypeElement;
-    private TypeMirror queryParameterSupportTypeMirror;
     private TypeElement parameterSupportTypeElement;
     private TypeMirror parameterSupportTypeMirror;
     private TypeElement serializableTypeElement;
@@ -84,9 +79,7 @@ public class RouterProcessor extends BaseHostProcessor {
         super.init(processingEnvironment);
 
         routerBeanTypeElement = mElements.getTypeElement(ROUTER_BEAN_NAME);
-        routerBeanTypeName = TypeName.get(routerBeanTypeElement.asType());
         mapTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_MAP);
-        mapClassName = ClassName.get(mapTypeElement);
         exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
         exceptionClassName = ClassName.get(exceptionTypeElement);
         customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
@@ -98,7 +91,6 @@ public class RouterProcessor extends BaseHostProcessor {
         customerIntentCallClassName = ClassName.get(customerIntentCallTypeElement);
         customerJumpClassName = ClassName.get(customerJumpTypeElement);
         queryParameterSupportTypeElement = mElements.getTypeElement(ComponentConstants.QUERYPARAMETERSUPPORT_CLASS_NAME);
-        queryParameterSupportTypeMirror = queryParameterSupportTypeElement.asType();
         parameterSupportTypeElement = mElements.getTypeElement(ComponentConstants.PARAMETERSUPPORT_CLASS_NAME);
         parameterSupportTypeMirror = parameterSupportTypeElement.asType();
         serializableTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_SERIALIZABLE);
@@ -137,7 +129,6 @@ public class RouterProcessor extends BaseHostProcessor {
      * @param routeElements
      */
     private void parseRouterAnno(Set<? extends Element> routeElements) {
-        TypeMirror typeActivity = mElements.getTypeElement(ComponentConstants.ACTIVITY).asType();
         for (Element element : routeElements) {
             mMessager.printMessage(Diagnostic.Kind.NOTE, "element == " + element.toString());
             // 如果是一个Activity 才会走到这里
@@ -207,31 +198,15 @@ public class RouterProcessor extends BaseHostProcessor {
     }
 
     private MethodSpec generateInitMapMethod() {
-
         TypeName returnType = TypeName.VOID;
         final MethodSpec.Builder initMapMethodSpecBuilder = MethodSpec.methodBuilder("initMap")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
-
         initMapMethodSpecBuilder.addStatement("super.initMap()");
         routerMap.forEach(new BiConsumer<String, com.ehi.component.bean.RouterBean>() {
             @Override
             public void accept(String key, RouterBean routerBean) {
-
-                // 1. 如果标记在 Activity 上
-                // 可能是空的,因为注解可能标记在静态方法上
-                ClassName targetActivityClassName = null;
-
-                // 2. 如果标记在静态方法上
-                // 当标记在静态方法上的时候,这个不会为空,比如 "xxx.intentCreate"
-                String customerIntentOrJumpPath = null;
-
-                // 注解标记到的界面的类型
-                int annoTarget = ANNO_TARGET_INVALID;
-
-                // 注释的文本,无论哪种情况都不会为空
-                String commentStr = null;
                 // 生成变量的名字,每一个变量代表每一个目标界面的配置对象
                 String routerBeanName = "routerBean" + atomicInteger.incrementAndGet();
                 // 生成 Activity 的调用代码
@@ -257,7 +232,6 @@ public class RouterProcessor extends BaseHostProcessor {
         });
         initMapMethodSpecBuilder.addJavadoc("初始化路由表的数据\n");
         return initMapMethodSpecBuilder.build();
-
     }
 
     private MethodSpec generateInitHostMethod() {
@@ -287,7 +261,9 @@ public class RouterProcessor extends BaseHostProcessor {
         List<String> implClassNames = new ArrayList<>();
         try {
             implClassNames.clear();
-            final Class[] interceptors = anno.interceptors();//这里会报错，此时在catch中获取到拦截器的全类名
+            //这里会报错，此时在catch中获取到拦截器的全类名
+            final Class[] interceptors = anno.interceptors();
+            // 这个循环其实不会走,我就随便写的,不过最好也不要删除
             for (Class interceptor : interceptors) {
                 implClassNames.add(interceptor.getName());
             }
@@ -352,7 +328,6 @@ public class RouterProcessor extends BaseHostProcessor {
         methodSpecBuilder.addStatement("$N.host = $S", routerBeanName, routerBean.getHost());
         methodSpecBuilder.addStatement("$N.path = $S", routerBeanName, routerBean.getPath());
         methodSpecBuilder.addStatement("$N.desc = $S", routerBeanName, routerBean.getDesc());
-
         // 如果是自定义 Intent
         if (intentTypeMirror.equals(customerReturnType)) {
 

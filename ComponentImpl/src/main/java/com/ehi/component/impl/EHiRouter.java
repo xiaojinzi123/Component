@@ -577,6 +577,9 @@ public class EHiRouter {
             // 添加内置拦截器,目前就一个内置拦截器,而且必须在最前面,因为这个拦截器内部有一个时间的记录
             // 保证一秒内就只能打开一个相同的界面
             interceptors.add(EHiOpenOnceInterceptor.getInstance());
+            // 添加共有拦截器
+            interceptors.addAll(publicInterceptors);
+
             // -------------------------------------------------------添加自定义拦截器-------------------------------------------------start
             if (customInterceptors != null) {
                 for (EHiRouterInterceptor customInterceptor : customInterceptors) {
@@ -612,8 +615,7 @@ public class EHiRouter {
                 }
             }
             // -------------------------------------------------------添加自定义拦截器-------------------------------------------------end
-            // 公共拦截器
-            interceptors.addAll(publicInterceptors);
+
             // 扫尾拦截器,内部会添加目标要求执行的拦截器和真正执行跳转的拦截器
             interceptors.add(new EHiRouterInterceptor() {
                 @Override

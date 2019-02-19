@@ -2,10 +2,6 @@ package com.ehi.component;
 
 import android.app.Activity;
 import android.app.Application;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -31,12 +27,6 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
                     EHiRouter.cancel(f);
                 }
             };
-            fragmentActivity.getLifecycle().addObserver(new LifecycleObserver() {
-                @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-                public void onStateChanged(LifecycleOwner source) {
-                    supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks);
-                }
-            });
             supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);
         }
     }

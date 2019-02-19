@@ -108,7 +108,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         Context context = routerRequest.getRawContext();
         // 如果 Context 和 Fragment 中的 Context 都是 null
         if (context == null) {
-            throw new NavigationFailException("do your fragment attached to Activity or forget to call 'EHiRouter.with()'method");
+            throw new NavigationFailException("is your fragment or Activity is Destoried?");
         }
         // 转化 query 到 bundle,这句话不能随便放,因为这句话之前是因为拦截器可以修改 routerRequest 对象中的参数或者整个对象
         // 所以直接当所有拦截器都执行完毕的时候,在确定要跳转了,这个 query 参数可以往 bundle 里面存了
