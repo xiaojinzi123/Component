@@ -76,7 +76,6 @@ public class EHiRouterInterceptorUtil {
                     throw new RuntimeException(e);
                 }
             }
-
         }
         return t;
     }

@@ -42,7 +42,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
      * component/test
      * 保存映射关系的map集合
      */
-    protected Map<String, EHiRouterBean> routerBeanMap = new HashMap<>();
+    protected final Map<String, EHiRouterBean> routerBeanMap = new HashMap<>();
 
     /**
      * 是否初始化了map,懒加载
@@ -63,9 +63,10 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
      * @return
      */
     public Map<String, EHiRouterBean> getRouterMap() {
-        initMap();
-        Map<String, EHiRouterBean> map = new HashMap<>(routerBeanMap);
-        return map;
+        if (!hasInitMap) {
+            initMap();
+        }
+        return new HashMap<>(routerBeanMap);
     }
 
     @Override
@@ -85,7 +86,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         if (!hasInitMap) {
             initMap();
         }
-        if (Utils.isMainThread() == false) {
+        if (!Utils.isMainThread()) {
             throw new NavigationFailException("EHiRouter must run on main thread");
         }
         if (routerRequest.uri == null) {
@@ -193,7 +194,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         if (!hasInitMap) {
             initMap();
         }
-        return getTarget(uri) == null ? false : true;
+        return getTarget(uri) != null;
     }
 
     @Nullable
@@ -203,23 +204,21 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
             initMap();
         }
         // 获取目标对象
-        String targetPath = getTargetPath(uri);
-        EHiRouterBean routerBean = routerBeanMap.get(targetPath);
+        final String targetPath = getTargetPath(uri);
+        final EHiRouterBean routerBean = routerBeanMap.get(targetPath);
         if (routerBean == null) {
             return null;
         }
-        List<Class<? extends EHiRouterInterceptor>> interceptors = routerBean.interceptors;
-        List<String> interceptorNames = routerBean.interceptorNames;
-
+        final List<Class<? extends EHiRouterInterceptor>> interceptors = routerBean.interceptors;
+        final List<String> interceptorNames = routerBean.interceptorNames;
         // 如果没有拦截器直接返回 null
-        if ((interceptors == null || interceptors.size() == 0) && (interceptorNames == null || interceptorNames.size() == 0)) {
+        if ((interceptors == null || interceptors.isEmpty()) && (interceptorNames == null || interceptorNames.isEmpty())) {
             return null;
         }
-
-        List<EHiRouterInterceptor> result = new ArrayList<>();
+        final List<EHiRouterInterceptor> result = new ArrayList<>();
         if (interceptors != null) {
             for (Class<? extends EHiRouterInterceptor> interceptorClass : interceptors) {
-                EHiRouterInterceptor interceptor = EHiRouterInterceptorUtil.get(interceptorClass);
+                final EHiRouterInterceptor interceptor = EHiRouterInterceptorUtil.get(interceptorClass);
                 if (interceptor == null) {
                     throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + uri.toString());
                 }
@@ -228,7 +227,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         }
         if (interceptorNames != null) {
             for (String interceptorName : interceptorNames) {
-                EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(interceptorName);
+                final EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(interceptorName);
                 if (interceptor == null) {
                     throw new InterceptorNotFoundException("can't find the interceptor and it's name is " + interceptorName + ",target url is " + uri.toString());
                 }
