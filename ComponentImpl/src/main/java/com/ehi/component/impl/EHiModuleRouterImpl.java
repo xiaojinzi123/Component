@@ -18,7 +18,7 @@ import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
-import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
+import com.ehi.component.impl.interceptor.EHiRouterInterceptorCache;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.QueryParameterSupport;
 import com.ehi.component.support.Utils;
@@ -218,7 +218,7 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
         final List<EHiRouterInterceptor> result = new ArrayList<>();
         if (interceptors != null) {
             for (Class<? extends EHiRouterInterceptor> interceptorClass : interceptors) {
-                final EHiRouterInterceptor interceptor = EHiRouterInterceptorUtil.get(interceptorClass);
+                final EHiRouterInterceptor interceptor = EHiRouterInterceptorCache.getInterceptorByClass(interceptorClass);
                 if (interceptor == null) {
                     throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + uri.toString());
                 }

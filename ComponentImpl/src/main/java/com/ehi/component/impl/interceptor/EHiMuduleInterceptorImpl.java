@@ -61,7 +61,7 @@ abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
         if (interceptorClass == null) {
             return null;
         }
-        return EHiRouterInterceptorUtil.get(interceptorClass);
+        return EHiRouterInterceptorCache.getInterceptorByClass(interceptorClass);
     }
 
 }

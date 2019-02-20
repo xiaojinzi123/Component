@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiRouterInterceptorUtil {
+public class EHiRouterInterceptorCache {
 
     /**
      * 拦截器 Class --> EHiRouterInterceptor 的缓存
@@ -44,7 +44,7 @@ public class EHiRouterInterceptorUtil {
      * @return
      */
     @Nullable
-    public static synchronized EHiRouterInterceptor get(@NonNull Class<? extends EHiRouterInterceptor> tClass) {
+    public static synchronized EHiRouterInterceptor getInterceptorByClass(@NonNull Class<? extends EHiRouterInterceptor> tClass) {
         EHiRouterInterceptor t = interceptorClassCacheMap.get(tClass);
         if (t == null) {
             try {
@@ -80,12 +80,27 @@ public class EHiRouterInterceptorUtil {
         return t;
     }
 
-    public static synchronized EHiRouterInterceptor get(@NonNull String interceptorName) {
+    public static synchronized void remoceCache(@NonNull Class<? extends EHiRouterInterceptor> tClass) {
+        interceptorClassCacheMap.remove(tClass);
+    }
+
+    /**
+     * 根据拦截器的名字获取拦截器的缓存对象
+     *
+     * @param interceptorName
+     * @return
+     */
+    @Nullable
+    public static synchronized EHiRouterInterceptor getInterceptorByName(@NonNull String interceptorName) {
         return interceptorNameCacheMap.get(interceptorName);
     }
 
     public static synchronized void putCache(@NonNull String interceptorName, @NonNull EHiRouterInterceptor interceptor) {
         interceptorNameCacheMap.put(interceptorName, interceptor);
+    }
+
+    public static synchronized void remoceCache(@NonNull String interceptorName) {
+        interceptorNameCacheMap.remove(interceptorName);
     }
 
 }

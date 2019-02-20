@@ -13,10 +13,16 @@ import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouterRequest;
 
 /**
- *
+ * 自定义路由实现的范例
  */
 public class CustomerRouterImpl {
 
+    /**
+     * 自定义实现跳转到打电话的界面,并且自动完成打电话权限的申请
+     *
+     * @param request
+     * @return
+     */
     @Nullable
     @EHiRouterAnno(
             host = ModuleConfig.System.NAME,

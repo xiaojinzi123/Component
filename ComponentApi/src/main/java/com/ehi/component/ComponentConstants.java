@@ -13,7 +13,7 @@ public interface ComponentConstants {
 
     String EHIAPPLCATON_INTERFACE_CLASS_NAME = "com.ehi.component.application.IComponentApplication";
     String EHIINTERCEPTOR_INTERFACE_CLASS_NAME = "com.ehi.component.impl.EHiRouterInterceptor";
-    String EHIINTERCEPTOR_UTIL_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil";
+    String EHIINTERCEPTOR_UTIL_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiRouterInterceptorCache";
     String EHIROUTER_CLASS_NAME = "com.ehi.component.impl.EHiRouter";
     String EHIINTERCEPTOR_BEAN_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiInterceptorBean";
     String EHICENTERINTERCEPTOR_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiCenterInterceptor";

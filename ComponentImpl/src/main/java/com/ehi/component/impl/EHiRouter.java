@@ -19,7 +19,7 @@ import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
 import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
 import com.ehi.component.impl.interceptor.EHiOpenOnceInterceptor;
-import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
+import com.ehi.component.impl.interceptor.EHiRouterInterceptorCache;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.Action;
 import com.ehi.component.support.Consumer;
@@ -591,7 +591,7 @@ public class EHiRouter {
                     if (customClassInterceptor == null) {
                         continue;
                     }
-                    EHiRouterInterceptor interceptor = EHiRouterInterceptorUtil.get(customClassInterceptor);
+                    EHiRouterInterceptor interceptor = EHiRouterInterceptorCache.getInterceptorByClass(customClassInterceptor);
                     if (interceptor != null) {
                         interceptors.add(interceptor);
                     } else {
