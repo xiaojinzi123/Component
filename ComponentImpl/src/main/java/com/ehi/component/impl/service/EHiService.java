@@ -13,6 +13,9 @@ import java.util.Map;
  */
 public class EHiService {
 
+    /**
+     * Service 的集合
+     */
     private static Map<Class, IServiceLoad<?>> map = new HashMap<>();
 
     /**

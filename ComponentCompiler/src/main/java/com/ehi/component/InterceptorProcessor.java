@@ -184,7 +184,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
                 public void accept(InterceptorBean interceptorBean) {
                     String implClassName = interceptorBean.element.toString();
                     TypeElement implTypeElement = mElements.getTypeElement(implClassName);
-                    globalInterceptorListMethodSpecBuilder.addStatement("list.add(new $T($T.get($T.class),$L))", interceptorBeanTypeElement, interceptorUtilTypeElement, implTypeElement, interceptorBean.priority);
+                    globalInterceptorListMethodSpecBuilder.addStatement("list.add(new $T($T.getInterceptorByClass($T.class),$L))", interceptorBeanTypeElement, interceptorUtilTypeElement, implTypeElement, interceptorBean.priority);
                 }
             });
             globalInterceptorListMethodSpecBuilder.addStatement("return list");

@@ -143,7 +143,7 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
     @Override
     public EHiRouterInterceptor getByName(@NonNull String interceptorName) {
         // 先到缓存中找
-        EHiRouterInterceptor result = EHiRouterInterceptorUtil.get(interceptorName);
+        EHiRouterInterceptor result = EHiRouterInterceptorCache.getInterceptorByName(interceptorName);
         if (result == null) { // 如果缓存中没有去每一个子拦截器对象中找,找到存到缓存中
             for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
                 EHiRouterInterceptor interceptor = entry.getValue().getByName(interceptorName);
@@ -156,7 +156,7 @@ public class EHiCenterInterceptor implements IComponentModuleInterceptor {
             }
             // 缓存这个对象
             if (result != null) {
-                EHiRouterInterceptorUtil.putCache(interceptorName, result);
+                EHiRouterInterceptorCache.putCache(interceptorName, result);
             }
         }
         return result;
