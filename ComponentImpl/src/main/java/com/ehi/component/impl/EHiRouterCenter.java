@@ -111,7 +111,6 @@ public class EHiRouterCenter implements IComponentCenterRouter {
         // 转化 query 到 bundle,这句话不能随便放,因为这句话之前是因为拦截器可以修改 routerRequest 对象中的参数或者整个对象
         // 所以直接当所有拦截器都执行完毕的时候,在确定要跳转了,这个 query 参数可以往 bundle 里面存了
         QueryParameterSupport.putQueryBundleToBundle(routerRequest.bundle, routerRequest.uri);
-
         if (target.customerJump != null) {
             // 用于支持拿到 result 的 Fragment,如果不为空,传这个过去给自定义的地方让写代码的程序员跳转
             // 这个如果不为空,一定要替换原有的传给用户,不然就拿不到 Result 了
@@ -142,9 +141,6 @@ public class EHiRouterCenter implements IComponentCenterRouter {
                 routerRequest.intentConsumer.accept(intent);
             }
             jump(routerRequest, intent);
-        }
-        if (routerRequest.afterJumpAction != null) {
-            routerRequest.afterJumpAction.run();
         }
     }
 
@@ -345,8 +341,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
         String className = ComponentUtil.genHostRouterClassName(host);
         try {
             Class<?> clazz = Class.forName(className);
-            IComponentHostRouter instance = (IComponentHostRouter) clazz.newInstance();
-            return instance;
+            return (IComponentHostRouter) clazz.newInstance();
         } catch (ClassNotFoundException e) {
         } catch (IllegalAccessException e) {
         } catch (InstantiationException e) {
