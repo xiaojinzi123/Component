@@ -5,9 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.ComponentConfig;
-import com.ehi.component.impl.EHiRouter;
-import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.impl.application.EHiModuleManager;
+import com.ehi.component.support.RxErrorIgnoreUtil;
 
 public class App extends Application {
 
@@ -23,9 +22,11 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mApp = this;
+
         // 初始化组件化相关
         ComponentConfig.init(this, BuildConfig.DEBUG);
-        EHiRxRouter.tryErrorCatch();
+        // 忽略一些不想处理的错误
+        RxErrorIgnoreUtil.ignoreError();
 
         EHiModuleManager.getInstance().registerArr(
                 ModuleConfig.App.NAME, ModuleConfig.Module1.NAME,

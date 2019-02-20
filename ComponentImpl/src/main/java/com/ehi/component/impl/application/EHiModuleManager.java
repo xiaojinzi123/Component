@@ -109,6 +109,9 @@ public class EHiModuleManager implements IComponentModuleApplication {
         checkInterceptor();
     }
 
+    /**
+     * 检查路由的重复
+     */
     private void checkRouter() {
         if (moduleApplicationMap == null || moduleApplicationMap.isEmpty()) {
             return;
@@ -133,6 +136,9 @@ public class EHiModuleManager implements IComponentModuleApplication {
         }
     }
 
+    /**
+     * 检查拦截器的重复
+     */
     private void checkInterceptor() {
         Set<String> set = new HashSet<>();
         for (String moduleName : moduleApplicationMap.keySet()) {
@@ -150,7 +156,6 @@ public class EHiModuleManager implements IComponentModuleApplication {
                 }
                 set.add(interceptorName);
             }
-
         }
     }
 

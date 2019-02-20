@@ -316,7 +316,7 @@ public class TestQualityAct extends BaseAct {
 
     public void cancelAuto2(View view) {
         Fragment fragment = new Fragment();
-        getSupportFragmentManager().beginTransaction().add(fragment,"testFragment").commit();
+        getSupportFragmentManager().beginTransaction().add(fragment, "testFragment").commit();
         EHiRouter
                 .withFragment(fragment)
                 .host(ModuleConfig.Module1.NAME)
@@ -404,7 +404,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void runOnChildThread(View view) {
-        new Thread("child thread"){
+        new Thread("child thread") {
             @Override
             public void run() {
                 super.run();
@@ -434,7 +434,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void runOnChildThread1(View view) {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 super.run();
