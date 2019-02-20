@@ -5,7 +5,7 @@ import android.app.Application;
 import com.ehi.component.service.IComponentHostService;
 
 /**
- * 空实现
+ * 空实现,每一个模块的 service 生成类需要继承的
  */
 abstract class EHiMuduleServiceImpl implements IComponentHostService {
     @Override

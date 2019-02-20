@@ -16,9 +16,9 @@ public interface ComponentConstants {
     String EHIINTERCEPTOR_UTIL_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiRouterInterceptorCache";
     String EHIROUTER_CLASS_NAME = "com.ehi.component.impl.EHiRouter";
     String EHIINTERCEPTOR_BEAN_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiInterceptorBean";
-    String EHICENTERINTERCEPTOR_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiCenterInterceptor";
+    String EHICENTERINTERCEPTOR_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiInterceptorCenter";
     String EHISERVICE_CLASS_NAME = "com.ehi.component.impl.service.EHiService";
-    String EHICENTERSERVICE_CLASS_NAME = "com.ehi.component.impl.service.EHiCenterService";
+    String EHICENTERSERVICE_CLASS_NAME = "com.ehi.component.impl.service.EHiServiceCenter";
     String QUERYPARAMETERSUPPORT_CLASS_NAME = "com.ehi.component.support.QueryParameterSupport";
     String PARAMETERSUPPORT_CLASS_NAME = "com.ehi.component.support.ParameterSupport";
 

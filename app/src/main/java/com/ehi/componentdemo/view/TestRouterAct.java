@@ -86,6 +86,27 @@ public class TestRouterAct extends BaseAct {
                 .navigate();
     }
 
+    public void goToPersonCenterView(View view) {
+        EHiRouter
+                .with(TestRouterAct.this)
+                .host(ModuleConfig.User.NAME)
+                .path(ModuleConfig.User.PERSON_CENTER)
+                .query("data", "normalJump")
+                .putString("name", "cxj1")
+                .putInt("age", 25)
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, "component1/test?data=normalJump", null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), "component1/test?data=normalJump", null);
+                    }
+                });
+    }
+
     public void normalJump(View view) {
         EHiRouter
                 .with(TestRouterAct.this)

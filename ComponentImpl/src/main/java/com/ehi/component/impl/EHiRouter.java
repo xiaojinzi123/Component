@@ -17,7 +17,7 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
-import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
+import com.ehi.component.impl.interceptor.EHiInterceptorCenter;
 import com.ehi.component.impl.interceptor.EHiOpenOnceInterceptor;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorCache;
 import com.ehi.component.router.IComponentHostRouter;
@@ -571,7 +571,7 @@ public class EHiRouter {
                                   @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
 
             // 拿到共有的拦截器
-            List<EHiRouterInterceptor> publicInterceptors = EHiCenterInterceptor.getInstance().getGlobalInterceptorList();
+            List<EHiRouterInterceptor> publicInterceptors = EHiInterceptorCenter.getInstance().getGlobalInterceptorList();
             // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
             final List<EHiRouterInterceptor> interceptors = new ArrayList(8);
             // 添加内置拦截器,目前就一个内置拦截器,而且必须在最前面,因为这个拦截器内部有一个时间的记录
@@ -605,7 +605,7 @@ public class EHiRouter {
                     if (customNameInterceptor == null) {
                         continue;
                     }
-                    EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName(customNameInterceptor);
+                    EHiRouterInterceptor interceptor = EHiInterceptorCenter.getInstance().getByName(customNameInterceptor);
                     if (interceptor == null) {
                         callback.onError(new InterceptorNotFoundException("can't find the interceptor and it's name is " + customNameInterceptor + ",target url is " + originalRequest.uri.toString()));
                         return;

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.TestQualityAct"></activity>
+        <activity android:name=".view.user.PersonCenterAct"></activity>
+        <activity android:name=".view.TestQualityAct" />
         <activity android:name=".view.TestErrorAct" />
         <activity android:name=".view.InfoAct" />
         <activity android:name=".view.TestServiceAct" />
