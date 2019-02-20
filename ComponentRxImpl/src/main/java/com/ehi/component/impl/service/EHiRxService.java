@@ -37,7 +37,16 @@ import io.reactivex.functions.Function;
 public class EHiRxService extends EHiService {
 
     /**
-     * 获取实现类
+     * 这里最主要的实现就是把出现的错误转化为 {@link RxJavaException} 和 {@link ServiceInvokeException}
+     * 然后就可以当用户不想处理RxJava的错误的时候 {@link com.ehi.component.support.RxErrorConsumer} 进行忽略了
+     * 获取实现类,这个方法实现了哪些这里罗列一下：
+     * 1. 保证在找不到服务实现类的时候不会有异常,你只管写正确情况的逻辑代码
+     * 2. 保证服务那个实现类在主线程上被创建
+     * 3. 在保证了第一点的情况下保证不改变 RxJava 的执行线程
+     * 4. 保证调用任何一个服务实现类的时候出现的错误用 {@link ServiceInvokeException}
+     * 代替,当然了,真实的错误在 {@link Throwable#getCause()} 中可以获取到
+     * 5. 如果服务方法返回的是 RxJava 的五种 Observable : [Single,Observable,Flowable,Maybe,Completable]
+     * 当错误走了 RxJava 的OnError,这里也会把错误包装成 {@link RxJavaException},真实错误在 {@link Throwable#getCause()} 中
      *
      * @param tClass
      * @param <T>
@@ -50,7 +59,7 @@ public class EHiRxService extends EHiService {
                 T tempImpl = null;
                 if (Utils.isMainThread()) {
                     tempImpl = get(tClass);
-                }else {
+                } else {
                     // 这段代码如何为空的话会直接抛出异常
                     tempImpl = Single.create(new SingleOnSubscribe<T>() {
                         @Override
@@ -64,7 +73,7 @@ public class EHiRxService extends EHiService {
                                     }
                                     if (t == null) {
                                         emitter.onError(new ServiceNotFoundException("class:" + tClass.getName()));
-                                    }else {
+                                    } else {
                                         emitter.onSuccess(t);
                                     }
                                 }
@@ -130,7 +139,7 @@ public class EHiRxService extends EHiService {
                                         return Maybe.error(new RxJavaException(throwable));
                                     }
                                 });
-                            } else if(rxType == 5) {
+                            } else if (rxType == 5) {
                                 result = ((Completable) result).onErrorResumeNext(new Function<Throwable, CompletableSource>() {
                                     @Override
                                     public CompletableSource apply(Throwable throwable) throws Exception {

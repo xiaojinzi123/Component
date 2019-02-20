@@ -16,7 +16,6 @@ import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.error.ActivityResultException;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
-import com.ehi.component.error.NotRunOnMainThreadException;
 import com.ehi.component.error.TargetActivityNotFoundException;
 import com.ehi.component.error.UnknowException;
 import com.ehi.component.support.Action;
@@ -39,7 +38,6 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.functions.Cancellable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.plugins.RxJavaPlugins;
 
 /**
  * 使用这个可以结合 RxJava 中的{@link io.reactivex.Single} 使用,会很方便
@@ -51,14 +49,6 @@ import io.reactivex.plugins.RxJavaPlugins;
 public class EHiRxRouter {
 
     public static final String TAG = "EHiRxRouter";
-
-    /**
-     * 必须初始化的时候调用,错误就会自动抓住
-     */
-    public static void tryErrorCatch() {
-        Consumer<? super Throwable> preErrorHandler = RxJavaPlugins.getErrorHandler();
-        RxJavaPlugins.setErrorHandler(new RxErrorConsumer(preErrorHandler));
-    }
 
     public static Builder with(@NonNull Context context) {
         return new Builder(context, null);
