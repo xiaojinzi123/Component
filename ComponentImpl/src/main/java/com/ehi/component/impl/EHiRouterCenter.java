@@ -59,9 +59,9 @@ public class EHiRouterCenter implements IComponentModuleRouter {
     @Override
     public synchronized boolean isMatchUri(@NonNull Uri uri) {
         // 循环的理由同 openUri 方法
-        for (String key : routerMap.keySet()) {
-            IComponentHostRouter router = routerMap.get(key);
-            if (router.isMatchUri(uri)) {
+        for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()) {
+            final IComponentHostRouter router = entry.getValue();
+            if (router != null && router.isMatchUri(uri)) {
                 return true;
             }
         }
@@ -71,10 +71,10 @@ public class EHiRouterCenter implements IComponentModuleRouter {
     @Nullable
     @Override
     public synchronized List<EHiRouterInterceptor> interceptors(@NonNull Uri uri) {
-        for (String key : routerMap.keySet()) {
+        for (Map.Entry<String, IComponentHostRouter> entry : routerMap.entrySet()){
             // 每一个子路由
-            IComponentHostRouter router = routerMap.get(key);
-            if (router.isMatchUri(uri)) {
+            final IComponentHostRouter router = entry.getValue();
+            if (router != null && router.isMatchUri(uri)){
                 return router.interceptors(uri);
             }
         }
@@ -114,11 +114,10 @@ public class EHiRouterCenter implements IComponentModuleRouter {
      */
     @Nullable
     public IComponentHostRouter findUiRouter(String host) {
-        String className = ComponentUtil.genHostRouterClassName(host);
+        final String className = ComponentUtil.genHostRouterClassName(host);
         try {
             Class<?> clazz = Class.forName(className);
-            IComponentHostRouter instance = (IComponentHostRouter) clazz.newInstance();
-            return instance;
+            return (IComponentHostRouter) clazz.newInstance();
         } catch (ClassNotFoundException e) {
         } catch (IllegalAccessException e) {
         } catch (InstantiationException e) {

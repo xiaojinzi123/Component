@@ -573,7 +573,7 @@ public class EHiRouter {
             // 拿到共有的拦截器
             List<EHiRouterInterceptor> publicInterceptors = EHiCenterInterceptor.getInstance().getGlobalInterceptorList();
             // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
-            final List<EHiRouterInterceptor> interceptors = new ArrayList(8);
+            final List<EHiRouterInterceptor> interceptors = new ArrayList<>(8);
             // 添加内置拦截器,目前就一个内置拦截器,而且必须在最前面,因为这个拦截器内部有一个时间的记录
             // 保证一秒内就只能打开一个相同的界面
             interceptors.add(EHiOpenOnceInterceptor.getInstance());
