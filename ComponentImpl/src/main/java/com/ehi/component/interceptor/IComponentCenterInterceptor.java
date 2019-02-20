@@ -2,12 +2,23 @@ package com.ehi.component.interceptor;
 
 import android.support.annotation.NonNull;
 
+import com.ehi.component.impl.EHiRouterInterceptor;
+
+import java.util.List;
+
 /**
  * time   : 2018/12/26
  *
  * @author : xiaojinzi 30212
  */
-public interface IComponentModuleInterceptor extends IComponentInterceptor {
+public interface IComponentCenterInterceptor extends IComponentInterceptor {
+
+    /**
+     * 获取全局拦截器列表
+     *
+     * @return
+     */
+    List<EHiRouterInterceptor> getGlobalInterceptorList();
 
     /**
      * 注册每一个模块的拦截器

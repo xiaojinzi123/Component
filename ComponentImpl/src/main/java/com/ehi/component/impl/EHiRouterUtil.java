@@ -80,9 +80,9 @@ class EHiRouterUtil {
             return;
         }
         if (errorResult.getOriginalRequest() == null) {
-            LogUtil.log(EHiRouter.TAG, "路由失败：" + Utils.getRealMessage(errorResult.getError()));
+            LogUtil.log(EHiRouter.TAG, "路由失败：" + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
         } else {
-            LogUtil.log(EHiRouter.TAG, "路由失败：" + errorResult.getOriginalRequest().uri.toString() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
+            LogUtil.log(EHiRouter.TAG, "路由失败：" + errorResult.getOriginalRequest().uri.toString() + "errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
         }
         if (callback == null) {
             return;

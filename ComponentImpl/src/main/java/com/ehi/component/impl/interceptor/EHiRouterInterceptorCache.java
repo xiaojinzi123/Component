@@ -80,7 +80,7 @@ public class EHiRouterInterceptorCache {
         return t;
     }
 
-    public static synchronized void remoceCache(@NonNull Class<? extends EHiRouterInterceptor> tClass) {
+    public static synchronized void removeCache(@NonNull Class<? extends EHiRouterInterceptor> tClass) {
         interceptorClassCacheMap.remove(tClass);
     }
 
@@ -99,7 +99,7 @@ public class EHiRouterInterceptorCache {
         interceptorNameCacheMap.put(interceptorName, interceptor);
     }
 
-    public static synchronized void remoceCache(@NonNull String interceptorName) {
+    public static synchronized void removeCache(@NonNull String interceptorName) {
         interceptorNameCacheMap.remove(interceptorName);
     }
 
