@@ -338,7 +338,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
      */
     @Nullable
     public IComponentHostRouter findUiRouter(String host) {
-        String className = ComponentUtil.genHostRouterClassName(host);
+        final String className = ComponentUtil.genHostRouterClassName(host);
         try {
             Class<?> clazz = Class.forName(className);
             return (IComponentHostRouter) clazz.newInstance();
