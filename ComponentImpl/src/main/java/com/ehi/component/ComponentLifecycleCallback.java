@@ -15,19 +15,21 @@ import com.ehi.component.impl.EHiRouter;
  */
 class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbacks {
 
+    private final FragmentManager.FragmentLifecycleCallbacks fragmentLifecycleCallbacks = new FragmentManager.FragmentLifecycleCallbacks() {
+        @Override
+        public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
+            super.onFragmentDestroyed(fm, f);
+            EHiRouter.cancel(f);
+        }
+    };
+
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        // 目前不支持 Activity,所以写的时候Activity 必须继承 FragmentActivity
         if (activity instanceof FragmentActivity) {
             FragmentActivity fragmentActivity = (FragmentActivity) activity;
-            final FragmentManager supportFragmentManager = fragmentActivity.getSupportFragmentManager();
-            final FragmentManager.FragmentLifecycleCallbacks fragmentLifecycleCallbacks = new FragmentManager.FragmentLifecycleCallbacks() {
-                @Override
-                public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
-                    super.onFragmentDestroyed(fm, f);
-                    EHiRouter.cancel(f);
-                }
-            };
-            supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);
+            // 第二个参数是指挂载到这个 Activity 的各个 FragmentManager 都会被注册上
+            fragmentActivity.getSupportFragmentManager().registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);
         }
     }
 

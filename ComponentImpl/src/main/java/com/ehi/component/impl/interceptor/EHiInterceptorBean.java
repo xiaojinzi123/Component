@@ -12,12 +12,12 @@ public class EHiInterceptorBean {
     /**
      * 拦截器
      */
-    public EHiRouterInterceptor interceptor;
+    public final EHiRouterInterceptor interceptor;
 
     /**
      * 优先级
      */
-    public int priority;
+    public final int priority;
 
     public EHiInterceptorBean(EHiRouterInterceptor interceptor, int priority) {
         this.interceptor = interceptor;
