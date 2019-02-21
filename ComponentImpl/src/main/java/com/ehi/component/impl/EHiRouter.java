@@ -814,7 +814,7 @@ public class EHiRouter {
              * @param callback
              */
             public InterceptorChain(@NonNull List<EHiRouterInterceptor> interceptors, int index,
-                                    @NonNull EHiRouterRequest request, EHiRouterInterceptor.Callback callback) {
+                                    @NonNull EHiRouterRequest request, @NonNull EHiRouterInterceptor.Callback callback) {
                 this.mInterceptors = interceptors;
                 this.mIndex = index;
                 this.mRequest = request;
@@ -837,7 +837,7 @@ public class EHiRouter {
                 proceed(request, mCallback);
             }
 
-            public void proceed(@NonNull final EHiRouterRequest request, @NonNull final EHiRouterInterceptor.Callback callback) {
+            private void proceed(@NonNull final EHiRouterRequest request, @NonNull final EHiRouterInterceptor.Callback callback) {
                 // ui 线程上执行
                 Utils.postActionToMainThreadAnyway(new Runnable() {
                     @Override
@@ -891,6 +891,10 @@ public class EHiRouter {
         }
     }
 
+    /**
+     * 取消一个 Fragment 的有关路由任务
+     * @param fragment
+     */
     @MainThread
     public static void cancel(@NonNull Fragment fragment) {
         synchronized (mNavigationDisposableList) {
