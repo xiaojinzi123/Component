@@ -18,6 +18,21 @@ import javax.lang.model.util.Types;
  */
 public abstract class BaseProcessor extends AbstractProcessor {
 
+    public static final String NORMALLINE = "---------------------------";
+
+    public static final RuntimeException NULLHOSTEXCEPTION = new RuntimeException("the host must not be null,you must define host in build.gradle file,such as:\n\n" +
+            "defaultConfig {\n" +
+            "    minSdkVersion 14\n" +
+            "    targetSdkVersion 27\n" +
+            "    versionCode 1\n" +
+            "    versionName \"1.0\"\n\n" +
+            "    javaCompileOptions {\n" +
+            "        annotationProcessorOptions {\n" +
+            "            arguments = [HOST: \"component2\"]\n" +
+            "        }\n" +
+            "    }\n" +
+            "}\n  \n");
+
     protected Filer mFiler;
     protected Messager mMessager;
     protected Types mTypes;

@@ -10,16 +10,14 @@ dependencies {
 sourceCompatibility = "7"
 targetCompatibility = "7"
 
-dependencies{
+dependencies {
     compile 'com.google.auto.service:auto-service:1.0-rc2'
     compile 'com.squareup:javapoet:1.11.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'org.apache.commons:commons-collections4:4.1'
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         compile "com.ehi:component-api:${rootProject.ext.component_version}"
-    }else if (Boolean.parseBoolean(rootProject.ext.isDependXiaojinziMavenOnline)) {
-        compile "com.xiaojinzi.component:annotation:${rootProject.ext.component_xiaojinzi_version}"
-    } else {
+    }else {
         compile project(':ComponentApi')
     }
 }
@@ -32,22 +30,12 @@ uploadArchives {
     repositories {
         mavenDeployer {
 
-            if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-                repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
-                    authentication(userName: "admin", password: "admin123")
-                }
-                pom.groupId = 'com.ehi'
-                pom.artifactId = 'component-api-compiler'
-                pom.version = "${rootProject.ext.component_version}"
-            }else {
-                repository(url: "http://xiaojinzi.tpddns.cn:18081/repository/maven-releases/") {
-                    authentication(userName: "admin", password: "admin123")
-                }
-                pom.groupId = 'com.xiaojinzi.component'
-                pom.artifactId = 'compiler'
-                pom.version = "${rootProject.ext.component_xiaojinzi_version}"
+            repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
+                authentication(userName: "admin", password: "admin123")
             }
-
+            pom.groupId = 'com.ehi'
+            pom.artifactId = 'component-api-compiler'
+            pom.version = "${rootProject.ext.component_version}"
             pom.project {
                 licenses {
                     license {

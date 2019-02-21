@@ -129,7 +129,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
                 continue;
             }
             if (mNormalInterceptElementMap.containsKey(anno.value())) {
-                throw new RuntimeException("the interceptor's name '" + anno.value() + "' is exist");
+                throw new ProcessException("the interceptor's name '" + anno.value() + "' is exist");
             }
             mNormalInterceptElementMap.put(anno.value(), new InterceptorBean(InterceptorBean.NORMAL_INTERCEPTOR, element, 0, anno.value()));
         }
@@ -138,9 +138,9 @@ public class InterceptorProcessor extends BaseHostProcessor {
     private void createImpl() {
         String claName = ComponentUtil.genHostInterceptorClassName(componentHost);
         //pkg
-        String pkg = claName.substring(0, claName.lastIndexOf("."));
+        String pkg = claName.substring(0, claName.lastIndexOf('.'));
         //simpleName
-        String cn = claName.substring(claName.lastIndexOf(".") + 1);
+        String cn = claName.substring(claName.lastIndexOf('.') + 1);
         // superClassName
         ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.INTERCEPTOR_IMPL_CLASS_NAME));
         MethodSpec initHostMethod = generateInitHostMethod();

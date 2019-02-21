@@ -16,6 +16,9 @@ import android.support.annotation.Nullable;
  */
 public class ParameterSupport {
 
+    private ParameterSupport() {
+    }
+
     @Nullable
     public static String getString(@NonNull Intent intent, @NonNull String key) {
         return getString(intent, key, null);

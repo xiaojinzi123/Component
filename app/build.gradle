@@ -41,8 +41,6 @@ dependencies {
 
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
-    } else if (Boolean.parseBoolean(rootProject.ext.isDependXiaojinziMavenOnline)) {
-        annotationProcessor "com.xiaojinzi.component:compiler:${rootProject.ext.component_xiaojinzi_version}"
     } else {
         annotationProcessor project(':ComponentCompiler')
     }

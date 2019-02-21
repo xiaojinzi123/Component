@@ -1,5 +1,6 @@
 package com.ehi.component.service;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 /**
@@ -29,6 +30,7 @@ public abstract class SingletonService<T> implements IServiceLoad<T> {
      *
      * @return
      */
-    abstract protected T getRaw();
+    @NonNull
+    protected abstract T getRaw();
 
 }

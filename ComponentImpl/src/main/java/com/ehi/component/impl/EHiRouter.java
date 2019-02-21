@@ -51,7 +51,7 @@ public class EHiRouter {
     /**
      * 类的标志
      */
-    public static String TAG = "EHiRouter";
+    public static final String TAG = "EHiRouter";
 
     /**
      * 路由的监听器
@@ -72,7 +72,7 @@ public class EHiRouter {
         routerListeners.add(listener);
     }
 
-    public static void removeRouterListener(@NonNull EHiRouterListener listener) {
+    public static void removeRouterListener(EHiRouterListener listener) {
         if (listener == null) {
             return;
         }
@@ -108,18 +108,6 @@ public class EHiRouter {
     }
 
     public static class Builder {
-
-        protected Builder(@NonNull Context context, String url) {
-            this.context = context;
-            this.url = url;
-            checkNullPointer(context, "context");
-        }
-
-        protected Builder(@NonNull Fragment fragment, String url) {
-            this.fragment = fragment;
-            this.url = url;
-            checkNullPointer(fragment, "fragment");
-        }
 
         @Nullable
         protected Context context;
@@ -166,6 +154,18 @@ public class EHiRouter {
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
          */
         protected boolean isFinish = false;
+
+        protected Builder(@NonNull Context context, String url) {
+            this.context = context;
+            this.url = url;
+            checkNullPointer(context, "context");
+        }
+
+        protected Builder(@NonNull Fragment fragment, String url) {
+            this.fragment = fragment;
+            this.url = url;
+            checkNullPointer(fragment, "fragment");
+        }
 
         public Builder onBeforJump(@NonNull Action action) {
             this.beforJumpAction = action;
@@ -444,11 +444,7 @@ public class EHiRouter {
          *
          * @throws Exception
          */
-        protected void onCheck() throws Exception {
-            // 必须运行在主线程
-//            if (Utils.isMainThread() == false) {
-//                throw new NotRunOnMainThreadException("EHiRouter must run on main thread");
-//            }
+        protected void onCheck() {
             // 一个 Builder 不能被使用多次
             if (isFinish) {
                 throw new NavigationFailException("EHiRouter.Builder can't be used multiple times");
@@ -466,7 +462,7 @@ public class EHiRouter {
          * @throws Exception
          */
         @NonNull
-        protected EHiRouterRequest generateRouterRequest() throws Exception {
+        protected EHiRouterRequest generateRouterRequest() {
             Uri uri = null;
             if (url == null) {
                 Uri.Builder uriBuilder = new Uri.Builder();
@@ -569,22 +565,22 @@ public class EHiRouter {
                                   @Nullable EHiRouterInterceptor[] customInterceptors,
                                   @Nullable Class<? extends EHiRouterInterceptor>[] customClassInterceptors,
                                   @Nullable String[] customNameInterceptors,
-                                  @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
+                                  @NonNull EHiRouterInterceptor.Callback callback) {
 
             // 拿到共有的拦截器
             List<EHiRouterInterceptor> publicInterceptors = EHiInterceptorCenter.getInstance().getGlobalInterceptorList();
-            // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
-            final List<EHiRouterInterceptor> interceptors = new ArrayList<>(8);
+            // 定义本次路由需要执行的拦截器列表,初始化拦截器的个数 8 个够用应该不会经常扩容
+            final List<EHiRouterInterceptor> currentInterceptors = new ArrayList<>(8);
             // 添加内置拦截器,目前就一个内置拦截器,而且必须在最前面,因为这个拦截器内部有一个时间的记录
             // 保证一秒内就只能打开一个相同的界面
-            interceptors.add(EHiOpenOnceInterceptor.getInstance());
+            currentInterceptors.add(EHiOpenOnceInterceptor.getInstance());
             // 添加共有拦截器
-            interceptors.addAll(publicInterceptors);
+            currentInterceptors.addAll(publicInterceptors);
 
             // -------------------------------------------------------添加自定义拦截器-------------------------------------------------start
             if (customInterceptors != null) {
                 for (EHiRouterInterceptor customInterceptor : customInterceptors) {
-                    interceptors.add(customInterceptor);
+                    currentInterceptors.add(customInterceptor);
                 }
             }
             if (customClassInterceptors != null) {
@@ -594,7 +590,7 @@ public class EHiRouter {
                     }
                     EHiRouterInterceptor interceptor = EHiRouterInterceptorCache.getInterceptorByClass(customClassInterceptor);
                     if (interceptor != null) {
-                        interceptors.add(interceptor);
+                        currentInterceptors.add(interceptor);
                     } else {
                         callback.onError(new Exception(customClassInterceptor.getName() + " can't instantiation"));
                         return;
@@ -611,30 +607,30 @@ public class EHiRouter {
                         callback.onError(new InterceptorNotFoundException("can't find the interceptor and it's name is " + customNameInterceptor + ",target url is " + originalRequest.uri.toString()));
                         return;
                     } else {
-                        interceptors.add(interceptor);
+                        currentInterceptors.add(interceptor);
                     }
                 }
             }
             // -------------------------------------------------------添加自定义拦截器-------------------------------------------------end
 
             // 扫尾拦截器,内部会添加目标要求执行的拦截器和真正执行跳转的拦截器
-            interceptors.add(new EHiRouterInterceptor() {
+            currentInterceptors.add(new EHiRouterInterceptor() {
                 @Override
                 public void intercept(Chain nextChain) throws Exception {
                     // 这个地址要执行的拦截器,这里取的时候一定要注意了,不能拿最原始的那个 request,因为上面的拦截器都能更改 request,
                     // 导致最终跳转的界面和你拿到的拦截器不匹配,所以这里一定是拿上一个拦截器传给你的 request 对象
                     List<EHiRouterInterceptor> targetInterceptors = EHiRouterCenter.getInstance().interceptors(nextChain.request().uri);
-                    if (targetInterceptors != null && targetInterceptors.size() > 0) {
-                        interceptors.addAll(targetInterceptors);
+                    if (targetInterceptors != null && targetInterceptors.isEmpty()) {
+                        currentInterceptors.addAll(targetInterceptors);
                     }
                     // 真正的执行跳转的拦截器
-                    interceptors.add(new RealInterceptor(originalRequest));
+                    currentInterceptors.add(new RealInterceptor(originalRequest));
                     // 执行下一个拦截器,正好是上面代码添加的拦截器
                     nextChain.proceed(nextChain.request());
                 }
             });
             // 创建执行器
-            final EHiRouterInterceptor.Chain chain = new InterceptorChain(interceptors, 0, originalRequest, callback);
+            final EHiRouterInterceptor.Chain chain = new InterceptorChain(currentInterceptors, 0, originalRequest, callback);
             // 执行
             chain.proceed(originalRequest);
 
