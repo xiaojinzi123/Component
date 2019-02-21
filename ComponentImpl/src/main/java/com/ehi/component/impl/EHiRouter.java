@@ -507,6 +507,7 @@ public class EHiRouter {
 
         /**
          * 执行跳转的具体逻辑,必须在主线程中执行
+         * 返回值不可以为空,是为了使用的时候更加的顺溜,不用判断空
          *
          * @param callback 回调
          * @return 返回的对象有可能是一个空实现对象 {@link NavigationDisposable#EMPTY},可以取消路由或者获取原始request对象
@@ -847,7 +848,7 @@ public class EHiRouter {
                                 return;
                             }
                             if (request == null) {
-                                callback().onError(new NavigationFailException("the reqest is null,you can't call 'proceed' method with null,such as 'chain.proceed(null)'"));
+                                callback().onError(new NavigationFailException("the reqest is null,you can't call 'proceed' method with null reqest,such as 'chain.proceed(null)'"));
                                 return;
                             }
                             ++calls;
@@ -893,6 +894,7 @@ public class EHiRouter {
 
     /**
      * 取消一个 Fragment 的有关路由任务
+     *
      * @param fragment
      */
     @MainThread

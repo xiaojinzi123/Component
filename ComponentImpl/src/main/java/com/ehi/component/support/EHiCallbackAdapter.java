@@ -15,18 +15,22 @@ import com.ehi.component.impl.EHiRouterResult;
 public class EHiCallbackAdapter implements EHiCallback {
 
     @Override
+    @MainThread
     public void onSuccess(@NonNull EHiRouterResult result) {
     }
 
     @Override
+    @MainThread
     public void onError(EHiRouterErrorResult errorResult) {
     }
 
     @Override
+    @MainThread
     public void onEvent(@Nullable EHiRouterResult successResult, @Nullable EHiRouterErrorResult errorResult) {
     }
 
     @Override
+    @MainThread
     public void onCancel(@NonNull EHiRouterRequest request) {
     }
 
