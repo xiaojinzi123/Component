@@ -53,7 +53,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        if (componentHost == null || "".equals(componentHost)) {
+        if (componentHost == null || componentHost.isEmpty()) {
             return false;
         }
         if (CollectionUtils.isNotEmpty(set)) {

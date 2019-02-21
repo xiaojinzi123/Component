@@ -8,6 +8,13 @@ package com.ehi.base;
  */
 public class ModuleConfig {
 
+    /**
+     * 项目的 Scheme,用于跳转项目中的界面
+     */
+    public static final String APP_SCHEME = "EHi";
+    public static final String HTTP_SCHEME = "http";
+    public static final String HTTPS_SCHEME = "https";
+
     public static class System {
 
         public static final String NAME = "system";
@@ -67,6 +74,7 @@ public class ModuleConfig {
 
     public static class Help {
         public static final String NAME = "help";
+        public static final String WEB = "web";
         public static final String TEST_WEB_ROUTER = "testWebRouter";
     }
 

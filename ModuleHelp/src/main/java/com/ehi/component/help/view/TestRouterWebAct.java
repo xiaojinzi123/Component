@@ -1,14 +1,20 @@
 package com.ehi.component.help.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.help.R;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRouterErrorResult;
+import com.ehi.component.impl.EHiRouterResult;
+import com.ehi.component.support.EHiCallbackAdapter;
+import com.ehi.component.support.Utils;
 
 @EHiRouterAnno(
         host = ModuleConfig.Help.NAME,
@@ -40,7 +46,19 @@ public class TestRouterWebAct extends AppCompatActivity {
     public void openUrl(final String url) {
         EHiRouter.with(this)
                 .url(url)
-                .navigate();
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        super.onSuccess(result);
+                        Toast.makeText(TestRouterWebAct.this, "路由成功", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(EHiRouterErrorResult errorResult) {
+                        super.onError(errorResult);
+                        Toast.makeText(TestRouterWebAct.this, "路由失败,class = " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",error msg = " + Utils.getRealMessage(errorResult.getError()), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 }

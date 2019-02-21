@@ -25,9 +25,11 @@ public class App extends Application {
 
         // 初始化组件化相关
         ComponentConfig.init(this, BuildConfig.DEBUG);
+
         // 忽略一些不想处理的错误
         RxErrorIgnoreUtil.ignoreError();
 
+        // 装载各个业务组件
         EHiModuleManager.getInstance().registerArr(
                 ModuleConfig.App.NAME, ModuleConfig.Module1.NAME,
                 ModuleConfig.Module2.NAME, ModuleConfig.User.NAME,

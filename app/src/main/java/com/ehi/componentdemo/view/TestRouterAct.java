@@ -80,12 +80,6 @@ public class TestRouterAct extends BaseAct {
         }
     }
 
-    public void openUriTest(View view) {
-        EHiRouter.with(this)
-                .url("EHi://component1/testQuery?name=我是名称&pass=我是密码")
-                .navigate();
-    }
-
     public void goToInOtherModuleView(View view) {
         EHiRouter
                 .with(TestRouterAct.this)
@@ -183,6 +177,23 @@ public class TestRouterAct extends BaseAct {
                     }
                 });
 
+    }
+
+    public void jumpToWeb(View v) {
+        EHiRouter.with(this)
+                .scheme("http")
+                .host("www.baidu.com")
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, "http://www.baidu.com", null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), "http://www.baidu.com", null);
+                    }
+                });
     }
 
     public void rxJumpGetData(View view) {

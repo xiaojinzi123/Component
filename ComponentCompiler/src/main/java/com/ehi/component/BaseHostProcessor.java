@@ -22,7 +22,7 @@ public abstract class BaseHostProcessor extends BaseProcessor {
         if (options != null) {
             componentHost = options.get("HOST");
         }
-        if (componentHost == null || "".equals(componentHost)) {
+        if (componentHost == null || componentHost.isEmpty()) {
             throw NULLHOSTEXCEPTION;
         }
     }

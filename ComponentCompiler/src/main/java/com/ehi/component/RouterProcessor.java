@@ -120,12 +120,12 @@ public class RouterProcessor extends BaseHostProcessor {
             if (router == null) {
                 continue;
             }
-            if (router.value() == null || "".equals(router.value())) {
+            if (router.value() == null || router.value().isEmpty()) {
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value can;t be null or empty string");
                 continue;
             }
             // 如果有host那就必须满足规范
-            if (router.host() != null && !"".equals(router.host())) {
+            if (router.host() != null && !router.host().isEmpty()) {
                 if (router.host().contains("/")) {
                     mMessager.printMessage(Diagnostic.Kind.ERROR, "the host value '" + router.host() + "' can't contains '/'");
                 }
@@ -232,7 +232,7 @@ public class RouterProcessor extends BaseHostProcessor {
     }
 
     private String getHostAndPath(String host, String path) {
-        if (host == null || "".equals(host)) {
+        if (host == null || host.isEmpty()) {
             host = componentHost;
         }
         if (path != null && path.length() > 0 && path.charAt(0) != '/') {
