@@ -2,8 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ehi.component.help">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application>
-        <activity android:name=".view.TestRouterWebAct"></activity>
+        <activity android:name=".view.WebAct"></activity>
+        <activity android:name=".view.TestRouterWebAct" />
     </application>
 
 </manifest>

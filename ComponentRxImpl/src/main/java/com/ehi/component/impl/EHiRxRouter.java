@@ -119,6 +119,11 @@ public class EHiRxRouter extends EHiRouter {
         }
 
         @Override
+        public Builder scheme(@NonNull String scheme) {
+            return (Builder) super.scheme(scheme);
+        }
+
+        @Override
         public Builder host(@NonNull String host) {
             return (Builder) super.host(host);
         }

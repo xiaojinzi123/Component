@@ -11,6 +11,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.ehi.component.ComponentConfig;
@@ -118,10 +119,13 @@ public class EHiRouter {
         @Nullable
         protected String url;
 
+        @Nullable
+        protected String scheme;
+
         @NonNull
         protected String host;
 
-        @NonNull
+        @Nullable
         protected String path;
 
         @Nullable
@@ -217,14 +221,19 @@ public class EHiRouter {
             return this;
         }
 
+        public Builder scheme(@NonNull String scheme) {
+            checkStringNullPointer(scheme, "scheme");
+            this.scheme = scheme;
+            return this;
+        }
+
         public Builder host(@NonNull String host) {
             checkStringNullPointer(host, "host");
             this.host = host;
             return this;
         }
 
-        public Builder path(@NonNull String path) {
-            checkStringNullPointer(path, "path");
+        public Builder path(@Nullable String path) {
             this.path = path;
             return this;
         }
@@ -419,14 +428,14 @@ public class EHiRouter {
         }
 
         protected static String checkStringNullPointer(String value, @NonNull String parameterName) {
-            if (ComponentConfig.isDebug() && (value == null || "".equals(value))) {
+            if (ComponentConfig.isDebug() && (value == null || value.isEmpty())) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null");
             }
             return value;
         }
 
         protected static String checkStringNullPointer(String value, @NonNull String parameterName, @Nullable String desc) {
-            if (ComponentConfig.isDebug() && (value == null || "".equals(value))) {
+            if (ComponentConfig.isDebug() && (value == null || value.isEmpty())) {
                 throw new NullPointerException("parameter '" + parameterName + "' can't be null" + (desc == null ? "" : "," + desc));
             }
             return value;
@@ -467,9 +476,11 @@ public class EHiRouter {
             if (url == null) {
                 Uri.Builder uriBuilder = new Uri.Builder();
                 uriBuilder
-                        .scheme("EHi")
-                        .authority(checkStringNullPointer(host, "host", "do you forget call host() to set host?"))
-                        .path(checkStringNullPointer(path, "path", "do you forget call path() to set path?"));
+                        .scheme(TextUtils.isEmpty(scheme) ? ComponentConfig.getDefaultScheme() : scheme)
+                        .authority(checkStringNullPointer(host, "host", "do you forget call host() to set host?"));
+                if (!TextUtils.isEmpty(path)) {
+                    uriBuilder.path(path);
+                }
                 for (Map.Entry<String, String> entry : queryMap.entrySet()) {
                     uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
                 }

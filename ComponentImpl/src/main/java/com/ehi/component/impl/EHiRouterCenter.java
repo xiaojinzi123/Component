@@ -224,8 +224,8 @@ public class EHiRouterCenter implements IComponentCenterRouter {
      */
     private String getTargetUrl(@NonNull Uri uri) {
         // "/component1/test" 不含host
-        String targetPath = uri.getEncodedPath();
-        if (targetPath == null || "".equals(targetPath)) {
+        String targetPath = uri.getPath();
+        if (targetPath == null || targetPath.isEmpty()) {
             return null;
         }
         if (targetPath.charAt(0) != '/') {
@@ -238,9 +238,9 @@ public class EHiRouterCenter implements IComponentCenterRouter {
     @Nullable
     private EHiRouterBean getTarget(@NonNull Uri uri) {
         // "/component1/test" 不含host
-        String targetPath = uri.getEncodedPath();
+        String targetPath = uri.getPath();
 
-        if (targetPath == null || "".equals(targetPath)) {
+        if (targetPath == null || targetPath.isEmpty()) {
             return null;
         }
         if (targetPath.charAt(0) != '/') {
