@@ -38,11 +38,6 @@ import java.util.Set;
 public class EHiRouterCenter implements IComponentCenterRouter {
 
     /**
-     * TAG 标记
-     */
-    private static final String TAG = "EHiRouterCenter";
-
-    /**
      * 单例对象
      */
     private static volatile EHiRouterCenter instance;

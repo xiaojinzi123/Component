@@ -12,7 +12,6 @@ public class TimeConsumingInterceptor implements EHiRouterInterceptor {
 
     @Override
     public void intercept(final Chain chain) throws Exception {
-
         new Thread() {
             @Override
             public void run() {
@@ -24,7 +23,6 @@ public class TimeConsumingInterceptor implements EHiRouterInterceptor {
                 chain.proceed(chain.request());
             }
         }.start();
-
     }
 
 }
