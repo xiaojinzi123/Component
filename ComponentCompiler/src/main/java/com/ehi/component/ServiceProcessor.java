@@ -111,14 +111,13 @@ public class ServiceProcessor extends BaseHostProcessor {
     private void createImpl() {
         String claName = ComponentUtil.genHostServiceClassName(componentHost);
         //pkg
-        String pkg = claName.substring(0, claName.lastIndexOf("."));
+        String pkg = claName.substring(0, claName.lastIndexOf('.'));
 
         //simpleName
-        String cn = claName.substring(claName.lastIndexOf(".") + 1);
+        String cn = claName.substring(claName.lastIndexOf('.') + 1);
         // superClassName
         ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.SERVICE_IMPL_CLASS_NAME));
         MethodSpec initHostMethod = generateInitHostMethod();
-        //MethodSpec initMapMethod = generateInitMapMethod();
         MethodSpec onCreateMethod = generateOnCreateMethod();
         MethodSpec onDestoryMethod = generateOnDestoryMethod();
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
@@ -133,8 +132,8 @@ public class ServiceProcessor extends BaseHostProcessor {
         try {
             JavaFile.builder(pkg, typeSpec
             ).indent("    ").build().writeTo(mFiler);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
+            // ignore
         }
 
 

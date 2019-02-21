@@ -46,6 +46,7 @@ public class ModuleConfig {
         public static final String TEST_QUERY = "testQuery";
         public static final String TEST_LOGIN = "testLogin";
         public static final String TEST_DIALOG = "testDialog";
+        public static final String TEST_IN_OTHER_MODULE = "testInOtherModule";
 
     }
 
@@ -66,6 +67,7 @@ public class ModuleConfig {
 
     public static class Help {
         public static final String NAME = "help";
+        public static final String TEST_WEB_ROUTER = "testWebRouter";
     }
 
 }

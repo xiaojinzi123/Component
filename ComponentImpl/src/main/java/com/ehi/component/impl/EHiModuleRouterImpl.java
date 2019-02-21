@@ -1,11 +1,13 @@
 package com.ehi.component.impl;
 
 import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.bean.EHiRouterBean;
 import com.ehi.component.router.IComponentHostRouter;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,9 +45,13 @@ abstract class EHiModuleRouterImpl implements IComponentHostRouter {
      *
      * @return
      */
+    @NonNull
     public Map<String, EHiRouterBean> getRouterMap() {
         if (!hasInitMap) {
             initMap();
+        }
+        if (routerBeanMap.isEmpty()) {
+            return Collections.emptyMap();
         }
         return new HashMap<>(routerBeanMap);
     }

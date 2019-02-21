@@ -1,7 +1,6 @@
 package com.ehi.component.support;
 
 import android.support.annotation.AnyThread;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.ehi.component.impl.EHiRouter;

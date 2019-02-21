@@ -70,6 +70,14 @@ public class MainAct extends AppCompatActivity {
                 .navigate();
     }
 
+    public void testWebRouter(View view) {
+        EHiRouter
+                .with(this)
+                .host(ModuleConfig.Help.NAME)
+                .path(ModuleConfig.Help.TEST_WEB_ROUTER)
+                .navigate();
+    }
+
     public void testQuality(View view) {
         EHiRouter
                 .with(this)

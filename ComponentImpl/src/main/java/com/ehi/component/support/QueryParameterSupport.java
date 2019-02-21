@@ -17,6 +17,9 @@ import java.util.Set;
  */
 public class QueryParameterSupport {
 
+    private QueryParameterSupport() {
+    }
+
     /**
      * 所有query的值都会被存在 bundle 中的这个 key 对应的内置 bundle 中
      * 也就是： bundle.bundle

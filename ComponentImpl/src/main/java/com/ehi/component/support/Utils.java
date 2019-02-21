@@ -11,6 +11,9 @@ import android.support.annotation.NonNull;
  */
 public class Utils {
 
+    private Utils() {
+    }
+
     /**
      * 主线程的Handler
      */

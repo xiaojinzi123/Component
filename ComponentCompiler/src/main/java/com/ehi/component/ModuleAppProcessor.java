@@ -93,9 +93,9 @@ public class ModuleAppProcessor extends BaseHostProcessor {
     private void createImpl() {
         String claName = ComponentUtil.genHostModuleApplicationClassName(componentHost);
         //pkg
-        String pkg = claName.substring(0, claName.lastIndexOf("."));
+        String pkg = claName.substring(0, claName.lastIndexOf('.'));
         //simpleName
-        String cn = claName.substring(claName.lastIndexOf(".") + 1);
+        String cn = claName.substring(claName.lastIndexOf('.') + 1);
         // superClassName
         ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.MODULE_APPLICATION_IMPL_CLASS_NAME));
         MethodSpec initHostMethod = generateInitHostMethod();

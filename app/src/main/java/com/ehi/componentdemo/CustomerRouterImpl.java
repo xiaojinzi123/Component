@@ -6,11 +6,13 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouterRequest;
+import com.ehi.component.support.ParameterSupport;
 
 /**
  * 自定义路由实现的范例
@@ -30,7 +32,11 @@ public class CustomerRouterImpl {
             interceptorNames = InterceptorConfig.HELP_CALLPHOEPERMISION
     )
     public static Intent callPhoneIntent(@NonNull EHiRouterRequest request) {
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "15857913627"));
+        String tel = ParameterSupport.getString(request.bundle, "data");
+        if (TextUtils.isEmpty(tel)) {
+            throw new NullPointerException("the tel is empty");
+        }
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + tel));
         return intent;
     }
 

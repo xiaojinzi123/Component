@@ -24,6 +24,7 @@ import com.ehi.component.support.QueryParameterSupport;
 import com.ehi.component.support.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -185,13 +186,13 @@ public class EHiRouterCenter implements IComponentCenterRouter {
         final String targetUrl = getTargetUrl(uri);
         final EHiRouterBean routerBean = routerMap.get(targetUrl);
         if (routerBean == null) {
-            return null;
+            return Collections.EMPTY_LIST;
         }
         final List<Class<? extends EHiRouterInterceptor>> interceptors = routerBean.interceptors;
         final List<String> interceptorNames = routerBean.interceptorNames;
         // 如果没有拦截器直接返回 null
         if ((interceptors == null || interceptors.isEmpty()) && (interceptorNames == null || interceptorNames.isEmpty())) {
-            return null;
+            return Collections.EMPTY_LIST;
         }
         final List<EHiRouterInterceptor> result = new ArrayList<>();
         if (interceptors != null) {
@@ -256,7 +257,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
      * @return
      */
     @Nullable
-    private Fragment findFragment(@NonNull Context context) {
+    private Fragment findFragment(Context context) {
         Fragment result = null;
         if (context != null && context instanceof FragmentActivity) {
             FragmentManager ft = ((FragmentActivity) context).getSupportFragmentManager();
@@ -266,7 +267,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
     }
 
     @Nullable
-    private Fragment findFragment(@NonNull Fragment fragment) {
+    private Fragment findFragment(Fragment fragment) {
         Fragment result = null;
         if (fragment != null) {
             result = fragment.getChildFragmentManager().findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
@@ -289,7 +290,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
     }
 
     @Override
-    public void register(@NonNull IComponentHostRouter router) {
+    public void register(IComponentHostRouter router) {
         if (router == null) {
             return;
         }
@@ -304,7 +305,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
     }
 
     @Override
-    public void unregister(@NonNull IComponentHostRouter router) {
+    public void unregister(IComponentHostRouter router) {
         if (router == null) {
             return;
         }
@@ -338,8 +339,11 @@ public class EHiRouterCenter implements IComponentCenterRouter {
             Class<?> clazz = Class.forName(className);
             return (IComponentHostRouter) clazz.newInstance();
         } catch (ClassNotFoundException e) {
+            // ignore
         } catch (IllegalAccessException e) {
+            // ignore
         } catch (InstantiationException e) {
+            // ignore
         }
         return null;
     }

@@ -14,6 +14,9 @@ import com.ehi.component.ComponentConfig;
  */
 public class LogUtil {
 
+    private LogUtil() {
+    }
+
     @AnyThread
     public static void log(@NonNull String tag, @NonNull String message) {
         if (ComponentConfig.isDebug()) {
