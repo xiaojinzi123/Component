@@ -133,6 +133,17 @@ public class EHiRouter {
             fragment(fragment);
         }
 
+        /**
+         * 懒加载自定义拦截器列表
+         *
+         * @param size
+         */
+        private void lazyInitCustomInterceptors(int size) {
+            if (customInterceptors == null) {
+                customInterceptors = new ArrayList<>(size > 3 ? size : 3);
+            }
+        }
+
         public Builder interceptors(@NonNull EHiRouterInterceptor... interceptors) {
             Utils.checkNullPointer(interceptors, "interceptors");
             if (interceptors != null) {
@@ -173,12 +184,6 @@ public class EHiRouter {
         @Override
         public Builder afterJumpAction(@Nullable Action action) {
             return (Builder) super.afterJumpAction(action);
-        }
-
-        private void lazyInitCustomInterceptors(int size) {
-            if (customInterceptors == null) {
-                customInterceptors = new ArrayList<>(size > 3 ? size : 3);
-            }
         }
 
         @Override
