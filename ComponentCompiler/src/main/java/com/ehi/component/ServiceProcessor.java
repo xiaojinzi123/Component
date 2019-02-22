@@ -43,6 +43,7 @@ import javax.tools.Diagnostic;
 public class ServiceProcessor extends BaseHostProcessor {
     private static final String SERVICE_SEPER_NAME1 = "com.ehi.component.service.IServiceLoad";
     private static final String SERVICE_SEPER_NAME2 = "com.ehi.component.service.SingletonService";
+    private static final String NAME_OF_APPLICATION = "application";
 
     private ClassName classNameServiceContainer;
     private ClassName service1ClassName;
@@ -125,7 +126,7 @@ public class ServiceProcessor extends BaseHostProcessor {
     private MethodSpec generateOnCreateMethod() {
         TypeName returnType = TypeName.VOID;
         ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_APPLICATION));
-        ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, "application")
+        ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, NAME_OF_APPLICATION)
                 .addModifiers(Modifier.FINAL)
                 .build();
         final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onCreate")
@@ -152,7 +153,7 @@ public class ServiceProcessor extends BaseHostProcessor {
                                     MethodSpec.methodBuilder("getRaw")
                                             .addAnnotation(Override.class)
                                             .addModifiers(Modifier.PROTECTED)
-                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : "application"))
+                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
                                             .returns(TypeName.get(element.asType()))
                                             .build()
                             )
@@ -166,7 +167,7 @@ public class ServiceProcessor extends BaseHostProcessor {
                                     MethodSpec.methodBuilder("get")
                                             .addAnnotation(Override.class)
                                             .addModifiers(Modifier.PUBLIC)
-                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : "application"))
+                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
                                             .returns(TypeName.get(element.asType()))
                                             .build()
                             )
