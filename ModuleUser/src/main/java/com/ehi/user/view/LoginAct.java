@@ -16,15 +16,14 @@ import com.ehi.user.service.UserServiceImpl;
         value = ModuleConfig.User.LOGIN,
         desc = "用户模块的登录界面"
 )
-public class Component3Act extends AppCompatActivity {
+public class LoginAct extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.component3_act);
+        setContentView(R.layout.user_login_act);
         getSupportActionBar().setTitle("登录界面");
     }
-
 
     public void login(View v){
         UserServiceImpl.isLogin = true;

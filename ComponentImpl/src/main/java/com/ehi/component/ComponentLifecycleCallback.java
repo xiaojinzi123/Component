@@ -35,22 +35,27 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
 
     @Override
     public void onActivityStarted(Activity activity) {
+        // ignore
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
+        // ignore
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
+        // ignore
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
+        // ignore
     }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        // ignore
     }
 
     @Override

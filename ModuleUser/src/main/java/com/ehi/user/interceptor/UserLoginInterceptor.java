@@ -29,6 +29,7 @@ import io.reactivex.schedulers.Schedulers;
 public class UserLoginInterceptor implements EHiRouterInterceptor {
 
     public UserLoginInterceptor(Context app) {
+        System.out.println("123123123");
     }
 
     @Override

@@ -16,9 +16,9 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
-import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
+import com.ehi.component.impl.interceptor.EHiInterceptorCenter;
 import com.ehi.component.impl.interceptor.EHiOpenOnceInterceptor;
-import com.ehi.component.impl.interceptor.EHiRouterInterceptorUtil;
+import com.ehi.component.impl.interceptor.EHiRouterInterceptorCache;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.Action;
 import com.ehi.component.support.Consumer;
@@ -50,7 +50,7 @@ public class EHiRouter {
     /**
      * 类的标志
      */
-    public static String TAG = "EHiRouter";
+    public static final String TAG = "EHiRouter";
 
     /**
      * 路由的监听器
@@ -72,7 +72,7 @@ public class EHiRouter {
         routerListeners.add(listener);
     }
 
-    public static void removeRouterListener(@NonNull EHiRouterListener listener) {
+    public static void removeRouterListener(EHiRouterListener listener) {
         if (listener == null) {
             return;
         }
@@ -108,18 +108,6 @@ public class EHiRouter {
     }
 
     public static class Builder {
-
-        protected Builder(@NonNull Context context, String url) {
-            this.context = context;
-            this.url = url;
-            checkNullPointer(context, "context");
-        }
-
-        protected Builder(@NonNull Fragment fragment, String url) {
-            this.fragment = fragment;
-            this.url = url;
-            checkNullPointer(fragment, "fragment");
-        }
 
         @Nullable
         protected Context context;
@@ -162,6 +150,18 @@ public class EHiRouter {
          */
         protected boolean isFinish = false;
 
+        protected Builder(@NonNull Context context, String url) {
+            this.context = context;
+            this.url = url;
+            checkNullPointer(context, "context");
+        }
+
+        protected Builder(@NonNull Fragment fragment, String url) {
+            this.fragment = fragment;
+            this.url = url;
+            checkNullPointer(fragment, "fragment");
+        }
+
         public Builder onBeforJump(@NonNull Action action) {
             this.beforJumpAction = action;
             return this;
@@ -177,8 +177,9 @@ public class EHiRouter {
          * 当自定义跳转,这个回调不会回调的
          *
          * @param intentConsumer 这个参数是框架自动构建的,里面有跳转需要的所有参数和数据,这里就是给用户一个
-         * 更改的机会,但是最好别改参数之类的信息,这里提供出来其实是可以让你调用Intent
-         * 的 {@link Intent#addFlags(int)} 等方法,并不是给你修改内部的 bundle 的
+         *                       更改的机会,但是最好别改参数之类的信息,这里提供出来其实是可以让你调用Intent
+         *                       的 {@link Intent#addFlags(int)} 等方法,并不是给你修改内部的 bundle 的
+         * @return
          */
         public Builder onIntentCreated(@NonNull Consumer<Intent> intentConsumer) {
             this.intentConsumer = intentConsumer;
@@ -279,8 +280,7 @@ public class EHiRouter {
             return this;
         }
 
-        public Builder putCharSequenceArrayList(@NonNull String key,
-                @Nullable ArrayList<CharSequence> value) {
+        public Builder putCharSequenceArrayList(@NonNull String key, @Nullable ArrayList<CharSequence> value) {
             this.bundle.putCharSequenceArrayList(key, value);
             return this;
         }
@@ -470,12 +470,10 @@ public class EHiRouter {
 
         /**
          * 路由前的检查
+         *
+         * @throws Exception
          */
-        protected void onCheck() throws Exception {
-            // 必须运行在主线程
-//            if (Utils.isMainThread() == false) {
-//                throw new NotRunOnMainThreadException("EHiRouter must run on main thread");
-//            }
+        protected void onCheck() {
             // 一个 Builder 不能被使用多次
             if (isFinish) {
                 throw new NavigationFailException("EHiRouter.Builder can't be used multiple times");
@@ -488,9 +486,12 @@ public class EHiRouter {
 
         /**
          * 构建请求对象,这个构建是必须的,不能错误的,如果出错了,直接崩溃掉,因为连最基本的信息都不全没法进行下一步的操作
+         *
+         * @return
+         * @throws Exception
          */
         @NonNull
-        protected EHiRouterRequest generateRouterRequest() throws Exception {
+        protected EHiRouterRequest generateRouterRequest() {
             Uri uri = null;
             if (url == null) {
                 Uri.Builder uriBuilder = new Uri.Builder();
@@ -532,6 +533,7 @@ public class EHiRouter {
 
         /**
          * 执行跳转的具体逻辑,必须在主线程中执行
+         * 返回值不可以为空,是为了使用的时候更加的顺溜,不用判断空
          *
          * @param callback 回调
          * @return 返回的对象有可能是一个空实现对象 {@link NavigationDisposable#EMPTY},可以取消路由或者获取原始request对象
@@ -549,8 +551,7 @@ public class EHiRouter {
                 // 构建请求对象
                 originalRequest = generateRouterRequest();
                 // 创建整个拦截器到最终跳转需要使用的 Callback
-                final InterceptorCallback interceptorCallback = new InterceptorCallback(originalRequest,
-                        callback);
+                final InterceptorCallback interceptorCallback = new InterceptorCallback(originalRequest, callback);
                 // Fragment 的销毁的自动取消
                 if (originalRequest.fragment != null) {
                     mNavigationDisposableList.add(interceptorCallback);
@@ -560,8 +561,7 @@ public class EHiRouter {
                     mNavigationDisposableList.add(interceptorCallback);
                 }
                 // 真正的去执行路由
-                realNavigate(originalRequest, routerInterceptors,
-                        interceptorCallback);
+                realNavigate(originalRequest, routerInterceptors, interceptorCallback);
                 // 返回对象
                 return interceptorCallback;
             } catch (Exception e) { // 发生路由错误的时候
@@ -603,49 +603,10 @@ public class EHiRouter {
             interceptors.add(EHiOpenOnceInterceptor.getInstance());
             // 添加共有拦截器
             interceptors.addAll(publicInterceptors);
+            // 添加自定义拦截器
             if (customInterceptors != null) {
                 interceptors.addAll(customInterceptors);
             }
-
-            // -------------------------------------------------------添加自定义拦截器-------------------------------------------------start
-//            if (customInterceptors != null) {
-//                for (EHiRouterInterceptor customInterceptor : customInterceptors) {
-//                    interceptors.add(customInterceptor);
-//                }
-//            }
-//            if (customClassInterceptors != null) {
-//                for (Class<? extends EHiRouterInterceptor> customClassInterceptor :
-// customClassInterceptors) {
-//                    if (customClassInterceptor == null) {
-//                        continue;
-//                    }
-//                    EHiRouterInterceptor interceptor = EHiRouterInterceptorUtil.get(customClassInterceptor);
-//                    if (interceptor != null) {
-//                        interceptors.add(interceptor);
-//                    } else {
-//                        callback.onError(new Exception(customClassInterceptor.getName() + " can't
-// instantiation"));
-//                        return;
-//                    }
-//                }
-//            }
-//            if (customNameInterceptors != null) {
-//                for (String customNameInterceptor : customNameInterceptors) {
-//                    if (customNameInterceptor == null) {
-//                        continue;
-//                    }
-//                    EHiRouterInterceptor interceptor = EHiCenterInterceptor.getInstance().getByName
-// (customNameInterceptor);
-//                    if (interceptor == null) {
-//                        callback.onError(new InterceptorNotFoundException("can't find the interceptor and
-// it's name is " + customNameInterceptor + ",target url is " + originalRequest.uri.toString()));
-//                        return;
-//                    } else {
-//                        interceptors.add(interceptor);
-//                    }
-//                }
-//            }
-            // -------------------------------------------------------添加自定义拦截器-------------------------------------------------end
 
             // 扫尾拦截器,内部会添加目标要求执行的拦截器和真正执行跳转的拦截器
             interceptors.add(new EHiRouterInterceptor() {
@@ -840,10 +801,13 @@ public class EHiRouter {
             private int calls;
 
             /**
-             * @param request 第一次这个对象是不需要的
+             * @param interceptors
+             * @param index
+             * @param request      第一次这个对象是不需要的
+             * @param callback
              */
             public InterceptorChain(@NonNull List<EHiRouterInterceptor> interceptors, int index,
-                    @NonNull EHiRouterRequest request, EHiRouterInterceptor.Callback callback) {
+                                    @NonNull EHiRouterRequest request, @NonNull EHiRouterInterceptor.Callback callback) {
                 this.mInterceptors = interceptors;
                 this.mIndex = index;
                 this.mRequest = request;
@@ -866,8 +830,7 @@ public class EHiRouter {
                 proceed(request, mCallback);
             }
 
-            public void proceed(@NonNull final EHiRouterRequest request,
-                    @NonNull final EHiRouterInterceptor.Callback callback) {
+            private void proceed(@NonNull final EHiRouterRequest request, @NonNull final EHiRouterInterceptor.Callback callback) {
                 // ui 线程上执行
                 Utils.postActionToMainThreadAnyway(new Runnable() {
                     @Override
@@ -877,9 +840,7 @@ public class EHiRouter {
                                 return;
                             }
                             if (request == null) {
-                                callback().onError(new NavigationFailException(
-                                        "the reqest is null,you can't call 'proceed' method with null,such "
-                                                + "as 'chain.proceed(null)'"));
+                                callback().onError(new NavigationFailException("the reqest is null,you can't call 'proceed' method with null reqest,such as 'chain.proceed(null)'"));
                                 return;
                             }
                             ++calls;
@@ -911,6 +872,8 @@ public class EHiRouter {
 
     /**
      * 取消某一个 Activity的有关的路由任务
+     *
+     * @param act
      */
     @MainThread
     public static void cancel(@NonNull Activity act) {
@@ -925,6 +888,11 @@ public class EHiRouter {
         }
     }
 
+    /**
+     * 取消一个 Fragment 的有关路由任务
+     *
+     * @param fragment
+     */
     @MainThread
     public static void cancel(@NonNull Fragment fragment) {
         synchronized (mNavigationDisposableList) {

@@ -48,6 +48,15 @@ abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
         return interceptorNamesSet;
     }
 
+    @Nullable
+    @Override
+    public Map<String, Class<? extends EHiRouterInterceptor>> getInterceptorMap() {
+        if (!isInitMap) {
+            initInterceptorMap();
+        }
+        return interceptorMap;
+    }
+
     @Override
     @Nullable
     public EHiRouterInterceptor getByName(@NonNull String name) {
@@ -61,7 +70,7 @@ abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
         if (interceptorClass == null) {
             return null;
         }
-        return EHiRouterInterceptorUtil.get(interceptorClass);
+        return EHiRouterInterceptorCache.getInterceptorByClass(interceptorClass);
     }
 
 }

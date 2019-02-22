@@ -25,7 +25,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="openUriTest"
-                    android:text="直接打开 EHi://component1/test?data=openUriTest \n uri 可以是后台下发的,可以是动态的"
+                    android:text="直接打开 EHi://component1/testQuery?name=我是名称&amp;pass=我是密码 \n uri 可以是后台下发的,可以是动态的"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="goToInOtherModuleView"
+                    android:text="访问本该在 User 模块下的但是目前却写在 App 模块的个人中心界面"
                     android:textAllCaps="false"
                     android:textSize="@dimen/test_router_textsize" />
 

@@ -15,10 +15,8 @@ import com.ehi.component.impl.service.EHiService;
 import com.ehi.component.support.Utils;
 import com.ehi.componentdemo.R;
 
-import io.reactivex.Scheduler;
 import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -95,7 +93,7 @@ public class TestServiceAct extends AppCompatActivity {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Toast.makeText(TestServiceAct.this, "可以不用处理的错误,错误信息：" + Utils.getRealThrowable(throwable).getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TestServiceAct.this, "可以不用处理的错误,错误信息：" + Utils.getRealThrowable(throwable), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

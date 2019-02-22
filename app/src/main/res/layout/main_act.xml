@@ -1,16 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".view.MainAct">
 
+    <com.ehi.componentdemo.view.XFlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:h_space="1dp"
+        app:v_space="1dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="loadAppModule"
+            android:text="加载App模块"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="unloadAppModule"
+            android:text="卸载App模块"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="loadUserModule"
+            android:text="加载User模块"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="unloadUserModule"
+            android:text="卸载User模块"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="loadHelpModule"
+            android:text="加载Help模块"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="unloadHelpModule"
+            android:text="卸载Help模块"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="loadModule1Module"
+            android:text="加载Module1模块"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="unloadModule1Module"
+            android:text="卸载Module1模块"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="loadModule2Module"
+            android:text="加载Module2模块"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="unloadModule2Module"
+            android:text="卸载Module2模块"
+            android:textAllCaps="false" />
+
+    </com.ehi.componentdemo.view.XFlowLayout>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="testRouter"
         android:text="测试跳转" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="testWebRouter"
+        android:textAllCaps="false"
+        android:text="测试Web跳转" />
 
     <Button
         android:layout_width="match_parent"

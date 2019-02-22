@@ -3,7 +3,7 @@
     package="com.ehi.user">
 
     <application>
-        <activity android:name="com.ehi.user.view.Component3Act"></activity>
+        <activity android:name="com.ehi.user.view.LoginAct"></activity>
     </application>
 
 </manifest>

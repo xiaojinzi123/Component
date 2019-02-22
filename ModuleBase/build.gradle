@@ -27,9 +27,7 @@ dependencies {
 
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         api "com.ehi:component-impl-rx:${rootProject.ext.component_version}"
-    } else if (Boolean.parseBoolean(rootProject.ext.isDependXiaojinziMavenOnline)) {
-        api "com.xiaojinzi.component:impl-rx:${rootProject.ext.component_xiaojinzi_version}"
-    } else {
+    }else {
         api project(':ComponentRxImpl')
     }
 
