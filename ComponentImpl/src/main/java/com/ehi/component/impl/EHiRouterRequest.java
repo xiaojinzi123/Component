@@ -129,17 +129,9 @@ public class EHiRouterRequest {
      */
     private boolean isActivityDestoryed(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            if (activity.isFinishing() || activity.isDestroyed()) {
-                return true;
-            } else {
-                return false;
-            }
+            return activity.isFinishing() || activity.isDestroyed();
         } else {
-            if (activity.isFinishing()) {
-                return true;
-            } else {
-                return false;
-            }
+            return activity.isFinishing();
         }
     }
 

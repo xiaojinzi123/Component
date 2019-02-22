@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.ehi.component.ComponentConstants.SEPARATOR;
+
 /**
  * 中央路由,挂载着多个子路由表,这里有总路由表
  *
@@ -121,23 +123,23 @@ public class EHiRouterCenter implements IComponentCenterRouter {
                         .build()
                 );
             }
-        } else {
-            Intent intent = null;
-            if (target.targetClass != null) {
-                intent = new Intent(context, target.targetClass);
-            } else if (target.customerIntentCall != null) {
-                intent = target.customerIntentCall.get(routerRequest);
-            }
-            if (intent == null) {
-                throw new TargetActivityNotFoundException(uriString);
-            }
-            intent.putExtras(routerRequest.bundle);
-
-            if (routerRequest.intentConsumer != null) {
-                routerRequest.intentConsumer.accept(intent);
-            }
-            jump(routerRequest, intent);
+            return;
         }
+        Intent intent = null;
+        if (target.targetClass != null) {
+            intent = new Intent(context, target.targetClass);
+        } else if (target.customerIntentCall != null) {
+            intent = target.customerIntentCall.get(routerRequest);
+        }
+        if (intent == null) {
+            throw new TargetActivityNotFoundException(uriString);
+        }
+        intent.putExtras(routerRequest.bundle);
+
+        if (routerRequest.intentConsumer != null) {
+            routerRequest.intentConsumer.accept(intent);
+        }
+        jump(routerRequest, intent);
     }
 
     /**
@@ -155,28 +157,29 @@ public class EHiRouterCenter implements IComponentCenterRouter {
             } else {
                 throw new NavigationFailException("the context or fragment both are null");
             }
-        } else {
-            // 使用 context 跳转 startActivityForResult
-            if (routerRequest.context != null) {
-                Fragment rxFragment = findFragment(routerRequest.context);
-                if (rxFragment != null) {
-                    rxFragment.startActivityForResult(intent, routerRequest.requestCode);
-                } else if (routerRequest.context instanceof Activity) {
-                    ((Activity) routerRequest.context).startActivityForResult(intent, routerRequest.requestCode);
-                } else {
-                    throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
-                }
-            } else if (routerRequest.fragment != null) { // 使用 Fragment 跳转
-                Fragment rxFragment = findFragment(routerRequest.fragment);
-                if (rxFragment != null) {
-                    rxFragment.startActivityForResult(intent, routerRequest.requestCode);
-                } else {
-                    routerRequest.fragment.startActivityForResult(intent, routerRequest.requestCode);
-                }
-            } else {
-                throw new NavigationFailException("the context or fragment both are null");
-            }
+            return;
         }
+        // 使用 context 跳转 startActivityForResult
+        if (routerRequest.context != null) {
+            Fragment rxFragment = findFragment(routerRequest.context);
+            if (rxFragment != null) {
+                rxFragment.startActivityForResult(intent, routerRequest.requestCode);
+            } else if (routerRequest.context instanceof Activity) {
+                ((Activity) routerRequest.context).startActivityForResult(intent, routerRequest.requestCode);
+            } else {
+                throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
+            }
+        } else if (routerRequest.fragment != null) { // 使用 Fragment 跳转
+            Fragment rxFragment = findFragment(routerRequest.fragment);
+            if (rxFragment != null) {
+                rxFragment.startActivityForResult(intent, routerRequest.requestCode);
+            } else {
+                routerRequest.fragment.startActivityForResult(intent, routerRequest.requestCode);
+            }
+        } else {
+            throw new NavigationFailException("the context or fragment both are null");
+        }
+
     }
 
     @Nullable
@@ -186,13 +189,13 @@ public class EHiRouterCenter implements IComponentCenterRouter {
         final String targetUrl = getTargetUrl(uri);
         final EHiRouterBean routerBean = routerMap.get(targetUrl);
         if (routerBean == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         final List<Class<? extends EHiRouterInterceptor>> interceptors = routerBean.interceptors;
         final List<String> interceptorNames = routerBean.interceptorNames;
         // 如果没有拦截器直接返回 null
         if ((interceptors == null || interceptors.isEmpty()) && (interceptorNames == null || interceptorNames.isEmpty())) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         final List<EHiRouterInterceptor> result = new ArrayList<>();
         if (interceptors != null) {
@@ -229,7 +232,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
             return null;
         }
         if (targetPath.charAt(0) != '/') {
-            targetPath = "/" + targetPath;
+            targetPath = SEPARATOR + targetPath;
         }
         targetPath = uri.getHost() + targetPath;
         return targetPath;
@@ -244,7 +247,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
             return null;
         }
         if (targetPath.charAt(0) != '/') {
-            targetPath = "/" + targetPath;
+            targetPath = SEPARATOR + targetPath;
         }
         targetPath = uri.getHost() + targetPath;
         return routerMap.get(targetPath);
@@ -355,16 +358,13 @@ public class EHiRouterCenter implements IComponentCenterRouter {
         Set<String> set = new HashSet<>();
         for (Map.Entry<String, IComponentHostRouter> entry : hostRouterMap.entrySet()) {
             IComponentHostRouter childRouter = entry.getValue();
-            if (childRouter == null) {
+            if (childRouter == null || childRouter.getRouterMap() == null) {
                 continue;
             }
             Map<String, EHiRouterBean> childRouterMap = childRouter.getRouterMap();
-            if (childRouterMap == null) {
-                continue;
-            }
             for (String key : childRouterMap.keySet()) {
                 if (set.contains(key)) {
-                    throw new RuntimeException("the target uri is exist：" + key);
+                    throw new IllegalStateException("the target uri is exist：" + key);
                 }
                 set.add(key);
             }
