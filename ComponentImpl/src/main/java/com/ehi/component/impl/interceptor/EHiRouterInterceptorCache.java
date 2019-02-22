@@ -4,14 +4,13 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.cache.Cache;
+import com.ehi.component.cache.Cache.Factory;
+import com.ehi.component.cache.CacheType;
 import com.ehi.component.impl.EHiRouterInterceptor;
-
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 支持缓存自定义拦截器,工具类
@@ -30,12 +29,14 @@ public class EHiRouterInterceptorCache {
     /**
      * 拦截器 Class --> EHiRouterInterceptor 的缓存
      */
-    private static final Map<Class,EHiRouterInterceptor> interceptorClassCacheMap = new HashMap<>();
-
+    private static final Cache<Class, EHiRouterInterceptor> interceptorClassCache = Factory.INSTANCE.build
+            (CacheType.ROUTER_INTERCEPTOR_CACHE);
     /**
      * 拦截器 Name(String) --> EHiRouterInterceptor 的缓存
      */
-    private static final Map<String,EHiRouterInterceptor> interceptorNameCacheMap = new HashMap<>();
+    private static final Cache<String, EHiRouterInterceptor> interceptorNameCache = Factory.INSTANCE.build
+            (CacheType.ROUTER_INTERCEPTOR_CACHE);
+
 
     /**
      * 内部做了缓存,如果缓存中没有就会反射创建拦截器对象
@@ -45,7 +46,7 @@ public class EHiRouterInterceptorCache {
      */
     @Nullable
     public static synchronized EHiRouterInterceptor getInterceptorByClass(@NonNull Class<? extends EHiRouterInterceptor> tClass) {
-        EHiRouterInterceptor t = interceptorClassCacheMap.get(tClass);
+        EHiRouterInterceptor t = interceptorClassCache.get(tClass);
         if (t == null) {
             try {
                 Constructor<?>[] constructors = tClass.getConstructors();
@@ -68,7 +69,7 @@ public class EHiRouterInterceptorCache {
                     if (t == null) {
                         throw new InstantiationException("do you write default constructor or a constructor with parameter 'Application' or  a constructor with parameter 'Context' ");
                     } else {
-                        interceptorClassCacheMap.put(tClass, t);
+                        interceptorClassCache.put(tClass, t);
                     }
                 }
             } catch (Exception e) {
@@ -81,7 +82,7 @@ public class EHiRouterInterceptorCache {
     }
 
     public static synchronized void removeCache(@NonNull Class<? extends EHiRouterInterceptor> tClass) {
-        interceptorClassCacheMap.remove(tClass);
+        interceptorClassCache.remove(tClass);
     }
 
     /**
@@ -92,15 +93,15 @@ public class EHiRouterInterceptorCache {
      */
     @Nullable
     public static synchronized EHiRouterInterceptor getInterceptorByName(@NonNull String interceptorName) {
-        return interceptorNameCacheMap.get(interceptorName);
+        return interceptorNameCache.get(interceptorName);
     }
 
     public static synchronized void putCache(@NonNull String interceptorName, @NonNull EHiRouterInterceptor interceptor) {
-        interceptorNameCacheMap.put(interceptorName, interceptor);
+        interceptorNameCache.put(interceptorName, interceptor);
     }
 
     public static synchronized void removeCache(@NonNull String interceptorName) {
-        interceptorNameCacheMap.remove(interceptorName);
+        interceptorNameCache.remove(interceptorName);
     }
 
 }

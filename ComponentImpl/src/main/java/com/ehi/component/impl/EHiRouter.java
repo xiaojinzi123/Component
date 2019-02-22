@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.SparseArray;
 
+import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
@@ -27,6 +28,7 @@ import com.ehi.component.support.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +55,8 @@ public class EHiRouter {
     /**
      * 路由的监听器
      */
-    static Collection<EHiRouterListener> routerListeners = Collections.synchronizedCollection(new ArrayList<EHiRouterListener>(0));
+    static Collection<EHiRouterListener> routerListeners = Collections
+            .synchronizedCollection(new ArrayList<EHiRouterListener>(0));
 
     // 支持取消的一个 Callback 集合,需要线程安全
     private static List<NavigationDisposable> mNavigationDisposableList = new Vector<>();
@@ -107,11 +110,7 @@ public class EHiRouter {
     public static class Builder extends EHiRouterRequest.Builder {
 
         @Nullable
-        private EHiRouterInterceptor[] interceptors;
-        @Nullable
-        private Class<? extends EHiRouterInterceptor>[] classInterceptors;
-        @Nullable
-        private String[] nameInterceptors;
+        private List<EHiRouterInterceptor> routerInterceptors;
 
         /**
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
@@ -129,17 +128,41 @@ public class EHiRouter {
         }
 
         public Builder interceptors(@NonNull EHiRouterInterceptor... interceptors) {
-            this.interceptors = interceptors;
+            Utils.checkNullPointer(interceptors, "interceptors");
+            lazyInitEHiRouterInterceptors(interceptors.length);
+            routerInterceptors.addAll(Arrays.asList(interceptors));
+            return this;
+        }
+
+        public Builder interceptors(@NonNull List<EHiRouterInterceptor> interceptors) {
+            Utils.checkNullPointer(interceptors, "interceptors");
+            lazyInitEHiRouterInterceptors(interceptors.size());
+            routerInterceptors.addAll(interceptors);
             return this;
         }
 
         public Builder interceptors(@NonNull Class<? extends EHiRouterInterceptor>... interceptors) {
-            this.classInterceptors = interceptors;
+            Utils.checkNullPointer(interceptors, "interceptors");
+            lazyInitEHiRouterInterceptors(interceptors.length);
+            for (Class<? extends EHiRouterInterceptor> interceptor : interceptors) {
+                routerInterceptors.add(EHiRouterInterceptorCache.getInterceptorByClass(interceptor));
+            }
             return this;
         }
 
         public Builder interceptorNames(@NonNull String... interceptors) {
-            this.nameInterceptors = interceptors;
+            Utils.checkNullPointer(interceptors, "interceptors");
+            lazyInitEHiRouterInterceptors(interceptors.length);
+            for (String customNameInterceptor : interceptors) {
+                EHiRouterInterceptor interceptor = EHiInterceptorCenter.getInstance()
+                        .getByName(customNameInterceptor);
+                if (interceptor != null) {
+                    routerInterceptors.add(interceptor);
+                } else if (ComponentConfig.isDebug()) {
+                    throw new InterceptorNotFoundException(
+                            "can't find the interceptor and it's name is " + customNameInterceptor);
+                }
+            }
             return this;
         }
 
@@ -156,6 +179,12 @@ public class EHiRouter {
         @Override
         public Builder afterJumpAction(@Nullable Action action) {
             return (Builder) super.afterJumpAction(action);
+        }
+
+        private void lazyInitEHiRouterInterceptors(int size) {
+            if (routerInterceptors == null) {
+                routerInterceptors = new ArrayList<>(size > 3 ? size : 3);
+            }
         }
 
         @Override
@@ -422,7 +451,7 @@ public class EHiRouter {
                     mNavigationDisposableList.add(interceptorCallback);
                 }
                 // 真正的去执行路由
-                realNavigate(originalRequest, interceptors, classInterceptors, nameInterceptors, interceptorCallback);
+                realNavigate(originalRequest, routerInterceptors, interceptorCallback);
                 // 返回对象
                 return interceptorCallback;
             } catch (Exception e) { // 发生路由错误的时候
@@ -449,64 +478,29 @@ public class EHiRouter {
         /**
          * 真正的执行路由
          *
-         * @param originalRequest         最原始的请求对象
-         * @param customInterceptors      自定义的拦截器
-         * @param customClassInterceptors 自定义的拦截器
-         * @param callback                回调对象
-         * @throws Exception
+         * @param originalRequest 最原始的请求对象
+         * @param customInterceptors 自定义的拦截器
+         * @param callback 回调对象
          */
         @AnyThread
         private void realNavigate(@NonNull final EHiRouterRequest originalRequest,
-                                  @Nullable EHiRouterInterceptor[] customInterceptors,
-                                  @Nullable Class<? extends EHiRouterInterceptor>[] customClassInterceptors,
-                                  @Nullable String[] customNameInterceptors,
-                                  @NonNull EHiRouterInterceptor.Callback callback) {
+                @Nullable List<EHiRouterInterceptor> customInterceptors,
+                @NonNull EHiRouterInterceptor.Callback callback) throws Exception {
 
             // 拿到共有的拦截器
-            List<EHiRouterInterceptor> publicInterceptors = EHiInterceptorCenter.getInstance().getGlobalInterceptorList();
-            // 定义本次路由需要执行的拦截器列表,初始化拦截器的个数 8 个够用应该不会经常扩容
-            final List<EHiRouterInterceptor> currentInterceptors = new ArrayList<>(8);
+            List<EHiRouterInterceptor> publicInterceptors = EHiInterceptorCenter.getInstance()
+                    .getGlobalInterceptorList();
+            // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
+            final List<EHiRouterInterceptor> currentInterceptors = new ArrayList(8);
             // 添加内置拦截器,目前就一个内置拦截器,而且必须在最前面,因为这个拦截器内部有一个时间的记录
             // 保证一秒内就只能打开一个相同的界面
             currentInterceptors.add(EHiOpenOnceInterceptor.getInstance());
             // 添加共有拦截器
             currentInterceptors.addAll(publicInterceptors);
-
-            // -------------------------------------------------------添加自定义拦截器-------------------------------------------------start
+            // 添加自定义拦截器
             if (customInterceptors != null) {
-                for (EHiRouterInterceptor customInterceptor : customInterceptors) {
-                    currentInterceptors.add(customInterceptor);
-                }
+                currentInterceptors.addAll(customInterceptors);
             }
-            if (customClassInterceptors != null) {
-                for (Class<? extends EHiRouterInterceptor> customClassInterceptor : customClassInterceptors) {
-                    if (customClassInterceptor == null) {
-                        continue;
-                    }
-                    EHiRouterInterceptor interceptor = EHiRouterInterceptorCache.getInterceptorByClass(customClassInterceptor);
-                    if (interceptor != null) {
-                        currentInterceptors.add(interceptor);
-                    } else {
-                        callback.onError(new Exception(customClassInterceptor.getName() + " can't instantiation"));
-                        return;
-                    }
-                }
-            }
-            if (customNameInterceptors != null) {
-                for (String customNameInterceptor : customNameInterceptors) {
-                    if (customNameInterceptor == null) {
-                        continue;
-                    }
-                    EHiRouterInterceptor interceptor = EHiInterceptorCenter.getInstance().getByName(customNameInterceptor);
-                    if (interceptor == null) {
-                        callback.onError(new InterceptorNotFoundException("can't find the interceptor and it's name is " + customNameInterceptor + ",target url is " + originalRequest.uri.toString()));
-                        return;
-                    } else {
-                        currentInterceptors.add(interceptor);
-                    }
-                }
-            }
-            // -------------------------------------------------------添加自定义拦截器-------------------------------------------------end
 
             // 扫尾拦截器,内部会添加目标要求执行的拦截器和真正执行跳转的拦截器
             currentInterceptors.add(new EHiRouterInterceptor() {
@@ -525,7 +519,8 @@ public class EHiRouter {
                 }
             });
             // 创建执行器
-            final EHiRouterInterceptor.Chain chain = new InterceptorChain(currentInterceptors, 0, originalRequest, callback);
+            final EHiRouterInterceptor.Chain chain = new InterceptorChain(currentInterceptors, 0, originalRequest,
+                    callback);
             // 执行
             chain.proceed(originalRequest);
 
@@ -567,7 +562,8 @@ public class EHiRouter {
                 return isComplete || isCanceled;
             }
 
-            public InterceptorCallback(@NonNull EHiRouterRequest originalRequest, @Nullable EHiCallback callback) {
+            public InterceptorCallback(@NonNull EHiRouterRequest originalRequest,
+                    @Nullable EHiCallback callback) {
                 this.mOriginalRequest = originalRequest;
                 this.mCallback = callback;
             }
@@ -744,12 +740,16 @@ public class EHiRouter {
                             }
                             ++calls;
                             if (mIndex >= mInterceptors.size()) {
-                                callback().onError(new NavigationFailException(new IndexOutOfBoundsException("size = " + mInterceptors.size() + ",index = " + mIndex)));
+                                callback().onError(new NavigationFailException(new IndexOutOfBoundsException(
+                                        "size = " + mInterceptors.size() + ",index = " + mIndex)));
                             } else if (calls > 1) { // 调用了两次
-                                callback().onError(new NavigationFailException("interceptor " + mInterceptors.get(mIndex - 1) + " must call proceed() exactly once"));
+                                callback().onError(new NavigationFailException(
+                                        "interceptor " + mInterceptors.get(mIndex - 1)
+                                                + " must call proceed() exactly once"));
                             } else {
                                 // 当拦截器最后一个的时候,就不是这个类了,是 RealInterceptor 了
-                                InterceptorChain next = new InterceptorChain(mInterceptors, mIndex + 1, request, callback);
+                                InterceptorChain next = new InterceptorChain(mInterceptors, mIndex + 1,
+                                        request, callback);
                                 // current Interceptor
                                 EHiRouterInterceptor interceptor = mInterceptors.get(mIndex);
                                 // 用户自定义的部分,必须在主线程
