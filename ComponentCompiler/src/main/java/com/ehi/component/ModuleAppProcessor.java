@@ -117,7 +117,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                     .indent("    ")
                     .build().writeTo(mFiler);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ProcessException(e);
         }
     }
 
