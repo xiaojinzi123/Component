@@ -186,13 +186,13 @@ public class EHiRouterCenter implements IComponentCenterRouter {
         final String targetUrl = getTargetUrl(uri);
         final EHiRouterBean routerBean = routerMap.get(targetUrl);
         if (routerBean == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         final List<Class<? extends EHiRouterInterceptor>> targetInterceptors = routerBean.getInterceptors();
         final List<String> targetInterceptorNames = routerBean.getInterceptorNames();
         // 如果没有拦截器直接返回 null
         if ((targetInterceptors == null || targetInterceptors.isEmpty()) && (targetInterceptorNames == null || targetInterceptorNames.isEmpty())) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         final List<EHiRouterInterceptor> result = new ArrayList<>();
         if (targetInterceptors != null) {
