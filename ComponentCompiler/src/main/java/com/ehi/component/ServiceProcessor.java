@@ -41,35 +41,21 @@ import javax.tools.Diagnostic;
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes({ComponentUtil.SERVICE_ANNO_CLASS_NAME})
 public class ServiceProcessor extends BaseHostProcessor {
-
     private static final String SERVICE_SEPER_NAME1 = "com.ehi.component.service.IServiceLoad";
     private static final String SERVICE_SEPER_NAME2 = "com.ehi.component.service.SingletonService";
-
-    private TypeElement typeElementServiceContainer;
+    private static final String NAME_OF_APPLICATION = "application";
 
     private ClassName classNameServiceContainer;
-
-    private TypeElement service1TypeElement;
-    private TypeElement service2TypeElement;
-
     private ClassName service1ClassName;
     private ClassName service2ClassName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-
-        mFiler = processingEnv.getFiler();
-        mMessager = processingEnvironment.getMessager();
-        mElements = processingEnv.getElementUtils();
-
-        typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.EHISERVICE_CLASS_NAME);
-
+        final TypeElement typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.EHISERVICE_CLASS_NAME);
         classNameServiceContainer = ClassName.get(typeElementServiceContainer);
-
-        service1TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME1);
-        service2TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME2);
-
+        final TypeElement service1TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME1);
+        final TypeElement service2TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME2);
         service1ClassName = ClassName.get(service1TypeElement);
         service2ClassName = ClassName.get(service2TypeElement);
 
@@ -89,7 +75,7 @@ public class ServiceProcessor extends BaseHostProcessor {
         return false;
     }
 
-    private List<Element> annoElementList = new ArrayList<>();
+    private final List<Element> annoElementList = new ArrayList<>();
 
     private void parseAnnotation(Set<? extends Element> annoElements) {
         annoElementList.clear();
@@ -135,14 +121,12 @@ public class ServiceProcessor extends BaseHostProcessor {
         } catch (IOException ignore) {
             // ignore
         }
-
-
     }
 
     private MethodSpec generateOnCreateMethod() {
         TypeName returnType = TypeName.VOID;
         ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_APPLICATION));
-        ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, "application")
+        ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, NAME_OF_APPLICATION)
                 .addModifiers(Modifier.FINAL)
                 .build();
         final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onCreate")
@@ -169,7 +153,7 @@ public class ServiceProcessor extends BaseHostProcessor {
                                     MethodSpec.methodBuilder("getRaw")
                                             .addAnnotation(Override.class)
                                             .addModifiers(Modifier.PROTECTED)
-                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : "application"))
+                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
                                             .returns(TypeName.get(element.asType()))
                                             .build()
                             )
@@ -183,7 +167,7 @@ public class ServiceProcessor extends BaseHostProcessor {
                                     MethodSpec.methodBuilder("get")
                                             .addAnnotation(Override.class)
                                             .addModifiers(Modifier.PUBLIC)
-                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : "application"))
+                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
                                             .returns(TypeName.get(element.asType()))
                                             .build()
                             )

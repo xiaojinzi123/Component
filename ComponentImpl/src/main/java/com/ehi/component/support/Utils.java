@@ -1,8 +1,13 @@
 package com.ehi.component.support;
 
+import android.app.ActivityManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.ehi.component.ComponentConfig;
 
 /**
  * time   : 2019/01/25
@@ -68,6 +73,35 @@ public class Utils {
             throwable = throwable.getCause();
         }
         return throwable;
+    }
+
+    public static String checkStringNullPointer(String value, @NonNull String parameterName) {
+        if (ComponentConfig.isDebug() && (value == null || value.isEmpty())) {
+            throw new NullPointerException("parameter '" + parameterName + "' can't be null");
+        }
+        return value;
+    }
+
+    public static String checkStringNullPointer(String value, @NonNull String parameterName, @Nullable String desc) {
+        if (ComponentConfig.isDebug() && (value == null || value.isEmpty())) {
+            throw new NullPointerException("parameter '" + parameterName + "' can't be null" + (desc == null ? "" : "," + desc));
+        }
+        return value;
+    }
+
+    public static <T> T checkNullPointer(T value, @NonNull String parameterName) {
+        if (ComponentConfig.isDebug() && value == null) {
+            throw new NullPointerException("parameter '" + parameterName + "' can't be null");
+        }
+        return value;
+    }
+
+    public static boolean isLowMemoryDevice(ActivityManager activityManager) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return activityManager.isLowRamDevice();
+        } else {
+            return true;
+        }
     }
 
 }

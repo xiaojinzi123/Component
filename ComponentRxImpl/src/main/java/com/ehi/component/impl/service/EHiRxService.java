@@ -86,7 +86,7 @@ public class EHiRxService extends EHiService {
                     throw new ServiceNotFoundException(tClass.getName());
                 }
                 // 这个是为了让每一个错误都能被管控,然后如果用户不想处理的话,我这边都自动忽略掉
-                T result = (T) Proxy.newProxyInstance(tClass.getClassLoader(), new Class[]{tClass}, new InvocationHandler() {
+                return (T) Proxy.newProxyInstance(tClass.getClassLoader(), new Class[]{tClass}, new InvocationHandler() {
                     @Override
                     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                         try {
@@ -153,7 +153,6 @@ public class EHiRxService extends EHiService {
                         }
                     }
                 });
-                return result;
             }
         });
     }

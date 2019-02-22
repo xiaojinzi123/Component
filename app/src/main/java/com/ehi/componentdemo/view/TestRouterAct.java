@@ -408,7 +408,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module2.NAME)
                 .path(ModuleConfig.Module2.MAIN)
-                .onIntentCreated(new com.ehi.component.support.Consumer<Intent>() {
+                .intentConsumer(new com.ehi.component.support.Consumer<Intent>() {
                     @Override
                     public void accept(@NonNull Intent intent) throws Exception {
                         Toast.makeText(TestRouterAct.this, intent.toString(), Toast.LENGTH_SHORT).show();
@@ -499,6 +499,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
+                .putString("tel","15857913627")
                 .requestCode(123)
                 .activityResultCall()
                 .subscribe(new Consumer<EHiActivityResult>() {
@@ -568,13 +569,14 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
-                .onBeforJump(new com.ehi.component.support.Action() {
+                .putString("tel","17321174171")
+                .beforJumpAction(new com.ehi.component.support.Action() {
                     @Override
                     public void run() throws Exception {
                         Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .onAfterJump(new com.ehi.component.support.Action() {
+                .afterJumpAction(new com.ehi.component.support.Action() {
                     @Override
                     public void run() throws Exception {
                         Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show();

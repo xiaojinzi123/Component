@@ -12,18 +12,29 @@
         window.testWebRouter.openUrl(url);
     }
 
+
+
 </script>
+组件化之后的js 和 原生交互就发生了很大的变化,html只管根据url来跳转到原生的各个界面,总结如下：
+<ol>
+    <li>
+        不需要根据 html 的 type 来判断跳转到那个页面
+    </li>
+    <li>
+        对于需要登录或者其他情况的界面也不需要在跳转前处理
+    </li>
+</ol>
 <ol>
     <li>
         <a href="#" onclick='openUrl("EHi://component1/testQuery?name=webName&pass=webPass")'>EHi://component1/testQuery?name=webName&pass=webPass</a>
     </li>
     <li>
         <a href="#"
-           onclick='openUrl("EHi://system/callPhone?data=17321174171")'>拨打电话：17321174171</a>
+           onclick='openUrl("EHi://system/callPhone?tel=17321174171")'>打电话：EHi://system/callPhone?tel=17321174171</a>
     </li>
     <li>
         <a href="#"
-           onclick='openUrl("EHi://system/callPhone?data=15857913627")'>拨打电话：15857913627</a>
+           onclick='openUrl("EHi://system/callPhone?tel=15857913627")'>打电话：EHi://system/callPhone?tel=15857913627</a>
     </li>
     <li>
         <a href="#"
@@ -31,7 +42,11 @@
     </li>
     <li>
         <a href="#"
-           onclick='openUrl("http://www.baidu.com")'>打开网页 www.baidu.com</a>
+           onclick='openUrl("http://www.baidu.com")'>http://www.baidu.com</a>
+    </li>
+    <li>
+        <a href="#"
+           onclick='openUrl("https://github.com/ManbangGroup/Phantom")'>https://github.com/ManbangGroup/Phantom/</a>
     </li>
 </ol>
 
