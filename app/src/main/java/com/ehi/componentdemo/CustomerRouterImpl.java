@@ -32,7 +32,7 @@ public class CustomerRouterImpl {
             interceptorNames = InterceptorConfig.HELP_CALLPHOEPERMISION
     )
     public static Intent callPhoneIntent(@NonNull EHiRouterRequest request) {
-        String tel = ParameterSupport.getString(request.bundle, "data");
+        String tel = ParameterSupport.getString(request.bundle, "tel");
         if (TextUtils.isEmpty(tel)) {
             throw new NullPointerException("the tel is empty");
         }

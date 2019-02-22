@@ -9,6 +9,7 @@ import com.ehi.component.impl.EHiRouterRequest;
 
 /**
  * 全局的一个拦截器,让网页的 schemes 跳转到网页的界面去
+ * 优先级设置的高一些
  */
 @EHiGlobalInterceptorAnno(priority = 1000)
 public class WebViewInterceptor implements EHiRouterInterceptor {
@@ -18,16 +19,14 @@ public class WebViewInterceptor implements EHiRouterInterceptor {
         Uri uri = chain.request().uri;
         String scheme = uri.getScheme();
         if (ModuleConfig.HTTP_SCHEME.equalsIgnoreCase(scheme) || ModuleConfig.HTTPS_SCHEME.equalsIgnoreCase(scheme)) {
-            chain.request().bundle.putString("data",uri.toString());
+            // 改变 request 对象路由到 网页的 Activity 去
             EHiRouterRequest newRequest = chain.request().toBuilder()
-                    .uri(new Uri.Builder()
-                            .scheme(ModuleConfig.APP_SCHEME)
-                            .authority(ModuleConfig.Help.NAME)
-                            .path(ModuleConfig.Help.WEB)
-                            .build()
-                    )
-                    .bundle(chain.request().bundle)
+                    .scheme(ModuleConfig.APP_SCHEME)
+                    .host(ModuleConfig.Help.NAME)
+                    .path(ModuleConfig.Help.WEB)
+                    .putString("data",uri.toString())
                     .build();
+            // 执行
             chain.proceed(newRequest);
         }else {
             chain.proceed(chain.request());

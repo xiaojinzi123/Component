@@ -153,7 +153,7 @@ public class TestQualityAct extends BaseAct {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        ToastUtil.toastShort("测试成功\n,onError：" + Utils.getRealMessage(throwable));
+                        ToastUtil.toastShort("测试成功\n,error class = ：" + Utils.getRealThrowable(throwable).getClass().getSimpleName() + ",error msg = " + Utils.getRealMessage(throwable));
                     }
                 });
     }
@@ -174,7 +174,7 @@ public class TestQualityAct extends BaseAct {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        ToastUtil.toastShort("测试成功\n,onError：" + Utils.getRealMessage(throwable));
+                        ToastUtil.toastShort("测试成功\n,error class = ：" + Utils.getRealThrowable(throwable).getClass().getSimpleName() + ",error msg = " + Utils.getRealMessage(throwable));
                     }
                 });
     }

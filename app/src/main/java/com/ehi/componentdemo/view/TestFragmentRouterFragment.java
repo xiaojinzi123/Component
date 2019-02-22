@@ -126,8 +126,9 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .withFragment(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
+                .putString("tel", "xxx")
                 .interceptors(DialogShowInterceptor.class)
-                .navigate(new EHiCallbackAdapter(){
+                .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
                     }
@@ -147,6 +148,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .withFragment(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
+                .putString("tel", "xxx")
                 .interceptors(new EHiRouterInterceptor() {
                     @Override
                     public void intercept(final Chain chain) throws Exception {

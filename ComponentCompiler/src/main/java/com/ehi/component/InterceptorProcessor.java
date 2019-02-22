@@ -48,7 +48,6 @@ public class InterceptorProcessor extends BaseHostProcessor {
 
     private TypeElement interceptorUtilTypeElement;
     private TypeElement interceptorBeanTypeElement;
-    private TypeElement nullableTypeElement;
     private ClassName nullableClassName;
 
     @Override
@@ -56,41 +55,33 @@ public class InterceptorProcessor extends BaseHostProcessor {
         super.init(processingEnvironment);
         interceptorUtilTypeElement = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_UTIL_CLASS_NAME);
         interceptorBeanTypeElement = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_BEAN_CLASS_NAME);
-        nullableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_NULLABLE);
+        final TypeElement nullableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_NULLABLE);
         nullableClassName = ClassName.get(nullableTypeElement);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-
         if (componentHost == null || componentHost.isEmpty()) {
             return false;
         }
-
         if (CollectionUtils.isNotEmpty(set)) {
-
-            Set<? extends Element> globalInterceptorElements = roundEnvironment.getElementsAnnotatedWith(EHiGlobalInterceptorAnno.class);
-            Set<? extends Element> interceptorElements = roundEnvironment.getElementsAnnotatedWith(EHiInterceptorAnno.class);
-
+            final Set<? extends Element> globalInterceptorElements = roundEnvironment.getElementsAnnotatedWith(EHiGlobalInterceptorAnno.class);
+            final Set<? extends Element> interceptorElements = roundEnvironment.getElementsAnnotatedWith(EHiInterceptorAnno.class);
             parseGlobalInterceptAnnotation(globalInterceptorElements);
             parseNormalInterceptAnnotation(interceptorElements);
-
             createImpl();
-
             return true;
         }
-
         return false;
-
     }
 
-    private List<InterceptorBean> mGlobalInterceptElementList = new ArrayList<>();
-    private Map<String, InterceptorBean> mNormalInterceptElementMap = new HashMap<>();
+    private final List<InterceptorBean> mGlobalInterceptElementList = new ArrayList<>();
+    private final Map<String, InterceptorBean> mNormalInterceptElementMap = new HashMap<>();
 
     private void parseGlobalInterceptAnnotation(Set<? extends Element> globalInterceptorElements) {
         mGlobalInterceptElementList.clear();
         // 拦截器的接口
-        TypeMirror typeInterceptor = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME).asType();
+        final TypeMirror typeInterceptor = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME).asType();
         for (Element element : globalInterceptorElements) {
             TypeMirror tm = element.asType();
             if (!(element instanceof TypeElement)) { // 比如是类
@@ -113,7 +104,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
     private void parseNormalInterceptAnnotation(Set<? extends Element> normalInterceptorElements) {
         mNormalInterceptElementMap.clear();
         // 拦截器的接口
-        TypeMirror typeInterceptor = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME).asType();
+        final TypeMirror typeInterceptor = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME).asType();
         for (Element element : normalInterceptorElements) {
             TypeMirror tm = element.asType();
             if (!(element instanceof TypeElement)) { // 比如是类
@@ -160,7 +151,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
                     .indent("    ")
                     .build().writeTo(mFiler);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ProcessException(e);
         }
     }
 
@@ -175,7 +166,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
                 .addAnnotation(nullableClassName)
                 .addModifiers(Modifier.PUBLIC);
 
-        if (mGlobalInterceptElementList.size() == 0) {
+        if (mGlobalInterceptElementList.isEmpty()) {
             globalInterceptorListMethodSpecBuilder.addStatement("return null");
         } else {
             globalInterceptorListMethodSpecBuilder.addStatement("$T<$T> list = new $T<>()", mClassNameList, interceptorBeanTypeElement, mClassNameArrayList);
