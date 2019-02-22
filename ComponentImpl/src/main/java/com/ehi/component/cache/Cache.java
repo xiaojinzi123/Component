@@ -95,4 +95,5 @@ public interface Cache<K, V> {
      * 清除缓存中所有的内容
      */
     void clear();
+
 }

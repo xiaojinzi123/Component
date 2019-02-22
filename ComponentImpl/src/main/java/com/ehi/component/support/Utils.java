@@ -1,5 +1,7 @@
 package com.ehi.component.support;
 
+import android.app.ActivityManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -92,6 +94,14 @@ public class Utils {
             throw new NullPointerException("parameter '" + parameterName + "' can't be null");
         }
         return value;
+    }
+
+    public static boolean isLowMemoryDevice(ActivityManager activityManager) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return activityManager.isLowRamDevice();
+        } else {
+            return true;
+        }
     }
 
 }
