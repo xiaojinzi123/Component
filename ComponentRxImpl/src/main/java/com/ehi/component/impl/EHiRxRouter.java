@@ -59,7 +59,7 @@ public class EHiRxRouter extends EHiRouter {
      * @return
      */
     public static Builder with(@NonNull Context context) {
-        return new Builder(context, null);
+        return new Builder(context);
     }
 
     /**
@@ -70,32 +70,32 @@ public class EHiRxRouter extends EHiRouter {
      * @return
      */
     public static Builder withFragment(@NonNull Fragment fragment) {
-        return new Builder(fragment, null);
+        return new Builder(fragment);
     }
 
     public static class Builder extends EHiRouter.Builder {
 
-        private Builder(@NonNull Context context, String url) {
-            super(context, url);
+        private Builder(@NonNull Context context) {
+            super(context);
         }
 
-        private Builder(@NonNull Fragment fragment, String url) {
-            super(fragment, url);
-        }
-
-        @Override
-        public Builder onBeforJump(@NonNull Action action) {
-            return (Builder) super.onBeforJump(action);
+        private Builder(@NonNull Fragment fragment) {
+            super(fragment);
         }
 
         @Override
-        public Builder onAfterJump(@NonNull Action action) {
-            return (Builder) super.onAfterJump(action);
+        public Builder beforJumpAction(@NonNull Action action) {
+            return (Builder) super.beforJumpAction(action);
         }
 
         @Override
-        public Builder onIntentCreated(@NonNull com.ehi.component.support.Consumer<Intent> intentConsumer) {
-            return (Builder) super.onIntentCreated(intentConsumer);
+        public Builder afterJumpAction(@NonNull Action action) {
+            return (Builder) super.afterJumpAction(action);
+        }
+
+        @Override
+        public Builder intentConsumer(@NonNull com.ehi.component.support.Consumer<Intent> intentConsumer) {
+            return (Builder) super.intentConsumer(intentConsumer);
         }
 
         @Override

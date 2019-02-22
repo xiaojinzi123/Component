@@ -18,16 +18,14 @@ public class WebViewInterceptor implements EHiRouterInterceptor {
         Uri uri = chain.request().uri;
         String scheme = uri.getScheme();
         if (ModuleConfig.HTTP_SCHEME.equalsIgnoreCase(scheme) || ModuleConfig.HTTPS_SCHEME.equalsIgnoreCase(scheme)) {
-            chain.request().bundle.putString("data",uri.toString());
+            // 改变 request 对象路由到 网页的 Activity 去
             EHiRouterRequest newRequest = chain.request().toBuilder()
-                    .uri(new Uri.Builder()
-                            .scheme(ModuleConfig.APP_SCHEME)
-                            .authority(ModuleConfig.Help.NAME)
-                            .path(ModuleConfig.Help.WEB)
-                            .build()
-                    )
-                    .bundle(chain.request().bundle)
+                    .scheme(ModuleConfig.APP_SCHEME)
+                    .host(ModuleConfig.Help.NAME)
+                    .path(ModuleConfig.Help.WEB)
+                    .putString("data",uri.toString())
                     .build();
+            // 执行
             chain.proceed(newRequest);
         }else {
             chain.proceed(chain.request());

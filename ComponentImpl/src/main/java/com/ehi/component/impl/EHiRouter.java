@@ -11,10 +11,8 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.InterceptorNotFoundException;
 import com.ehi.component.error.NavigationFailException;
@@ -31,9 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -97,102 +93,39 @@ public class EHiRouter {
     }
 
     public static Builder with(@NonNull Context context) {
-        return new Builder(context, null);
+        return new Builder(context);
     }
 
     public static Builder withFragment(@NonNull Fragment fragment) {
-        return new Builder(fragment, null);
+        return new Builder(fragment);
     }
 
     public static boolean isMatchUri(@NonNull Uri uri) {
         return EHiRouterCenter.getInstance().isMatchUri(uri);
     }
 
-    public static class Builder {
-
-        @Nullable
-        protected Context context;
-
-        @Nullable
-        protected Fragment fragment;
-
-        @Nullable
-        protected String url;
-
-        @Nullable
-        protected String scheme;
-
-        @NonNull
-        protected String host;
-
-        @Nullable
-        protected String path;
-
-        @Nullable
-        protected Integer requestCode;
-
-        @NonNull
-        protected Map<String, String> queryMap = new HashMap<>();
-
-        @NonNull
-        protected Bundle bundle = new Bundle();
+    public static class Builder extends EHiRouterRequest.Builder {
 
         @Nullable
         private EHiRouterInterceptor[] interceptors;
-
         @Nullable
         private Class<? extends EHiRouterInterceptor>[] classInterceptors;
         @Nullable
         private String[] nameInterceptors;
-
-        @Nullable
-        private Consumer<Intent> intentConsumer = null;
-
-        @Nullable
-        private Action beforJumpAction = null;
-
-        @Nullable
-        private Action afterJumpAction = null;
 
         /**
          * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
          */
         protected boolean isFinish = false;
 
-        protected Builder(@NonNull Context context, String url) {
-            this.context = context;
-            this.url = url;
-            checkNullPointer(context, "context");
+        public Builder(@NonNull Context context) {
+            Utils.checkNullPointer(context, "context");
+            context(context);
         }
 
-        protected Builder(@NonNull Fragment fragment, String url) {
-            this.fragment = fragment;
-            this.url = url;
-            checkNullPointer(fragment, "fragment");
-        }
-
-        public Builder onBeforJump(@NonNull Action action) {
-            this.beforJumpAction = action;
-            return this;
-        }
-
-        public Builder onAfterJump(@NonNull Action action) {
-            this.afterJumpAction = action;
-            return this;
-        }
-
-        /**
-         * 当不是自定义跳转的时候, Intent 由框架生成,所以可以回调这个接口
-         * 当自定义跳转,这个回调不会回调的
-         *
-         * @param intentConsumer 这个参数是框架自动构建的,里面有跳转需要的所有参数和数据,这里就是给用户一个
-         *                       更改的机会,但是最好别改参数之类的信息,这里提供出来其实是可以让你调用Intent
-         *                       的 {@link Intent#addFlags(int)} 等方法,并不是给你修改内部的 bundle 的
-         * @return
-         */
-        public Builder onIntentCreated(@NonNull Consumer<Intent> intentConsumer) {
-            this.intentConsumer = intentConsumer;
-            return this;
+        public Builder(@NonNull Fragment fragment) {
+            Utils.checkNullPointer(fragment, "fragment");
+            fragment(fragment);
         }
 
         public Builder interceptors(@NonNull EHiRouterInterceptor... interceptors) {
@@ -210,242 +143,229 @@ public class EHiRouter {
             return this;
         }
 
+        @Override
+        public Builder intentConsumer(@Nullable Consumer<Intent> intentConsumer) {
+            return (Builder) super.intentConsumer(intentConsumer);
+        }
+
+        @Override
+        public Builder beforJumpAction(@Nullable Action action) {
+            return (Builder) super.beforJumpAction(action);
+        }
+
+        @Override
+        public Builder afterJumpAction(@Nullable Action action) {
+            return (Builder) super.afterJumpAction(action);
+        }
+
+        @Override
         public Builder requestCode(@Nullable Integer requestCode) {
-            this.requestCode = requestCode;
-            return this;
+            return (Builder) super.requestCode(requestCode);
         }
 
+        @Override
         public Builder url(@NonNull String url) {
-            checkStringNullPointer(url, "url");
-            this.url = url;
-            return this;
+            return (Builder) super.url(url);
         }
 
+        @Override
         public Builder scheme(@NonNull String scheme) {
-            checkStringNullPointer(scheme, "scheme");
-            this.scheme = scheme;
-            return this;
+            return (Builder) super.scheme(scheme);
         }
 
+        @Override
         public Builder host(@NonNull String host) {
-            checkStringNullPointer(host, "host");
-            this.host = host;
-            return this;
+            return (Builder) super.host(host);
         }
 
+        @Override
         public Builder path(@Nullable String path) {
-            this.path = path;
-            return this;
+            return (Builder) super.path(path);
         }
 
+        @Override
         public Builder putBundle(@NonNull String key, @Nullable Bundle bundle) {
-            this.bundle.putBundle(key, bundle);
-            return this;
+            return (Builder) super.putBundle(key, bundle);
         }
 
+        @Override
         public Builder putAll(@NonNull Bundle bundle) {
-            checkNullPointer(bundle, "bundle");
-            this.bundle.putAll(bundle);
-            return this;
+            return (Builder) super.putAll(bundle);
         }
 
-        /*public Builder putAll(@NonNull PersistableBundle bundle) {
-            this.bundle.putAll(bundle);
-            return this;
-        }*/
-
+        @Override
         public Builder putCharSequence(@NonNull String key, @Nullable CharSequence value) {
-            this.bundle.putCharSequence(key, value);
-            return this;
+            return (Builder) super.putCharSequence(key, value);
         }
 
+        @Override
         public Builder putCharSequenceArray(@NonNull String key, @Nullable CharSequence[] value) {
-            this.bundle.putCharSequenceArray(key, value);
-            return this;
+            return (Builder) super.putCharSequenceArray(key, value);
         }
 
+        @Override
         public Builder putCharSequenceArrayList(@NonNull String key, @Nullable ArrayList<CharSequence> value) {
-            this.bundle.putCharSequenceArrayList(key, value);
-            return this;
+            return (Builder) super.putCharSequenceArrayList(key, value);
         }
 
+        @Override
         public Builder putByte(@NonNull String key, @Nullable byte value) {
-            this.bundle.putByte(key, value);
-            return this;
+            return (Builder) super.putByte(key, value);
         }
 
+        @Override
         public Builder putByteArray(@NonNull String key, @Nullable byte[] value) {
-            this.bundle.putByteArray(key, value);
-            return this;
+            return (Builder) super.putByteArray(key, value);
         }
 
+        @Override
         public Builder putChar(@NonNull String key, @Nullable char value) {
-            this.bundle.putChar(key, value);
-            return this;
+            return (Builder) super.putChar(key, value);
         }
 
+        @Override
         public Builder putCharArray(@NonNull String key, @Nullable char[] value) {
-            this.bundle.putCharArray(key, value);
-            return this;
+            return (Builder) super.putCharArray(key, value);
         }
 
+        @Override
         public Builder putBoolean(@NonNull String key, @Nullable boolean value) {
-            this.bundle.putBoolean(key, value);
-            return this;
+            return (Builder) super.putBoolean(key, value);
         }
 
+        @Override
         public Builder putBooleanArray(@NonNull String key, @Nullable boolean[] value) {
-            this.bundle.putBooleanArray(key, value);
-            return this;
+            return (Builder) super.putBooleanArray(key, value);
         }
 
+        @Override
         public Builder putString(@NonNull String key, @Nullable String value) {
-            this.bundle.putString(key, value);
-            return this;
+            return (Builder) super.putString(key, value);
         }
 
+        @Override
         public Builder putStringArray(@NonNull String key, @Nullable String[] value) {
-            this.bundle.putStringArray(key, value);
-            return this;
+            return (Builder) super.putStringArray(key, value);
         }
 
+        @Override
         public Builder putStringArrayList(@NonNull String key, @Nullable ArrayList<String> value) {
-            this.bundle.putStringArrayList(key, value);
-            return this;
+            return (Builder) super.putStringArrayList(key, value);
         }
 
+        @Override
         public Builder putShort(@NonNull String key, @Nullable short value) {
-            this.bundle.putShort(key, value);
-            return this;
+            return (Builder) super.putShort(key, value);
         }
 
+        @Override
         public Builder putShortArray(@NonNull String key, @Nullable short[] value) {
-            this.bundle.putShortArray(key, value);
-            return this;
+            return (Builder) super.putShortArray(key, value);
         }
 
+        @Override
         public Builder putInt(@NonNull String key, @Nullable int value) {
-            this.bundle.putInt(key, value);
-            return this;
+            return (Builder) super.putInt(key, value);
         }
 
+        @Override
         public Builder putIntArray(@NonNull String key, @Nullable int[] value) {
-            this.bundle.putIntArray(key, value);
-            return this;
+            return (Builder) super.putIntArray(key, value);
         }
 
+        @Override
         public Builder putIntegerArrayList(@NonNull String key, @Nullable ArrayList<Integer> value) {
-            this.bundle.putIntegerArrayList(key, value);
-            return this;
+            return (Builder) super.putIntegerArrayList(key, value);
         }
 
+        @Override
         public Builder putLong(@NonNull String key, @Nullable long value) {
-            this.bundle.putLong(key, value);
-            return this;
+            return (Builder) super.putLong(key, value);
         }
 
+        @Override
         public Builder putLongArray(@NonNull String key, @Nullable long[] value) {
-            this.bundle.putLongArray(key, value);
-            return this;
+            return (Builder) super.putLongArray(key, value);
         }
 
+        @Override
         public Builder putFloat(@NonNull String key, @Nullable float value) {
-            this.bundle.putFloat(key, value);
-            return this;
+            return (Builder) super.putFloat(key, value);
         }
 
+        @Override
         public Builder putFloatArray(@NonNull String key, @Nullable float[] value) {
-            this.bundle.putFloatArray(key, value);
-            return this;
+            return (Builder) super.putFloatArray(key, value);
         }
 
+        @Override
         public Builder putDouble(@NonNull String key, @Nullable double value) {
-            this.bundle.putDouble(key, value);
-            return this;
+            return (Builder) super.putDouble(key, value);
         }
 
+        @Override
         public Builder putDoubleArray(@NonNull String key, @Nullable double[] value) {
-            this.bundle.putDoubleArray(key, value);
-            return this;
+            return (Builder) super.putDoubleArray(key, value);
         }
 
+        @Override
         public Builder putParcelable(@NonNull String key, @Nullable Parcelable value) {
-            this.bundle.putParcelable(key, value);
-            return this;
+            return (Builder) super.putParcelable(key, value);
         }
 
+        @Override
         public Builder putParcelableArray(@NonNull String key, @Nullable Parcelable[] value) {
-            this.bundle.putParcelableArray(key, value);
-            return this;
+            return (Builder) super.putParcelableArray(key, value);
         }
 
+        @Override
         public Builder putParcelableArrayList(@NonNull String key, @Nullable ArrayList<? extends Parcelable> value) {
-            this.bundle.putParcelableArrayList(key, value);
-            return this;
+            return (Builder) super.putParcelableArrayList(key, value);
         }
 
+        @Override
         public Builder putSparseParcelableArray(@NonNull String key, @Nullable SparseArray<? extends Parcelable> value) {
-            this.bundle.putSparseParcelableArray(key, value);
-            return this;
+            return (Builder) super.putSparseParcelableArray(key, value);
         }
 
+        @Override
         public Builder putSerializable(@NonNull String key, @Nullable Serializable value) {
-            this.bundle.putSerializable(key, value);
-            return this;
+            return (Builder) super.putSerializable(key, value);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, @Nullable String queryValue) {
-            checkStringNullPointer(queryName, "queryName");
-            if (queryValue == null) {
-                queryValue = "";
-            }
-            queryMap.put(queryName, queryValue);
-            return this;
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, boolean queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, byte queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, int queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, float queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, long queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, double queryValue) {
-            return query(queryName, String.valueOf(queryValue));
-        }
-
-        protected static String checkStringNullPointer(String value, @NonNull String parameterName) {
-            if (ComponentConfig.isDebug() && (value == null || value.isEmpty())) {
-                throw new NullPointerException("parameter '" + parameterName + "' can't be null");
-            }
-            return value;
-        }
-
-        protected static String checkStringNullPointer(String value, @NonNull String parameterName, @Nullable String desc) {
-            if (ComponentConfig.isDebug() && (value == null || value.isEmpty())) {
-                throw new NullPointerException("parameter '" + parameterName + "' can't be null" + (desc == null ? "" : "," + desc));
-            }
-            return value;
-        }
-
-        protected static <T> T checkNullPointer(T value, @NonNull String parameterName) {
-            if (ComponentConfig.isDebug() && value == null) {
-                throw new NullPointerException("parameter '" + parameterName + "' can't be null");
-            }
-            return value;
+            return (Builder) super.query(queryName, queryValue);
         }
 
         /**
@@ -462,46 +382,6 @@ public class EHiRouter {
             if (context == null && fragment == null) {
                 throw new NullPointerException("the parameter 'context' or 'fragment' both are null");
             }
-        }
-
-        /**
-         * 构建请求对象,这个构建是必须的,不能错误的,如果出错了,直接崩溃掉,因为连最基本的信息都不全没法进行下一步的操作
-         *
-         * @return
-         * @throws Exception
-         */
-        @NonNull
-        protected EHiRouterRequest generateRouterRequest() {
-            Uri uri = null;
-            if (url == null) {
-                Uri.Builder uriBuilder = new Uri.Builder();
-                uriBuilder
-                        .scheme(TextUtils.isEmpty(scheme) ? ComponentConfig.getDefaultScheme() : scheme)
-                        .authority(checkStringNullPointer(host, "host", "do you forget call host() to set host?"));
-                if (!TextUtils.isEmpty(path)) {
-                    uriBuilder.path(path);
-                }
-                for (Map.Entry<String, String> entry : queryMap.entrySet()) {
-                    uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
-                }
-                uri = uriBuilder.build();
-            } else {
-                uri = Uri.parse(url);
-            }
-            if (uri == null) {
-                throw new NullPointerException("the parameter 'uri' is null");
-            }
-            EHiRouterRequest holder = new EHiRouterRequest.Builder()
-                    .context(context)
-                    .fragment(fragment)
-                    .uri(uri)
-                    .requestCode(requestCode)
-                    .bundle(bundle)
-                    .intentConsumer(intentConsumer)
-                    .beforJumpAction(beforJumpAction)
-                    .afterJumpAction(afterJumpAction)
-                    .build();
-            return holder;
         }
 
         /**
@@ -530,7 +410,7 @@ public class EHiRouter {
                 // 标记这个 builder 已经不能使用了
                 isFinish = true;
                 // 构建请求对象
-                originalRequest = generateRouterRequest();
+                originalRequest = build();
                 // 创建整个拦截器到最终跳转需要使用的 Callback
                 final InterceptorCallback interceptorCallback = new InterceptorCallback(originalRequest, callback);
                 // Fragment 的销毁的自动取消
@@ -550,14 +430,18 @@ public class EHiRouter {
                 EHiRouterUtil.errorCallback(callback, errorResult);
             } finally {
                 // 释放资源
+                context = null;
+                fragment = null;
+                scheme = null;
                 url = null;
                 host = null;
                 path = null;
                 requestCode = null;
-                context = null;
-                fragment = null;
                 queryMap = null;
                 bundle = null;
+                intentConsumer = null;
+                beforJumpAction = null;
+                afterJumpAction = null;
             }
             return NavigationDisposable.EMPTY;
         }
