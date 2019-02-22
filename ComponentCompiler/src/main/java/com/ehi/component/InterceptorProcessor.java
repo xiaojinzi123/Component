@@ -160,7 +160,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
                     .indent("    ")
                     .build().writeTo(mFiler);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ProcessException(e);
         }
     }
 
@@ -175,7 +175,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
                 .addAnnotation(nullableClassName)
                 .addModifiers(Modifier.PUBLIC);
 
-        if (mGlobalInterceptElementList.size() == 0) {
+        if (mGlobalInterceptElementList.isEmpty()) {
             globalInterceptorListMethodSpecBuilder.addStatement("return null");
         } else {
             globalInterceptorListMethodSpecBuilder.addStatement("$T<$T> list = new $T<>()", mClassNameList, interceptorBeanTypeElement, mClassNameArrayList);

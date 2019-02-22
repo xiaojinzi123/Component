@@ -66,6 +66,7 @@ public class RouterProcessor extends BaseHostProcessor {
     private TypeMirror serializableTypeMirror;
     private TypeElement parcelableTypeElement;
     private TypeMirror parcelableTypeMirror;
+    private TypeElement interceptorTypeElement;
 
     final AtomicInteger atomicInteger = new AtomicInteger();
 
@@ -73,6 +74,7 @@ public class RouterProcessor extends BaseHostProcessor {
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
 
+        interceptorTypeElement = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME);
         routerBeanTypeElement = mElements.getTypeElement(ROUTER_BEAN_NAME);
         exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
         exceptionClassName = ClassName.get(exceptionTypeElement);
@@ -177,7 +179,7 @@ public class RouterProcessor extends BaseHostProcessor {
                     .indent("    ")
                     .build().writeTo(mFiler);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ProcessException(e);
         }
     }
 
@@ -199,16 +201,20 @@ public class RouterProcessor extends BaseHostProcessor {
                 generateStaticMethodCall(routerBean, routerBeanName, initMapMethodSpecBuilder);
                 // 拦截器的代码的生成
                 if (routerBean.getInterceptors() != null && routerBean.getInterceptors().size() > 0) {
-                    initMapMethodSpecBuilder.addStatement("$N.interceptors = new $T($L)", routerBeanName, ArrayList.class, routerBean.getInterceptors().size());
+                    String interceptorListName = "interceptorList" + atomicInteger.incrementAndGet();
+                    initMapMethodSpecBuilder.addStatement("java.util.List<Class<? extends $T>> " + interceptorListName + " = new $T($L)", interceptorTypeElement, ArrayList.class, routerBean.getInterceptors().size());
                     for (String interceptorClassName : routerBean.getInterceptors()) {
-                        initMapMethodSpecBuilder.addStatement("$N.interceptors.add($T.class)", routerBeanName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
+                        initMapMethodSpecBuilder.addStatement("$N.add($T.class)", interceptorListName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
                     }
+                    initMapMethodSpecBuilder.addStatement("$N.setInterceptors($N)", routerBeanName, interceptorListName);
                 }
                 if (routerBean.getInterceptorNames() != null && routerBean.getInterceptorNames().size() > 0) {
-                    initMapMethodSpecBuilder.addStatement("$N.interceptorNames = new $T($L)", routerBeanName, ArrayList.class, routerBean.getInterceptorNames().size());
+                    String interceptorNameListName = "interceptorNameList" + atomicInteger.incrementAndGet();
+                    initMapMethodSpecBuilder.addStatement("java.util.List<String> " + interceptorNameListName + " = new $T($L)", ArrayList.class, routerBean.getInterceptorNames().size());
                     for (String interceptorName : routerBean.getInterceptorNames()) {
-                        initMapMethodSpecBuilder.addStatement("$N.interceptorNames.add($S)", routerBeanName, interceptorName);
+                        initMapMethodSpecBuilder.addStatement("$N.add($S)", interceptorNameListName, interceptorName);
                     }
+                    initMapMethodSpecBuilder.addStatement("$N.setInterceptorNames($N)", routerBeanName, interceptorNameListName);
                 }
                 initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
                 initMapMethodSpecBuilder.addCode("\n");
@@ -277,10 +283,10 @@ public class RouterProcessor extends BaseHostProcessor {
         methodSpecBuilder.addComment(NORMALLINE + commentStr + NORMALLINE);
         methodSpecBuilder.addCode("\n");
         methodSpecBuilder.addStatement("$T $N = new $T()", routerBeanTypeElement, routerBeanName, routerBeanTypeElement);
-        methodSpecBuilder.addStatement("$N.host = $S", routerBeanName, routerBean.getHost());
-        methodSpecBuilder.addStatement("$N.path = $S", routerBeanName, routerBean.getPath());
-        methodSpecBuilder.addStatement("$N.desc = $S", routerBeanName, routerBean.getDesc());
-        methodSpecBuilder.addStatement("$N.targetClass = $T.class", routerBeanName, targetActivityClassName);
+        methodSpecBuilder.addStatement("$N.setHost($S)", routerBeanName, routerBean.getHost());
+        methodSpecBuilder.addStatement("$N.setPath($S)", routerBeanName, routerBean.getPath());
+        methodSpecBuilder.addStatement("$N.setDesc($S)", routerBeanName, routerBean.getDesc());
+        methodSpecBuilder.addStatement("$N.setTargetClass($T.class)", routerBeanName, targetActivityClassName);
     }
 
     /**
@@ -309,9 +315,9 @@ public class RouterProcessor extends BaseHostProcessor {
         methodSpecBuilder.addComment("---------------------------" + commentStr + "---------------------------");
         methodSpecBuilder.addCode("\n");
         methodSpecBuilder.addStatement("$T $N = new $T()", routerBeanTypeElement, routerBeanName, routerBeanTypeElement);
-        methodSpecBuilder.addStatement("$N.host = $S", routerBeanName, routerBean.getHost());
-        methodSpecBuilder.addStatement("$N.path = $S", routerBeanName, routerBean.getPath());
-        methodSpecBuilder.addStatement("$N.desc = $S", routerBeanName, routerBean.getDesc());
+        methodSpecBuilder.addStatement("$N.setHost($S)", routerBeanName, routerBean.getHost());
+        methodSpecBuilder.addStatement("$N.setPath($S)", routerBeanName, routerBean.getPath());
+        methodSpecBuilder.addStatement("$N.setDesc($S)", routerBeanName, routerBean.getDesc());
         // 如果是自定义 Intent
         if (intentTypeMirror.equals(customerReturnType)) {
 
@@ -330,7 +336,7 @@ public class RouterProcessor extends BaseHostProcessor {
                     )
                     .build();
             // 添加一个匿名内部类
-            methodSpecBuilder.addStatement("$N.customerIntentCall = $L", routerBeanName, intentCallTypeSpec);
+            methodSpecBuilder.addStatement("$N.setCustomerIntentCall($L)", routerBeanName, intentCallTypeSpec);
         } else { // 自定义跳转的
 
             MethodSpec.Builder jumpMethodBuilder = MethodSpec.methodBuilder("jump")
@@ -347,7 +353,7 @@ public class RouterProcessor extends BaseHostProcessor {
                             jumpMethodBuilder.build()
                     )
                     .build();
-            methodSpecBuilder.addStatement("$N.customerJump = $L", routerBeanName, customerJumpTypeSpec);
+            methodSpecBuilder.addStatement("$N.setCustomerJump($L)", routerBeanName, customerJumpTypeSpec);
         }
     }
 
