@@ -9,6 +9,7 @@ import com.ehi.component.impl.EHiRouterRequest;
 
 /**
  * 全局的一个拦截器,让网页的 schemes 跳转到网页的界面去
+ * 优先级设置的高一些
  */
 @EHiGlobalInterceptorAnno(priority = 1000)
 public class WebViewInterceptor implements EHiRouterInterceptor {

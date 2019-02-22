@@ -5,7 +5,7 @@ package com.ehi.component.error;
  *
  * @author : xiaojinzi 30212
  */
-public class ServiceInvokeException extends Exception  {
+public class ServiceInvokeException extends RuntimeException  {
 
     public ServiceInvokeException() {
     }

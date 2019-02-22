@@ -16,7 +16,8 @@ import com.ehi.component.support.Utils;
  */
 class EHiRouterUtil {
 
-
+    private EHiRouterUtil() {
+    }
 
     /**
      * 当请求对象构建出来以后调用的
@@ -161,7 +162,7 @@ class EHiRouterUtil {
     private static boolean isRequestUnavailabled(@NonNull EHiRouterRequest originalRequest) {
         Context context = originalRequest.context;
         Fragment fragment = originalRequest.fragment;
-        if (context != null && context instanceof Activity) {
+        if (context instanceof Activity) {
             Activity activity = (Activity) context;
             if (isActivityUnavailabled(activity)) {
                 return true;
@@ -187,10 +188,8 @@ class EHiRouterUtil {
         if (activity.isFinishing()) {
             isUseful = false;
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            if (activity.isDestroyed()) {
-                isUseful = false;
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed()) {
+            isUseful = false;
         }
         return !isUseful;
     }

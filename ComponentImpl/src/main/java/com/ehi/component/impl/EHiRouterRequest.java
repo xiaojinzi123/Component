@@ -175,7 +175,7 @@ public class EHiRouterRequest {
     }
 
     private EHiRouterRequest(@NonNull Builder builder) {
-        Uri uri = null;
+        Uri result = null;
         if (builder.url == null) {
             Uri.Builder uriBuilder = new Uri.Builder();
             uriBuilder
@@ -187,14 +187,14 @@ public class EHiRouterRequest {
             for (Map.Entry<String, String> entry : builder.queryMap.entrySet()) {
                 uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
             }
-            uri = uriBuilder.build();
+            result = uriBuilder.build();
         } else {
-            uri = Uri.parse(builder.url);
+            result = Uri.parse(builder.url);
         }
-        if (uri == null) {
+        if (result == null) {
             throw new NullPointerException("the parameter 'uri' is null");
         }
-        this.uri = uri;
+        this.uri = result;
         context = builder.context;
         fragment = builder.fragment;
         requestCode = builder.requestCode;
@@ -315,11 +315,6 @@ public class EHiRouterRequest {
             this.bundle.putAll(bundle);
             return this;
         }
-
-        /*public Builder putAll(@NonNull PersistableBundle bundle) {
-            this.bundle.putAll(bundle);
-            return this;
-        }*/
 
         public Builder putCharSequence(@NonNull String key, @Nullable CharSequence value) {
             this.bundle.putCharSequence(key, value);

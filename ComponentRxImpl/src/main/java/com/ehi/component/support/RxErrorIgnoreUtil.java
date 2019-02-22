@@ -19,10 +19,13 @@ import io.reactivex.plugins.RxJavaPlugins;
  */
 public class RxErrorIgnoreUtil {
 
+    private RxErrorIgnoreUtil() {
+    }
+
     /**
      * 如果使用者不想处理错误的话,这些错误都可以被默认忽略
      */
-    private static final Class DEFAULT_IGNORE_ERRORS[] = {
+    private static final Class[] DEFAULT_IGNORE_ERRORS = {
             // EHiRxRouter 中需要忽略的错误
             NavigationFailException.class,
             ActivityResultException.class,
