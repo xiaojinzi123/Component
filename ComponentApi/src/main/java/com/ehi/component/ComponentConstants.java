@@ -35,6 +35,6 @@ public class ComponentConstants {
     public static final String JAVA_LIST = "java.util.List";
     public static final String JAVA_ARRAYLIST = "java.util.ArrayList";
     public static final String JAVA_SERIALIZABLE = "java.io.Serializable";
-
+    public static final String SEPARATOR = "/";
 
 }
