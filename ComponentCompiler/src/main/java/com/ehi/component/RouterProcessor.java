@@ -48,23 +48,18 @@ public class RouterProcessor extends BaseHostProcessor {
     private static final String CUSTOMER_JUMP_CLASS_NAME = "com.ehi.component.bean.CustomerJump";
     private static final String ROUTER_REQUEST_CLASS_NAME = "com.ehi.component.impl.EHiRouterRequest";
 
-    private TypeElement customerIntentCallTypeElement;
-    private TypeElement customerJumpTypeElement;
+    private static final String NAME_OF_REQUEST = "request";
+
     private ClassName customerIntentCallClassName;
     private ClassName customerJumpClassName;
 
     private TypeElement routerBeanTypeElement;
-    private TypeElement exceptionTypeElement;
     private ClassName exceptionClassName;
     private TypeElement intentTypeElement;
     private TypeMirror intentTypeMirror;
-    private TypeElement routerRequestTypeElement;
     private TypeMirror routerRequestTypeMirror;
-    private TypeElement parameterSupportTypeElement;
     private TypeMirror parameterSupportTypeMirror;
-    private TypeElement serializableTypeElement;
     private TypeMirror serializableTypeMirror;
-    private TypeElement parcelableTypeElement;
     private TypeMirror parcelableTypeMirror;
     private TypeElement interceptorTypeElement;
 
@@ -76,21 +71,21 @@ public class RouterProcessor extends BaseHostProcessor {
 
         interceptorTypeElement = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME);
         routerBeanTypeElement = mElements.getTypeElement(ROUTER_BEAN_NAME);
-        exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
+        final TypeElement exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
         exceptionClassName = ClassName.get(exceptionTypeElement);
-        customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
-        customerJumpTypeElement = mElements.getTypeElement(CUSTOMER_JUMP_CLASS_NAME);
+        final TypeElement customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
+        final TypeElement customerJumpTypeElement = mElements.getTypeElement(CUSTOMER_JUMP_CLASS_NAME);
         intentTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_INTENT);
         intentTypeMirror = intentTypeElement.asType();
-        routerRequestTypeElement = mElements.getTypeElement(ROUTER_REQUEST_CLASS_NAME);
+        final TypeElement routerRequestTypeElement = mElements.getTypeElement(ROUTER_REQUEST_CLASS_NAME);
         routerRequestTypeMirror = routerRequestTypeElement.asType();
         customerIntentCallClassName = ClassName.get(customerIntentCallTypeElement);
         customerJumpClassName = ClassName.get(customerJumpTypeElement);
-        parameterSupportTypeElement = mElements.getTypeElement(ComponentConstants.PARAMETERSUPPORT_CLASS_NAME);
+        final TypeElement parameterSupportTypeElement = mElements.getTypeElement(ComponentConstants.PARAMETERSUPPORT_CLASS_NAME);
         parameterSupportTypeMirror = parameterSupportTypeElement.asType();
-        serializableTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_SERIALIZABLE);
+        final TypeElement serializableTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_SERIALIZABLE);
         serializableTypeMirror = serializableTypeElement.asType();
-        parcelableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_PARCELABLE);
+        final TypeElement parcelableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_PARCELABLE);
         parcelableTypeMirror = parcelableTypeElement.asType();
 
     }
@@ -119,18 +114,13 @@ public class RouterProcessor extends BaseHostProcessor {
             mMessager.printMessage(Diagnostic.Kind.NOTE, "element == " + element.toString());
             // 如果是一个Activity 才会走到这里
             final EHiRouterAnno router = element.getAnnotation(EHiRouterAnno.class);
-            if (router == null) {
-                continue;
-            }
-            if (router.value() == null || router.value().isEmpty()) {
+            if (router == null || router.value() == null || router.value().isEmpty()) {
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value can;t be null or empty string");
                 continue;
             }
             // 如果有host那就必须满足规范
-            if (router.host() != null && !router.host().isEmpty()) {
-                if (router.host().contains("/")) {
-                    mMessager.printMessage(Diagnostic.Kind.ERROR, "the host value '" + router.host() + "' can't contains '/'");
-                }
+            if (router.host() != null && !router.host().isEmpty() && router.host().contains("/")) {
+                mMessager.printMessage(Diagnostic.Kind.ERROR, "the host value '" + router.host() + "' can't contains '/'");
             }
             if (routerMap.containsKey(getHostAndPath(router.host(), router.value()))) {
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value is alreay exist");
@@ -200,7 +190,7 @@ public class RouterProcessor extends BaseHostProcessor {
                 // 生成静态方法的代码的调用
                 generateStaticMethodCall(routerBean, routerBeanName, initMapMethodSpecBuilder);
                 // 拦截器的代码的生成
-                if (routerBean.getInterceptors() != null && routerBean.getInterceptors().size() > 0) {
+                if (routerBean.getInterceptors() != null && !routerBean.getInterceptors().isEmpty()) {
                     String interceptorListName = "interceptorList" + atomicInteger.incrementAndGet();
                     initMapMethodSpecBuilder.addStatement("java.util.List<Class<? extends $T>> " + interceptorListName + " = new $T($L)", interceptorTypeElement, ArrayList.class, routerBean.getInterceptors().size());
                     for (String interceptorClassName : routerBean.getInterceptors()) {
@@ -208,7 +198,7 @@ public class RouterProcessor extends BaseHostProcessor {
                     }
                     initMapMethodSpecBuilder.addStatement("$N.setInterceptors($N)", routerBeanName, interceptorListName);
                 }
-                if (routerBean.getInterceptorNames() != null && routerBean.getInterceptorNames().size() > 0) {
+                if (routerBean.getInterceptorNames() != null && !routerBean.getInterceptorNames().isEmpty()) {
                     String interceptorNameListName = "interceptorNameList" + atomicInteger.incrementAndGet();
                     initMapMethodSpecBuilder.addStatement("java.util.List<String> " + interceptorNameListName + " = new $T($L)", ArrayList.class, routerBean.getInterceptorNames().size());
                     for (String interceptorName : routerBean.getInterceptorNames()) {
@@ -322,7 +312,7 @@ public class RouterProcessor extends BaseHostProcessor {
         if (intentTypeMirror.equals(customerReturnType)) {
 
             MethodSpec.Builder jumpMethodBuilder = MethodSpec.methodBuilder("get")
-                    .addParameter(TypeName.get(routerRequestTypeMirror), "request", Modifier.FINAL)
+                    .addParameter(TypeName.get(routerRequestTypeMirror), NAME_OF_REQUEST, Modifier.FINAL)
                     .addAnnotation(Override.class)
                     .addException(exceptionClassName)
                     .addModifiers(Modifier.PUBLIC);
@@ -340,7 +330,7 @@ public class RouterProcessor extends BaseHostProcessor {
         } else { // 自定义跳转的
 
             MethodSpec.Builder jumpMethodBuilder = MethodSpec.methodBuilder("jump")
-                    .addParameter(TypeName.get(routerRequestTypeMirror), "request", Modifier.FINAL)
+                    .addParameter(TypeName.get(routerRequestTypeMirror), NAME_OF_REQUEST, Modifier.FINAL)
                     .addAnnotation(Override.class)
                     .addException(exceptionClassName)
                     .addModifiers(Modifier.PUBLIC);
@@ -363,7 +353,7 @@ public class RouterProcessor extends BaseHostProcessor {
         List<? extends VariableElement> parameters = executableElement.getParameters();
         // 参数调用的 sb
         StringBuilder parameterSB = new StringBuilder();
-        if (parameters != null && parameters.size() > 0) {
+        if (parameters != null && !parameters.isEmpty()) {
             for (int i = 0; i < parameters.size(); i++) {
                 if (i > 0) {
                     parameterSB.append(",");
@@ -375,7 +365,7 @@ public class RouterProcessor extends BaseHostProcessor {
                 String parameterName = "paramater" + atomicInteger.incrementAndGet();
                 // 如果要的是 request 对象
                 if (variableElement.asType().equals(routerRequestTypeMirror)) {
-                    parameterSB.append("request");
+                    parameterSB.append(NAME_OF_REQUEST);
                 } else if (parameterTypeName.equals(mClassNameString)) { // 如果是一个 String
                     EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
                     jumpMethodBuilder.addStatement("String $N = $T.getString(request.bundle,$S)", parameterName, parameterSupportTypeMirror, parameterAnno.value());
