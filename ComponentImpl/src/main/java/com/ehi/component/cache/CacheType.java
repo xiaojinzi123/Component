@@ -3,6 +3,8 @@ package com.ehi.component.cache;
 import android.app.ActivityManager;
 import android.content.Context;
 
+import com.ehi.component.support.Utils;
+
 /**
  * 构建 {@link Cache} 时,使用 {@link CacheType} 中声明的类型,来区分不同的模块
  * 从而为不同的模块构建不同的缓存策略
@@ -25,7 +27,7 @@ public interface CacheType {
         public int calculateCacheSize(Context context) {
             ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             int targetMemoryCacheSize;
-            if (CacheHelper.isLowMemoryDevice(activityManager)) {
+            if (Utils.isLowMemoryDevice(activityManager)) {
                 targetMemoryCacheSize = activityManager.getMemoryClass() / 6;
             } else {
                 targetMemoryCacheSize = activityManager.getMemoryClass() / 4;
