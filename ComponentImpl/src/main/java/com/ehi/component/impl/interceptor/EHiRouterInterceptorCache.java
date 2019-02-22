@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.cache.Cache;
-import com.ehi.component.cache.Cache.Factory;
 import com.ehi.component.cache.CacheType;
 import com.ehi.component.impl.EHiRouterInterceptor;
 import java.lang.reflect.Constructor;
@@ -29,12 +28,12 @@ public class EHiRouterInterceptorCache {
     /**
      * 拦截器 Class --> EHiRouterInterceptor 的缓存
      */
-    private static final Cache<Class, EHiRouterInterceptor> interceptorClassCache = Factory.INSTANCE.build
+    private static final Cache<Class, EHiRouterInterceptor> interceptorClassCache = Cache.Factory.INSTANCE.build
             (CacheType.ROUTER_INTERCEPTOR_CACHE);
     /**
      * 拦截器 Name(String) --> EHiRouterInterceptor 的缓存
      */
-    private static final Cache<String, EHiRouterInterceptor> interceptorNameCache = Factory.INSTANCE.build
+    private static final Cache<String, EHiRouterInterceptor> interceptorNameCache = Cache.Factory.INSTANCE.build
             (CacheType.ROUTER_INTERCEPTOR_CACHE);
 
 
