@@ -57,20 +57,15 @@ public class RouterProcessor extends BaseHostProcessor {
     private TypeElement exceptionTypeElement;
     private ClassName exceptionClassName;
     private TypeElement intentTypeElement;
-    private TypeElement mapTypeElement;
     private TypeMirror intentTypeMirror;
     private TypeElement routerRequestTypeElement;
     private TypeMirror routerRequestTypeMirror;
-    private TypeElement queryParameterSupportTypeElement;
     private TypeElement parameterSupportTypeElement;
     private TypeMirror parameterSupportTypeMirror;
     private TypeElement serializableTypeElement;
     private TypeMirror serializableTypeMirror;
     private TypeElement parcelableTypeElement;
     private TypeMirror parcelableTypeMirror;
-
-    // 在每一个 module 中配置的 HOST 的信息
-    private String componentHost = null;
 
     final AtomicInteger atomicInteger = new AtomicInteger();
 
@@ -79,7 +74,6 @@ public class RouterProcessor extends BaseHostProcessor {
         super.init(processingEnvironment);
 
         routerBeanTypeElement = mElements.getTypeElement(ROUTER_BEAN_NAME);
-        mapTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_MAP);
         exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
         exceptionClassName = ClassName.get(exceptionTypeElement);
         customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
@@ -90,7 +84,6 @@ public class RouterProcessor extends BaseHostProcessor {
         routerRequestTypeMirror = routerRequestTypeElement.asType();
         customerIntentCallClassName = ClassName.get(customerIntentCallTypeElement);
         customerJumpClassName = ClassName.get(customerJumpTypeElement);
-        queryParameterSupportTypeElement = mElements.getTypeElement(ComponentConstants.QUERYPARAMETERSUPPORT_CLASS_NAME);
         parameterSupportTypeElement = mElements.getTypeElement(ComponentConstants.PARAMETERSUPPORT_CLASS_NAME);
         parameterSupportTypeMirror = parameterSupportTypeElement.asType();
         serializableTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_SERIALIZABLE);
@@ -98,15 +91,6 @@ public class RouterProcessor extends BaseHostProcessor {
         parcelableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_PARCELABLE);
         parcelableTypeMirror = parcelableTypeElement.asType();
 
-        final Map<String, String> options = processingEnv.getOptions();
-        if (options != null) {
-            componentHost = options.get("HOST");
-        }
-        if (componentHost == null || "".equals(componentHost)) {
-            ErrorPrintUtil.printHostNull(mMessager);
-            return;
-        }
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "RouterProcessor.componentHost = " + componentHost);
     }
 
     @Override
@@ -114,7 +98,7 @@ public class RouterProcessor extends BaseHostProcessor {
         if (CollectionUtils.isNotEmpty(set)) {
             final Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(EHiRouterAnno.class);
             mMessager.printMessage(Diagnostic.Kind.NOTE, " >>> size = " + (routeElements == null ? 0 : routeElements.size()));
-            parseRouterAnno(routeElements);
+            parseAnno(routeElements);
             createRouterImpl();
             return true;
         }
@@ -128,7 +112,7 @@ public class RouterProcessor extends BaseHostProcessor {
      *
      * @param routeElements
      */
-    private void parseRouterAnno(Set<? extends Element> routeElements) {
+    private void parseAnno(Set<? extends Element> routeElements) {
         for (Element element : routeElements) {
             mMessager.printMessage(Diagnostic.Kind.NOTE, "element == " + element.toString());
             // 如果是一个Activity 才会走到这里
@@ -173,9 +157,9 @@ public class RouterProcessor extends BaseHostProcessor {
     private void createRouterImpl() {
         final String claName = ComponentUtil.genHostRouterClassName(componentHost);
         //pkg
-        final String pkg = claName.substring(0, claName.lastIndexOf("."));
+        final String pkg = claName.substring(0, claName.lastIndexOf('.'));
         //simpleName
-        final String cn = claName.substring(claName.lastIndexOf(".") + 1);
+        final String cn = claName.substring(claName.lastIndexOf('.') + 1);
         // superClassName
         final ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.UIROUTER_IMPL_CLASS_NAME));
         MethodSpec initHostMethod = generateInitHostMethod();
@@ -290,7 +274,7 @@ public class RouterProcessor extends BaseHostProcessor {
         ClassName targetActivityClassName = ClassName.get((TypeElement) routerBean.getRawType());
         String commentStr = targetActivityClassName.toString();
         methodSpecBuilder.addCode("\n");
-        methodSpecBuilder.addComment("---------------------------" + commentStr + "---------------------------");
+        methodSpecBuilder.addComment(NORMALLINE + commentStr + NORMALLINE);
         methodSpecBuilder.addCode("\n");
         methodSpecBuilder.addStatement("$T $N = new $T()", routerBeanTypeElement, routerBeanName, routerBeanTypeElement);
         methodSpecBuilder.addStatement("$N.host = $S", routerBeanName, routerBean.getHost());
@@ -365,20 +349,6 @@ public class RouterProcessor extends BaseHostProcessor {
                     .build();
             methodSpecBuilder.addStatement("$N.customerJump = $L", routerBeanName, customerJumpTypeSpec);
         }
-
-        /*mMessager.printMessage(Diagnostic.Kind.NOTE, "generateStaticMethodCall.element = start");
-        StringBuffer sb = new StringBuffer();
-        if (parameters != null && parameters.size() > 0) {
-            for (int i = 0; i < parameters.size(); i++) {
-                // 拿到每一个参数
-                VariableElement variableElement = parameters.get(i);
-
-                ClassName.INT
-                mMessager.printMessage(Diagnostic.Kind.NOTE, "generateStaticMethodCall.element = " + ClassName.get(variableElement.asType()));
-                mMessager.printMessage(Diagnostic.Kind.NOTE, "generateStaticMethodCall.element = " + variableElement.asType().equals(routerRequestTypeMirror));
-            }
-        }
-        return sb.toString();*/
     }
 
     private void generateActualMethodCall(MethodSpec.Builder jumpMethodBuilder, ExecutableElement executableElement,
@@ -386,7 +356,7 @@ public class RouterProcessor extends BaseHostProcessor {
         // 获取这个方法的参数
         List<? extends VariableElement> parameters = executableElement.getParameters();
         // 参数调用的 sb
-        StringBuffer parameterSB = new StringBuffer();
+        StringBuilder parameterSB = new StringBuilder();
         if (parameters != null && parameters.size() > 0) {
             for (int i = 0; i < parameters.size(); i++) {
                 if (i > 0) {
@@ -453,19 +423,6 @@ public class RouterProcessor extends BaseHostProcessor {
         } else {
             jumpMethodBuilder.addStatement("$N($N)", customerIntentOrJumpPath, parameterSB.toString());
         }
-    }
-
-    private boolean isHaveDefaultConstructor(String interceptorClassName) {
-        // 实现类的类型
-        TypeElement typeElementInterceptorImpl = mElements.getTypeElement(interceptorClassName);
-        String constructorName = typeElementInterceptorImpl.getSimpleName().toString() + ("()");
-        List<? extends Element> enclosedElements = typeElementInterceptorImpl.getEnclosedElements();
-        for (Element enclosedElement : enclosedElements) {
-            if (enclosedElement.toString().equals(constructorName)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

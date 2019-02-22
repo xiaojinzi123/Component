@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="margin: 0px;padding: 0px;font-size: 20px;">
+
+<script type="text/javascript">
+
+    function openUrl(url) {
+        window.testWebRouter.openUrl(url);
+    }
+
+</script>
+<ol>
+    <li>
+        <a href="#" onclick='openUrl("EHi://component1/testQuery?name=webName&pass=webPass")'>EHi://component1/testQuery?name=webName&pass=webPass</a>
+    </li>
+    <li>
+        <a href="#"
+           onclick='openUrl("EHi://system/callPhone?data=17321174171")'>拨打电话：17321174171</a>
+    </li>
+    <li>
+        <a href="#"
+           onclick='openUrl("EHi://system/callPhone?data=15857913627")'>拨打电话：15857913627</a>
+    </li>
+    <li>
+        <a href="#"
+           onclick='openUrl("EHi://user/personCenter")'>去用户个人中心</a>
+    </li>
+</ol>
+
+</body>
+</html>

@@ -1,21 +1,21 @@
-package com.ehi.component.service;
+package com.ehi.component.router;
 
 import android.support.annotation.NonNull;
 
 /**
- * 模块的UI服务接口
+ * 模块的UI路由的接口
  * time   : 2018/07/26
  *
  * @author : xiaojinzi 30212
  */
-public interface IComponentModuleService {
+public interface IComponentCenterRouter extends IComponentRouter {
 
     /**
-     * 注册每一个模块的服务
+     * 注册每一个模块的注解路由器
      *
-     * @param service
+     * @param router
      */
-    void register(@NonNull IComponentHostService service);
+    void register(IComponentHostRouter router);
 
     /**
      * 通过host注册
@@ -25,11 +25,11 @@ public interface IComponentModuleService {
     void register(@NonNull String host);
 
     /**
-     * 反注册模块的服务
+     * 反注册模块的注解路由器
      *
-     * @param service
+     * @param router
      */
-    void unregister(@NonNull IComponentHostService service);
+    void unregister(IComponentHostRouter router);
 
     /**
      * 通过 host 反注册

@@ -17,13 +17,13 @@ public class InterceptorBean {
      * 0 全局拦截器
      * 1 普通拦截器
      */
-    public int type;
+    public final int type;
 
-    public Element element;
+    public final Element element;
 
-    public int priority;
+    public final int priority;
 
-    public String name;
+    public final String name;
 
     public InterceptorBean(int type, Element element, int priority, String name) {
         this.type = type;

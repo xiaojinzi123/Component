@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,14 +47,28 @@ import io.reactivex.functions.Function;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiRxRouter {
+public class EHiRxRouter extends EHiRouter {
 
     public static final String TAG = "EHiRxRouter";
 
+    /**
+     * 这个方法父类也有一个静态的,但是父类返回的是 {@link EHiRouter.Builder} 而这个返回的是
+     * {@link EHiRxRouter.Builder}
+     *
+     * @param context
+     * @return
+     */
     public static Builder with(@NonNull Context context) {
         return new Builder(context, null);
     }
 
+    /**
+     * 这个方法父类也有一个静态的,但是父类返回的是 {@link EHiRouter.Builder} 而这个返回的是
+     * {@link EHiRxRouter.Builder}
+     *
+     * @param fragment
+     * @return
+     */
     public static Builder withFragment(@NonNull Fragment fragment) {
         return new Builder(fragment, null);
     }
@@ -327,8 +342,12 @@ public class EHiRxRouter {
                     });
         }
 
+        /**
+         * 拿到 resultCode 的 Observable
+         *
+         * @return
+         */
         public Single<Integer> resultCodeCall() {
-
             return activityResultCall()
                     .map(new Function<EHiActivityResult, Integer>() {
                         @Override
@@ -336,7 +355,6 @@ public class EHiRxRouter {
                             return activityResult.resultCode;
                         }
                     });
-
         }
 
         /**
@@ -344,8 +362,8 @@ public class EHiRxRouter {
          * 这个方法不会给你 Intent 对象,只会给你是否 resultCode 匹配成功了
          * 那么
          *
-         * @param expectedResultCode
-         * @return
+         * @param expectedResultCode 期望的 resultCode 的值
+         * @return 返回一个完成状态的 Observable
          * @see #activityResultCall()
          */
         public Completable resultCodeMatchCall(final int expectedResultCode) {
@@ -364,8 +382,8 @@ public class EHiRxRouter {
         /**
          * 这个方法不仅可以匹配 resultCode,还可以拿到 Intent,当不匹配或者 Intent 为空的时候都会报错哦
          *
-         * @param expectedResultCode
-         * @return
+         * @param expectedResultCode 期望的 resultCode 的值
+         * @return 返回一个发射 Single 的 Observable
          * @see #activityResultCall()
          */
         public Single<Intent> intentResultCodeMatchCall(final int expectedResultCode) {
@@ -398,6 +416,7 @@ public class EHiRxRouter {
             return Single.create(new SingleOnSubscribe<EHiActivityResult>() {
                 @Override
                 public void subscribe(final SingleEmitter<EHiActivityResult> emitter) throws Exception {
+                    // 这里要运行在主线程的原因是因为这里要操作 Fragment,必须在主线程
                     Utils.postActionToMainThread(new Runnable() {
                         @Override
                         public void run() {
@@ -428,6 +447,7 @@ public class EHiRxRouter {
                                 // 可能是一个 空实现
                                 final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
                                     @Override
+                                    @MainThread
                                     public void onSuccess(@NonNull final EHiRouterResult routerResult) {
                                         super.onSuccess(routerResult);
                                         // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
@@ -445,6 +465,7 @@ public class EHiRxRouter {
                                     }
 
                                     @Override
+                                    @MainThread
                                     public void onError(@NonNull EHiRouterErrorResult errorResult) {
                                         super.onError(errorResult);
                                         Help.removeRequestCode(errorResult.getOriginalRequest());
@@ -452,6 +473,7 @@ public class EHiRxRouter {
                                     }
 
                                     @Override
+                                    @MainThread
                                     public void onCancel(@NonNull EHiRouterRequest request) {
                                         super.onCancel(request);
                                         if (request.requestCode != null) {
@@ -468,7 +490,9 @@ public class EHiRxRouter {
                                         navigationDisposable.cancel();
                                     }
                                 });
-                                // 现在可以检测 requestCode 是否重复
+                                // 现在可以检测 requestCode 是否重复,除了 EHiRxRouter 之外的地方使用同一个 requestCode 是可以的
+                                // 因为 EHiRxRouter 的 requestCode 是直接配合 EHiRxFragment 使用的
+                                // 其他地方是用不到 EHiRxFragment,所以可以重复
                                 boolean isExist = Help.isExist(navigationDisposable);
                                 if (isExist) { // 如果存在直接取消这个路由任务,然后直接返回错误
                                     navigationDisposable.cancel();
@@ -498,54 +522,43 @@ public class EHiRxRouter {
             return Completable.create(new CompletableOnSubscribe() {
                 @Override
                 public void subscribe(final CompletableEmitter emitter) throws Exception {
-                    Utils.postActionToMainThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if (emitter.isDisposed()) {
-                                    return;
-                                }
-                                // 参数检查
-                                onCheck(false);
-                                // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
-                                final String mHost = host;
-                                final String mPath = path;
-                                // 导航拿到 NavigationDisposable 对象
-                                // 可能是一个 空实现
-                                final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
-                                    @Override
-                                    public void onSuccess(@NonNull EHiRouterResult routerResult) {
-                                        super.onSuccess(routerResult);
-                                        if (emitter != null && !emitter.isDisposed()) {
-                                            emitter.onComplete();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
-                                        super.onError(errorResult);
-                                        Help.onErrorSolve(emitter, errorResult.getError());
-                                    }
-
-                                    @Override
-                                    public void onCancel(@NonNull EHiRouterRequest request) {
-                                        super.onCancel(request);
-                                    }
-                                });
-                                // 设置取消
-                                emitter.setCancellable(new Cancellable() {
-                                    @Override
-                                    public void cancel() throws Exception {
-                                        navigationDisposable.cancel();
-                                    }
-                                });
-
-                            } catch (Exception e) {
-                                LogUtil.log(TAG, "路由失败：" + Utils.getRealMessage(e));
-                                Help.onErrorSolve(emitter, e);
-                            }
+                    try {
+                        if (emitter.isDisposed()) {
+                            return;
                         }
-                    });
+                        // 参数检查
+                        onCheck(false);
+                        // 导航拿到 NavigationDisposable 对象
+                        // 可能是一个 空实现,这些个回调都是回调在主线程的
+                        final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
+                            @Override
+                            @MainThread
+                            public void onSuccess(@NonNull EHiRouterResult routerResult) {
+                                super.onSuccess(routerResult);
+                                if (emitter != null && !emitter.isDisposed()) {
+                                    emitter.onComplete();
+                                }
+                            }
+
+                            @Override
+                            @MainThread
+                            public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                                super.onError(errorResult);
+                                Help.onErrorSolve(emitter, errorResult.getError());
+                            }
+                        });
+                        // 设置取消
+                        emitter.setCancellable(new Cancellable() {
+                            @Override
+                            public void cancel() throws Exception {
+                                navigationDisposable.cancel();
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        LogUtil.log(TAG, "路由失败：" + Utils.getRealMessage(e));
+                        Help.onErrorSolve(emitter, e);
+                    }
                 }
             });
         }
@@ -575,6 +588,9 @@ public class EHiRxRouter {
 
     }
 
+    /**
+     * 一些帮助方法
+     */
     private static class Help {
 
         /**
@@ -655,21 +671,52 @@ public class EHiRxRouter {
             }
         }
 
-        private static void onErrorEmitter(@NonNull final SingleEmitter<? extends Object> emitter,
-                                           @NonNull Throwable e) {
+        /**
+         * 发射错误,目前这些个发射错误都是为了 {@link EHiRxRouter} 写的,发射的错误和正确的 item 被发射都应该
+         * 最终发射在主线程
+         *
+         * @param emitter
+         * @param e
+         */
+        private static void onErrorEmitter(@NonNull @MainThread final SingleEmitter<? extends Object> emitter,
+                                           @NonNull final Throwable e) {
             if (emitter == null || emitter.isDisposed()) {
                 return;
             }
-            emitter.onError(e);
+            if (Utils.isMainThread()) {
+                emitter.onError(e);
+            } else {
+                Utils.postActionToMainThreadAnyway(new Runnable() {
+                    @Override
+                    public void run() {
+                        emitter.onError(e);
+                    }
+                });
+            }
         }
 
-        private static void onErrorEmitter(@NonNull final CompletableEmitter emitter,
-                                           @NonNull Throwable e) {
+        /**
+         * 发射错误,目前这些个发射错误都是为了 {@link EHiRxRouter} 写的,发射的错误和正确的 item 被发射都应该
+         * 最终发射在主线程
+         *
+         * @param emitter
+         * @param e
+         */
+        private static void onErrorEmitter(@NonNull @MainThread final CompletableEmitter emitter,
+                                           @NonNull final Throwable e) {
             if (emitter == null || emitter.isDisposed()) {
                 return;
             }
-            emitter.onError(e);
-
+            if (Utils.isMainThread()) {
+                emitter.onError(e);
+            } else {
+                Utils.postActionToMainThreadAnyway(new Runnable() {
+                    @Override
+                    public void run() {
+                        emitter.onError(e);
+                    }
+                });
+            }
         }
 
     }

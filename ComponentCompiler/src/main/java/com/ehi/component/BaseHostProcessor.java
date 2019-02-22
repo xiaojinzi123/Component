@@ -23,8 +23,7 @@ public abstract class BaseHostProcessor extends BaseProcessor {
             componentHost = options.get("HOST");
         }
         if (componentHost == null || "".equals(componentHost)) {
-            ErrorPrintUtil.printHostNull(mMessager);
-            return;
+            throw NULLHOSTEXCEPTION;
         }
     }
 

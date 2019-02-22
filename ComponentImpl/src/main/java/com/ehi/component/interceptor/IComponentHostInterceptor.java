@@ -2,9 +2,11 @@ package com.ehi.component.interceptor;
 
 import android.support.annotation.Nullable;
 
+import com.ehi.component.impl.EHiRouterInterceptor;
 import com.ehi.component.impl.interceptor.EHiInterceptorBean;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,5 +42,13 @@ public interface IComponentHostInterceptor extends IComponentInterceptor {
      */
     @Nullable
     Set<String> getInterceptorNames();
+
+    /**
+     * 获取拦截器集合
+     *
+     * @return
+     */
+    @Nullable
+    Map<String, Class<? extends EHiRouterInterceptor>> getInterceptorMap();
 
 }
