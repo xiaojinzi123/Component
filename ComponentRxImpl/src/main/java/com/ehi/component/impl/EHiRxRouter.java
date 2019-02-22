@@ -460,10 +460,8 @@ public class EHiRxRouter extends EHiRouter {
                                             @Override
                                             public void accept(@NonNull EHiActivityResult result) throws Exception {
                                                 Help.removeRequestCode(routerResult.getOriginalRequest());
-                                                if (emitter != null) {
-                                                    if (!emitter.isDisposed()) {
-                                                        emitter.onSuccess(result);
-                                                    }
+                                                if (emitter != null && !emitter.isDisposed()) {
+                                                    emitter.onSuccess(result);
                                                 }
                                             }
                                         });
@@ -574,16 +572,13 @@ public class EHiRxRouter extends EHiRouter {
          * 父类的检查是调用 {@link #navigate(EHiCallback)}方法的时候调用 {@link #onCheck()} 检查的
          * 这个类是调用 {@link #navigate(EHiCallback)} 方法之前检查的,而且检查的项目虽然基本一样,但是有所差别
          *
-         * @throws Exception
+         * @throws RuntimeException
          */
-        private void onCheck(boolean isForResult) throws Exception {
-            /*if (Utils.isMainThread() == false) {
-                throw new NotRunOnMainThreadException("EHiRxRouter must run on main thread");
-            }*/
+        private void onCheck(boolean isForResult) {
             if (context == null && fragment == null) {
                 throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router"));
             }
-            if (context != null && (context instanceof FragmentActivity) == false) {
+            if (context != null && !(context instanceof FragmentActivity)) {
                 throw new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity"));
             }
             if (isForResult && requestCode == null) {
@@ -603,7 +598,7 @@ public class EHiRxRouter extends EHiRouter {
          */
         private static Set<String> mRequestCodeSet = new HashSet<>();
 
-        public static boolean isExist(@NonNull NavigationDisposable disposable) {
+        public static boolean isExist(NavigationDisposable disposable) {
             if (disposable == null || disposable.originalRequest() == null || disposable.originalRequest().requestCode == null) {
                 return false;
             }
@@ -683,7 +678,7 @@ public class EHiRxRouter extends EHiRouter {
          * @param emitter
          * @param e
          */
-        private static void onErrorEmitter(@NonNull @MainThread final SingleEmitter<? extends Object> emitter,
+        private static void onErrorEmitter(@MainThread final SingleEmitter<? extends Object> emitter,
                                            @NonNull final Throwable e) {
             if (emitter == null || emitter.isDisposed()) {
                 return;
@@ -707,7 +702,7 @@ public class EHiRxRouter extends EHiRouter {
          * @param emitter
          * @param e
          */
-        private static void onErrorEmitter(@NonNull @MainThread final CompletableEmitter emitter,
+        private static void onErrorEmitter(@MainThread final CompletableEmitter emitter,
                                            @NonNull final Throwable e) {
             if (emitter == null || emitter.isDisposed()) {
                 return;

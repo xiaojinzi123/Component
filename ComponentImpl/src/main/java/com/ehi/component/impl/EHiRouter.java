@@ -515,7 +515,7 @@ public class EHiRouter {
                     // 这个地址要执行的拦截器,这里取的时候一定要注意了,不能拿最原始的那个 request,因为上面的拦截器都能更改 request,
                     // 导致最终跳转的界面和你拿到的拦截器不匹配,所以这里一定是拿上一个拦截器传给你的 request 对象
                     List<EHiRouterInterceptor> targetInterceptors = EHiRouterCenter.getInstance().interceptors(nextChain.request().uri);
-                    if (targetInterceptors != null && targetInterceptors.isEmpty()) {
+                    if (targetInterceptors != null && !targetInterceptors.isEmpty()) {
                         currentInterceptors.addAll(targetInterceptors);
                     }
                     // 真正的执行跳转的拦截器
