@@ -181,17 +181,17 @@ public class TestRouterAct extends BaseAct {
 
     public void jumpToWeb(View v) {
         EHiRouter.with(this)
-                .scheme("http")
+                .scheme("https")
                 .host("www.baidu.com")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
-                        addInfo(result, null, "http://www.baidu.com", null);
+                        addInfo(result, null, "https://www.baidu.com", null);
                     }
 
                     @Override
                     public void onError(@NonNull EHiRouterErrorResult errorResult) {
-                        addInfo(null, errorResult.getError(), "http://www.baidu.com", null);
+                        addInfo(null, errorResult.getError(), "https://www.baidu.com", null);
                     }
                 });
     }
