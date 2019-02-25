@@ -1,12 +1,12 @@
 package com.ehi.component.support;
 
 import com.ehi.component.error.ActivityResultException;
-import com.ehi.component.error.InterceptorNotFoundException;
-import com.ehi.component.error.NavigationFailException;
+import com.ehi.component.error.ignore.InterceptorNotFoundException;
+import com.ehi.component.error.ignore.NavigationFailException;
 import com.ehi.component.error.RxJavaException;
 import com.ehi.component.error.ServiceInvokeException;
 import com.ehi.component.error.ServiceNotFoundException;
-import com.ehi.component.error.TargetActivityNotFoundException;
+import com.ehi.component.error.ignore.TargetActivityNotFoundException;
 import com.ehi.component.error.UnknowException;
 
 import io.reactivex.plugins.RxJavaPlugins;

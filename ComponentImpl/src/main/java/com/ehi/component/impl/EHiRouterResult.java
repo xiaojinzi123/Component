@@ -2,8 +2,6 @@ package com.ehi.component.impl;
 
 import android.support.annotation.NonNull;
 
-import java.io.Serializable;
-
 /**
  * 这个类表示一次成功路由的返回结果对象
  * time   : 2018/11/10

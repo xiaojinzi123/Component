@@ -4,9 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.ehi.component.ComponentUtil;
+import com.ehi.component.error.InterceptorNameExistException;
 import com.ehi.component.impl.EHiRouterInterceptor;
-import com.ehi.component.interceptor.IComponentHostInterceptor;
 import com.ehi.component.interceptor.IComponentCenterInterceptor;
+import com.ehi.component.interceptor.IComponentHostInterceptor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +86,7 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
     }
 
     @Override
-    public void register(@NonNull IComponentHostInterceptor interceptor) {
+    public void register(@Nullable IComponentHostInterceptor interceptor) {
         if (interceptor == null) {
             return;
         }
@@ -108,7 +109,7 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
     }
 
     @Override
-    public void unregister(@NonNull IComponentHostInterceptor interceptor) {
+    public void unregister(@Nullable IComponentHostInterceptor interceptor) {
         if (interceptor == null) {
             return;
         }
@@ -139,9 +140,6 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
         // 加载各个子拦截器对象中的拦截器列表
         for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
             List<EHiInterceptorBean> list = entry.getValue().globalInterceptorList();
-            if (list == null) {
-                continue;
-            }
             totalList.addAll(list);
         }
         // 排序所有的拦截器对象,按照优先级排序
@@ -167,18 +165,16 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
         String className = ComponentUtil.genHostInterceptorClassName(host);
         try {
             Class<?> clazz = Class.forName(className);
-            IComponentHostInterceptor instance = (IComponentHostInterceptor) clazz.newInstance();
-            return instance;
-        } catch (ClassNotFoundException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InstantiationException e) {
+            return (IComponentHostInterceptor) clazz.newInstance();
+        } catch (Exception ignore) {
+            // ignore
         }
         return null;
     }
 
     @Nullable
     @Override
-    public EHiRouterInterceptor getByName(@NonNull String interceptorName) {
+    public EHiRouterInterceptor getByName(@Nullable String interceptorName) {
         if (interceptorName == null) {
             return null;
         }
@@ -208,16 +204,13 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
         Set<String> set = new HashSet<>();
         for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
             IComponentHostInterceptor childInterceptor = entry.getValue();
-            if (childInterceptor == null) {
+            if (childInterceptor == null || childInterceptor.getInterceptorNames() == null) {
                 continue;
             }
             Set<String> childInterceptorNames = childInterceptor.getInterceptorNames();
-            if (childInterceptorNames == null) {
-                continue;
-            }
             for (String interceptorName : childInterceptorNames) {
                 if (set.contains(interceptorName)) {
-                    throw new RuntimeException("the interceptor's name is exist：" + interceptorName);
+                    throw new InterceptorNameExistException("the interceptor's name is exist：" + interceptorName);
                 }
                 set.add(interceptorName);
             }

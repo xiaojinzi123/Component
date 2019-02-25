@@ -46,17 +46,19 @@ import javax.tools.Diagnostic;
 @SupportedAnnotationTypes({ComponentUtil.GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME, ComponentUtil.INTERCEPTOR_ANNO_CLASS_NAME})
 public class InterceptorProcessor extends BaseHostProcessor {
 
+    private TypeElement collectionsTypeElement;
     private TypeElement interceptorUtilTypeElement;
     private TypeElement interceptorBeanTypeElement;
-    private ClassName nullableClassName;
+    private ClassName nonNullClassName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
+        collectionsTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_COLLECTIONS);
         interceptorUtilTypeElement = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_UTIL_CLASS_NAME);
         interceptorBeanTypeElement = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_BEAN_CLASS_NAME);
-        final TypeElement nullableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_NULLABLE);
-        nullableClassName = ClassName.get(nullableTypeElement);
+        final TypeElement nonNullTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_NONNULL);
+        nonNullClassName = ClassName.get(nonNullTypeElement);
     }
 
     @Override
@@ -162,11 +164,11 @@ public class InterceptorProcessor extends BaseHostProcessor {
         final MethodSpec.Builder globalInterceptorListMethodSpecBuilder = MethodSpec.methodBuilder("globalInterceptorList")
                 .returns(returnType)
                 .addAnnotation(Override.class)
-                .addAnnotation(nullableClassName)
+                .addAnnotation(nonNullClassName)
                 .addModifiers(Modifier.PUBLIC);
 
         if (mGlobalInterceptElementList.isEmpty()) {
-            globalInterceptorListMethodSpecBuilder.addStatement("return null");
+            globalInterceptorListMethodSpecBuilder.addStatement("return $T.emptyList()",collectionsTypeElement);
         } else {
             globalInterceptorListMethodSpecBuilder.addStatement("$T<$T> list = new $T<>()", mClassNameList, interceptorBeanTypeElement, mClassNameArrayList);
             mGlobalInterceptElementList.forEach(new Consumer<InterceptorBean>() {

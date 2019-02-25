@@ -1,5 +1,6 @@
 package com.ehi.component.interceptor;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.ehi.component.impl.EHiRouterInterceptor;
@@ -30,7 +31,7 @@ public interface IComponentHostInterceptor extends IComponentInterceptor {
      *
      * @return
      */
-    @Nullable
+    @NonNull
     List<EHiInterceptorBean> globalInterceptorList();
 
     /**

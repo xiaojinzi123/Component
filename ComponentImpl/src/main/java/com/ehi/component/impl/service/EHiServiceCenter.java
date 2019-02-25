@@ -35,7 +35,7 @@ public class EHiServiceCenter implements IComponentCenterService {
     }
 
     @Override
-    public void register(@NonNull IComponentHostService service) {
+    public void register(@Nullable IComponentHostService service) {
         if (service == null) {
             return;
         }
@@ -53,7 +53,7 @@ public class EHiServiceCenter implements IComponentCenterService {
     }
 
     @Override
-    public void unregister(@NonNull IComponentHostService moduleService) {
+    public void unregister(@Nullable IComponentHostService moduleService) {
         if (moduleService == null) {
             return;
         }
@@ -71,11 +71,9 @@ public class EHiServiceCenter implements IComponentCenterService {
         String className = ComponentUtil.genHostServiceClassName(host);
         try {
             Class<?> clazz = Class.forName(className);
-            IComponentHostService instance = (IComponentHostService) clazz.newInstance();
-            return instance;
-        } catch (ClassNotFoundException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InstantiationException e) {
+            return (IComponentHostService) clazz.newInstance();
+        } catch (Exception ignore) {
+            // ignore
         }
         return null;
     }

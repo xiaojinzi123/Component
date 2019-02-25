@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import com.ehi.component.impl.EHiRouterInterceptor;
 import com.ehi.component.interceptor.IComponentHostInterceptor;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,10 @@ abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
 
     private boolean isInitMap = false;
 
-    @Nullable
     @Override
+    @NonNull
     public List<EHiInterceptorBean> globalInterceptorList() {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -44,8 +45,7 @@ abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
         if (!isInitMap) {
             initInterceptorMap();
         }
-        Set<String> interceptorNamesSet = interceptorMap.keySet();
-        return interceptorNamesSet;
+        return interceptorMap.keySet();
     }
 
     @Nullable
@@ -59,7 +59,7 @@ abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
 
     @Override
     @Nullable
-    public EHiRouterInterceptor getByName(@NonNull String name) {
+    public EHiRouterInterceptor getByName(@Nullable String name) {
         if (name == null) {
             return null;
         }

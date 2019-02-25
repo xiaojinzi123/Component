@@ -1,2 +1,2 @@
 新建一个错误就要在 EHiRxRouter 的错误处理里面添加一个处理的 case
-并且要在 RxErrorConsumer 中添加一个 class
+并且要在 RxErrorConsumer 中添加一个 class,这样子就可以忽略对应的错误了

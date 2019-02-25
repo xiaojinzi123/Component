@@ -2,7 +2,7 @@ package com.ehi.component.impl.interceptor;
 
 import android.net.Uri;
 
-import com.ehi.component.error.NavigationFailException;
+import com.ehi.component.error.ignore.NavigationFailException;
 import com.ehi.component.impl.EHiRouterInterceptor;
 
 /**

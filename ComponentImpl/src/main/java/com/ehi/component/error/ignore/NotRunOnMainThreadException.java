@@ -1,4 +1,4 @@
-package com.ehi.component.error;
+package com.ehi.component.error.ignore;
 
 /**
  * 运行在非主线程异常

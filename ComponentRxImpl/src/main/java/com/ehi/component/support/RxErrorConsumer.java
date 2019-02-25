@@ -17,22 +17,22 @@ public class RxErrorConsumer<T extends Throwable> implements Consumer<T> {
     /**
      * 如果使用者不想处理错误的话,这些错误都可以被默认忽略
      */
-    private final Class DEFAULT_IGNORE_ERROR[];
+    private final Class[] defaultIgnoreError;
 
     @Nullable
     private Consumer<T> preConsumer = null;
 
     public RxErrorConsumer(Consumer<T> preConsumer, Class[] defaultIgnoreErrors) {
         this.preConsumer = preConsumer;
-        this.DEFAULT_IGNORE_ERROR = defaultIgnoreErrors;
+        this.defaultIgnoreError = defaultIgnoreErrors;
     }
 
     @Override
     public void accept(T throwable) throws Exception {
         Throwable currThrowable = throwable;
-        if (DEFAULT_IGNORE_ERROR != null) {
+        if (defaultIgnoreError != null) {
             while (currThrowable != null) {
-                for (Class errorClass : DEFAULT_IGNORE_ERROR) {
+                for (Class errorClass : defaultIgnoreError) {
                     if (currThrowable.getClass() == errorClass) {
                         return;
                     }

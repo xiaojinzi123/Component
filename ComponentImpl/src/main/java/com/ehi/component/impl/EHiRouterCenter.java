@@ -13,9 +13,9 @@ import android.support.v4.app.FragmentManager;
 
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.bean.EHiRouterBean;
-import com.ehi.component.error.InterceptorNotFoundException;
-import com.ehi.component.error.NavigationFailException;
-import com.ehi.component.error.TargetActivityNotFoundException;
+import com.ehi.component.error.ignore.InterceptorNotFoundException;
+import com.ehi.component.error.ignore.NavigationFailException;
+import com.ehi.component.error.ignore.TargetActivityNotFoundException;
 import com.ehi.component.impl.interceptor.EHiInterceptorCenter;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorCache;
 import com.ehi.component.router.IComponentHostRouter;
@@ -181,7 +181,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
         }
     }
 
-    @Nullable
+    @NonNull
     @Override
     public synchronized List<EHiRouterInterceptor> interceptors(@NonNull Uri uri) {
         // 获取目标对象
@@ -261,7 +261,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
     @Nullable
     private Fragment findFragment(Context context) {
         Fragment result = null;
-        if (context != null && context instanceof FragmentActivity) {
+        if (context instanceof FragmentActivity) {
             FragmentManager ft = ((FragmentActivity) context).getSupportFragmentManager();
             result = ft.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
         }
@@ -340,11 +340,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
         try {
             Class<?> clazz = Class.forName(className);
             return (IComponentHostRouter) clazz.newInstance();
-        } catch (ClassNotFoundException e) {
-            // ignore
-        } catch (IllegalAccessException e) {
-            // ignore
-        } catch (InstantiationException e) {
+        } catch (Exception ignore) {
             // ignore
         }
         return null;

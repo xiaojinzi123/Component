@@ -63,7 +63,7 @@ public class EHiModuleManager implements IComponentModuleApplication {
         register(moduleApplication);
     }
 
-    public void registerArr(@NonNull String... hosts) {
+    public void registerArr(@Nullable String... hosts) {
         if (hosts != null) {
             for (String host : hosts) {
                 IComponentHostApplication moduleApplication = findModuleApplication(host);
@@ -91,11 +91,9 @@ public class EHiModuleManager implements IComponentModuleApplication {
         String className = ComponentUtil.genHostModuleApplicationClassName(host);
         try {
             Class<?> clazz = Class.forName(className);
-            IComponentHostApplication instance = (IComponentHostApplication) clazz.newInstance();
-            return instance;
-        } catch (ClassNotFoundException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InstantiationException e) {
+            return (IComponentHostApplication) clazz.newInstance();
+        } catch (Exception ignore) {
+            // ignore
         }
         return null;
     }
