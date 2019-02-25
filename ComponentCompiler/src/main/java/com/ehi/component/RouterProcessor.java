@@ -94,7 +94,6 @@ public class RouterProcessor extends BaseHostProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         if (CollectionUtils.isNotEmpty(set)) {
             final Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(EHiRouterAnno.class);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, " >>> size = " + (routeElements == null ? 0 : routeElements.size()));
             parseAnno(routeElements);
             createRouterImpl();
             return true;
