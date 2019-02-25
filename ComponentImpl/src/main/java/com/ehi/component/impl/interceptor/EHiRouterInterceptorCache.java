@@ -8,6 +8,7 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.cache.Cache;
 import com.ehi.component.cache.CacheType;
+import com.ehi.component.cache.DefaultCacheFactory;
 import com.ehi.component.impl.EHiRouterInterceptor;
 import java.lang.reflect.Constructor;
 
@@ -28,23 +29,21 @@ public class EHiRouterInterceptorCache {
     /**
      * 拦截器 Class --> EHiRouterInterceptor 的缓存
      */
-    private static final Cache<Class, EHiRouterInterceptor> interceptorClassCache = Cache.Factory.INSTANCE.build
-            (CacheType.ROUTER_INTERCEPTOR_CACHE);
+    private static final Cache<Class, EHiRouterInterceptor> interceptorClassCache =
+            DefaultCacheFactory.INSTANCE.build(CacheType.ROUTER_INTERCEPTOR_CACHE);
     /**
      * 拦截器 Name(String) --> EHiRouterInterceptor 的缓存
      */
-    private static final Cache<String, EHiRouterInterceptor> interceptorNameCache = Cache.Factory.INSTANCE.build
-            (CacheType.ROUTER_INTERCEPTOR_CACHE);
+    private static final Cache<String, EHiRouterInterceptor> interceptorNameCache =
+            DefaultCacheFactory.INSTANCE.build(CacheType.ROUTER_INTERCEPTOR_CACHE);
 
 
     /**
      * 内部做了缓存,如果缓存中没有就会反射创建拦截器对象
-     *
-     * @param tClass
-     * @return
      */
     @Nullable
-    public static synchronized EHiRouterInterceptor getInterceptorByClass(@NonNull Class<? extends EHiRouterInterceptor> tClass) {
+    public static synchronized EHiRouterInterceptor getInterceptorByClass(
+            @NonNull Class<? extends EHiRouterInterceptor> tClass) {
         EHiRouterInterceptor t = interceptorClassCache.get(tClass);
         if (t == null) {
             try {
@@ -56,17 +55,23 @@ public class EHiRouterInterceptorCache {
                             t = (EHiRouterInterceptor) constructor.newInstance();
                             break;
                         }
-                        if (parameterTypes != null && parameterTypes.length == 1 && parameterTypes[0] == Application.class) {
-                            t = (EHiRouterInterceptor) constructor.newInstance(ComponentConfig.getApplication());
+                        if (parameterTypes != null && parameterTypes.length == 1
+                                && parameterTypes[0] == Application.class) {
+                            t = (EHiRouterInterceptor) constructor
+                                    .newInstance(ComponentConfig.getApplication());
                             break;
                         }
-                        if (parameterTypes != null && parameterTypes.length == 1 && parameterTypes[0] == Context.class) {
-                            t = (EHiRouterInterceptor) constructor.newInstance(ComponentConfig.getApplication());
+                        if (parameterTypes != null && parameterTypes.length == 1
+                                && parameterTypes[0] == Context.class) {
+                            t = (EHiRouterInterceptor) constructor
+                                    .newInstance(ComponentConfig.getApplication());
                             break;
                         }
                     }
                     if (t == null) {
-                        throw new InstantiationException("do you write default constructor or a constructor with parameter 'Application' or  a constructor with parameter 'Context' ");
+                        throw new InstantiationException(
+                                "do you write default constructor or a constructor with parameter "
+                                        + "'Application' or  a constructor with parameter 'Context' ");
                     } else {
                         interceptorClassCache.put(tClass, t);
                     }
@@ -86,16 +91,14 @@ public class EHiRouterInterceptorCache {
 
     /**
      * 根据拦截器的名字获取拦截器的缓存对象
-     *
-     * @param interceptorName
-     * @return
      */
     @Nullable
     public static synchronized EHiRouterInterceptor getInterceptorByName(@NonNull String interceptorName) {
         return interceptorNameCache.get(interceptorName);
     }
 
-    public static synchronized void putCache(@NonNull String interceptorName, @NonNull EHiRouterInterceptor interceptor) {
+    public static synchronized void putCache(@NonNull String interceptorName,
+            @NonNull EHiRouterInterceptor interceptor) {
         interceptorNameCache.put(interceptorName, interceptor);
     }
 
