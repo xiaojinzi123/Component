@@ -56,6 +56,7 @@ public class EHiRouterInterceptorCache {
             return t;
         }
         try {
+            // 创建拦截器
             t = create(tClass);
             if (t == null) {
                 throw new InstantiationException("do you write default constructor or a constructor with parameter 'Application' or  a constructor with parameter 'Context' ");
@@ -72,18 +73,21 @@ public class EHiRouterInterceptorCache {
 
     @Nullable
     private static EHiRouterInterceptor create(@NonNull Class<? extends EHiRouterInterceptor> tClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        // 空参数构造函数
-        Constructor<? extends EHiRouterInterceptor> constructor1 = tClass.getConstructor();
-        if (constructor1 != null) {
-            return constructor1.newInstance();
+        Constructor<?>[] constructors = tClass.getConstructors();
+        if (constructors == null) {
+            return null;
         }
-        Constructor<? extends EHiRouterInterceptor> constructor2 = tClass.getConstructor(Application.class);
-        if (constructor2 != null) {
-            return constructor2.newInstance(ComponentConfig.getApplication());
-        }
-        Constructor<? extends EHiRouterInterceptor> constructor3 = tClass.getConstructor(Context.class);
-        if (constructor3 != null) {
-            return constructor3.newInstance(ComponentConfig.getApplication());
+        for (Constructor<?> constructor : constructors) {
+            Class<?>[] parameterTypes = constructor.getParameterTypes();
+            if (parameterTypes == null || parameterTypes.length == 0) {
+                return (EHiRouterInterceptor) constructor.newInstance();
+            }
+            if (parameterTypes.length == 1 && parameterTypes[0] == Application.class) {
+                return (EHiRouterInterceptor) constructor.newInstance(ComponentConfig.getApplication());
+            }
+            if (parameterTypes.length == 1 && parameterTypes[0] == Context.class) {
+                return (EHiRouterInterceptor) constructor.newInstance(ComponentConfig.getApplication());
+            }
         }
         return null;
     }
@@ -101,7 +105,7 @@ public class EHiRouterInterceptorCache {
     }
 
     public static synchronized void putCache(@NonNull String interceptorName,
-            @NonNull EHiRouterInterceptor interceptor) {
+                                             @NonNull EHiRouterInterceptor interceptor) {
         interceptorNameCache.put(interceptorName, interceptor);
     }
 
