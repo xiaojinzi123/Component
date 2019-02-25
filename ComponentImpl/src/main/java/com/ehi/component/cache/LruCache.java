@@ -1,8 +1,10 @@
 package com.ehi.component.cache;
 
 import android.support.annotation.Nullable;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 
@@ -46,11 +48,20 @@ public class LruCache<K, V> implements Cache<K, V> {
      * 返回每个 {@code item} 所占用的 size,默认为1,这个 size 的单位必须和构造函数所传入的 size 一致
      * 子类可以重写这个方法以适应不同的单位,比如说 bytes
      *
-     * @param item 每个 {@code item} 所占用的 size
+     * @param value 每个 {@code item} key 所占用的 size
+     * @param value 每个 {@code item} value 所占用的 size
      * @return 单个 item 的 {@code size}
      */
-    protected int getItemSize(V item) {
+    protected int getItemSize(K key,V value) {
         return 1;
+    }
+
+    private int safeSizeOf(K key,V value) {
+        int result = getItemSize(key, value);
+        if (result < 0) {
+            throw new IllegalStateException("Negative size: " + key + "=" + value);
+        }
+        return result;
     }
 
     /**
@@ -120,7 +131,7 @@ public class LruCache<K, V> implements Cache<K, V> {
      * 将 {@code key} 和 {@code value} 以条目的形式加入缓存,如果这个 {@code key} 在缓存中已经有对应的 {@code value}
      * 则此 {@code value} 被新的 {@code value} 替换并返回,如果为 {@code null} 说明是一个新条目
      * <p>
-     * 如果 {@link #getItemSize} 返回的 size 大于或等于缓存所能允许的最大 size, 则不能向缓存中添加此条目
+     * 如果 {@link #safeSizeOf} 返回的 size 大于或等于缓存所能允许的最大 size, 则不能向缓存中添加此条目
      * 此时会回调 {@link #onItemEvicted(Object, Object)} 通知此方法当前被驱逐的条目
      *
      * @param key   通过这个 {@code key} 添加条目
@@ -130,7 +141,7 @@ public class LruCache<K, V> implements Cache<K, V> {
     @Override
     @Nullable
     public synchronized V put(K key, V value) {
-        final int itemSize = getItemSize(value);
+        final int itemSize = safeSizeOf(key,value);
         if (itemSize >= maxSize) {
             onItemEvicted(key, value);
             return null;
@@ -138,10 +149,10 @@ public class LruCache<K, V> implements Cache<K, V> {
 
         final V result = cache.put(key, value);
         if (value != null) {
-            currentSize += getItemSize(value);
+            currentSize += safeSizeOf(key,value);
         }
         if (result != null) {
-            currentSize -= getItemSize(result);
+            currentSize -= safeSizeOf(key,result);
         }
         evict();
 
@@ -160,7 +171,7 @@ public class LruCache<K, V> implements Cache<K, V> {
     public synchronized V remove(K key) {
         final V value = cache.remove(key);
         if (value != null) {
-            currentSize -= getItemSize(value);
+            currentSize -= safeSizeOf(key,value);
         }
         return value;
     }
@@ -180,13 +191,18 @@ public class LruCache<K, V> implements Cache<K, V> {
      */
     protected synchronized void trimToSize(int size) {
         Map.Entry<K, V> last;
+        Iterator<Entry<K, V>> iterator = null;
         while (currentSize > size) {
-            last = cache.entrySet().iterator().next();
-            final V toRemove = last.getValue();
-            currentSize -= getItemSize(toRemove);
+            if (iterator == null) {
+                iterator = cache.entrySet().iterator();
+            }
+            last = iterator.next();
             final K key = last.getKey();
-            cache.remove(key);
-            onItemEvicted(key, toRemove);
+            final V value = last.getValue();
+
+            iterator.remove();
+            currentSize -= safeSizeOf(key,value);
+            onItemEvicted(key, value);
         }
     }
 
