@@ -34,7 +34,7 @@ import io.reactivex.functions.Function;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiRxService extends EHiService {
+public class EHiRxService {
 
     /**
      * 这里最主要的实现就是把出现的错误转化为 {@link RxJavaException} 和 {@link ServiceInvokeException}
@@ -58,7 +58,7 @@ public class EHiRxService extends EHiService {
             public T call() throws Exception {
                 T tempImpl = null;
                 if (Utils.isMainThread()) {
-                    tempImpl = get(tClass);
+                    tempImpl = EHiService.get(tClass);
                 } else {
                     // 这段代码如何为空的话会直接抛出异常
                     tempImpl = blockingGetInChildThread(tClass);
@@ -167,7 +167,7 @@ public class EHiRxService extends EHiService {
                 Utils.postActionToMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        T t = get(tClass);
+                        T t = EHiService.get(tClass);
                         if (emitter.isDisposed()) {
                             return;
                         }

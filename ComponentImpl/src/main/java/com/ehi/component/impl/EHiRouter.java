@@ -14,8 +14,8 @@ import android.support.v4.app.Fragment;
 import android.util.SparseArray;
 
 import com.ehi.component.ComponentUtil;
-import com.ehi.component.error.InterceptorNotFoundException;
-import com.ehi.component.error.NavigationFailException;
+import com.ehi.component.error.ignore.InterceptorNotFoundException;
+import com.ehi.component.error.ignore.NavigationFailException;
 import com.ehi.component.impl.interceptor.EHiInterceptorCenter;
 import com.ehi.component.impl.interceptor.EHiOpenOnceInterceptor;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorCache;
@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * 整个路由框架,整体都是在主线程中执行的,在拦截器中提供了 callback 机制
@@ -46,10 +45,31 @@ import java.util.Vector;
  */
 public class EHiRouter {
 
+    protected EHiRouter() {
+    }
+
     /**
      * 类的标志
      */
     public static final String TAG = "EHiRouter";
+
+    /**
+     * 空实现,里头都是不能调用的方法
+     * 这个对象只会在构建 {@link EHiRouterRequest} 对象失败或者构建之前就发生错误的情况才会被返回
+     * 这里为什么会有这个类是因为在调用 {@link EHiRouter.Builder#navigate()} 的时候,会返回一个
+     */
+    public static final NavigationDisposable emptyNavigationDisposable = new NavigationDisposable() {
+        @Nullable
+        @Override
+        public EHiRouterRequest originalRequest() {
+            return null;
+        }
+
+        @Override
+        public void cancel() {
+            // ignore
+        }
+    };
 
     /**
      * 路由的监听器
@@ -58,7 +78,7 @@ public class EHiRouter {
             .synchronizedCollection(new ArrayList<EHiRouterListener>(0));
 
     // 支持取消的一个 Callback 集合,需要线程安全
-    private static List<NavigationDisposable> mNavigationDisposableList = new Vector<>();
+    private static List<NavigationDisposable> mNavigationDisposableList = new ArrayList<>();
 
     public static void clearRouterListeners() {
         routerListeners.clear();
@@ -144,29 +164,29 @@ public class EHiRouter {
             }
         }
 
-        public Builder interceptors(@NonNull EHiRouterInterceptor... interceptors) {
-            Utils.checkNullPointer(interceptors, "interceptors");
-            if (interceptors != null) {
-                lazyInitCustomInterceptors(interceptors.length);
-                customInterceptors.addAll(Arrays.asList(interceptors));
+        public Builder interceptors(EHiRouterInterceptor... interceptorArr) {
+            Utils.checkNullPointer(interceptorArr, "interceptorArr");
+            if (interceptorArr != null) {
+                lazyInitCustomInterceptors(interceptorArr.length);
+                customInterceptors.addAll(Arrays.asList(interceptorArr));
             }
             return this;
         }
 
-        public Builder interceptors(@NonNull Class<? extends EHiRouterInterceptor>... interceptors) {
-            Utils.checkNullPointer(interceptors, "interceptors");
-            if (interceptors != null) {
-                lazyInitCustomInterceptors(interceptors.length);
-                customInterceptors.addAll(Arrays.asList(interceptors));
+        public Builder interceptors(Class<? extends EHiRouterInterceptor>... interceptorClassArr) {
+            Utils.checkNullPointer(interceptorClassArr, "interceptorClassArr");
+            if (interceptorClassArr != null) {
+                lazyInitCustomInterceptors(interceptorClassArr.length);
+                customInterceptors.addAll(Arrays.asList(interceptorClassArr));
             }
             return this;
         }
 
-        public Builder interceptorNames(@NonNull String... interceptors) {
-            Utils.checkNullPointer(interceptors, "interceptors");
-            if (interceptors != null) {
-                lazyInitCustomInterceptors(interceptors.length);
-                customInterceptors.addAll(Arrays.asList(interceptors));
+        public Builder interceptorNames(String... interceptorNameArr) {
+            Utils.checkNullPointer(interceptorNameArr, "interceptorNameArr");
+            if (interceptorNameArr != null) {
+                lazyInitCustomInterceptors(interceptorNameArr.length);
+                customInterceptors.addAll(Arrays.asList(interceptorNameArr));
             }
             return this;
         }
@@ -413,7 +433,7 @@ public class EHiRouter {
         }
 
         /**
-         * @return 返回的对象有可能是一个空实现对象 {@link NavigationDisposable#EMPTY}
+         * @return 返回的对象有可能是一个空实现对象 {@link #emptyNavigationDisposable}
          */
         @NonNull
         public NavigationDisposable navigate() {
@@ -425,7 +445,7 @@ public class EHiRouter {
          * 返回值不可以为空,是为了使用的时候更加的顺溜,不用判断空
          *
          * @param callback 回调
-         * @return 返回的对象有可能是一个空实现对象 {@link NavigationDisposable#EMPTY},可以取消路由或者获取原始request对象
+         * @return 返回的对象有可能是一个空实现对象 {@link #emptyNavigationDisposable},可以取消路由或者获取原始request对象
          */
         @MainThread
         @NonNull
@@ -446,7 +466,7 @@ public class EHiRouter {
                     mNavigationDisposableList.add(interceptorCallback);
                 }
                 // Activity 的自动取消
-                if (originalRequest.context != null && originalRequest.context instanceof Activity) {
+                if (originalRequest.context instanceof Activity) {
                     mNavigationDisposableList.add(interceptorCallback);
                 }
                 // 真正的去执行路由
@@ -471,7 +491,7 @@ public class EHiRouter {
                 beforJumpAction = null;
                 afterJumpAction = null;
             }
-            return NavigationDisposable.EMPTY;
+            return emptyNavigationDisposable;
         }
 
         /**
@@ -526,7 +546,7 @@ public class EHiRouter {
                     // 这个地址要执行的拦截器,这里取的时候一定要注意了,不能拿最原始的那个 request,因为上面的拦截器都能更改 request,
                     // 导致最终跳转的界面和你拿到的拦截器不匹配,所以这里一定是拿上一个拦截器传给你的 request 对象
                     List<EHiRouterInterceptor> targetInterceptors = EHiRouterCenter.getInstance().interceptors(nextChain.request().uri);
-                    if (targetInterceptors != null && !targetInterceptors.isEmpty()) {
+                    if (!targetInterceptors.isEmpty()) {
                         currentInterceptors.addAll(targetInterceptors);
                     }
                     // 真正的执行跳转的拦截器

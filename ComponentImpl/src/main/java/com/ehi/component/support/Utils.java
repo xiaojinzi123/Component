@@ -16,6 +16,9 @@ import com.ehi.component.ComponentConfig;
  */
 public class Utils {
 
+    private static final String STR_PARAMETER = "parameter '";
+    private static final String STR_CAN_NOT_BE_NULL = "' can't be null";
+
     private Utils() {
     }
 
@@ -77,21 +80,21 @@ public class Utils {
 
     public static String checkStringNullPointer(String value, @NonNull String parameterName) {
         if (ComponentConfig.isDebug() && (value == null || value.isEmpty())) {
-            throw new NullPointerException("parameter '" + parameterName + "' can't be null");
+            throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL);
         }
         return value;
     }
 
     public static String checkStringNullPointer(String value, @NonNull String parameterName, @Nullable String desc) {
         if (ComponentConfig.isDebug() && (value == null || value.isEmpty())) {
-            throw new NullPointerException("parameter '" + parameterName + "' can't be null" + (desc == null ? "" : "," + desc));
+            throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL + (desc == null ? "" : "," + desc));
         }
         return value;
     }
 
     public static <T> T checkNullPointer(T value, @NonNull String parameterName) {
         if (ComponentConfig.isDebug() && value == null) {
-            throw new NullPointerException("parameter '" + parameterName + "' can't be null");
+            throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL);
         }
         return value;
     }

@@ -3,7 +3,6 @@ package com.ehi.component.support;
 import android.support.annotation.AnyThread;
 import android.support.annotation.Nullable;
 
-import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterRequest;
 
 /**
@@ -14,24 +13,6 @@ import com.ehi.component.impl.EHiRouterRequest;
  * @author : xiaojinzi 30212
  */
 public interface NavigationDisposable {
-
-    /**
-     * 空实现,里头都是不能调用的方法
-     * 这个对象只会在构建 {@link EHiRouterRequest} 对象失败或者构建之前就发生错误的情况才会被返回
-     * 这里为什么会有这个类是因为在调用 {@link EHiRouter.Builder#navigate()} 的时候,会返回一个
-     */
-    NavigationDisposable EMPTY = new NavigationDisposable() {
-        @Nullable
-        @Override
-        public EHiRouterRequest originalRequest() {
-            return null;
-        }
-
-        @Override
-        public void cancel() {
-            // ignore
-        }
-    };
 
     /**
      * 拿到这个路由的请求对象,这个对象是最原始的那个,不会经过拦截器的修改而变化

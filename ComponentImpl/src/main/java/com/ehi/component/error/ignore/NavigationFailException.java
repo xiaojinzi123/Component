@@ -1,4 +1,4 @@
-package com.ehi.component.error;
+package com.ehi.component.error.ignore;
 
 /**
  * 表示路由的过程中发生异常

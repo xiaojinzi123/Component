@@ -13,6 +13,9 @@ import java.util.Map;
  */
 public class EHiService {
 
+    private EHiService() {
+    }
+
     /**
      * Service 的集合
      */

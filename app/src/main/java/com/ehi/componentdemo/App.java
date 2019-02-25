@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.ComponentConfig;
+import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.application.EHiModuleManager;
 import com.ehi.component.support.RxErrorIgnoreUtil;
 

@@ -27,14 +27,17 @@ public class ComponentConstants {
     public static final String ANDROID_CONTEXT = "android.content.Context";
     public static final String ANDROID_INTENT = "android.content.Intent";
     public static final String ANDROID_ANNOTATION_NULLABLE = "android.support.annotation.Nullable";
+    public static final String ANDROID_ANNOTATION_NONNULL = "android.support.annotation.NonNull";
 
     public static final String JAVA_CLASS = "java.lang.Class";
     public static final String JAVA_EXCEPTION = "java.lang.Exception";
     public static final String JAVA_STRING = "java.lang.String";
     public static final String JAVA_MAP = "java.util.Map";
     public static final String JAVA_LIST = "java.util.List";
+    public static final String JAVA_COLLECTIONS = "java.util.Collections";
     public static final String JAVA_ARRAYLIST = "java.util.ArrayList";
     public static final String JAVA_SERIALIZABLE = "java.io.Serializable";
+
     public static final String SEPARATOR = "/";
 
 }
