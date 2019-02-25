@@ -353,7 +353,7 @@ public class RouterProcessor extends BaseHostProcessor {
         // 参数调用的 sb
         StringBuilder parameterSB = new StringBuilder();
         if (parameters != null && !parameters.isEmpty()) {
-            for (int i = 0; i < parameters.size(); i++) {
+            for (int i = 0, size = parameters.size(); i < size; i++) {
                 if (i > 0) {
                     parameterSB.append(",");
                 }
