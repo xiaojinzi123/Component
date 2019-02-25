@@ -11,11 +11,15 @@ import com.ehi.component.ComponentConfig;
  */
 public class DefaultCacheFactory implements Cache.Factory{
 
-    public static DefaultCacheFactory INSTANCE = new DefaultCacheFactory();
+    private DefaultCacheFactory() {
+    }
+
+    public static final DefaultCacheFactory INSTANCE = new DefaultCacheFactory();
 
     @NonNull
     @Override
     public Cache build(CacheType type) {
         return new LruCache(type.calculateCacheSize(ComponentConfig.getApplication()));
     }
+
 }

@@ -7,6 +7,9 @@ package com.ehi.component;
  */
 public class ComponentConstants {
 
+    private ComponentConstants() {
+    }
+
     // System interface
 
     public static final String ACTIVITY = "android.app.Activity";
