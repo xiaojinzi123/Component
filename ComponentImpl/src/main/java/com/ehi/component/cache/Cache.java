@@ -2,7 +2,6 @@ package com.ehi.component.cache;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.ehi.component.ComponentConfig;
 import java.util.Set;
 
 
@@ -13,14 +12,6 @@ import java.util.Set;
 public interface Cache<K, V> {
 
     interface Factory {
-
-        Cache.Factory INSTANCE = new Factory() {
-            @NonNull
-            @Override
-            public Cache build(CacheType type) {
-                return new LruCache(type.calculateCacheSize(ComponentConfig.getApplication()));
-            }
-        };
 
         /**
          * Returns a new cache
