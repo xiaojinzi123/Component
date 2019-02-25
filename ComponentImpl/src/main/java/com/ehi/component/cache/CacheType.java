@@ -11,7 +11,7 @@ import com.ehi.component.support.Utils;
  */
 public interface CacheType {
     int ROUTER_INTERCEPTOR_CACHE_TYPE_ID = 0;
-    int CACHE_SERVICE_CACHE_TYPE_ID = 1;
+
     /**
      * 缓存 {@link com.ehi.component.impl.EHiRouterInterceptor} 的容器
      */
