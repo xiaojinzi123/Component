@@ -36,6 +36,9 @@ import io.reactivex.functions.Function;
  */
 public class EHiRxService {
 
+    private EHiRxService() {
+    }
+
     /**
      * 这里最主要的实现就是把出现的错误转化为 {@link RxJavaException} 和 {@link ServiceInvokeException}
      * 然后就可以当用户不想处理RxJava的错误的时候 {@link com.ehi.component.support.RxErrorConsumer} 进行忽略了

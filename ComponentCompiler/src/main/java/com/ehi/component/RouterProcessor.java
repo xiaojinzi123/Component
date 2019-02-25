@@ -231,7 +231,7 @@ public class RouterProcessor extends BaseHostProcessor {
             host = componentHost;
         }
         if (path != null && path.length() > 0 && path.charAt(0) != '/') {
-            path = "/" + path;
+            path = ComponentConstants.SEPARATOR + path;
         }
         return host + path;
     }
