@@ -83,22 +83,21 @@ public class InterceptorProcessor extends BaseHostProcessor {
         // 拦截器的接口
         final TypeMirror typeInterceptor = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME).asType();
         for (Element element : globalInterceptorElements) {
-            TypeMirror tm = element.asType();
-            if (!(element instanceof TypeElement)) { // 比如是类
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
-                continue;
-            }
-            if (!mTypes.isSubtype(tm, typeInterceptor)) { // 比如是拦截器接口的之类
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " must implementation interface '" + ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME + "'");
-                continue;
-            }
-            EHiGlobalInterceptorAnno anno = element.getAnnotation(EHiGlobalInterceptorAnno.class);
-            if (anno == null) {
+            final TypeMirror tm = element.asType();
+            final boolean type = !(element instanceof TypeElement);
+            final boolean subType = !mTypes.isSubtype(tm, typeInterceptor);
+            final EHiGlobalInterceptorAnno anno = element.getAnnotation(EHiGlobalInterceptorAnno.class);
+            if (type || subType || anno == null) {
+                if (type) {// 比如是类
+                    mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
+                } else if (subType) {// 比如是拦截器接口的之类
+                    mMessager.printMessage(Diagnostic.Kind.ERROR, element +
+                            " must implementation interface '" + ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME + "'");
+                }
                 continue;
             }
             mGlobalInterceptElementList.add(new InterceptorBean(InterceptorBean.GLOBAL_INTERCEPTOR, element, anno.priority(), null));
         }
-
     }
 
     private void parseNormalInterceptAnnotation(Set<? extends Element> normalInterceptorElements) {
@@ -106,17 +105,17 @@ public class InterceptorProcessor extends BaseHostProcessor {
         // 拦截器的接口
         final TypeMirror typeInterceptor = mElements.getTypeElement(ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME).asType();
         for (Element element : normalInterceptorElements) {
-            TypeMirror tm = element.asType();
-            if (!(element instanceof TypeElement)) { // 比如是类
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
-                continue;
-            }
-            if (!mTypes.isSubtype(tm, typeInterceptor)) { // 比如是拦截器接口的之类
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " must implementation interface '" + ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME + "'");
-                continue;
-            }
-            EHiInterceptorAnno anno = element.getAnnotation(EHiInterceptorAnno.class);
-            if (anno == null) {
+            final TypeMirror tm = element.asType();
+            final boolean type = !(element instanceof TypeElement);
+            final boolean subType = !mTypes.isSubtype(tm, typeInterceptor);
+            final EHiInterceptorAnno anno = element.getAnnotation(EHiInterceptorAnno.class);
+            if (type || subType || anno == null) {
+                if (type) {// 比如是类
+                    mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
+                } else if (subType) {// 比如是拦截器接口的之类
+                    mMessager.printMessage(Diagnostic.Kind.ERROR, element +
+                            " must implementation interface '" + ComponentConstants.EHIINTERCEPTOR_INTERFACE_CLASS_NAME + "'");
+                }
                 continue;
             }
             if (mNormalInterceptElementMap.containsKey(anno.value())) {

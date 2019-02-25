@@ -80,13 +80,10 @@ public class ServiceProcessor extends BaseHostProcessor {
     private void parseAnnotation(Set<? extends Element> annoElements) {
         annoElementList.clear();
         for (Element element : annoElements) {
-            if (!(element instanceof TypeElement)) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
-                continue;
-            }
             // 如果是一个 Service
-            EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
-            if (anno == null) {
+            final EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
+            if (!(element instanceof TypeElement) || anno == null) {
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
                 continue;
             }
             annoElementList.add(element);
