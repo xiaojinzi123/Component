@@ -22,6 +22,9 @@ public class ModuleConfig {
         // 测试跳转到打电话的界面
         public static final String CALL_PHONE = "callPhone";
 
+        // 拍照
+        public static final String TAKE_PHONE = "takePhone";
+
         // 测试跳转到 APP 详情界面
         public static final String SYSTEM_APP_DETAIL = "appDetail";
 

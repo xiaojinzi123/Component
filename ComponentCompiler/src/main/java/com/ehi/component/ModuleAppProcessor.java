@@ -86,7 +86,6 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 continue;
             }
             applicationList.add(element);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "moduleApplication = " + element);
         }
     }
 
