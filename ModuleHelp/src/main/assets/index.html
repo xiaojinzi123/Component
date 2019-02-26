@@ -4,15 +4,13 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body style="margin: 0px;padding: 0px;font-size: 20px;">
+<body style="margin: 0px;padding: 0px;font-size: 18px;">
 
 <script type="text/javascript">
 
     function openUrl(url) {
         window.testWebRouter.openUrl(url);
     }
-
-
 
 </script>
 组件化之后的js 和 原生交互就发生了很大的变化,html只管根据url来跳转到原生的各个界面,总结如下：
@@ -38,7 +36,11 @@
     </li>
     <li>
         <a href="#"
-           onclick='openUrl("EHi://user/personCenter")'>去用户个人中心</a>
+           onclick='openUrl("EHi://system/takePhone")'>去拍照(EHi://system/takePhone)</a>
+    </li>
+    <li>
+        <a href="#"
+           onclick='openUrl("EHi://user/personCenter")'>个人中心(EHi://user/personCenter)</a>
     </li>
     <li>
         <a href="#"

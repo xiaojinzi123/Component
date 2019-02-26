@@ -3,6 +3,7 @@ package com.ehi.componentdemo;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,6 +38,26 @@ public class CustomerRouterImpl {
             throw new NullPointerException("the tel is empty");
         }
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + tel));
+        return intent;
+    }
+
+    /**
+     * 拍照界面,需要拍照权限
+     *
+     * @param request
+     * @return
+     */
+    @Nullable
+    @EHiRouterAnno(
+            host = ModuleConfig.System.NAME,
+            value = ModuleConfig.System.TAKE_PHONE,
+            interceptorNames = InterceptorConfig.HELP_CAMERA
+    )
+    public static Intent takePictureIntent(@NonNull EHiRouterRequest request) {
+        Intent intent = new Intent();
+        // 指定开启系统相机的Action
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
         return intent;
     }
 

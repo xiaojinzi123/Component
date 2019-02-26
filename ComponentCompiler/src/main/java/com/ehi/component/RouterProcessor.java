@@ -110,7 +110,6 @@ public class RouterProcessor extends BaseHostProcessor {
      */
     private void parseAnno(Set<? extends Element> routeElements) {
         for (Element element : routeElements) {
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "element == " + element.toString());
             // 如果是一个Activity 才会走到这里
             final EHiRouterAnno router = element.getAnnotation(EHiRouterAnno.class);
             if (router == null || router.value() == null || router.value().isEmpty()) {

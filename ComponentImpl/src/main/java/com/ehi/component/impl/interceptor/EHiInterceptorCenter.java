@@ -119,7 +119,6 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
         if (childInterceptorMap != null) {
             for (Map.Entry<String, Class<? extends EHiRouterInterceptor>> entry : childInterceptorMap.entrySet()) {
                 mInterceptorMap.remove(entry.getKey());
-                EHiRouterInterceptorCache.removeCache(entry.getKey());
                 EHiRouterInterceptorCache.removeCache(entry.getValue());
             }
         }
@@ -179,20 +178,13 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
             return null;
         }
         // 先到缓存中找
-        EHiRouterInterceptor result = EHiRouterInterceptorCache.getInterceptorByName(interceptorName);
-        if (result != null) {
-            return result;
-        }
+        EHiRouterInterceptor result = null;
         // 拿到拦截器的 Class 对象
         Class<? extends EHiRouterInterceptor> interceptorClass = mInterceptorMap.get(interceptorName);
         if (interceptorClass == null) {
             result = null;
         } else {
             result = EHiRouterInterceptorCache.getInterceptorByClass(interceptorClass);
-        }
-        // 缓存这个对象
-        if (result != null) {
-            EHiRouterInterceptorCache.putCache(interceptorName, result);
         }
         return result;
     }

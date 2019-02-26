@@ -87,7 +87,6 @@ public class ServiceProcessor extends BaseHostProcessor {
                 continue;
             }
             annoElementList.add(element);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "serviceImpl = " + element);
         }
     }
 

@@ -38,12 +38,6 @@ public class EHiRouterInterceptorCache {
      */
     private static final Cache<Class, EHiRouterInterceptor> interceptorClassCache =
             DefaultCacheFactory.INSTANCE.build(CacheType.ROUTER_INTERCEPTOR_CACHE);
-    /**
-     * 拦截器 Name(String) --> EHiRouterInterceptor 的缓存
-     */
-    private static final Cache<String, EHiRouterInterceptor> interceptorNameCache =
-            DefaultCacheFactory.INSTANCE.build(CacheType.ROUTER_INTERCEPTOR_CACHE);
-
 
     /**
      * 内部做了缓存,如果缓存中没有就会反射创建拦截器对象
@@ -94,23 +88,6 @@ public class EHiRouterInterceptorCache {
 
     public static synchronized void removeCache(@NonNull Class<? extends EHiRouterInterceptor> tClass) {
         interceptorClassCache.remove(tClass);
-    }
-
-    /**
-     * 根据拦截器的名字获取拦截器的缓存对象
-     */
-    @Nullable
-    public static synchronized EHiRouterInterceptor getInterceptorByName(@NonNull String interceptorName) {
-        return interceptorNameCache.get(interceptorName);
-    }
-
-    public static synchronized void putCache(@NonNull String interceptorName,
-                                             @NonNull EHiRouterInterceptor interceptor) {
-        interceptorNameCache.put(interceptorName, interceptor);
-    }
-
-    public static synchronized void removeCache(@NonNull String interceptorName) {
-        interceptorNameCache.remove(interceptorName);
     }
 
 }
