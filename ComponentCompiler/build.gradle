@@ -16,7 +16,7 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'org.apache.commons:commons-collections4:4.1'
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        compile "com.ehi:component-api:${rootProject.ext.component_version}"
+        compile "com.xiaojinzi:annotation:${rootProject.ext.component_version}"
     }else {
         compile project(':ComponentApi')
     }
@@ -29,12 +29,11 @@ repositories {
 uploadArchives {
     repositories {
         mavenDeployer {
-
-            repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
+            repository(url: "${rootProject.ext.mavenPublishUrl}") {
                 authentication(userName: "admin", password: "admin123")
             }
-            pom.groupId = 'com.ehi'
-            pom.artifactId = 'component-api-compiler'
+            pom.groupId = 'com.xiaojinzi'
+            pom.artifactId = 'compiler'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {
                 licenses {

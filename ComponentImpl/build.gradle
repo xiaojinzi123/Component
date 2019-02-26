@@ -25,7 +25,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.appcompat_v7
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        api "com.ehi:component-api:${rootProject.ext.component_version}"
+        api "com.xiaojinzi:annotation:${rootProject.ext.component_version}"
     }else {
         api project(':ComponentApi')
     }
@@ -44,12 +44,11 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-
-            repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
+            repository(url: "${rootProject.ext.mavenPublishUrl}") {
                 authentication(userName: "admin", password: "admin123")
             }
-            pom.groupId = 'com.ehi'
-            pom.artifactId = 'component-impl'
+            pom.groupId = 'com.xiaojinzi'
+            pom.artifactId = 'impl'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {
                 licenses {
