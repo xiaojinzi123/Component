@@ -1,5 +1,7 @@
 package com.ehi.component.router;
 
+import android.support.annotation.NonNull;
+
 import com.ehi.component.bean.EHiRouterBean;
 
 import java.util.Map;
@@ -11,13 +13,14 @@ import java.util.Map;
  *
  * @author : xiaojinzi 30212
  */
-public interface IComponentHostRouter extends IComponentRouter {
+public interface IComponentHostRouter {
 
     /**
      * 获取host
      *
      * @return
      */
+    @NonNull
     String getHost();
 
     /**
@@ -25,6 +28,7 @@ public interface IComponentHostRouter extends IComponentRouter {
      *
      * @return
      */
+    @NonNull
     Map<String, EHiRouterBean> getRouterMap();
 
 }

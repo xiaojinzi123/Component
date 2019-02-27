@@ -3,6 +3,7 @@
     package="com.ehi.componentdemo">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".App"
@@ -12,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.TestQualityAct"></activity>
+        <activity android:name=".view.module1.TestInOtherModuleAct"></activity>
+        <activity android:name=".view.TestQualityAct" />
         <activity android:name=".view.TestErrorAct" />
         <activity android:name=".view.InfoAct" />
         <activity android:name=".view.TestServiceAct" />

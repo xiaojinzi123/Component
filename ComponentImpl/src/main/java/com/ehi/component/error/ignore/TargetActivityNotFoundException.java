@@ -1,4 +1,4 @@
-package com.ehi.component.error;
+package com.ehi.component.error.ignore;
 
 /**
  * 表示目标界面没有找到

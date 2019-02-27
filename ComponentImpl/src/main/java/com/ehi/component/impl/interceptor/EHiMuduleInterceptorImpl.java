@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import com.ehi.component.impl.EHiRouterInterceptor;
 import com.ehi.component.interceptor.IComponentHostInterceptor;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,10 @@ abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
 
     private boolean isInitMap = false;
 
-    @Nullable
     @Override
+    @NonNull
     public List<EHiInterceptorBean> globalInterceptorList() {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -41,23 +42,35 @@ abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
     @Nullable
     @Override
     public Set<String> getInterceptorNames() {
-        initInterceptorMap();
-        Set<String> interceptorNamesSet = interceptorMap.keySet();
-        return interceptorNamesSet;
+        if (!isInitMap) {
+            initInterceptorMap();
+        }
+        return interceptorMap.keySet();
+    }
+
+    @Nullable
+    @Override
+    public Map<String, Class<? extends EHiRouterInterceptor>> getInterceptorMap() {
+        if (!isInitMap) {
+            initInterceptorMap();
+        }
+        return interceptorMap;
     }
 
     @Override
     @Nullable
-    public EHiRouterInterceptor getByName(@NonNull String name) {
+    public EHiRouterInterceptor getByName(@Nullable String name) {
         if (name == null) {
             return null;
         }
-        initInterceptorMap();
+        if (!isInitMap) {
+            initInterceptorMap();
+        }
         Class<? extends EHiRouterInterceptor> interceptorClass = interceptorMap.get(name);
         if (interceptorClass == null) {
             return null;
         }
-        return EHiRouterInterceptorUtil.get(interceptorClass);
+        return EHiRouterInterceptorCache.getInterceptorByClass(interceptorClass);
     }
 
 }

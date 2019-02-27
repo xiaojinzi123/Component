@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.service.IComponentHostService;
-import com.ehi.component.service.IComponentModuleService;
+import com.ehi.component.service.IComponentCenterService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,20 +14,20 @@ import java.util.Map;
 /**
  * 模块服务注册和卸载的总管
  */
-public class EHiCenterService implements IComponentModuleService {
+public class EHiServiceCenter implements IComponentCenterService {
 
     private Map<String, IComponentHostService> moduleServiceMap = new HashMap<>();
 
-    private EHiCenterService() {
+    private EHiServiceCenter() {
     }
 
-    private static volatile EHiCenterService instance;
+    private static volatile EHiServiceCenter instance;
 
-    public static EHiCenterService getInstance() {
+    public static EHiServiceCenter getInstance() {
         if (instance == null) {
-            synchronized (EHiCenterService.class) {
+            synchronized (EHiServiceCenter.class) {
                 if (instance == null) {
-                    instance = new EHiCenterService();
+                    instance = new EHiServiceCenter();
                 }
             }
         }
@@ -35,7 +35,7 @@ public class EHiCenterService implements IComponentModuleService {
     }
 
     @Override
-    public void register(@NonNull IComponentHostService service) {
+    public void register(@Nullable IComponentHostService service) {
         if (service == null) {
             return;
         }
@@ -45,22 +45,25 @@ public class EHiCenterService implements IComponentModuleService {
 
     @Override
     public void register(@NonNull String host) {
+        if (moduleServiceMap.containsKey(host)) {
+            return;
+        }
         IComponentHostService moduleService = findModuleService(host);
         register(moduleService);
     }
 
     @Override
-    public void unregister(@NonNull IComponentHostService service) {
-        unregister(service.getHost());
+    public void unregister(@Nullable IComponentHostService moduleService) {
+        if (moduleService == null) {
+            return;
+        }
+        moduleService.onDestory();
     }
 
     @Override
     public void unregister(@NonNull String host) {
         IComponentHostService moduleService = moduleServiceMap.remove(host);
-        if (moduleService == null) {
-            return;
-        }
-        moduleService.onDestory();
+        unregister(moduleService);
     }
 
     @Nullable
@@ -68,11 +71,9 @@ public class EHiCenterService implements IComponentModuleService {
         String className = ComponentUtil.genHostServiceClassName(host);
         try {
             Class<?> clazz = Class.forName(className);
-            IComponentHostService instance = (IComponentHostService) clazz.newInstance();
-            return instance;
-        } catch (ClassNotFoundException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InstantiationException e) {
+            return (IComponentHostService) clazz.newInstance();
+        } catch (Exception ignore) {
+            // ignore
         }
         return null;
     }

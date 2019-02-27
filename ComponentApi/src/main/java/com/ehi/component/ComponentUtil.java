@@ -7,6 +7,9 @@ package com.ehi.component;
  */
 public class ComponentUtil {
 
+    private ComponentUtil() {
+    }
+
     /**
      * 当使用 Fragment 或者 Context 中有这个 tag 的 fragment,那么就会最终用这个实现跳转
      */
@@ -72,23 +75,19 @@ public class ComponentUtil {
     }
 
     public static String genHostModuleApplicationClassName(String host) {
-        String claName = IMPL_OUTPUT_PKG + DOT + "application" + DOT + firstCharUpperCase(host) + MODULE_APPLCATION;
-        return new String(claName);
+        return IMPL_OUTPUT_PKG + DOT + "application" + DOT + firstCharUpperCase(host) + MODULE_APPLCATION;
     }
 
     public static String genHostRouterClassName(String host) {
-        String claName = IMPL_OUTPUT_PKG  + DOT + firstCharUpperCase(host) + UIROUTER;
-        return new String(claName);
+        return IMPL_OUTPUT_PKG + DOT + firstCharUpperCase(host) + UIROUTER;
     }
 
     public static String genHostServiceClassName(String host) {
-        String claName = IMPL_OUTPUT_PKG + DOT + "service" + DOT + firstCharUpperCase(host) + SERVICE;
-        return new String(claName);
+        return IMPL_OUTPUT_PKG + DOT + "service" + DOT + firstCharUpperCase(host) + SERVICE;
     }
 
     public static String genHostInterceptorClassName(String host) {
-        String claName = IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + firstCharUpperCase(host) + INTERCEPTOR;
-        return new String(claName);
+        return IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + firstCharUpperCase(host) + INTERCEPTOR;
     }
 
 }

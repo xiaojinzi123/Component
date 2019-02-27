@@ -3,10 +3,9 @@ package com.ehi.component.router;
 import android.net.Uri;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.EHiRouterRequest;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public interface IComponentRouter {
      *
      * @return
      */
-    @Nullable
-    List<EHiRouterInterceptor> interceptors(@NonNull Uri uri);
+    @NonNull
+    List<EHiRouterInterceptor> interceptors(@NonNull Uri uri) throws Exception;
 
 }

@@ -2,6 +2,7 @@ package com.ehi.component;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * 组件化的配置类,可以拿到 Application
@@ -15,17 +16,45 @@ public class ComponentConfig {
     private static Application application = null;
 
     /**
+     * 默认的 scheme
+     */
+    private static String defaultScheme = "router";
+
+    private ComponentConfig() {
+    }
+
+    /**
      * 初始化
      *
      * @param application App 的 Application
      * @param isDebug     是否是debug模式
      */
-    public static void init(@NonNull Application application, boolean isDebug) {
+    public static void init(Application application, boolean isDebug) {
         if (application == null) {
             throw new NullPointerException("the Application is null");
         }
         ComponentConfig.application = application;
         ComponentConfig.isDebug = isDebug;
+        // 注册
+        application.registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
+    }
+
+    /**
+     * 初始化
+     *
+     * @param application App 的 Application
+     * @param isDebug     是否是debug模式
+     */
+    public static void init(Application application, boolean isDebug, @Nullable String defaultScheme) {
+        if (application == null) {
+            throw new NullPointerException("the Application is null");
+        }
+        ComponentConfig.application = application;
+        ComponentConfig.isDebug = isDebug;
+        if (defaultScheme != null && !defaultScheme.isEmpty()) {
+            ComponentConfig.defaultScheme = defaultScheme;
+        }
+        // 注册
         application.registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
     }
 
@@ -46,4 +75,12 @@ public class ComponentConfig {
         return application;
     }
 
+    /**
+     * 获取默认的 scheme
+     *
+     * @return
+     */
+    public static String getDefaultScheme() {
+        return defaultScheme;
+    }
 }

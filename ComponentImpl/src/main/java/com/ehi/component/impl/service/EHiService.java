@@ -13,7 +13,13 @@ import java.util.Map;
  */
 public class EHiService {
 
-    private static Map<Class, IServiceLoad<?>> map = new HashMap();
+    private EHiService() {
+    }
+
+    /**
+     * Service 的集合
+     */
+    private static Map<Class, IServiceLoad<?>> map = new HashMap<>();
 
     /**
      * 你可以注册一个服务,服务的初始化可以是 懒加载的

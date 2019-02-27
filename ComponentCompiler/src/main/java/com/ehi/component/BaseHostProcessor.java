@@ -18,17 +18,13 @@ public abstract class BaseHostProcessor extends BaseProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-
         Map<String, String> options = processingEnv.getOptions();
         if (options != null) {
             componentHost = options.get("HOST");
         }
-
-        if (componentHost == null || "".equals(componentHost)) {
-            ErrorPrintUtil.printHostNull(mMessager);
-            return;
+        if (componentHost == null || componentHost.isEmpty()) {
+            throw NULLHOSTEXCEPTION;
         }
-
     }
 
 }

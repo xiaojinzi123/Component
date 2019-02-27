@@ -41,35 +41,21 @@ import javax.tools.Diagnostic;
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes({ComponentUtil.SERVICE_ANNO_CLASS_NAME})
 public class ServiceProcessor extends BaseHostProcessor {
-
     private static final String SERVICE_SEPER_NAME1 = "com.ehi.component.service.IServiceLoad";
     private static final String SERVICE_SEPER_NAME2 = "com.ehi.component.service.SingletonService";
-
-    private TypeElement typeElementServiceContainer;
+    private static final String NAME_OF_APPLICATION = "application";
 
     private ClassName classNameServiceContainer;
-
-    private TypeElement service1TypeElement;
-    private TypeElement service2TypeElement;
-
     private ClassName service1ClassName;
     private ClassName service2ClassName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-
-        mFiler = processingEnv.getFiler();
-        mMessager = processingEnvironment.getMessager();
-        mElements = processingEnv.getElementUtils();
-
-        typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.EHISERVICE_CLASS_NAME);
-
+        final TypeElement typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.EHISERVICE_CLASS_NAME);
         classNameServiceContainer = ClassName.get(typeElementServiceContainer);
-
-        service1TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME1);
-        service2TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME2);
-
+        final TypeElement service1TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME1);
+        final TypeElement service2TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME2);
         service1ClassName = ClassName.get(service1TypeElement);
         service2ClassName = ClassName.get(service2TypeElement);
 
@@ -77,77 +63,45 @@ public class ServiceProcessor extends BaseHostProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-
-        if (componentHost == null || "".equals(componentHost)) {
+        if (componentHost == null || componentHost.isEmpty()) {
             return false;
         }
-
         if (CollectionUtils.isNotEmpty(set)) {
-
             Set<? extends Element> annoElements = roundEnvironment.getElementsAnnotatedWith(EHiServiceAnno.class);
-
             parseAnnotation(annoElements);
-
             createImpl();
-
             return true;
         }
-
         return false;
     }
 
-    private List<Element> annoElementList = new ArrayList<>();
+    private final List<Element> annoElementList = new ArrayList<>();
 
     private void parseAnnotation(Set<? extends Element> annoElements) {
-
         annoElementList.clear();
-
-        TypeMirror typeApplication = mElements.getTypeElement(ComponentConstants.EHIAPPLCATON_INTERFACE_CLASS_NAME).asType();
-
         for (Element element : annoElements) {
-
-            TypeMirror tm = element.asType();
-
-            if (!(element instanceof TypeElement)) {
+            // 如果是一个 Service
+            final EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
+            if (!(element instanceof TypeElement) || anno == null) {
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
                 continue;
             }
-
-            // 如果是一个 Service
-
-            EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
-
-            if (anno == null) {
-
-                continue;
-
-            }
-
             annoElementList.add(element);
-
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "serviceImpl = " + element);
-
         }
     }
 
     private void createImpl() {
-
         String claName = ComponentUtil.genHostServiceClassName(componentHost);
-
         //pkg
-        String pkg = claName.substring(0, claName.lastIndexOf("."));
+        String pkg = claName.substring(0, claName.lastIndexOf('.'));
 
         //simpleName
-        String cn = claName.substring(claName.lastIndexOf(".") + 1);
-
+        String cn = claName.substring(claName.lastIndexOf('.') + 1);
         // superClassName
         ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.SERVICE_IMPL_CLASS_NAME));
-
         MethodSpec initHostMethod = generateInitHostMethod();
-//        MethodSpec initMapMethod = generateInitMapMethod();
         MethodSpec onCreateMethod = generateOnCreateMethod();
         MethodSpec onDestoryMethod = generateOnDestoryMethod();
-
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 //.addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
@@ -160,32 +114,24 @@ public class ServiceProcessor extends BaseHostProcessor {
         try {
             JavaFile.builder(pkg, typeSpec
             ).indent("    ").build().writeTo(mFiler);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
+            // ignore
         }
-
-
     }
 
     private MethodSpec generateOnCreateMethod() {
-
         TypeName returnType = TypeName.VOID;
         ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_APPLICATION));
-
-        ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, "application")
+        ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, NAME_OF_APPLICATION)
                 .addModifiers(Modifier.FINAL)
                 .build();
-
         final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onCreate")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addParameter(parameterSpec)
                 .addModifiers(Modifier.PUBLIC);
-
         methodSpecBuilder.addStatement("super.onCreate(application)");
-
         final AtomicInteger atomicInteger = new AtomicInteger();
-
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {
@@ -203,7 +149,7 @@ public class ServiceProcessor extends BaseHostProcessor {
                                     MethodSpec.methodBuilder("getRaw")
                                             .addAnnotation(Override.class)
                                             .addModifiers(Modifier.PROTECTED)
-                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : "application"))
+                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
                                             .returns(TypeName.get(element.asType()))
                                             .build()
                             )
@@ -217,7 +163,7 @@ public class ServiceProcessor extends BaseHostProcessor {
                                     MethodSpec.methodBuilder("get")
                                             .addAnnotation(Override.class)
                                             .addModifiers(Modifier.PUBLIC)
-                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : "application"))
+                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
                                             .returns(TypeName.get(element.asType()))
                                             .build()
                             )
@@ -237,16 +183,12 @@ public class ServiceProcessor extends BaseHostProcessor {
     }
 
     private MethodSpec generateOnDestoryMethod() {
-
         TypeName returnType = TypeName.VOID;
-
         final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onDestory")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
-
         methodSpecBuilder.addStatement("super.onDestory()");
-
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {
@@ -257,21 +199,17 @@ public class ServiceProcessor extends BaseHostProcessor {
                 }
             }
         });
-
         return methodSpecBuilder.build();
     }
 
     private MethodSpec generateInitHostMethod() {
-
         TypeName returnType = TypeName.get(mTypeElementString.asType());
-
         MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("getHost")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
 
         openUriMethodSpecBuilder.addStatement("return $S", componentHost);
-
         return openUriMethodSpecBuilder.build();
     }
 
