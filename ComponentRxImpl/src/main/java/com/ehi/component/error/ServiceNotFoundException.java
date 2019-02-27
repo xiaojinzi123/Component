@@ -5,7 +5,7 @@ package com.ehi.component.error;
  *
  * @author : xiaojinzi 30212
  */
-public class ServiceNotFoundException extends Exception  {
+public class ServiceNotFoundException extends RuntimeException  {
     public ServiceNotFoundException() {
     }
 

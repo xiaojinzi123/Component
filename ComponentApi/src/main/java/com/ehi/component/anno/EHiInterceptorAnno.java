@@ -13,7 +13,8 @@ import java.lang.annotation.Target;
 public @interface EHiInterceptorAnno {
 
     /**
-     * 拦截器的名字,这个不能重复
+     * 拦截器的名字,这个不能重复,使用这个支持跨组件访问其他业务组件的拦截器
+     * 同时很好的让代码隔离
      *
      * @return
      */

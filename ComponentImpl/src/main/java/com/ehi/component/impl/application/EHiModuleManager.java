@@ -7,16 +7,11 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.application.IComponentHostApplication;
 import com.ehi.component.application.IComponentModuleApplication;
-import com.ehi.component.bean.EHiRouterBean;
 import com.ehi.component.impl.EHiRouterCenter;
-import com.ehi.component.impl.interceptor.EHiCenterInterceptor;
-import com.ehi.component.interceptor.IComponentHostInterceptor;
-import com.ehi.component.router.IComponentHostRouter;
+import com.ehi.component.impl.interceptor.EHiInterceptorCenter;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 这个类必须放在 {@link ComponentUtil#IMPL_OUTPUT_PKG} 包下面
@@ -24,13 +19,19 @@ import java.util.Set;
  */
 public class EHiModuleManager implements IComponentModuleApplication {
 
+    /**
+     * 单例对象
+     */
     private static volatile EHiModuleManager instance;
-
-    private static Map<String, IComponentHostApplication> moduleApplicationMap = new HashMap<>();
 
     private EHiModuleManager() {
     }
 
+    /**
+     * 获取单例对象
+     *
+     * @return
+     */
     public static EHiModuleManager getInstance() {
         if (instance == null) {
             synchronized (EHiModuleManager.class) {
@@ -41,6 +42,8 @@ public class EHiModuleManager implements IComponentModuleApplication {
         }
         return instance;
     }
+
+    private static Map<String, IComponentHostApplication> moduleApplicationMap = new HashMap<>();
 
     @Override
     public void register(IComponentHostApplication moduleApp) {
@@ -53,11 +56,14 @@ public class EHiModuleManager implements IComponentModuleApplication {
 
     @Override
     public void register(@NonNull String host) {
+        if (moduleApplicationMap.containsKey(host)) {
+            return;
+        }
         IComponentHostApplication moduleApplication = findModuleApplication(host);
         register(moduleApplication);
     }
 
-    public void registerArr(@NonNull String... hosts) {
+    public void registerArr(@Nullable String... hosts) {
         if (hosts != null) {
             for (String host : hosts) {
                 IComponentHostApplication moduleApplication = findModuleApplication(host);
@@ -68,19 +74,16 @@ public class EHiModuleManager implements IComponentModuleApplication {
 
     @Override
     public void unregister(IComponentHostApplication moduleApp) {
-        unregister(moduleApp.getHost());
+        if (moduleApp == null) {
+            return;
+        }
+        moduleApp.onDestory();
     }
 
     @Override
     public void unregister(@NonNull String host) {
-
         IComponentHostApplication moduleApp = moduleApplicationMap.remove(host);
-        if (moduleApp == null) {
-            return;
-        }
-
-        moduleApp.onDestory();
-
+        unregister(moduleApp);
     }
 
     @Nullable
@@ -88,13 +91,9 @@ public class EHiModuleManager implements IComponentModuleApplication {
         String className = ComponentUtil.genHostModuleApplicationClassName(host);
         try {
             Class<?> clazz = Class.forName(className);
-            /*Constructor<?> constructor = clazz.getConstructor();
-            constructor.setAccessible(true);*/
-            IComponentHostApplication instance = (IComponentHostApplication) clazz.newInstance();
-            return instance;
-        } catch (ClassNotFoundException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InstantiationException e) {
+            return (IComponentHostApplication) clazz.newInstance();
+        } catch (Exception ignore) {
+            // ignore
         }
         return null;
     }
@@ -105,53 +104,8 @@ public class EHiModuleManager implements IComponentModuleApplication {
      * 2.服务在不同模块中的声明是否也有重复的名称
      */
     public void check() {
-        checkRouter();
-        checkInterceptor();
-    }
-
-    private void checkRouter() {
-        if (moduleApplicationMap == null || moduleApplicationMap.isEmpty()) {
-            return;
-        }
-        Set<String> set = new HashSet<>();
-        for (String moduleName : moduleApplicationMap.keySet()) {
-            IComponentHostRouter routerImpl = EHiRouterCenter.getInstance().findUiRouter(moduleName);
-            if (routerImpl == null) {
-                continue;
-            }
-            Map<String, EHiRouterBean> routerMap = routerImpl.getRouterMap();
-            if (routerMap == null) {
-                continue;
-            }
-            Set<String> routerUrlSet = routerMap.keySet();
-            for (String url : routerUrlSet) {
-                if (set.contains(url)) {
-                    throw new RuntimeException("the target url is exist：" + url);
-                }
-                set.add(url);
-            }
-        }
-    }
-
-    private void checkInterceptor() {
-        Set<String> set = new HashSet<>();
-        for (String moduleName : moduleApplicationMap.keySet()) {
-            IComponentHostInterceptor moduleInterceptor = EHiCenterInterceptor.getInstance().findModuleInterceptor(moduleName);
-            if (moduleInterceptor == null) {
-                continue;
-            }
-            Set<String> interceptorNames = moduleInterceptor.getInterceptorNames();
-            if (interceptorNames == null) {
-                continue;
-            }
-            for (String interceptorName : interceptorNames) {
-                if (set.contains(interceptorName)) {
-                    throw new RuntimeException("the interceptor's name is exist：" + interceptorName);
-                }
-                set.add(interceptorName);
-            }
-
-        }
+        EHiRouterCenter.getInstance().check();
+        EHiInterceptorCenter.getInstance().check();
     }
 
 }

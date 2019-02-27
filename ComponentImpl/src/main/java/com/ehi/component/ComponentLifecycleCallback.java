@@ -2,10 +2,6 @@ package com.ehi.component;
 
 import android.app.Activity;
 import android.app.Application;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -19,46 +15,47 @@ import com.ehi.component.impl.EHiRouter;
  */
 class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbacks {
 
+    private final FragmentManager.FragmentLifecycleCallbacks fragmentLifecycleCallbacks = new FragmentManager.FragmentLifecycleCallbacks() {
+        @Override
+        public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
+            super.onFragmentDestroyed(fm, f);
+            EHiRouter.cancel(f);
+        }
+    };
+
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        // 目前不支持 Activity,所以写的时候Activity 必须继承 FragmentActivity
         if (activity instanceof FragmentActivity) {
             FragmentActivity fragmentActivity = (FragmentActivity) activity;
-            final FragmentManager supportFragmentManager = fragmentActivity.getSupportFragmentManager();
-            final FragmentManager.FragmentLifecycleCallbacks fragmentLifecycleCallbacks = new FragmentManager.FragmentLifecycleCallbacks() {
-                @Override
-                public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
-                    super.onFragmentDestroyed(fm, f);
-                    EHiRouter.cancel(f);
-                }
-            };
-            fragmentActivity.getLifecycle().addObserver(new LifecycleObserver() {
-                @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-                public void onStateChanged(LifecycleOwner source) {
-                    supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks);
-                }
-            });
-            supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);
+            // 第二个参数是指挂载到这个 Activity 的各个 FragmentManager 都会被注册上
+            fragmentActivity.getSupportFragmentManager().registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);
         }
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
+        // ignore
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
+        // ignore
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
+        // ignore
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
+        // ignore
     }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        // ignore
     }
 
     @Override

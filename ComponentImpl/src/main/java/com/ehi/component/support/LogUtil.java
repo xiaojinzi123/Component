@@ -1,5 +1,6 @@
 package com.ehi.component.support;
 
+import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -13,12 +14,17 @@ import com.ehi.component.ComponentConfig;
  */
 public class LogUtil {
 
+    private LogUtil() {
+    }
+
+    @AnyThread
     public static void log(@NonNull String tag, @NonNull String message) {
         if (ComponentConfig.isDebug()) {
             Log.d(tag, message);
         }
     }
 
+    @AnyThread
     public static void log(@NonNull String message) {
         log("EHiComponent", message);
     }

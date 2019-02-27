@@ -80,10 +80,22 @@ public class TestRouterAct extends BaseAct {
         }
     }
 
-    public void openUriTest(View view) {
-        EHiRouter.with(this)
-                .url("EHi://component1/testQuery?name=我是名称&pass=我是密码")
-                .navigate();
+    public void goToInOtherModuleView(View view) {
+        EHiRouter
+                .with(TestRouterAct.this)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_IN_OTHER_MODULE)
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_IN_OTHER_MODULE, null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_IN_OTHER_MODULE, null);
+                    }
+                });
     }
 
     public void normalJump(View view) {
@@ -97,12 +109,12 @@ public class TestRouterAct extends BaseAct {
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
-                        addInfo(result, null, "component1/test?data=normalJump", null);
+                        addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "?data=normalJump", null);
                     }
 
                     @Override
                     public void onError(@NonNull EHiRouterErrorResult errorResult) {
-                        addInfo(null, errorResult.getError(), "component1/test?data=normalJump", null);
+                        addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "data=normalJump", null);
                     }
                 });
     }
@@ -165,6 +177,23 @@ public class TestRouterAct extends BaseAct {
                     }
                 });
 
+    }
+
+    public void jumpToWeb(View v) {
+        EHiRouter.with(this)
+                .scheme("https")
+                .host("www.baidu.com")
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, "https://www.baidu.com", null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), "https://www.baidu.com", null);
+                    }
+                });
     }
 
     public void rxJumpGetData(View view) {
@@ -379,7 +408,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module2.NAME)
                 .path(ModuleConfig.Module2.MAIN)
-                .onIntentCreated(new com.ehi.component.support.Consumer<Intent>() {
+                .intentConsumer(new com.ehi.component.support.Consumer<Intent>() {
                     @Override
                     public void accept(@NonNull Intent intent) throws Exception {
                         Toast.makeText(TestRouterAct.this, intent.toString(), Toast.LENGTH_SHORT).show();
@@ -470,6 +499,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
+                .putString("tel","15857913627")
                 .requestCode(123)
                 .activityResultCall()
                 .subscribe(new Consumer<EHiActivityResult>() {
@@ -539,13 +569,14 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
-                .onBeforJump(new com.ehi.component.support.Action() {
+                .putString("tel","17321174171")
+                .beforJumpAction(new com.ehi.component.support.Action() {
                     @Override
                     public void run() throws Exception {
                         Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .onAfterJump(new com.ehi.component.support.Action() {
+                .afterJumpAction(new com.ehi.component.support.Action() {
                     @Override
                     public void run() throws Exception {
                         Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show();

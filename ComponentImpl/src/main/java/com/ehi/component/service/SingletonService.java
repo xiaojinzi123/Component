@@ -1,8 +1,7 @@
 package com.ehi.component.service;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.ehi.component.impl.service.EHiService;
 
 /**
  * 单例服务,这是注册服务默认的形式
@@ -12,13 +11,15 @@ import com.ehi.component.impl.service.EHiService;
 public abstract class SingletonService<T> implements IServiceLoad<T> {
 
     @Nullable
-    private T instance;
+    private volatile T instance;
 
     @Override
     public final T get() {
         if (instance == null) {
-            synchronized (EHiService.class) {
-                instance = getRaw();
+            synchronized (this) {
+                if (instance == null) {
+                    instance = getRaw();
+                }
             }
         }
         return instance;
@@ -29,6 +30,7 @@ public abstract class SingletonService<T> implements IServiceLoad<T> {
      *
      * @return
      */
-    abstract protected T getRaw();
+    @NonNull
+    protected abstract T getRaw();
 
 }

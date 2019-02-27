@@ -1,4 +1,4 @@
-package com.ehi.component.error;
+package com.ehi.component.error.ignore;
 
 /**
  * time   : 2019/01/10

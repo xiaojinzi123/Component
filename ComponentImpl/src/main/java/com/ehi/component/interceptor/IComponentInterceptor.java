@@ -1,6 +1,5 @@
 package com.ehi.component.interceptor;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.ehi.component.impl.EHiRouterInterceptor;
@@ -15,10 +14,10 @@ public interface IComponentInterceptor {
     /**
      * 根据拦截器的唯一名字获取拦截器
      *
-     * @param name
+     * @param name if name is null,return null
      * @return
      */
     @Nullable
-    EHiRouterInterceptor getByName(@NonNull String name);
+    EHiRouterInterceptor getByName(@Nullable String name);
 
 }

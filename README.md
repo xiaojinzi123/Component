@@ -10,45 +10,64 @@ maven { url 'http://xiaojinzi.tpddns.cn:18081/repository/maven-releases/' }
 
 在基础工程 BaseModule 中添加依赖：(版本号强烈建议你可以先写+,拉下来之后再写死)
 
-```java
+```
 api "com.xiaojinzi.component:impl:+"
 ```
 或者 RxJava2的实现
-```java
+```
 api "com.xiaojinzi.component:impl-rx:+"
 ```
 强烈建议使用 Rx 版本,基础版本很多功能不及 Rx版本,强烈建议
 各个业务组件会依赖 BaseModule,所以自动会有上述的依赖
 
 然后在各个业务组件中添加注解驱动器
-```java
+
+```
 annotationProcessor "com.xiaojinzi.component:compiler:+"
 ```
+
+如果是 kotlin 业务模块,那么使用下面的方式
+
+```
+kapt "com.xiaojinzi.component:compiler:+"
+```
+
 这个会生成各个业务组件的 Application 管理类和路由表
 
 ### 在壳工程初始化
 
-```java
+```
 ComponentConfig.init(this,true);
 ```
 
 如果依赖了 Rx版本的实现,请调用 
-```java
-EHiRxRouter.tryErrorCatch(); // 这个可以帮助你在路由拿目标界面数据的时候或者整个路由过程中出现的异常可以被忽略,Rxjava2 的错误默认不处理会崩溃哒！！！
+
+```
+// 这个可以帮助你在路由拿目标界面数据的时候或者整个路由过程中出现的异常可以被忽略,Rxjava2 的错误默认不处理会崩溃哒！！！
+EHiRxRouter.tryErrorCatch(); 
 ```
 
 ### 在壳工程注册业务模块
-```java
+
+```
 EHiModuleManager.getInstance().register("component1");
 EHiModuleManager.getInstance().register("component2");
 EHiModuleManager.getInstance().register("user");
 EHiModuleManager.getInstance().register("help");
 ```
+
+你也可以一次性注册很多个
+
+```
+EHiModuleManager.getInstance().registerArr("component1","component2","user","......");
+```
+
 同样你也可以反注册业务模块,让某一个业务模块下架,比如下架 业务组件1
-```java
+```
 EHiModuleManager.getInstance().unregister("component1");
 ```
-但是我们通常不是这样子用的,通常都是
+
+但是我们通常不是这样子用的,通常都是在 App 启动的时候只加载后台下发的模块即可,因为运行时去卸载一个业务组件可能会产生未知的问题
 
 ### 每一个业务组件的配置
 
@@ -61,7 +80,7 @@ EHiModuleManager.getInstance().unregister("component1");
 	- 在创建和销毁方法中注册(反注册)自己的路由表,暴露(不暴露)自己的功能给其他的业务组件
 
 
-```java
+```
 @EHiModuleAppAnno()
 public class Component1Application implements IComponentApplication {
     @Override
@@ -76,15 +95,19 @@ public class Component1Application implements IComponentApplication {
 }
 ```
 
-### Activity 的配置
+### @EHiRouterAnno 路由注解
+
+- 使用 **@EHiRouterAnno** 注解到 Activity 类上或者静态方法上, ** host** 表示模块,**value**表示**path**,
+- **interceptors** 和 **interceptorNames** 表示进入这个页面需要执行的拦截器,两者的区别就是一个是填写Class属性,另一种填写的是一个字符串,他俩的区别或者使用场景我后面再叙述
+
+#### Activity 配置注解
 
 这里展示了一个业务组件1的一个 Activity 的使用
-- 使用 **@EHiRouterAnno** 注解, ** host** 表示模块,**value**表示**path**,
-- **interceptors** 和 **interceptorNames** 表示进入这个页面需要执行的拦截器,两者的区别就是一个是填写Class属性,另一种填写的是一个字符串,他俩的区别或者使用场景我后面再叙述
+
 - 使用 **QueryParameterSupport** 帮助类获取 Uri 中传过来的 **query** 参数
 - 其他参数的获取和原生一样,原先的代码或者习惯无需更改!!!!
 
-```java
+```
 @EHiRouterAnno(
         host = "component1",
         value = "test",
@@ -122,12 +145,59 @@ public class Component1TestAct extends AppCompatActivity {
 
 ```
 
-### 路由到其他界面
+#### 静态方法配置注解
+这种方式可以让你的路由目标不仅仅局限我们项目中自己写的界面,你还可以为每一个使用到的第三方或者系统的目标界面也同样囊括在框架里面
+这种方式不仅可以让很多对系统或者第三方的处理变得统一,还可以配置各种拦截器来避免写很多臃肿的代码
+
+比如您去打电话需要电话权限,那么您跳转过去之前必须申请好权限然后在跳转,每一个又这样子需求的地方亦是如此,而使用这种方式,您使用的时候只需路由,其他的交给框架处理,配备了权限的拦截器可以让您的路由在跳转成功之前必须申请到权限,非常 nice
+
+```
+@EHiRouterAnno(
+            host = "system", value = "callPhone",
+            interceptorNames = "callPhonePermisionInterceptor"
+)
+public static Intent callPhoneIntent(@NonNull EHiRouterRequest request) {
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "15857913627"));
+        if (true) {
+            throw new NullPointerException();
+        }
+        return intent;
+}
+
+	/**
+     * 系统 App 详情
+     *
+     * @param request
+     * @return
+     */
+    @EHiRouterAnno(host = "system", value = "appDetail")
+    public static void appDetail(@NonNull EHiRouterRequest request) {
+        Activity act = request.getActivity();
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse("package:" + request.getRawContext().getPackageName()));
+        if (request.requestCode == null) {
+            if (act == null) {
+                request.fragment.startActivity(intent);
+            }else {
+                act.startActivity(intent);
+            }
+        } else {
+            if (act == null) {
+                request.fragment.startActivityForResult(intent, request.requestCode);
+            }else {
+                act.startActivityForResult(intent, request.requestCode);
+            }
+        }
+    }
+
+```
+
+### 路由的使用
 
 #### 普通跳转
 
 这段就跳转到上面我们写的那个例子的界面中了,并且我们还传了两个 query 值过去哦
-```java
+```
 EHiRouter
                 .with(this)
                 .host("component1")
@@ -140,9 +210,13 @@ EHiRouter
 #### 普通跳转Bundle带值
 
 这段就跳转到上面我们写的那个例子的界面中了,我们传了两个 query 值,并且额外存了两个值到 Bundle 中携带过去,和我们普通的 传值效果是一样的,唯一的区别是 路由的 putXXX 方式利用方法名区别传不同的值, Intent 靠重载方法来传不同的值,但是我更倾向于利用方法区分,因为一旦你入参的参数类型有改动的时候,方法就会报错,而 Intent 不会
+
+```
 Intent intent = new Intent(Context,XXX.class);
 intent.putExtra(key,value);
-```java
+```
+
+```
 EHiRouter
                 .with(this)
                 .host("component1")
@@ -156,7 +230,7 @@ EHiRouter
 
 #### 普通跳转判断是否跳转成功
 
-```java
+```
 EHiRouter.with(this)
                .host("component1")
                .path("main")
@@ -177,7 +251,7 @@ EHiRouter.with(this)
 
 #### 普通跳转成功和失败
 
-```java
+```
 EHiRouter.with(this)
                .host("component1")
                .path("main")
@@ -193,9 +267,9 @@ EHiRouter.with(this)
 
 这种就是成功和失败都能从一个方法中拿到
 
-#### 普通跳转拿数据
+#### 普通跳转拿数据(OnActivityResult)
 
-```java
+```
 EHiRouter
                 .with(this)
                 .host("component1")
@@ -210,7 +284,7 @@ EHiRouter
 
 #### 路由请求的自动取消(支持Activity和Fragment)
 
-```java
+```
 EHiRouter
                 .with(this)
                 .host(ModuleConfig.System.NAME)
@@ -230,8 +304,10 @@ EHiRouter
 
         finish();
 ```
+
 当销毁这个Actiivty的时候,路由请求如果还没有跳转过去,比如因为中间的拦截器等因素,那么就会自动取消这个路由请求
-```java
+
+```
 EHiRxRouter
                 .withFragment(this)
                 .host(ModuleConfig.System.NAME)
@@ -276,9 +352,9 @@ EHiRouter
                 .navigate();
 ```
 
-#### Rx方式跳转拿数据
+#### Rx方式跳转拿数据(代替OnActivityResult)
 
-```java
+```
 EHiRxRouter
                 .with(this)
                 .host("component1")
@@ -302,7 +378,7 @@ EHiRxRouter
 这种方式可以说很**明显减少了平常写的代码的量,并且让你摆脱了 onActivityResult**,所以这可以在** Adapter 或者 任何一个有 Context(其实是一个Activity)的地方去使用**
 上述的写法是要处理错误,如果你不想处理错误,可以这样写
 
-```java
+```
 EHiRxRouter
                 .with(this)
                 .host("component1")
@@ -323,55 +399,6 @@ EHiRxRouter
 
 因为上面的使用你都是拿到一个 Single Observable,所以你可以拿着这个 Observable 和其他的任何流程进行结合使用
 完美的嵌入到一个流程中,不会被 onActivityResult 等方式打断你的流程
-
-#### 自定义 Intent 和自定义跳转
-
-**从新版本开始,支持自定义跳转,这个功能很重要,意味着你可以跳转到任何地方(包括第三方和系统),享受这个组件化框架带来的所有的功能,下面就是使用的范例,路由 @EHiRouterAnno 支持标记在静态方法上,支持返回Intent或者直接你自行跳转,这一点是CC组件化框架所不能的**
-
-```java
-public class CustomerRouterImpl {
-
-    @Nullable
-    @EHiRouterAnno(
-            host = ModuleConfig.System.NAME, value = ModuleConfig.System.CALL_PHONE,
-            interceptorNames = InterceptorConfig.HELP_CALLPHOEPERMISION
-    )
-    public static Intent callPhoneIntent(@NonNull EHiRouterRequest request) {
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "15857913627"));
-        if (true) {
-            throw new NullPointerException();
-        }
-        return intent;
-    }
-
-    /**
-     * 系统 App 详情
-     *
-     * @param request
-     * @return
-     */
-    @EHiRouterAnno(host = ModuleConfig.System.NAME, value = ModuleConfig.System.SYSTEM_APP_DETAIL)
-    public static void appDetail(@NonNull EHiRouterRequest request) {
-        Activity act = request.getActivity();
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.parse("package:" + request.getRawContext().getPackageName()));
-        if (request.requestCode == null) {
-            if (act == null) {
-                request.fragment.startActivity(intent);
-            }else {
-                act.startActivity(intent);
-            }
-        } else {
-            if (act == null) {
-                request.fragment.startActivityForResult(intent, request.requestCode);
-            }else {
-                act.startActivityForResult(intent, request.requestCode);
-            }
-        }
-    }
-
-}
-```
 
 ### 服务的提供和使用
 

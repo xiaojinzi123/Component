@@ -8,12 +8,22 @@ package com.ehi.base;
  */
 public class ModuleConfig {
 
+    /**
+     * 项目的 Scheme,用于跳转项目中的界面
+     */
+    public static final String APP_SCHEME = "EHi";
+    public static final String HTTP_SCHEME = "http";
+    public static final String HTTPS_SCHEME = "https";
+
     public static class System {
 
         public static final String NAME = "system";
 
         // 测试跳转到打电话的界面
         public static final String CALL_PHONE = "callPhone";
+
+        // 拍照
+        public static final String TAKE_PHONE = "takePhone";
 
         // 测试跳转到 APP 详情界面
         public static final String SYSTEM_APP_DETAIL = "appDetail";
@@ -46,6 +56,7 @@ public class ModuleConfig {
         public static final String TEST_QUERY = "testQuery";
         public static final String TEST_LOGIN = "testLogin";
         public static final String TEST_DIALOG = "testDialog";
+        public static final String TEST_IN_OTHER_MODULE = "testInOtherModule";
 
     }
 
@@ -60,11 +71,14 @@ public class ModuleConfig {
 
         public static final String NAME = "user";
         public static final String LOGIN = "login";
+        public static final String PERSON_CENTER = "personCenter";
 
     }
 
     public static class Help {
         public static final String NAME = "help";
+        public static final String WEB = "web";
+        public static final String TEST_WEB_ROUTER = "testWebRouter";
     }
 
 }

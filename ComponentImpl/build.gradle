@@ -25,10 +25,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.appcompat_v7
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        api "com.ehi:component-api:${rootProject.ext.component_version}"
-    } else if (Boolean.parseBoolean(rootProject.ext.isDependXiaojinziMavenOnline)) {
-        api "com.xiaojinzi.component:annotation:${rootProject.ext.component_xiaojinzi_version}"
-    } else {
+        api "com.xiaojinzi:annotation:${rootProject.ext.component_version}"
+    }else {
         api project(':ComponentApi')
     }
 }
@@ -46,23 +44,12 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-
-            if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-                repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
-                    authentication(userName: "admin", password: "admin123")
-                }
-                pom.groupId = 'com.ehi'
-                pom.artifactId = 'component-impl'
-                pom.version = "${rootProject.ext.component_version}"
-            }else {
-                repository(url: "http://xiaojinzi.tpddns.cn:18081/repository/maven-releases/") {
-                    authentication(userName: "admin", password: "admin123")
-                }
-                pom.groupId = 'com.xiaojinzi.component'
-                pom.artifactId = 'impl'
-                pom.version = "${rootProject.ext.component_xiaojinzi_version}"
+            repository(url: "${rootProject.ext.mavenPublishUrl}") {
+                authentication(userName: "admin", password: "admin123")
             }
-
+            pom.groupId = 'com.xiaojinzi'
+            pom.artifactId = 'impl'
+            pom.version = "${rootProject.ext.component_version}"
             pom.project {
                 licenses {
                     license {
