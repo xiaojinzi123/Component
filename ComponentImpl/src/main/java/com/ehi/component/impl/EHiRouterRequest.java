@@ -2,6 +2,7 @@ package com.ehi.component.impl;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -84,7 +85,7 @@ public class EHiRouterRequest {
     }
 
     /**
-     * 获取 Activity
+     * 获取 Activity, {@link Context} 可能是 {@link android.content.ContextWrapper}
      *
      * @return 如果 Activity 销毁了就会返回 null
      */
@@ -93,7 +94,11 @@ public class EHiRouterRequest {
         if (context == null) {
             return null;
         }
-        if (!(context instanceof Activity)) {
+        Context realContext = context;
+        while (realContext instanceof ContextWrapper) {
+            realContext = ((ContextWrapper) context).getBaseContext();
+        }
+        if (!(realContext instanceof Activity)) {
             return null;
         }
         Activity rawActivity = (Activity) context;
@@ -110,7 +115,6 @@ public class EHiRouterRequest {
      */
     @Nullable
     public final Activity getRawActivity() {
-
         Activity rawActivity = getActivity();
         if (rawActivity == null && fragment != null) {
             rawActivity = fragment.getActivity();
