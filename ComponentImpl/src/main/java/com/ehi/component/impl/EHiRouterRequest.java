@@ -94,18 +94,27 @@ public class EHiRouterRequest {
         if (context == null) {
             return null;
         }
-        Context realContext = context;
-        while (realContext instanceof ContextWrapper) {
-            realContext = ((ContextWrapper) context).getBaseContext();
+        Activity realActivity = null;
+        if (context instanceof Activity) {
+            realActivity = (Activity) context;
+        }else {
+            // 最终结束的条件是 realContext = null 或者 realContext 不是一个 ContextWrapper
+            Context realContext = context;
+            while (realContext instanceof ContextWrapper) {
+                realContext = ((ContextWrapper)realContext).getBaseContext();
+                if (realContext instanceof Activity) {
+                    realActivity = (Activity)realContext;
+                    break;
+                }
+            }
         }
-        if (!(realContext instanceof Activity)) {
+        if (realActivity == null) {
             return null;
         }
-        Activity rawActivity = (Activity) context;
-        if (isActivityDestoryed(rawActivity)) {
+        if (isActivityDestoryed(realActivity)) {
             return null;
         }
-        return rawActivity;
+        return realActivity;
     }
 
     /**
