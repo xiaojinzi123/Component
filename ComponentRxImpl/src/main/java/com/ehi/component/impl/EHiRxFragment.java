@@ -69,13 +69,14 @@ public final class EHiRxFragment extends Fragment {
         return singleEmitterMap.containsKey(request);
     }
 
-    public void setSingleEmitter(@NonNull EHiRouterRequest request, @NonNull Consumer<EHiActivityResult> consumer) {
+    public void setSingleEmitter(@NonNull EHiRouterRequest request,
+                                 @NonNull Consumer<EHiActivityResult> consumer) {
         // 检测是否重复的在这个方法调用之前被检查掉了
         singleEmitterMap.put(request, consumer);
     }
 
-    public void cancal(@NonNull int requestCode) {
-        singleEmitterMap.remove(requestCode);
+    public void cancal(@NonNull EHiRouterRequest request) {
+        singleEmitterMap.remove(request);
     }
 
 }

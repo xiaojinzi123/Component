@@ -467,7 +467,7 @@ public class EHiRouter {
                     mNavigationDisposableList.add(interceptorCallback);
                 }
                 // Activity 的自动取消
-                if (originalRequest.context instanceof Activity) {
+                if (Utils.getActivityFromContext(originalRequest.context) != null) {
                     mNavigationDisposableList.add(interceptorCallback);
                 }
                 // 真正的去执行路由
@@ -826,7 +826,7 @@ public class EHiRouter {
         synchronized (mNavigationDisposableList) {
             for (int i = mNavigationDisposableList.size() - 1; i >= 0; i--) {
                 NavigationDisposable disposable = mNavigationDisposableList.get(i);
-                if (act == disposable.originalRequest().context) {
+                if (act == Utils.getActivityFromContext(disposable.originalRequest().context)) {
                     disposable.cancel();
                     mNavigationDisposableList.remove(i);
                 }

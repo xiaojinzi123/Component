@@ -162,10 +162,11 @@ public class EHiRouterCenter implements IComponentCenterRouter {
         // 使用 context 跳转 startActivityForResult
         if (routerRequest.context != null) {
             Fragment rxFragment = findFragment(routerRequest.context);
+            Activity rawAct = null;
             if (rxFragment != null) {
                 rxFragment.startActivityForResult(intent, routerRequest.requestCode);
-            } else if (routerRequest.context instanceof Activity) {
-                ((Activity) routerRequest.context).startActivityForResult(intent, routerRequest.requestCode);
+            } else if ((rawAct = Utils.getActivityFromContext(routerRequest.context)) != null) {
+                rawAct.startActivityForResult(intent, routerRequest.requestCode);
             } else {
                 throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
             }
@@ -261,8 +262,9 @@ public class EHiRouterCenter implements IComponentCenterRouter {
     @Nullable
     private Fragment findFragment(Context context) {
         Fragment result = null;
-        if (context instanceof FragmentActivity) {
-            FragmentManager ft = ((FragmentActivity) context).getSupportFragmentManager();
+        Activity act = Utils.getActivityFromContext(context);
+        if (act instanceof FragmentActivity) {
+            FragmentManager ft = ((FragmentActivity) act).getSupportFragmentManager();
             result = ft.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
         }
         return result;

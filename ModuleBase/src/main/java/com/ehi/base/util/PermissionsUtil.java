@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 
+import com.ehi.component.support.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +17,11 @@ public class PermissionsUtil {
     private String[] mPermissions;
 
     public static PermissionsUtil with(Context context) {
-        if (context instanceof Activity) {
-            Activity activity = (Activity) context;
-            return new PermissionsUtil(activity);
+        Activity rawAct = Utils.getActivityFromContext(context);
+        if (rawAct != null) {
+            return new PermissionsUtil(rawAct);
         } else {
-            throw new IllegalArgumentException("PermissionsUtil.with -> parameter context can not cast to Activity");
+            throw new IllegalArgumentException("PermissionsUtil.with -> parameter context not an Activity or this context not attach to Activity");
         }
     }
 

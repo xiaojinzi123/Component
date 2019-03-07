@@ -162,9 +162,9 @@ class EHiRouterUtil {
     private static boolean isRequestUnavailabled(@NonNull EHiRouterRequest originalRequest) {
         Context context = originalRequest.context;
         Fragment fragment = originalRequest.fragment;
-        if (context instanceof Activity) {
-            Activity activity = (Activity) context;
-            if (isActivityUnavailabled(activity)) {
+        Activity act = Utils.getActivityFromContext(context);
+        if (act != null) {
+            if (isActivityUnavailabled(act)) {
                 return true;
             }
         }
