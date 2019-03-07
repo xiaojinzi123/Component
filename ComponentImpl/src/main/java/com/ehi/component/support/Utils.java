@@ -1,6 +1,9 @@
 package com.ehi.component.support;
 
+import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -105,6 +108,28 @@ public class Utils {
         } else {
             return true;
         }
+    }
+
+    @Nullable
+    public static Activity getActivityFromContext(@Nullable Context context) {
+        if (context == null) {
+            return null;
+        }
+        Activity realActivity = null;
+        if (context instanceof Activity) {
+            realActivity = (Activity) context;
+        }else {
+            // 最终结束的条件是 realContext = null 或者 realContext 不是一个 ContextWrapper
+            Context realContext = context;
+            while (realContext instanceof ContextWrapper) {
+                realContext = ((ContextWrapper)realContext).getBaseContext();
+                if (realContext instanceof Activity) {
+                    realActivity = (Activity)realContext;
+                    break;
+                }
+            }
+        }
+        return realActivity;
     }
 
 }

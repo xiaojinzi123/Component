@@ -1,5 +1,6 @@
 package com.ehi.component.impl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,10 +16,10 @@ import android.util.SparseArray;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.error.ActivityResultException;
+import com.ehi.component.error.UnknowException;
 import com.ehi.component.error.ignore.InterceptorNotFoundException;
 import com.ehi.component.error.ignore.NavigationFailException;
 import com.ehi.component.error.ignore.TargetActivityNotFoundException;
-import com.ehi.component.error.UnknowException;
 import com.ehi.component.support.Action;
 import com.ehi.component.support.EHiCallbackAdapter;
 import com.ehi.component.support.LogUtil;
@@ -449,7 +450,7 @@ public class EHiRxRouter extends EHiRouter {
                 if (context == null) {
                     fm = fragment.getChildFragmentManager();
                 } else {
-                    fm = ((FragmentActivity) context).getSupportFragmentManager();
+                    fm = ((FragmentActivity) Utils.getActivityFromContext(context)).getSupportFragmentManager();
                 }
                 // 寻找是否添加过 Fragment
                 EHiRxFragment findRxFragment = (EHiRxFragment) fm.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
@@ -490,12 +491,10 @@ public class EHiRxRouter extends EHiRouter {
 
                     @Override
                     @MainThread
-                    public void onCancel(@NonNull EHiRouterRequest request) {
-                        super.onCancel(request);
-                        if (request.requestCode != null) {
-                            rxFragment.cancal(request.requestCode);
-                        }
-                        Help.removeRequestCode(request);
+                    public void onCancel(@NonNull EHiRouterRequest originalRequest) {
+                        super.onCancel(originalRequest);
+                        rxFragment.cancal(originalRequest);
+                        Help.removeRequestCode(originalRequest);
                     }
 
                 });
@@ -509,7 +508,7 @@ public class EHiRxRouter extends EHiRouter {
                 // 现在可以检测 requestCode 是否重复,除了 EHiRxRouter 之外的地方使用同一个 requestCode 是可以的
                 // 因为 EHiRxRouter 的 requestCode 是直接配合 EHiRxFragment 使用的
                 // 其他地方是用不到 EHiRxFragment,所以可以重复
-                boolean isExist = Help.isExist(navigationDisposable);
+                boolean isExist = Help.isExist(navigationDisposable.originalRequest());
                 if (isExist) { // 如果存在直接取消这个路由任务,然后直接返回错误
                     navigationDisposable.cancel();
                     throw new NavigationFailException("request&result code is " +
@@ -587,7 +586,7 @@ public class EHiRxRouter extends EHiRouter {
             if (context == null && fragment == null) {
                 throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router"));
             }
-            if (context != null && !(context instanceof FragmentActivity)) {
+            if (!(Utils.getActivityFromContext(context) instanceof FragmentActivity)) {
                 throw new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity"));
             }
             if (isForResult && requestCode == null) {
@@ -607,15 +606,16 @@ public class EHiRxRouter extends EHiRouter {
          */
         private static Set<String> mRequestCodeSet = new HashSet<>();
 
-        public static boolean isExist(NavigationDisposable disposable) {
-            if (disposable == null || disposable.originalRequest() == null || disposable.originalRequest().requestCode == null) {
+        public static boolean isExist(@Nullable EHiRouterRequest request) {
+            if (request == null || request.requestCode == null) {
                 return false;
             }
-            // 拿到请求对象
-            EHiRouterRequest request = disposable.originalRequest();
             Integer requestCode = request.requestCode;
-            if (request.context != null) {
-                return mRequestCodeSet.contains(request.context.getClass().getName() + requestCode);
+            // 这个 Context 关联的 Activity,用requestCode 去拿数据的情况下
+            // Context 必须是一个 Activity 或者 内部的 baseContext 是 Activity
+            Activity act = Utils.getActivityFromContext(request.context);
+            if (act != null) {
+                return mRequestCodeSet.contains(act.getClass().getName() + requestCode);
             } else if (request.fragment != null) {
                 return mRequestCodeSet.contains(request.fragment.getClass().getName() + requestCode);
             }
@@ -627,8 +627,11 @@ public class EHiRxRouter extends EHiRouter {
                 return;
             }
             Integer requestCode = request.requestCode;
-            if (request.context != null) {
-                mRequestCodeSet.add(request.context.getClass().getName() + requestCode);
+            // 这个 Context 关联的 Activity,用requestCode 去拿数据的情况下
+            // Context 必须是一个 Activity 或者 内部的 baseContext 是 Activity
+            Activity act = Utils.getActivityFromContext(request.context);
+            if (act != null) {
+                mRequestCodeSet.add(act.getClass().getName() + requestCode);
             } else if (request.fragment != null) {
                 mRequestCodeSet.add(request.fragment.getClass().getName() + requestCode);
             }
@@ -639,8 +642,11 @@ public class EHiRxRouter extends EHiRouter {
                 return;
             }
             Integer requestCode = request.requestCode;
-            if (request.context != null) {
-                mRequestCodeSet.remove(request.context.getClass().getName() + requestCode);
+            // 这个 Context 关联的 Activity,用requestCode 去拿数据的情况下
+            // Context 必须是一个 Activity 或者 内部的 baseContext 是 Activity
+            Activity act = Utils.getActivityFromContext(request.context);
+            if (act != null) {
+                mRequestCodeSet.remove(act.getClass().getName() + requestCode);
             } else if (request.fragment != null) {
                 mRequestCodeSet.remove(request.fragment.getClass().getName() + requestCode);
             }

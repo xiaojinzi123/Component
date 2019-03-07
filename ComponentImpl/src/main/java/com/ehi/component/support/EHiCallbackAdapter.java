@@ -34,7 +34,7 @@ public class EHiCallbackAdapter implements EHiCallback {
 
     @Override
     @MainThread
-    public void onCancel(@NonNull EHiRouterRequest request) {
+    public void onCancel(@NonNull EHiRouterRequest originalRequest) {
         // empty
     }
 

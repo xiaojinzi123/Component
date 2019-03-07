@@ -390,7 +390,7 @@ public class TestQualityAct extends BaseAct {
                     }
 
                     @Override
-                    public void onCancel(@NonNull EHiRouterRequest request) {
+                    public void onCancel(@NonNull EHiRouterRequest originalRequest) {
                         ToastUtil.toastShort("测试失败\n自动被取消了");
                     }
 
