@@ -540,9 +540,15 @@ public class EHiRxRouter extends EHiRouter {
             }
         }
 
+        /**
+         * 生成路由请求对象
+         * 如果有不满足生成的条件就会抛出异常
+         *
+         * @return
+         */
         @Override
-        protected EHiRouterRequest generateRequest() {
-            return Help.randomlyGenerateRequestCode(super.generateRequest());
+        public EHiRouterRequest build() {
+            return Help.randomlyGenerateRequestCode(super.build());
         }
 
         /**
