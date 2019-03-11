@@ -29,10 +29,10 @@ public interface EHiRouterListener {
     /**
      * 当被取消的时候回调
      *
-     * @param request
+     * @param originalRequest
      * @throws Exception
      */
     @MainThread
-    void onCancel(@NonNull EHiRouterRequest request) throws Exception;
+    void onCancel(@NonNull EHiRouterRequest originalRequest) throws Exception;
 
 }

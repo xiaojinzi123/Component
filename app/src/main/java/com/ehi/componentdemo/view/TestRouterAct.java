@@ -197,7 +197,6 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void rxJumpGetData(View view) {
-
         EHiRxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
@@ -216,7 +215,28 @@ public class TestRouterAct extends BaseAct {
                         tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage());
                     }
                 });
+    }
 
+    public void rxJumpGetDataAfterLogin(View view) {
+        EHiRxRouter
+                .with(this)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
+                .interceptorNames(InterceptorConfig.USER_LOGIN)
+                .query("data", "rxJumpGetDataAfterLogin")
+                .requestCode(333)
+                .intentCall()
+                .subscribe(new Consumer<Intent>() {
+                    @Override
+                    public void accept(Intent intent) throws Exception {
+                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=333,目标:component1/test?data=rxJumpGetData,获取目标页面数据成功啦：Data = " + intent.getStringExtra("data"));
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=333,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage());
+                    }
+                });
     }
 
     public void rxJumpGetDataStartWithTask(final View view) {
@@ -499,7 +519,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
-                .putString("tel","15857913627")
+                .putString("tel", "15857913627")
                 .requestCode(123)
                 .activityResultCall()
                 .subscribe(new Consumer<EHiActivityResult>() {
@@ -569,7 +589,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
-                .putString("tel","17321174171")
+                .putString("tel", "17321174171")
                 .beforJumpAction(new com.ehi.component.support.Action() {
                     @Override
                     public void run() throws Exception {

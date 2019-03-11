@@ -29,6 +29,7 @@ import com.ehi.component.support.Utils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import io.reactivex.Completable;
@@ -49,6 +50,12 @@ import io.reactivex.functions.Function;
  * @author : xiaojinzi 30212
  */
 public class EHiRxRouter extends EHiRouter {
+
+    /**
+     * requestCode 如果等于这个值,就表示是随机生成的
+     * 从 1-256 中随机生成一个,如果生成的正好是目前正在用的,会重新生成一个
+     */
+    public static final Integer RANDOM_REQUSET_CODE = Integer.MIN_VALUE;
 
     public static final String TAG = "EHiRxRouter";
 
@@ -137,6 +144,15 @@ public class EHiRxRouter extends EHiRouter {
         @Override
         public Builder requestCode(@Nullable Integer requestCode) {
             return (Builder) super.requestCode(requestCode);
+        }
+
+        /**
+         * requestCode 会随机的生成
+         *
+         * @return
+         */
+        public Builder requestCodeRandom() {
+            return requestCode(RANDOM_REQUSET_CODE);
         }
 
         @Override
@@ -524,6 +540,11 @@ public class EHiRxRouter extends EHiRouter {
             }
         }
 
+        @Override
+        protected EHiRouterRequest generateRequest() {
+            return Help.randomlyGenerateRequestCode(super.generateRequest());
+        }
+
         /**
          * 一个完成状态的 Observable 的路由跳转
          *
@@ -606,22 +627,60 @@ public class EHiRxRouter extends EHiRouter {
          */
         private static Set<String> mRequestCodeSet = new HashSet<>();
 
+        private static Random r = new Random();
+
+        /**
+         * 随机生成一个 requestCode,调用这个方法的 requestCode 是 {@link EHiRxRouter#RANDOM_REQUSET_CODE}
+         *
+         * @return [1, 256]
+         */
+        @NonNull
+        public static EHiRouterRequest randomlyGenerateRequestCode(@NonNull EHiRouterRequest request) {
+            Utils.checkNullPointer(request, "request");
+            if (!EHiRxRouter.RANDOM_REQUSET_CODE.equals(request.requestCode)) {
+                return request;
+            }
+            // 转化为构建对象
+            EHiRouterRequest.Builder requestBuilder = request.toBuilder();
+            int generateRequestCode = r.nextInt(256) + 1;
+            // 如果生成的这个 requestCode 存在,就重新生成
+            while (isExist(Utils.getActivityFromContext(requestBuilder.context), requestBuilder.fragment, generateRequestCode)) {
+                generateRequestCode = r.nextInt(256) + 1;
+            }
+            return requestBuilder.requestCode(generateRequestCode).build();
+        }
+
+        /**
+         * 检测同一个 Fragment 或者 Activity 发起的多个路由 request 中的 requestCode 是否存在了
+         *
+         * @param request 路由请求对象
+         * @return
+         */
         public static boolean isExist(@Nullable EHiRouterRequest request) {
             if (request == null || request.requestCode == null) {
                 return false;
             }
-            Integer requestCode = request.requestCode;
             // 这个 Context 关联的 Activity,用requestCode 去拿数据的情况下
             // Context 必须是一个 Activity 或者 内部的 baseContext 是 Activity
             Activity act = Utils.getActivityFromContext(request.context);
+            // 这个requestCode不会为空, 用这个方法的地方是必须填写 requestCode 的
+            return isExist(act, request.fragment, request.requestCode);
+        }
+
+        public static boolean isExist(@Nullable Activity act, @Nullable Fragment fragment, @NonNull Integer requestCode) {
             if (act != null) {
                 return mRequestCodeSet.contains(act.getClass().getName() + requestCode);
-            } else if (request.fragment != null) {
-                return mRequestCodeSet.contains(request.fragment.getClass().getName() + requestCode);
+            } else if (fragment != null) {
+                return mRequestCodeSet.contains(fragment.getClass().getName() + requestCode);
             }
             return false;
         }
 
+        /**
+         * 添加一个路由请求的 requestCode
+         *
+         * @param request 路由请求对象
+         */
         public static void addRequestCode(@Nullable EHiRouterRequest request) {
             if (request == null || request.requestCode == null) {
                 return;
@@ -637,6 +696,11 @@ public class EHiRxRouter extends EHiRouter {
             }
         }
 
+        /**
+         * 移除一个路由请求的 requestCode
+         *
+         * @param request 路由请求对象
+         */
         public static void removeRequestCode(@Nullable EHiRouterRequest request) {
             if (request == null || request.requestCode == null) {
                 return;
