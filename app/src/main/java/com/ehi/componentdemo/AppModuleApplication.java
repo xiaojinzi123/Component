@@ -1,7 +1,6 @@
 package com.ehi.componentdemo;
 
 import android.app.Application;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -22,21 +21,26 @@ public class AppModuleApplication implements IComponentApplication {
     private EHiRouterListener listener = new EHiRouterListener() {
         @Override
         public void onSuccess(@NonNull EHiRouterResult successResult) throws Exception {
-            Log.e(tag, "路由成功：" + successResult.getOriginalRequest().uri.toString());
+            EHiRouterRequest originalRequest = successResult.getOriginalRequest();
+            Log.e(tag, "路由成功：" + originalRequest.uri.toString() + ",requestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode));
         }
 
         @Override
         public void onError(EHiRouterErrorResult errorResult) throws Exception {
-            if (errorResult.getOriginalRequest() == null) {
+            EHiRouterRequest originalRequest = errorResult.getOriginalRequest();
+            if (originalRequest == null) {
                 Log.e(tag, "路由失败：没开始就失败了,errorMsg = " + Utils.getRealMessage(errorResult.getError()));
             } else {
-                Log.e(tag, "路由失败：" + errorResult.getOriginalRequest().uri.toString() + ",errorMsg = " + Utils.getRealMessage(errorResult.getError()));
+                Log.e(tag, "路由失败：" + originalRequest.uri.toString()
+                        + ",errorMsg = " + Utils.getRealMessage(errorResult.getError())
+                        + "\nrequestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode)
+                );
             }
         }
 
         @Override
-        public void onCancel(@NonNull EHiRouterRequest request) throws Exception {
-            Log.e(tag, "路由被取消：" + request.uri.toString());
+        public void onCancel(@NonNull EHiRouterRequest originalRequest) throws Exception {
+            Log.e(tag, "路由被取消：" + originalRequest.uri.toString() + ",requestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode));
         }
     };
 

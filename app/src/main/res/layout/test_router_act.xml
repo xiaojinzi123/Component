@@ -88,6 +88,14 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="rxJumpGetDataAfterLogin"
+                    android:text="跳转获取数据,先登录(不用onActivityResult)"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:onClick="rxJumpGetDataStartWithTask"
                     android:text="耗时操作后跳转拿数据(不用onActivityResult)"
                     android:textAllCaps="false"

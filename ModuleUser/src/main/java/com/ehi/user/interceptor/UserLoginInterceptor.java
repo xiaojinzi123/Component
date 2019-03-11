@@ -51,7 +51,7 @@ public class UserLoginInterceptor implements EHiRouterInterceptor {
             EHiRxRouter.with(context)
                     .host(ModuleConfig.User.NAME)
                     .path(ModuleConfig.User.LOGIN)
-                    .requestCode(444)
+                    .requestCodeRandom()
                     .intentCall()
                     .doOnSuccess(new Consumer<Intent>() {
                         @Override
