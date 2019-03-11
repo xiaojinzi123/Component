@@ -13,7 +13,6 @@ public class CallPhoePermisionInterceptor implements EHiRouterInterceptor {
 
     @Override
     public void intercept(final Chain chain) throws Exception {
-
         PermissionsUtil.with(chain.request().getRawContext())
                 .request(Manifest.permission.CALL_PHONE)
                 .execute(new PermissionsCallback() {
@@ -30,7 +29,6 @@ public class CallPhoePermisionInterceptor implements EHiRouterInterceptor {
                         }
                     }
                 });
-
     }
 
 }

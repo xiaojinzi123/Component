@@ -643,6 +643,7 @@ public class EHiRxRouter extends EHiRouter {
         @NonNull
         public static EHiRouterRequest randomlyGenerateRequestCode(@NonNull EHiRouterRequest request) {
             Utils.checkNullPointer(request, "request");
+            // 如果不是想要随机生成,就直接返回
             if (!EHiRxRouter.RANDOM_REQUSET_CODE.equals(request.requestCode)) {
                 return request;
             }
