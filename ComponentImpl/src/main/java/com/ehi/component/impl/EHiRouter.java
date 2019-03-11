@@ -442,22 +442,6 @@ public class EHiRouter {
         }
 
         /**
-         * 生成路由请求对象
-         * 如果有不满足生成的条件就会抛出异常
-         *
-         * @return
-         */
-        @NonNull
-        protected EHiRouterRequest generateRequest() {
-            // 路由前的检查
-            onCheck();
-            // 标记这个 builder 已经不能使用了
-            isFinish = true;
-            // 构建请求对象
-            return build();
-        }
-
-        /**
          * 执行跳转的具体逻辑,必须在主线程中执行
          * 返回值不可以为空,是为了使用的时候更加的顺溜,不用判断空
          *
@@ -470,8 +454,12 @@ public class EHiRouter {
             // 构建请求对象
             EHiRouterRequest originalRequest = null;
             try {
+                // 路由前的检查
+                onCheck();
+                // 标记这个 builder 已经不能使用了
+                isFinish = true;
                 // 生成路由请求对象
-                originalRequest = generateRequest();
+                originalRequest = build();
                 // 创建整个拦截器到最终跳转需要使用的 Callback
                 final InterceptorCallback interceptorCallback = new InterceptorCallback(originalRequest, callback);
                 // Fragment 的销毁的自动取消
