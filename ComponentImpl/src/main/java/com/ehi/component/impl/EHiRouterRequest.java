@@ -75,12 +75,17 @@ public class EHiRouterRequest {
             rawContext = fragment.getContext();
         }
         Activity rawAct = Utils.getActivityFromContext(rawContext);
-        if (rawAct != null) {
+        // 如果不是 Activity 可能是 Application,所以直接返回
+        if (rawAct == null) {
+            return rawContext;
+        } else {
+            // 如果是 Activity 并且已经销毁了返回 null
             if (isActivityDestoryed(rawAct)) {
                 return null;
+            } else {
+                return rawContext;
             }
         }
-        return rawContext;
     }
 
     /**
@@ -126,7 +131,7 @@ public class EHiRouterRequest {
      * @param activity
      * @return
      */
-    private boolean isActivityDestoryed(Activity activity) {
+    private boolean isActivityDestoryed(@NonNull Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return activity.isFinishing() || activity.isDestroyed();
         } else {
@@ -141,7 +146,9 @@ public class EHiRouterRequest {
      * @return
      */
     public Builder toBuilder() {
+
         Builder builder = new Builder();
+        // 有关界面的两个
         builder.fragment = fragment;
         builder.context = context;
 
@@ -166,25 +173,7 @@ public class EHiRouterRequest {
     }
 
     private EHiRouterRequest(@NonNull Builder builder) {
-        Uri result = null;
-        if (builder.url == null) {
-            Uri.Builder uriBuilder = new Uri.Builder();
-            uriBuilder
-                    .scheme(TextUtils.isEmpty(builder.scheme) ? ComponentConfig.getDefaultScheme() : builder.scheme)
-                    .authority(Utils.checkStringNullPointer(builder.host, "host", "do you forget call host() to set host?"));
-            if (!TextUtils.isEmpty(builder.path)) {
-                uriBuilder.path(builder.path);
-            }
-            for (Map.Entry<String, String> entry : builder.queryMap.entrySet()) {
-                uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
-            }
-            result = uriBuilder.build();
-        } else {
-            result = Uri.parse(builder.url);
-        }
-        if (result == null) {
-            throw new NullPointerException("the parameter 'uri' is null");
-        }
+        Uri result = builder.buildURI();
         this.uri = result;
         context = builder.context;
         fragment = builder.fragment;
@@ -197,7 +186,7 @@ public class EHiRouterRequest {
         afterJumpAction = builder.afterJumpAction;
     }
 
-    public static class Builder {
+    public static class Builder extends URIBuilder {
 
         @Nullable
         protected Context context;
@@ -206,22 +195,7 @@ public class EHiRouterRequest {
         protected Fragment fragment;
 
         @Nullable
-        protected String url;
-
-        @Nullable
-        protected String scheme;
-
-        @NonNull
-        protected String host;
-
-        @Nullable
-        protected String path;
-
-        @Nullable
         protected Integer requestCode;
-
-        @NonNull
-        protected Map<String, String> queryMap = new HashMap<>();
 
         @NonNull
         protected Bundle bundle = new Bundle();
@@ -274,26 +248,24 @@ public class EHiRouterRequest {
             return this;
         }
 
+        @Override
         public Builder url(@NonNull String url) {
-            this.url = url;
-            return this;
+            return (Builder) super.url(url);
         }
 
+        @Override
         public Builder scheme(@NonNull String scheme) {
-            Utils.checkStringNullPointer(scheme, "scheme");
-            this.scheme = scheme;
-            return this;
+            return (Builder) super.scheme(scheme);
         }
 
+        @Override
         public Builder host(@NonNull String host) {
-            Utils.checkStringNullPointer(host, "host");
-            this.host = host;
-            return this;
+            return (Builder) super.host(host);
         }
 
+        @Override
         public Builder path(@Nullable String path) {
-            this.path = path;
-            return this;
+            return (Builder) super.path(path);
         }
 
         public Builder putBundle(@NonNull String key, @Nullable Bundle bundle) {
@@ -447,37 +419,39 @@ public class EHiRouterRequest {
             return this;
         }
 
+        @Override
         public Builder query(@NonNull String queryName, @Nullable String queryValue) {
-            Utils.checkStringNullPointer(queryName, "queryName");
-            if (queryValue == null) {
-                queryValue = "";
-            }
-            queryMap.put(queryName, queryValue);
-            return this;
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, boolean queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, byte queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, int queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, float queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, long queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
+        @Override
         public Builder query(@NonNull String queryName, double queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+            return (Builder) super.query(queryName, queryValue);
         }
 
         /**
@@ -487,6 +461,117 @@ public class EHiRouterRequest {
          */
         public EHiRouterRequest build() {
             return new EHiRouterRequest(this);
+        }
+
+    }
+
+    public static class URIBuilder {
+
+        @Nullable
+        protected String url;
+
+        @Nullable
+        protected String scheme;
+
+        @NonNull
+        protected String host;
+
+        @Nullable
+        protected String path;
+
+        @NonNull
+        protected Map<String, String> queryMap = new HashMap<>();
+
+        public URIBuilder url(@NonNull String url) {
+            this.url = url;
+            return this;
+        }
+
+        public URIBuilder scheme(@NonNull String scheme) {
+            Utils.checkStringNullPointer(scheme, "scheme");
+            this.scheme = scheme;
+            return this;
+        }
+
+        public URIBuilder host(@NonNull String host) {
+            Utils.checkStringNullPointer(host, "host");
+            this.host = host;
+            return this;
+        }
+
+        public URIBuilder path(@Nullable String path) {
+            this.path = path;
+            return this;
+        }
+
+        public URIBuilder query(@NonNull String queryName, @Nullable String queryValue) {
+            Utils.checkStringNullPointer(queryName, "queryName");
+            if (queryValue == null) {
+                queryValue = "";
+            }
+            queryMap.put(queryName, queryValue);
+            return this;
+        }
+
+        public URIBuilder query(@NonNull String queryName, boolean queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        public URIBuilder query(@NonNull String queryName, byte queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        public URIBuilder query(@NonNull String queryName, int queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        public URIBuilder query(@NonNull String queryName, float queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        public URIBuilder query(@NonNull String queryName, long queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        public URIBuilder query(@NonNull String queryName, double queryValue) {
+            return query(queryName, String.valueOf(queryValue));
+        }
+
+        /**
+         * 构建一个 {@link Uri},如果构建失败会抛出异常
+         *
+         * @return
+         */
+        @NonNull
+        public Uri buildURI() {
+            URIBuilder builder = this;
+            Uri result = null;
+            if (builder.url == null) {
+                Uri.Builder uriBuilder = new Uri.Builder();
+                uriBuilder
+                        .scheme(TextUtils.isEmpty(builder.scheme) ? ComponentConfig.getDefaultScheme() : builder.scheme)
+                        .authority(Utils.checkStringNullPointer(builder.host, "host", "do you forget call host() to set host?"));
+                if (!TextUtils.isEmpty(builder.path)) {
+                    uriBuilder.path(builder.path);
+                }
+                for (Map.Entry<String, String> entry : builder.queryMap.entrySet()) {
+                    uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
+                }
+                result = uriBuilder.build();
+            } else {
+                result = Uri.parse(builder.url);
+            }
+            return result;
+        }
+
+        /**
+         * 构建一个URL,如果构建失败会抛出异常
+         *
+         * @return
+         */
+        @NonNull
+        public String buildURL() {
+            return buildURI().toString();
         }
 
     }
