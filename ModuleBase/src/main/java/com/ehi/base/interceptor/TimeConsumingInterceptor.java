@@ -9,7 +9,6 @@ import com.ehi.component.impl.EHiRouterInterceptor;
  * @author : xiaojinzi 30212
  */
 public class TimeConsumingInterceptor implements EHiRouterInterceptor {
-
     @Override
     public void intercept(final Chain chain) throws Exception {
         new Thread() {
@@ -24,5 +23,4 @@ public class TimeConsumingInterceptor implements EHiRouterInterceptor {
             }
         }.start();
     }
-
 }

@@ -33,7 +33,7 @@ public class UserLoginInterceptor implements EHiRouterInterceptor {
 
     @Override
     public void intercept(final Chain chain) throws Exception {
-        final Context context = chain.request().context == null ? chain.request().fragment.getContext() : chain.request().context;
+        final Context context = chain.request().getRawContext();
         UserService userService = EHiService.get(UserService.class);
         if (chain.request().uri.toString().contains("user/login")) {
             chain.proceed(chain.request());

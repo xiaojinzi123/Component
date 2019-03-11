@@ -10,10 +10,8 @@ import com.ehi.component.impl.EHiRouterInterceptor;
 
 @EHiInterceptorAnno(InterceptorConfig.HELP_CAMERA)
 public class TakePhonePermisionInterceptor implements EHiRouterInterceptor {
-
     @Override
     public void intercept(final Chain chain) throws Exception {
-
         PermissionsUtil.with(chain.request().getRawContext())
                 .request(Manifest.permission.CAMERA)
                 .execute(new PermissionsCallback() {
@@ -32,5 +30,4 @@ public class TakePhonePermisionInterceptor implements EHiRouterInterceptor {
                 });
 
     }
-
 }
