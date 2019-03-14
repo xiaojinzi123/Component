@@ -90,4 +90,14 @@ public class CustomerRouterImpl {
         }
     }
 
+    /*@EHiRouterAnno(
+            host = ModuleConfig.System.NAME,
+            value = ModuleConfig.System.TEST_PARAMETER
+    )
+    public static void testParameter(@NonNull EHiRouterRequest request,
+                                     @EHiParameterAnno("name") String name,
+                                     @EHiParameterAnno("age") int age) {
+
+    }*/
+
 }

@@ -15,7 +15,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [HOST: "component2"]
+                arguments = ["HOST": "component2"]
             }
         }
 

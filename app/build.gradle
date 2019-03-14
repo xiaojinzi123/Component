@@ -12,7 +12,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 // 组件化注解驱动器的配置
-                arguments = [HOST: "app"]
+                arguments = ["HOST": "app"]
             }
         }
     }
@@ -21,6 +21,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     dexOptions {

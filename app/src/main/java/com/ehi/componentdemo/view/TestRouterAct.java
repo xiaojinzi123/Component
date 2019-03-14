@@ -103,7 +103,7 @@ public class TestRouterAct extends BaseAct {
                 .with(TestRouterAct.this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
-                .query("data", "normalJump")
+                .putString("data", "normalJump")
                 .putString("name", "cxj1")
                 .putInt("age", 25)
                 .navigate(new EHiCallbackAdapter() {
@@ -125,7 +125,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
-                .query("data", "normalJumpTwice1")
+                .putString("data", "normalJumpTwice1")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
@@ -142,7 +142,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
-                .query("data", "normalJumpTwice2")
+                .putString("data", "normalJumpTwice2")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
@@ -163,7 +163,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
-                .query("data", "jumpGetData")
+                .putString("data", "jumpGetData")
                 .requestCode(123)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
@@ -201,7 +201,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
-                .query("data", "rxJumpGetData")
+                .putString("data", "rxJumpGetData")
                 .requestCode(456)
                 .intentCall()
                 .subscribe(new Consumer<Intent>() {
@@ -223,7 +223,7 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .interceptorNames(InterceptorConfig.USER_LOGIN)
-                .query("data", "rxJumpGetDataAfterLogin")
+                .putString("data", "rxJumpGetDataAfterLogin")
                 .requestCode(333)
                 .intentCall()
                 .subscribe(new Consumer<Intent>() {
@@ -248,7 +248,7 @@ public class TestRouterAct extends BaseAct {
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST)
-                        .query("data", "rxJumpGetDataFromQuery")
+                        .putString("data", "rxJumpGetDataFromQuery")
                         .putString("data", "rxJumpGetDataFromBundle")
                         .requestCode(789)
                         .intentCall();
@@ -294,7 +294,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
-                .query("data", "jumpWithInterceptor")
+                .putString("data", "jumpWithInterceptor")
                 .requestCode(123)
                 .interceptors(new EHiRouterInterceptor() {
                     @Override
@@ -353,8 +353,8 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_QUERY)
-                .query("name", "我是小金子")
-                .query("pass", "我是小金子的密码")
+                .putString("name", "我是小金子")
+                .putString("pass", "我是小金子的密码")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
@@ -455,7 +455,7 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .requestCode(123)
-                .query("data", "testMatchesResultCode")
+                .putString("data", "testMatchesResultCode")
                 .resultCodeMatchCall(RESULT_OK)
                 .subscribe(new Action() {
                     @Override
@@ -478,7 +478,7 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .requestCode(123)
-                .query("data", "testUseRequestCodeTiwce1")
+                .putString("data", "testUseRequestCodeTiwce1")
                 .resultCodeMatchCall(RESULT_OK)
                 .subscribe(new Action() {
                     @Override
@@ -497,7 +497,7 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_DIALOG)
                 .requestCode(123)
-                .query("data", "testUseRequestCodeTiwce2")
+                .putString("data", "testUseRequestCodeTiwce2")
                 .resultCodeMatchCall(RESULT_OK)
                 .subscribe(new Action() {
                     @Override

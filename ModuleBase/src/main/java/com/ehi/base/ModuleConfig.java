@@ -28,6 +28,8 @@ public class ModuleConfig {
         // 测试跳转到 APP 详情界面
         public static final String SYSTEM_APP_DETAIL = "appDetail";
 
+        public static final String TEST_PARAMETER = "testParameter";
+
     }
 
     public static class App {

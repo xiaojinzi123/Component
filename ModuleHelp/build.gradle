@@ -12,7 +12,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [HOST: "help"]
+                arguments = ["HOST": "help"]
             }
         }
     }
