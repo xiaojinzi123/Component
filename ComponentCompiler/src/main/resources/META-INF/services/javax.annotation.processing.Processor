@@ -1,0 +1,4 @@
+com.ehi.component.ModuleAppProcessor
+com.ehi.component.RouterProcessor
+com.ehi.component.InterceptorProcessor
+com.ehi.component.ServiceProcessor

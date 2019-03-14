@@ -13,7 +13,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [HOST: "user"]
+                arguments = ["HOST": "user"]
             }
         }
     }
