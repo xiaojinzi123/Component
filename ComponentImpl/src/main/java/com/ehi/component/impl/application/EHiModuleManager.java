@@ -16,6 +16,8 @@ import java.util.Map;
 /**
  * 这个类必须放在 {@link ComponentUtil#IMPL_OUTPUT_PKG} 包下面
  * 这是是管理每一个模块之前联系的管理类,加载模块的功能也是这个类负责的
+ *
+ * @author xiaojinzi 30212
  */
 public class EHiModuleManager implements IComponentModuleApplication {
 

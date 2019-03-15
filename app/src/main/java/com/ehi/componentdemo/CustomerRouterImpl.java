@@ -11,6 +11,7 @@ import android.text.TextUtils;
 
 import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
+import com.ehi.component.anno.EHiParameterAnno;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.support.ParameterSupport;
@@ -90,7 +91,7 @@ public class CustomerRouterImpl {
         }
     }
 
-    /*@EHiRouterAnno(
+    @EHiRouterAnno(
             host = ModuleConfig.System.NAME,
             value = ModuleConfig.System.TEST_PARAMETER
     )
@@ -98,6 +99,6 @@ public class CustomerRouterImpl {
                                      @EHiParameterAnno("name") String name,
                                      @EHiParameterAnno("age") int age) {
 
-    }*/
+    }
 
 }

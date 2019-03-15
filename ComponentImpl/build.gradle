@@ -22,8 +22,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation libs.appcompat_v7
+    compileOnly libs.appcompat_v7
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         api "com.ehi:component-api:${rootProject.ext.component_version}"
     }else {
@@ -32,7 +31,7 @@ dependencies {
 }
 
 task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     from android.sourceSets.main.java.srcDirs
 }
 

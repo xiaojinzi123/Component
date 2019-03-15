@@ -9,7 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * EHi 服务的容器
+ * EHi 服务的容器,使用这个服务容器你需要判断获取到的服务是否为空,对于使用者来说还是比较不方便的
+ * 建议使用 EHiService 扩展的版本 EHiRxService
+ *
+ * @author xiaojinzi 30212
  */
 public class EHiService {
 
@@ -41,7 +44,7 @@ public class EHiService {
     public static <T> T get(@NonNull Class<T> tClass) {
         if (map.get(tClass) == null) {
             return null;
-        }else {
+        } else {
             return (T) map.get(tClass).get();
         }
     }

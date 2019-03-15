@@ -12,6 +12,8 @@ import com.ehi.component.support.NavigationDisposable;
  * 1.{@link #onSuccess(EHiRouterResult)} --> {@link #onEvent(EHiRouterResult, EHiRouterErrorResult)}
  * 2.{@link #onError(EHiRouterErrorResult)} --> {@link #onEvent(EHiRouterResult, EHiRouterErrorResult)}
  * 3.被取消的时候：{@link #onCancel(EHiRouterRequest)}
+ *
+ * @author xiaojinzi 30212
  */
 public interface EHiCallback {
 

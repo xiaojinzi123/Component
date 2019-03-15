@@ -15,6 +15,8 @@ import java.util.List;
  * 如果名称更改了,请配置到
  * {@link ComponentUtil#IMPL_OUTPUT_PKG}
  * 和 {@link ComponentUtil#MODULE_APPLICATION_IMPL_CLASS_NAME} 上
+ *
+ * @author xiaojinzi 30212
  */
 abstract class EHiModuleApplicationImpl implements IComponentHostApplication {
 

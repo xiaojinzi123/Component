@@ -5,14 +5,16 @@ import android.support.annotation.Nullable;
 
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
-import com.ehi.component.service.IComponentHostService;
 import com.ehi.component.service.IComponentCenterService;
+import com.ehi.component.service.IComponentHostService;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 模块服务注册和卸载的总管
+ *
+ * @author xiaojinzi 30212
  */
 public class EHiServiceCenter implements IComponentCenterService {
 

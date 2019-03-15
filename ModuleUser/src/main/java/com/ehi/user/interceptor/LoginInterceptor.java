@@ -26,9 +26,9 @@ import io.reactivex.schedulers.Schedulers;
  * @author : xiaojinzi 30212
  */
 @EHiInterceptorAnno(InterceptorConfig.USER_LOGIN)
-public class UserLoginInterceptor implements EHiRouterInterceptor {
+public class LoginInterceptor implements EHiRouterInterceptor {
 
-    public UserLoginInterceptor(Context app) {
+    public LoginInterceptor(Context app) {
     }
 
     @Override
@@ -43,11 +43,11 @@ public class UserLoginInterceptor implements EHiRouterInterceptor {
             chain.callback().onError(new ServiceNotFoundException("can't found UserService"));
             return;
         }else if(userService.isLogin()) {
-            Toast.makeText(context, "已经登录,正在帮您跳转,", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "已经登录,正在帮您跳转", Toast.LENGTH_SHORT).show();
             chain.proceed(chain.request());
             return;
         } else {
-            Toast.makeText(context, "目标界面需要登录,拦截器帮您跳转到登录界面登录,", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "目标界面需要登录,拦截器帮您跳转到登录界面登录", Toast.LENGTH_SHORT).show();
             EHiRxRouter.with(context)
                     .host(ModuleConfig.User.NAME)
                     .path(ModuleConfig.User.LOGIN)
@@ -56,7 +56,7 @@ public class UserLoginInterceptor implements EHiRouterInterceptor {
                     .doOnSuccess(new Consumer<Intent>() {
                         @Override
                         public void accept(Intent intent) throws Exception {
-                            Toast.makeText(context, "登录成功,1秒后跳转到目标界面,", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "登录成功,1秒后跳转到目标界面", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .observeOn(Schedulers.io())
@@ -79,7 +79,6 @@ public class UserLoginInterceptor implements EHiRouterInterceptor {
                         }
                     });
         }
-
     }
 
 }

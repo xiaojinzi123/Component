@@ -197,6 +197,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void rxJumpGetData(View view) {
+
         EHiRxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
