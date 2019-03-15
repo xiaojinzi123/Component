@@ -71,6 +71,8 @@ public class EHiRouterInterceptorCache {
         if (constructors == null) {
             return null;
         }
+        // 这里为什么使用 for 循环而不是直接获取空参数的构造函数或者以下有某个参数的构造函数
+        // 是因为你获取的时候会有异常抛出,三种情况你得 try{}catch{}三次
         for (Constructor<?> constructor : constructors) {
             Class<?>[] parameterTypes = constructor.getParameterTypes();
             if (parameterTypes == null || parameterTypes.length == 0) {

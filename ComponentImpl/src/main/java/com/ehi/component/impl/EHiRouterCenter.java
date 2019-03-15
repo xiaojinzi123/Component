@@ -18,8 +18,8 @@ import com.ehi.component.error.ignore.NavigationFailException;
 import com.ehi.component.error.ignore.TargetActivityNotFoundException;
 import com.ehi.component.impl.interceptor.EHiInterceptorCenter;
 import com.ehi.component.impl.interceptor.EHiRouterInterceptorCache;
-import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.router.IComponentCenterRouter;
+import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.ParameterSupport;
 import com.ehi.component.support.Utils;
 
@@ -36,6 +36,7 @@ import static com.ehi.component.ComponentConstants.SEPARATOR;
 /**
  * 中央路由,挂载着多个子路由表,这里有总路由表
  *
+ * @author xiaojinzi 30212
  * @hide
  */
 public class EHiRouterCenter implements IComponentCenterRouter {
@@ -330,7 +331,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
     }
 
     /**
-     * {@hide}
+     * 根据模块名称寻找子路由对象
      *
      * @param host
      * @return

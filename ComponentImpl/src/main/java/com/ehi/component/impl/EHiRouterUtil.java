@@ -13,6 +13,9 @@ import com.ehi.component.support.Utils;
 
 /**
  * 路由的工具类,内部都是一些help方法
+ * 路由的一个帮助类,基本上用于分发事件
+ *
+ * @author xiaojinzi 30212
  */
 class EHiRouterUtil {
 
@@ -193,6 +196,5 @@ class EHiRouterUtil {
         }
         return !isUseful;
     }
-
 
 }

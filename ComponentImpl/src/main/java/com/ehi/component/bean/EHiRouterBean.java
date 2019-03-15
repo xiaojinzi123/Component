@@ -7,7 +7,7 @@ import com.ehi.component.impl.EHiRouterInterceptor;
 import java.util.List;
 
 /**
- * 和注解是对应的
+ * 和注解{@link com.ehi.component.anno.EHiRouterAnno}是--对应的
  * <p>
  * time   : 2018/12/03
  *
@@ -32,7 +32,7 @@ public class EHiRouterBean {
     private String path;
 
     /**
-     * 这个目标 Activity Class,目标也可能是一个静态方法
+     * 这个目标 Activity Class,可能为空,因为可能标记在静态方法上
      */
     @Nullable
     private Class targetClass;
@@ -46,18 +46,22 @@ public class EHiRouterBean {
     /**
      * 这是也是目标界面要执行的拦截器,不过这个是字符串表示的
      * 更加的跨越模块,但是寻找可能就没有上面的方式来的直接了
+     *
+     * @see com.ehi.component.impl.interceptor.EHiInterceptorCenter#getByName(String)
      */
     @Nullable
     private List<String> interceptorNames;
 
     /**
-     * 用户自定义的 Intent
+     * 用户自定义的 {@link android.content.Intent},
+     * 当标记在静态方法上并且返回值是 {@link android.content.Intent} 的时候会有值
      */
     @Nullable
     private CustomerIntentCall customerIntentCall;
 
     /**
      * 用户自定义的 跳转
+     * 当标记在静态方法上并且返回值是 void 的时候会有值
      */
     @Nullable
     private CustomerJump customerJump;

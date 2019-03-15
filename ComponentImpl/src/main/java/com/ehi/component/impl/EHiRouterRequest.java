@@ -25,11 +25,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 表示路由的一个请求类
+ * 表示路由的一个请求类,构建时候如果参数不对是有异常会发生的,使用的时候注意这一点
+ * 但是在拦截器 {@link EHiRouterInterceptor} 中构建是不用关心错误的,
+ * 因为拦截器的 {@link EHiRouterInterceptor#intercept(EHiRouterInterceptor.Chain)} 方法
+ * 允许抛出异常
  * <p>
  * time   : 2018/11/29
  *
- * @author : xiaojinzi 30212
+ * @author xiaojinzi 30212
  */
 public class EHiRouterRequest {
 
@@ -186,6 +189,11 @@ public class EHiRouterRequest {
         afterJumpAction = builder.afterJumpAction;
     }
 
+    /**
+     * 构建一个路由请求对象 {@link EHiRouterRequest} 对象的 Builder
+     *
+     * @author xiaojinzi
+     */
     public static class Builder extends URIBuilder {
 
         @Nullable
@@ -465,6 +473,11 @@ public class EHiRouterRequest {
 
     }
 
+    /**
+     * 构造 URI 和 URL 的Builder
+     *
+     * @author xiaojinzi
+     */
     public static class URIBuilder {
 
         @Nullable

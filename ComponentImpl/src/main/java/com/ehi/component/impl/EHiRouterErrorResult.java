@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 
 /**
  * 标识路由错误的时候的回调参数
+ *
+ * @author xiaojinzi 30212
  */
 public class EHiRouterErrorResult {
 
