@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.impl.application.EHiModuleManager;
 import com.ehi.componentdemo.R;
 
@@ -63,11 +64,12 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouter(View view) {
-        EHiRouter
+        EHiRxRouter
                 .with(this)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_ROUTER)
-                .navigate();
+                .call()
+                .subscribe();
     }
 
     public void testWebRouter(View view) {
