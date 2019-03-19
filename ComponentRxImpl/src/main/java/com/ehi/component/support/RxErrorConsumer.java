@@ -1,5 +1,6 @@
 package com.ehi.component.support;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import io.reactivex.exceptions.OnErrorNotImplementedException;
@@ -29,17 +30,8 @@ public class RxErrorConsumer<T extends Throwable> implements Consumer<T> {
 
     @Override
     public void accept(T throwable) throws Exception {
-        Throwable currThrowable = throwable;
-        if (defaultIgnoreError != null) {
-            while (currThrowable != null) {
-                for (Class errorClass : defaultIgnoreError) {
-                    if (currThrowable.getClass() == errorClass) {
-                        return;
-                    }
-                }
-                // 拿到 cause,接着判断
-                currThrowable = currThrowable.getCause();
-            }
+        if (isIgnore(throwable)) {
+            return;
         }
         if (preConsumer != null) {
             preConsumer.accept(throwable);
@@ -50,7 +42,22 @@ public class RxErrorConsumer<T extends Throwable> implements Consumer<T> {
         } else {
             throw new OnErrorNotImplementedException(throwable);
         }
+    }
 
+    public boolean isIgnore(@NonNull Throwable throwable) {
+        Throwable currThrowable = throwable;
+        if (defaultIgnoreError != null) {
+            while (currThrowable != null) {
+                for (Class errorClass : defaultIgnoreError) {
+                    if (currThrowable.getClass() == errorClass) {
+                        return true;
+                    }
+                }
+                // 拿到 cause,接着判断
+                currThrowable = currThrowable.getCause();
+            }
+        }
+        return false;
     }
 
 }

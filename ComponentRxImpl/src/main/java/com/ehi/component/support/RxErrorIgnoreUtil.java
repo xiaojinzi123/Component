@@ -1,5 +1,7 @@
 package com.ehi.component.support;
 
+import android.support.annotation.NonNull;
+
 import com.ehi.component.error.ActivityResultException;
 import com.ehi.component.error.ignore.InterceptorNotFoundException;
 import com.ehi.component.error.ignore.NavigationFailException;
@@ -47,6 +49,10 @@ public class RxErrorIgnoreUtil {
      */
     public static void ignoreError() {
         RxJavaPlugins.setErrorHandler(errorConsumer);
+    }
+
+    public static boolean isIgnore(@NonNull Throwable throwable) {
+        return errorConsumer.isIgnore(throwable);
     }
 
 }
