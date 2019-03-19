@@ -8,6 +8,9 @@ import com.ehi.component.impl.EHiRouterInterceptor;
 /**
  * 这个拦截器必须在其他任何一个拦截器之前执行
  * 从根本上限制同一个界面在一秒钟内只能打开一次,这个拦截器会被框架最先执行
+ * note: 这个拦截器没有连同 {@link Uri#getScheme()} 一起判断,其实应该一起的,
+ * 但是现实中应该也不会出现一秒钟 host 和 path 都相同的两次路由了
+ *
  * time   : 2019/01/23
  *
  * @author : xiaojinzi 30212

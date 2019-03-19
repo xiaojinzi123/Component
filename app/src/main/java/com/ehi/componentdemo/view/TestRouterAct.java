@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,7 +16,6 @@ import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.base.view.BaseAct;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterInterceptor;
@@ -23,10 +23,8 @@ import com.ehi.component.impl.EHiRouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
-import com.ehi.component.support.NavigationDisposable;
 import com.ehi.componentdemo.R;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
@@ -104,7 +102,7 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .putString("data", "normalJump")
-                .putString("name", "cxj1")
+                .putString("name", "cxj")
                 .putInt("age", 25)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
@@ -158,7 +156,6 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void jumpGetData(View view) {
-
         EHiRxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
@@ -176,7 +173,6 @@ public class TestRouterAct extends BaseAct {
                         addInfo(null, errorResult.getError(), "component1/test?data=jumpGetData", 123);
                     }
                 });
-
     }
 
     public void jumpToWeb(View v) {
@@ -197,7 +193,6 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void rxJumpGetData(View view) {
-
         EHiRxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
@@ -303,12 +298,7 @@ public class TestRouterAct extends BaseAct {
                         final ProgressDialog dialog = ProgressDialog.show(chain.request().getRawContext(), "温馨提示", "耗时操作进行中,2秒后结束", true, false);
                         dialog.show();
                         Single
-                                .fromCallable(new Callable<String>() {
-                                    @Override
-                                    public String call() throws Exception {
-                                        return "test";
-                                    }
-                                })
+                                .fromCallable(() -> "test")
                                 .delay(2, TimeUnit.SECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
@@ -354,8 +344,8 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_QUERY)
-                .putString("name", "我是小金子")
-                .putString("pass", "我是小金子的密码")
+                .query("name", "我是小金子")
+                .query("pass", "我是小金子的密码")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull EHiRouterResult result) {
@@ -500,17 +490,10 @@ public class TestRouterAct extends BaseAct {
                 .requestCode(123)
                 .putString("data", "testUseRequestCodeTiwce2")
                 .resultCodeMatchCall(RESULT_OK)
-                .subscribe(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        addInfo("从" + ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK");
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        addInfo("错误信息：" + throwable.getMessage());
-                    }
-                });
+                .subscribe(
+                        () -> addInfo("从" + ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK"),
+                        throwable -> addInfo("错误信息：" + throwable.getMessage())
+                );
 
     }
 
@@ -523,17 +506,10 @@ public class TestRouterAct extends BaseAct {
                 .putString("tel", "15857913627")
                 .requestCode(123)
                 .activityResultCall()
-                .subscribe(new Consumer<EHiActivityResult>() {
-                    @Override
-                    public void accept(EHiActivityResult activityResult) throws Exception {
-                        addInfo("您从打电话界面回来啦,resultCode = " + activityResult.resultCode + ",resultCode = " + activityResult.resultCode);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        addInfo("跳转到打电话界面失败啦：" + throwable.getMessage());
-                    }
-                });
+                .subscribe(
+                        activityResult -> addInfo("您从打电话界面回来啦,resultCode = " + activityResult.resultCode + ",resultCode = " + activityResult.resultCode),
+                        throwable -> addInfo("跳转到打电话界面失败啦：" + throwable.getMessage())
+                );
 
     }
 
@@ -545,23 +521,15 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.System.SYSTEM_APP_DETAIL)
                 .requestCode(123)
                 .activityResultCall()
-                .subscribe(new Consumer<EHiActivityResult>() {
-                    @Override
-                    public void accept(EHiActivityResult activityResult) throws Exception {
-                        addInfo("您从App详情回来啦,resultCode = " + activityResult.resultCode + ",resultCode = " + activityResult.resultCode);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        addInfo("跳转到App详情失败啦：" + throwable.getMessage());
-                    }
-                });
+                .subscribe(
+                        activityResult -> addInfo("您从App详情回来啦,resultCode = " + activityResult.resultCode + ",resultCode = " + activityResult.resultCode),
+                        throwable -> addInfo("跳转到App详情失败啦：" + throwable.getMessage())
+                );
 
     }
 
     public void testCallbackAfterFinish(View view) {
-
-        NavigationDisposable navigationDisposable = EHiRxRouter
+        EHiRxRouter
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
@@ -578,9 +546,6 @@ public class TestRouterAct extends BaseAct {
                         Toast.makeText(ComponentConfig.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-        //navigationDisposable.cancel();
-
         finish();
     }
 
@@ -616,6 +581,34 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_FRAGMENT_ROUTER)
                 .navigate();
+    }
+
+    public void modifyDataWithInteceptor(View view) {
+        EHiRouter
+                .with(TestRouterAct.this)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_QUERY)
+                .query("name", "我是小金子")
+                .query("pass", "我是小金子的密码")
+                .interceptors((EHiRouterInterceptor) chain -> {
+                    AlertDialog dialog = new AlertDialog.Builder(chain.request().getRawActivity())
+                            .setMessage("如果您点击确定,传递过去的名称 '我是小金子' 会被修改为 '我是被拦截器修改的小金子'")
+                            .setPositiveButton("确定", (dialog12, which) -> chain.proceed(chain.request().toBuilder().query("name", "被拦截器修改的小金子").build()))
+                            .setNegativeButton("取消", (dialog1, which) -> chain.proceed(chain.request()))
+                            .create();
+                    dialog.show();
+                })
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "?data=normalJump", null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "data=normalJump", null);
+                    }
+                });
     }
 
 }

@@ -66,7 +66,8 @@ public class EHiRouterInterceptorCache {
     }
 
     @Nullable
-    private static EHiRouterInterceptor create(@NonNull Class<? extends EHiRouterInterceptor> tClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private static EHiRouterInterceptor create(@NonNull Class<? extends EHiRouterInterceptor> tClass)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<?>[] constructors = tClass.getConstructors();
         if (constructors == null) {
             return null;

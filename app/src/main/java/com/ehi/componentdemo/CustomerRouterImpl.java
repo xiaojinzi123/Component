@@ -52,7 +52,7 @@ public class CustomerRouterImpl {
     @EHiRouterAnno(
             host = ModuleConfig.System.NAME,
             value = ModuleConfig.System.TAKE_PHONE,
-            interceptorNames = InterceptorConfig.HELP_CAMERA
+            interceptorNames = InterceptorConfig.HELP_CAMERAPERMISION
     )
     public static Intent takePictureIntent(@NonNull EHiRouterRequest request) {
         Intent intent = new Intent();

@@ -8,7 +8,7 @@ import com.ehi.base.util.PermissionsUtil;
 import com.ehi.component.anno.EHiInterceptorAnno;
 import com.ehi.component.impl.EHiRouterInterceptor;
 
-@EHiInterceptorAnno(InterceptorConfig.HELP_CAMERA)
+@EHiInterceptorAnno(InterceptorConfig.HELP_CAMERAPERMISION)
 public class TakePhonePermisionInterceptor implements EHiRouterInterceptor {
     @Override
     public void intercept(final Chain chain) throws Exception {

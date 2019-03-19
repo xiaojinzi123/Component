@@ -12,7 +12,7 @@ public interface Action {
     /**
      * 需要执行的动作
      *
-     * @throws Exception
+     * @throws Exception 允许执行的时候抛出一个异常
      */
     @MainThread
     void run() throws Exception;
