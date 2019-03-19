@@ -25,7 +25,7 @@ public interface EHiRouterInterceptor {
     /**
      * 拦截器
      *
-     * @param chain
+     * @param chain 拦截器执行连接器
      */
     @MainThread
     void intercept(Chain chain) throws Exception;
@@ -39,7 +39,7 @@ public interface EHiRouterInterceptor {
         /**
          * 拿到请求对象
          *
-         * @return
+         * @return 返回当前的路由请求对象
          */
         @NonNull
         EHiRouterRequest request();
@@ -47,7 +47,7 @@ public interface EHiRouterInterceptor {
         /**
          * 获取回调对象
          *
-         * @return
+         * @return 返回一个回调对象, 您可以通过这个对象直接结束这个路由请求
          */
         @NonNull
         Callback callback();
@@ -55,7 +55,7 @@ public interface EHiRouterInterceptor {
         /**
          * 执行这个跳转
          *
-         * @return
+         * @param request 继续路由下去的请求对象
          */
         @AnyThread
         void proceed(@NonNull EHiRouterRequest request);
@@ -73,7 +73,7 @@ public interface EHiRouterInterceptor {
          * {@link #onSuccess(EHiRouterResult)} 和 {@link #onError(Throwable)} 都有且只能调用一次,多次调用
          * 的时候第一次调用为准,其他的忽略
          *
-         * @param result
+         * @param result 路由成功的对象
          */
         @AnyThread
         void onSuccess(EHiRouterResult result);
@@ -83,7 +83,7 @@ public interface EHiRouterInterceptor {
          * {@link #onSuccess(EHiRouterResult)} 和 {@link #onError(Throwable)} 都有且只能调用一次,多次调用
          * 的时候第一次调用为准,其他的忽略
          *
-         * @param error
+         * @param error 路由失败的对象
          */
         @AnyThread
         void onError(Throwable error);
@@ -91,7 +91,7 @@ public interface EHiRouterInterceptor {
         /**
          * 是否完成了
          *
-         * @return
+         * @return 是否整个路由行程已经结束
          */
         @AnyThread
         boolean isComplete();
@@ -99,7 +99,7 @@ public interface EHiRouterInterceptor {
         /**
          * 是否已经取消了
          *
-         * @return
+         * @return 是否整个路由行程已经被取消了
          */
         @AnyThread
         boolean isCanceled();

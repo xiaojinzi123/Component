@@ -137,7 +137,6 @@ public class RouterProcessor extends BaseHostProcessor {
                 }
             }
             routerMap.put(getHostAndPath(router.host(), router.value()), routerBean);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "router.value() = " + router.value() + ",Activity = " + element);
         }
     }
 

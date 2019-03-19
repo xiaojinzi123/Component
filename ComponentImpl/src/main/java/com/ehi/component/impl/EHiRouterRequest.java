@@ -65,7 +65,7 @@ public class EHiRouterRequest {
     public final Action afterJumpAction;
 
     /**
-     * 获取上下文
+     * 从 {@link Fragment} 和 {@link Context} 中获取上下文
      *
      * @return 当 Activity 已经销毁了就返回 null
      */
@@ -92,7 +92,7 @@ public class EHiRouterRequest {
     }
 
     /**
-     * 获取 Activity, {@link Context} 可能是 {@link android.content.ContextWrapper}
+     * 从 {@link Context} 中获取 {@link Activity}, {@link Context} 可能是 {@link android.content.ContextWrapper}
      *
      * @return 如果 Activity 销毁了就会返回 null
      */
@@ -112,7 +112,7 @@ public class EHiRouterRequest {
     }
 
     /**
-     * 从参数 context 和 fragment 获取 Activity,
+     * 从参数 {@link Fragment} 和 {@link Context} 获取 Activity,
      *
      * @return 如果 activity 已经销毁并且 fragment 销毁了就会返回 null
      */

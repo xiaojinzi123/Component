@@ -10,10 +10,10 @@ import android.support.annotation.NonNull;
 public interface Consumer<T> {
 
     /**
-     * Consume the given value.
+     * 接受一个参数的方法,允许抛出异常
      *
-     * @param t the value
-     * @throws Exception on error
+     * @param t 方法的参数值
+     * @throws Exception 如果发生异常的时候允许抛出异常
      */
     void accept(@NonNull T t) throws Exception;
 

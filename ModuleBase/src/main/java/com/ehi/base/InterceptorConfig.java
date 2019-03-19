@@ -9,6 +9,6 @@ public class InterceptorConfig {
 
     public static final String USER_LOGIN = "user.login";
     public static final String HELP_CALLPHOEPERMISION = "help.callPhoePermision";
-    public static final String HELP_CAMERA = "help.camera";
+    public static final String HELP_CAMERAPERMISION = "help.cameraPermision";
 
 }
