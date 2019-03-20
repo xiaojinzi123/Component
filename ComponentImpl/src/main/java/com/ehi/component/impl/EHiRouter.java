@@ -688,7 +688,13 @@ public class EHiRouter {
                 mOriginalRequest = originalRequest;
             }
 
+            /**
+             *
+             * @param chain 拦截器执行连接器
+             * @throws Exception
+             */
             @Override
+            @MainThread
             public void intercept(final Chain chain) throws Exception {
                 try {
                     // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了

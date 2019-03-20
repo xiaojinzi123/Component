@@ -167,6 +167,7 @@ public class EHiRxService {
         return Single.create(new SingleOnSubscribe<T>() {
             @Override
             public void subscribe(final SingleEmitter<T> emitter) throws Exception {
+                // 主线程去获取,因为框架任何一个用户自定义的类创建的时候都会在主线程上被创建
                 Utils.postActionToMainThread(new Runnable() {
                     @Override
                     public void run() {
