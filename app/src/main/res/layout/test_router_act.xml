@@ -104,6 +104,14 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="openUrl"
+                    android:text="直接打开一个Url"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:onClick="rxJumpGetDataStartWithTask"
                     android:text="耗时操作后跳转拿数据(不用onActivityResult)"
                     android:textAllCaps="false"

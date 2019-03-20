@@ -14,7 +14,6 @@ import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiParameterAnno;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.EHiRouterRequest;
-import com.ehi.component.support.ParameterSupport;
 
 /**
  * 自定义路由实现的范例
@@ -33,8 +32,8 @@ public class CustomerRouterImpl {
             value = ModuleConfig.System.CALL_PHONE,
             interceptorNames = InterceptorConfig.HELP_CALLPHOEPERMISION
     )
-    public static Intent callPhoneIntent(@NonNull EHiRouterRequest request) {
-        String tel = ParameterSupport.getString(request.bundle, "tel");
+    public static Intent callPhoneIntent(@NonNull EHiRouterRequest request,
+                                         @EHiParameterAnno("tel") String tel) {
         if (TextUtils.isEmpty(tel)) {
             throw new NullPointerException("the tel is empty");
         }

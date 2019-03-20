@@ -2,6 +2,7 @@ package com.ehi.componentdemo.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -355,6 +356,38 @@ public class TestRouterAct extends BaseAct {
                     @Override
                     public void onError(@NonNull EHiRouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_QUERY, null);
+                    }
+                });
+    }
+
+    public void openUrl(View view) {
+
+        Uri uri = new EHiRouterRequest.URIBuilder()
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_QUERY)
+                .query("name", "openUrlName")
+                .query("pass", "openUrlPassword")
+                .buildURI();
+
+        final String url = new EHiRouterRequest.URIBuilder()
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_QUERY)
+                .query("name", "openUrlName")
+                .query("pass", "openUrlPassword")
+                .buildURL();
+
+        EHiRouter
+                .with(this)
+                .url(url)
+                .navigate(new EHiCallbackAdapter() {
+                    @Override
+                    public void onSuccess(@NonNull EHiRouterResult result) {
+                        addInfo(result, null, url, null);
+                    }
+
+                    @Override
+                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                        addInfo(null, errorResult.getError(), url, null);
                     }
                 });
     }

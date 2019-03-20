@@ -12,6 +12,7 @@ import com.ehi.base.bean.User;
 import com.ehi.base.interceptor.TimeConsumingInterceptor;
 import com.ehi.base.view.BaseAct;
 import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.impl.EHiRouter;
 import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterInterceptor;
@@ -457,6 +458,39 @@ public class TestQualityAct extends BaseAct {
                         });
             }
         }.start();
+    }
+
+    /**
+     * 这个会导致界面已经跳过去了,但是回调啥的都没了,因为出现的异常
+     *
+     * @param view
+     */
+    public void crashOnAfterJumpAction(View view) {
+        EHiRxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
+                .requestCode(123)
+                .query("data", "crashOnAfterJumpAction")
+                .afterJumpAction(new com.ehi.component.support.Action() {
+                    @Override
+                    public void run() throws Exception {
+                        throw new NullPointerException("test exception on afterJumpAction");
+                    }
+                })
+                .activityResultCall()
+                .subscribe(new Consumer<EHiActivityResult>() {
+                    @Override
+                    public void accept(EHiActivityResult eHiActivityResult) throws Exception {
+                        ToastUtil.toastShort("测试失败\n,onSuccess");
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        ToastUtil.toastShort("测试成功\n,onError：" + Utils.getRealMessage(throwable));
+                    }
+                });
+
     }
 
 }
