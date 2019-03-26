@@ -12,7 +12,7 @@ import com.ehi.component.impl.RouterResult;
 /**
  * 接口的空实现
  */
-public class EHiCallbackAdapter implements Callback {
+public class CallbackAdapter implements Callback {
 
     @Override
     @MainThread

@@ -9,8 +9,8 @@ import android.widget.Toast;
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.service.inter.component1.Component1Service;
 import com.ehi.base.service.inter.component2.Component2Service;
-import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.impl.service.EHiRxService;
+import com.ehi.component.anno.RouterAnno;
+import com.ehi.component.impl.service.RxService;
 import com.ehi.component.impl.service.Service;
 import com.ehi.component.support.Utils;
 import com.ehi.componentdemo.R;
@@ -26,7 +26,7 @@ import io.reactivex.schedulers.Schedulers;
  *
  * @author xiaojinzi
  */
-@EHiRouterAnno(host = ModuleConfig.App.NAME, value = ModuleConfig.App.TEST_SERVICE, desc = "测试服务的界面")
+@RouterAnno(host = ModuleConfig.App.NAME, value = ModuleConfig.App.TEST_SERVICE, desc = "测试服务的界面")
 public class TestServiceAct extends AppCompatActivity {
 
     @Override
@@ -76,7 +76,7 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void rxServiceUse(View view) {
-        EHiRxService.with(Component1Service.class)
+        RxService.with(Component1Service.class)
                 .flatMap(new Function<Component1Service, SingleSource<String>>() {
                     @Override
                     public SingleSource<String> apply(Component1Service service) throws Exception {

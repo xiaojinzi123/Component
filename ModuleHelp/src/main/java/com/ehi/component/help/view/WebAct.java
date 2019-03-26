@@ -8,10 +8,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component.help.R;
 
-@EHiRouterAnno(
+@RouterAnno(
         host = ModuleConfig.Help.NAME,
         value = ModuleConfig.Help.WEB,
         desc = "项目的网页展示界面"

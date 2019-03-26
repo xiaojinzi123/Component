@@ -5,10 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.user.R;
 
-@EHiRouterAnno(
+@RouterAnno(
         host = ModuleConfig.User.NAME,
         value = ModuleConfig.User.PERSON_CENTER,
         interceptorNames = InterceptorConfig.USER_LOGIN,

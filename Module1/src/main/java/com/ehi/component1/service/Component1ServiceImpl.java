@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.ehi.base.service.inter.component1.Component1Service;
-import com.ehi.component.anno.EHiServiceAnno;
+import com.ehi.component.anno.ServiceAnno;
 import com.ehi.component1.view.Component1Fragment;
 
 import java.util.Random;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 
-@EHiServiceAnno(value = {Component1Service.class})
+@ServiceAnno(value = {Component1Service.class})
 public class Component1ServiceImpl implements Component1Service {
 
     private Random r = new Random();

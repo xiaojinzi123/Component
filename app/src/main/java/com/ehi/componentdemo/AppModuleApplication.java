@@ -4,7 +4,7 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.ehi.component.anno.EHiModuleAppAnno;
+import com.ehi.component.anno.ModuleAppAnno;
 import com.ehi.component.application.IComponentApplication;
 import com.ehi.component.impl.Router;
 import com.ehi.component.impl.RouterErrorResult;
@@ -13,7 +13,7 @@ import com.ehi.component.impl.RouterRequest;
 import com.ehi.component.impl.RouterResult;
 import com.ehi.component.support.Utils;
 
-@EHiModuleAppAnno()
+@ModuleAppAnno()
 public class AppModuleApplication implements IComponentApplication {
 
     private final String tag = "appModule";

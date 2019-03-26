@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.CLASS)
-public @interface EHiInterceptorAnno {
+public @interface InterceptorAnno {
 
     /**
      * 拦截器的名字,这个不能重复,使用这个支持跨组件访问其他业务组件的拦截器

@@ -7,13 +7,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component.impl.Router;
-import com.ehi.component.impl.EHiRxRouter;
+import com.ehi.component.impl.RxRouter;
 import com.ehi.component.impl.application.ModuleManager;
 import com.ehi.componentdemo.R;
 
-@EHiRouterAnno(value = ModuleConfig.App.NAME, desc = "主界面")
+@RouterAnno(value = ModuleConfig.App.NAME, desc = "主界面")
 public class MainAct extends AppCompatActivity {
 
     @Override
@@ -64,7 +64,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouter(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_ROUTER)

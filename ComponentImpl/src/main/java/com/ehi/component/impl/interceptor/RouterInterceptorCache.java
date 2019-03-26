@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.ehi.component.ComponentConfig;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component.cache.Cache;
 import com.ehi.component.cache.CacheType;
 import com.ehi.component.cache.DefaultCacheFactory;
@@ -19,8 +19,8 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * 支持缓存自定义拦截器,工具类
- * 目前就只有给 目标页面在 {@link EHiRouterAnno#interceptors()}
- * or {@link EHiRouterAnno#interceptorNames()}
+ * 目前就只有给 目标页面在 {@link RouterAnno#interceptors()}
+ * or {@link RouterAnno#interceptorNames()}
  * or {@link Router.Builder#interceptors(Class[])}
  * or {@link Router.Builder#interceptorNames(String...)}
  * 写的拦截器做缓存

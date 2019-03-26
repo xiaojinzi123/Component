@@ -1,8 +1,8 @@
 package com.ehi.component;
 
-import com.ehi.component.anno.EHiParameterAnno;
-import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.bean.RouterBean;
+import com.ehi.component.anno.ParameterAnno;
+import com.ehi.component.anno.RouterAnno;
+import com.ehi.component.bean.RouterAnnoBean;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -43,7 +43,7 @@ import javax.tools.Diagnostic;
 @SupportedAnnotationTypes({ComponentUtil.ROUTER_ANNO_CLASS_NAME})
 public class RouterProcessor extends BaseHostProcessor {
 
-    private static final String ROUTER_BEAN_NAME = "com.ehi.component.bean.EHiRouterBean";
+    private static final String ROUTER_BEAN_NAME = "com.ehi.component.bean.RouterBean";
     private static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.ehi.component.bean.CustomerIntentCall";
     private static final String CUSTOMER_JUMP_CLASS_NAME = "com.ehi.component.bean.CustomerJump";
     private static final String ROUTER_REQUEST_CLASS_NAME = "com.ehi.component.impl.RouterRequest";
@@ -93,7 +93,7 @@ public class RouterProcessor extends BaseHostProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         if (CollectionUtils.isNotEmpty(set)) {
-            final Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(EHiRouterAnno.class);
+            final Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(RouterAnno.class);
             parseAnno(routeElements);
             createRouterImpl();
             return true;
@@ -101,7 +101,7 @@ public class RouterProcessor extends BaseHostProcessor {
         return false;
     }
 
-    private final Map<String, RouterBean> routerMap = new HashMap<>();
+    private final Map<String, RouterAnnoBean> routerMap = new HashMap<>();
 
     /**
      * 解析注解
@@ -111,9 +111,9 @@ public class RouterProcessor extends BaseHostProcessor {
     private void parseAnno(Set<? extends Element> routeElements) {
         for (Element element : routeElements) {
             // 如果是一个Activity 才会走到这里
-            final EHiRouterAnno router = element.getAnnotation(EHiRouterAnno.class);
+            final RouterAnno router = element.getAnnotation(RouterAnno.class);
             if (router == null || router.value() == null || router.value().isEmpty()) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value can;t be null or empty string");
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：RouterAnno'value can;t be null or empty string");
                 continue;
             }
             // 如果有host那就必须满足规范
@@ -121,9 +121,9 @@ public class RouterProcessor extends BaseHostProcessor {
                 mMessager.printMessage(Diagnostic.Kind.ERROR, "the host value '" + router.host() + "' can't contains '/'");
             }
             if (routerMap.containsKey(getHostAndPath(router.host(), router.value()))) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：EHiRouterAnno'value is alreay exist");
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：RouterAnno'value is alreay exist");
             }
-            final RouterBean routerBean = new RouterBean();
+            final RouterAnnoBean routerBean = new RouterAnnoBean();
             routerBean.setHost(router.host());
             routerBean.setPath(router.value());
             routerBean.setDesc(router.desc());
@@ -177,9 +177,9 @@ public class RouterProcessor extends BaseHostProcessor {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
         initMapMethodSpecBuilder.addStatement("super.initMap()");
-        routerMap.forEach(new BiConsumer<String, com.ehi.component.bean.RouterBean>() {
+        routerMap.forEach(new BiConsumer<String, RouterAnnoBean>() {
             @Override
-            public void accept(String key, RouterBean routerBean) {
+            public void accept(String key, RouterAnnoBean routerBean) {
                 // 生成变量的名字,每一个变量代表每一个目标界面的配置对象
                 String routerBeanName = "routerBean" + atomicInteger.incrementAndGet();
                 // 生成 Activity 的调用代码
@@ -234,7 +234,7 @@ public class RouterProcessor extends BaseHostProcessor {
         return host + path;
     }
 
-    private List<String> getImplClassName(EHiRouterAnno anno) {
+    private List<String> getImplClassName(RouterAnno anno) {
         List<String> implClassNames = new ArrayList<>();
         try {
             implClassNames.clear();
@@ -260,7 +260,7 @@ public class RouterProcessor extends BaseHostProcessor {
      * @param routerBean
      * @param methodSpecBuilder
      */
-    private void generateActivityCall(RouterBean routerBean, String routerBeanName, MethodSpec.Builder methodSpecBuilder) {
+    private void generateActivityCall(RouterAnnoBean routerBean, String routerBeanName, MethodSpec.Builder methodSpecBuilder) {
         if (!(routerBean.getRawType() instanceof TypeElement)) {
             return;
         }
@@ -283,7 +283,7 @@ public class RouterProcessor extends BaseHostProcessor {
      * @param methodSpecBuilder 生成方法代码的 Builder
      * @return
      */
-    private void generateStaticMethodCall(RouterBean routerBean, String routerBeanName, MethodSpec.Builder methodSpecBuilder) {
+    private void generateStaticMethodCall(RouterAnnoBean routerBean, String routerBeanName, MethodSpec.Builder methodSpecBuilder) {
         if (!(routerBean.getRawType() instanceof ExecutableElement)) {
             return;
         }
@@ -364,39 +364,39 @@ public class RouterProcessor extends BaseHostProcessor {
                 if (variableElement.asType().equals(routerRequestTypeMirror)) {
                     parameterSB.append(NAME_OF_REQUEST);
                 } else if (parameterTypeName.equals(mClassNameString)) { // 如果是一个 String
-                    EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
+                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
                     jumpMethodBuilder.addStatement("String $N = $T.getString(request.bundle,$S)", parameterName, parameterSupportTypeMirror, parameterAnno.value());
                     parameterSB.append(parameterName);
                 } else if (parameterTypeName.equals(ClassName.BYTE) || parameterTypeName.equals(ClassName.BYTE.box())) { // 如果是一个byte or Byte
-                    EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
+                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
                     jumpMethodBuilder.addStatement("byte $N = $T.getByte(request.bundle,$S,(byte)$L)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.byteDefault());
                     parameterSB.append(parameterName);
                 } else if (parameterTypeName.equals(ClassName.SHORT) || parameterTypeName.equals(ClassName.SHORT.box())) { // 如果是一个short or Short
-                    EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
+                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
                     jumpMethodBuilder.addStatement("short $N = $T.getShort(request.bundle,$S,(short)$L)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.shortDefault());
                     parameterSB.append(parameterName);
                 } else if (parameterTypeName.equals(ClassName.INT) || parameterTypeName.equals(ClassName.INT.box())) { // 如果是一个int or Integer
-                    EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
+                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
                     jumpMethodBuilder.addStatement("int $N = $T.getInt(request.bundle,$S,$L)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.intDefault());
                     parameterSB.append(parameterName);
                 } else if (parameterTypeName.equals(ClassName.LONG) || parameterTypeName.equals(ClassName.LONG.box())) { // 如果是一个long or Long
-                    EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
+                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
                     jumpMethodBuilder.addStatement("long $N = $T.getLong(request.bundle,$S,$Ll)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.longDefault());
                     parameterSB.append(parameterName);
                 } else if (parameterTypeName.equals(ClassName.FLOAT) || parameterTypeName.equals(ClassName.FLOAT.box())) { // 如果是一个float or Float
-                    EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
+                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
                     jumpMethodBuilder.addStatement("float $N = $T.getFloat(request.bundle,$S,$Lf)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.floatDefault());
                     parameterSB.append(parameterName);
                 } else if (parameterTypeName.equals(ClassName.DOUBLE) || parameterTypeName.equals(ClassName.DOUBLE.box())) { // 如果是一个double or Double
-                    EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
+                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
                     jumpMethodBuilder.addStatement("double $N = $T.getDouble(request.bundle,$S,$Ld)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.doubleDefault());
                     parameterSB.append(parameterName);
                 } else if (parameterTypeName.equals(ClassName.BOOLEAN) || parameterTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是一个boolean or Boolean
-                    EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
+                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
                     jumpMethodBuilder.addStatement("boolean $N = $T.getBoolean(request.bundle,$S,$L)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.booleanDefault());
                     parameterSB.append(parameterName);
                 } else { // 其他类型的情况,是实现序列化的对象,这种时候我们直接要从 bundle 中获取
-                    EHiParameterAnno parameterAnno = variableElement.getAnnotation(EHiParameterAnno.class);
+                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
                     jumpMethodBuilder.addStatement("$T $N = null", variableElement.asType(), parameterName);
                     // 优先获取 parcelable
                     if (mTypes.isSubtype(variableElement.asType(), parcelableTypeMirror)) {

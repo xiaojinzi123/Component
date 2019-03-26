@@ -28,12 +28,12 @@ public class RxErrorIgnoreUtil {
      * 如果使用者不想处理错误的话,这些错误都可以被默认忽略
      */
     private static final Class[] DEFAULT_IGNORE_ERRORS = {
-            // EHiRxRouter 中需要忽略的错误
+            // RxRouter 中需要忽略的错误
             NavigationFailException.class,
             ActivityResultException.class,
             TargetActivityNotFoundException.class,
             InterceptorNotFoundException.class,
-            // EHiRxService 中需要忽略的错误
+            // RxService 中需要忽略的错误
             ServiceNotFoundException.class,
             ServiceInvokeException.class,
             RxJavaException.class,

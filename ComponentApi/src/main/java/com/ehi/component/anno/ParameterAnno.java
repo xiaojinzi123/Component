@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.CLASS)
-public @interface EHiParameterAnno {
+public @interface ParameterAnno {
 
     /**
      * 参数对应的 key

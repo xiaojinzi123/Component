@@ -8,10 +8,10 @@ import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
 import com.ehi.base.service.inter.user.UserService;
-import com.ehi.component.anno.EHiInterceptorAnno;
+import com.ehi.component.anno.InterceptorAnno;
 import com.ehi.component.error.ServiceNotFoundException;
 import com.ehi.component.impl.RouterInterceptor;
-import com.ehi.component.impl.EHiRxRouter;
+import com.ehi.component.impl.RxRouter;
 import com.ehi.component.impl.service.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -25,7 +25,7 @@ import io.reactivex.schedulers.Schedulers;
  *
  * @author : xiaojinzi 30212
  */
-@EHiInterceptorAnno(InterceptorConfig.USER_LOGIN)
+@InterceptorAnno(InterceptorConfig.USER_LOGIN)
 public class LoginInterceptor implements RouterInterceptor {
 
     public LoginInterceptor(Context app) {
@@ -48,7 +48,7 @@ public class LoginInterceptor implements RouterInterceptor {
             return;
         } else {
             Toast.makeText(context, "目标界面需要登录,拦截器帮您跳转到登录界面登录", Toast.LENGTH_SHORT).show();
-            EHiRxRouter.with(context)
+            RxRouter.with(context)
                     .host(ModuleConfig.User.NAME)
                     .path(ModuleConfig.User.LOGIN)
                     .requestCodeRandom()

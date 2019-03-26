@@ -2,7 +2,7 @@ package com.ehi.componentdemo;
 
 import android.util.Log;
 
-import com.ehi.component.anno.EHiGlobalInterceptorAnno;
+import com.ehi.component.anno.GlobalInterceptorAnno;
 import com.ehi.component.impl.RouterInterceptor;
 
 /**
@@ -11,7 +11,7 @@ import com.ehi.component.impl.RouterInterceptor;
  *
  * @author : xiaojinzi 30212
  */
-@EHiGlobalInterceptorAnno
+@GlobalInterceptorAnno
 public class MonitorInterceptor implements RouterInterceptor {
 
     @Override

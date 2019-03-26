@@ -16,14 +16,14 @@ import com.ehi.base.ModuleConfig;
 import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.base.view.BaseAct;
 import com.ehi.component.ComponentConfig;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component.impl.Router;
 import com.ehi.component.impl.RouterErrorResult;
 import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.RouterRequest;
 import com.ehi.component.impl.RouterResult;
-import com.ehi.component.impl.EHiRxRouter;
-import com.ehi.component.support.EHiCallbackAdapter;
+import com.ehi.component.impl.RxRouter;
+import com.ehi.component.support.CallbackAdapter;
 import com.ehi.componentdemo.R;
 
 import java.util.concurrent.TimeUnit;
@@ -39,7 +39,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class TestRouterAct extends BaseAct {
 
-    @EHiRouterAnno(
+    @RouterAnno(
             host = ModuleConfig.App.NAME,
             value = ModuleConfig.App.TEST_ROUTER,
             desc = "测试跳转的界面"
@@ -84,7 +84,7 @@ public class TestRouterAct extends BaseAct {
                 .with(TestRouterAct.this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_IN_OTHER_MODULE)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_IN_OTHER_MODULE, null);
@@ -105,7 +105,7 @@ public class TestRouterAct extends BaseAct {
                 .putString("data", "normalJump")
                 .putString("name", "cxj")
                 .putInt("age", 25)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "?data=normalJump", null);
@@ -120,12 +120,12 @@ public class TestRouterAct extends BaseAct {
 
     public void normalJumpTwice(View view) {
 
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .putString("data", "normalJumpTwice1")
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=normalJumpTwice1", null);
@@ -137,12 +137,12 @@ public class TestRouterAct extends BaseAct {
                     }
                 });
 
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .putString("data", "normalJumpTwice2")
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=normalJumpTwice2", null);
@@ -157,13 +157,13 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void jumpGetData(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .putString("data", "jumpGetData")
                 .requestCode(123)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=jumpGetData", 123);
@@ -180,7 +180,7 @@ public class TestRouterAct extends BaseAct {
         Router.with(this)
                 .scheme("https")
                 .host("www.baidu.com")
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "https://www.baidu.com", null);
@@ -194,7 +194,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void rxJumpGetData(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -215,7 +215,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void rxJumpGetDataAfterLogin(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -241,7 +241,7 @@ public class TestRouterAct extends BaseAct {
         SingleTransformer<String, Intent> transformer = new SingleTransformer<String, Intent>() {
             @Override
             public SingleSource<Intent> apply(Single<String> upstream) {
-                return EHiRxRouter
+                return RxRouter
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST)
@@ -287,7 +287,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void jumpWithInterceptor(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -313,7 +313,7 @@ public class TestRouterAct extends BaseAct {
                     }
                 })
                 .interceptorNames(InterceptorConfig.USER_LOGIN)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=jumpWithInterceptor", 123);
@@ -347,7 +347,7 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST_QUERY)
                 .query("name", "我是小金子")
                 .query("pass", "我是小金子的密码")
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_QUERY + "?name=我是小金子&pass=我是小金子的密码", null);
@@ -379,7 +379,7 @@ public class TestRouterAct extends BaseAct {
         Router
                 .with(this)
                 .url(url)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, url, null);
@@ -397,7 +397,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_LOGIN)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_LOGIN, null);
@@ -415,7 +415,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_DIALOG)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_DIALOG, null);
@@ -433,7 +433,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module2.NAME)
                 .path(ModuleConfig.Module2.MAIN)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
@@ -458,7 +458,7 @@ public class TestRouterAct extends BaseAct {
                         Toast.makeText(TestRouterAct.this, intent.toString(), Toast.LENGTH_SHORT).show();
                     }
                 })
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
@@ -474,7 +474,7 @@ public class TestRouterAct extends BaseAct {
 
     public void testMatchesResultCode(View v) {
 
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -497,7 +497,7 @@ public class TestRouterAct extends BaseAct {
 
     public void testUseRequestCodeTiwce(View v) {
 
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -516,7 +516,7 @@ public class TestRouterAct extends BaseAct {
                     }
                 });
 
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_DIALOG)
@@ -532,7 +532,7 @@ public class TestRouterAct extends BaseAct {
 
     public void testCustomerCallPhone(View view) {
 
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
@@ -548,7 +548,7 @@ public class TestRouterAct extends BaseAct {
 
     public void testCustomerJump(View view) {
 
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.SYSTEM_APP_DETAIL)
@@ -562,12 +562,12 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void testCallbackAfterFinish(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .interceptors(DialogShowInterceptor.class)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                         // 这里的代码不会被调用
@@ -584,7 +584,7 @@ public class TestRouterAct extends BaseAct {
 
     public void testBeforAndAfterAction(View view) {
 
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
@@ -601,7 +601,7 @@ public class TestRouterAct extends BaseAct {
                         Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                     }
@@ -631,7 +631,7 @@ public class TestRouterAct extends BaseAct {
                             .create();
                     dialog.show();
                 })
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "?data=normalJump", null);

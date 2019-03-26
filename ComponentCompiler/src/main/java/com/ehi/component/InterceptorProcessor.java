@@ -1,7 +1,7 @@
 package com.ehi.component;
 
-import com.ehi.component.anno.EHiGlobalInterceptorAnno;
-import com.ehi.component.anno.EHiInterceptorAnno;
+import com.ehi.component.anno.GlobalInterceptorAnno;
+import com.ehi.component.anno.InterceptorAnno;
 import com.ehi.component.bean.InterceptorBean;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
@@ -35,7 +35,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
 /**
- * 处理拦截器的注解驱动器,目的是为了处理 {@link EHiGlobalInterceptorAnno} 和 {@link EHiInterceptorAnno}
+ * 处理拦截器的注解驱动器,目的是为了处理 {@link GlobalInterceptorAnno} 和 {@link InterceptorAnno}
  * time   : 2018/12/26
  *
  * @author : xiaojinzi 30212
@@ -67,8 +67,8 @@ public class InterceptorProcessor extends BaseHostProcessor {
             return false;
         }
         if (CollectionUtils.isNotEmpty(set)) {
-            final Set<? extends Element> globalInterceptorElements = roundEnvironment.getElementsAnnotatedWith(EHiGlobalInterceptorAnno.class);
-            final Set<? extends Element> interceptorElements = roundEnvironment.getElementsAnnotatedWith(EHiInterceptorAnno.class);
+            final Set<? extends Element> globalInterceptorElements = roundEnvironment.getElementsAnnotatedWith(GlobalInterceptorAnno.class);
+            final Set<? extends Element> interceptorElements = roundEnvironment.getElementsAnnotatedWith(InterceptorAnno.class);
             parseGlobalInterceptAnnotation(globalInterceptorElements);
             parseNormalInterceptAnnotation(interceptorElements);
             createImpl();
@@ -88,7 +88,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
             final TypeMirror tm = element.asType();
             final boolean type = !(element instanceof TypeElement);
             final boolean subType = !mTypes.isSubtype(tm, typeInterceptor);
-            final EHiGlobalInterceptorAnno anno = element.getAnnotation(EHiGlobalInterceptorAnno.class);
+            final GlobalInterceptorAnno anno = element.getAnnotation(GlobalInterceptorAnno.class);
             if (type || subType || anno == null) {
                 if (type) {// 比如是类
                     mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
@@ -110,7 +110,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
             final TypeMirror tm = element.asType();
             final boolean type = !(element instanceof TypeElement);
             final boolean subType = !mTypes.isSubtype(tm, typeInterceptor);
-            final EHiInterceptorAnno anno = element.getAnnotation(EHiInterceptorAnno.class);
+            final InterceptorAnno anno = element.getAnnotation(InterceptorAnno.class);
             if (type || subType || anno == null) {
                 if (type) {// 比如是类
                     mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");

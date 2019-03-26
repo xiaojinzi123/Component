@@ -2,10 +2,11 @@ package com.ehi.component.bean;
 
 import android.support.annotation.NonNull;
 
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component.impl.RouterRequest;
 
 /**
- * 自定义跳转的时候,会调用的接口,{@link com.ehi.component.anno.EHiRouterAnno} 注解标记在静态方法上的时候
+ * 自定义跳转的时候,会调用的接口,{@link RouterAnno} 注解标记在静态方法上的时候
  * 当返回值是 void 的时候,就会产生一个此接口的实现类来实现目标界面的跳转
  * time   : 2019/01/07
  *

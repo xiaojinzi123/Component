@@ -1,6 +1,6 @@
 package com.ehi.component;
 
-import com.ehi.component.anno.EHiModuleAppAnno;
+import com.ehi.component.anno.ModuleAppAnno;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -31,7 +31,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
 /**
- * 负责处理 {@link EHiModuleAppAnno}
+ * 负责处理 {@link ModuleAppAnno}
  */
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
@@ -57,7 +57,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
             return false;
         }
         if (CollectionUtils.isNotEmpty(set)) {
-            Set<? extends Element> moduleAppElements = roundEnvironment.getElementsAnnotatedWith(EHiModuleAppAnno.class);
+            Set<? extends Element> moduleAppElements = roundEnvironment.getElementsAnnotatedWith(ModuleAppAnno.class);
             parseAnnotation(moduleAppElements);
             createImpl();
             return true;
@@ -77,11 +77,11 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 continue;
             }
             if (!mTypes.isSubtype(tm, typeApplication)) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'EHiModuleAppAnno' annotation");
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'ModuleAppAnno' annotation");
                 continue;
             }
             // 如果是一个 Application
-            EHiModuleAppAnno moduleApp = element.getAnnotation(EHiModuleAppAnno.class);
+            ModuleAppAnno moduleApp = element.getAnnotation(ModuleAppAnno.class);
             if (moduleApp == null) {
                 continue;
             }

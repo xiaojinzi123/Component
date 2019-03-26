@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
+ADDED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
 	package
-		ADDED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:2:5-29
-		INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
-		INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		ADDED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:2:5-29
+		INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
 	android:versionName
-		INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
-		ADDED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
-		INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		ADDED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
+		INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
 	android:versionCode
-		INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
-		ADDED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
-		INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		ADDED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:1-2:32
+		INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
 	xmlns:android
-		ADDED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:11-69
+		ADDED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml:1:11-69
 uses-sdk
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
-INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
-		ADDED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
-		INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		ADDED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
-		ADDED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
-		INJECTED from /Users/cxj/Code/android/demo/EHiComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		ADDED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml
+		INJECTED from /Users/cxj/Code/android/demo/ComponentDemo/RouterApiImpl/src/main/AndroidManifest.xml

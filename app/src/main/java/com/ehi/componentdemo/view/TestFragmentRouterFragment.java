@@ -19,8 +19,8 @@ import com.ehi.component.impl.RouterErrorResult;
 import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.RouterRequest;
 import com.ehi.component.impl.RouterResult;
-import com.ehi.component.impl.EHiRxRouter;
-import com.ehi.component.support.EHiCallbackAdapter;
+import com.ehi.component.impl.RxRouter;
+import com.ehi.component.support.CallbackAdapter;
 import com.ehi.componentdemo.R;
 
 import io.reactivex.functions.Consumer;
@@ -80,7 +80,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
     }
 
     private void rxJumpGetData(){
-        EHiRxRouter
+        RxRouter
                 .withFragment(this)
                 .host("component1")
                 .path("test")
@@ -108,7 +108,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .query("data", "normalJump")
                 .putString("name", "cxj1")
                 .putInt("age", 25)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=normalJump", null);
@@ -122,13 +122,13 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
     }
 
     public void testCallbackAfterFinish() {
-        EHiRxRouter
+        RxRouter
                 .withFragment(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .putString("tel", "xxx")
                 .interceptors(DialogShowInterceptor.class)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                     }
@@ -144,7 +144,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
     }
 
     public void testCallbackAfterFinishActivity() {
-        EHiRxRouter
+        RxRouter
                 .withFragment(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
@@ -166,7 +166,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                     }
                 })
                 .interceptors(DialogShowInterceptor.class)
-                .navigate(new EHiCallbackAdapter(){
+                .navigate(new CallbackAdapter(){
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                         Toast.makeText(ComponentConfig.getApplication(), "onEvent", Toast.LENGTH_SHORT).show();

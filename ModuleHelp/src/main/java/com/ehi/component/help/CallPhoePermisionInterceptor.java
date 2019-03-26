@@ -5,10 +5,10 @@ import android.Manifest;
 import com.ehi.base.InterceptorConfig;
 import com.ehi.base.util.PermissionsCallback;
 import com.ehi.base.util.PermissionsUtil;
-import com.ehi.component.anno.EHiInterceptorAnno;
+import com.ehi.component.anno.InterceptorAnno;
 import com.ehi.component.impl.RouterInterceptor;
 
-@EHiInterceptorAnno(InterceptorConfig.HELP_CALLPHOEPERMISION)
+@InterceptorAnno(InterceptorConfig.HELP_CALLPHOEPERMISION)
 public class CallPhoePermisionInterceptor implements RouterInterceptor {
 
     @Override

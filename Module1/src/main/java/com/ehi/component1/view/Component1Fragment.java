@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.impl.Router;
-import com.ehi.component.impl.EHiRxRouter;
+import com.ehi.component.impl.RxRouter;
 import com.ehi.component1.R;
 
 import io.reactivex.functions.Consumer;
@@ -42,7 +42,7 @@ public class Component1Fragment extends Fragment {
         bt_rx_get.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EHiRxRouter
+                RxRouter
                         .withFragment(Component1Fragment.this)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST)

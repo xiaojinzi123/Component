@@ -26,7 +26,7 @@ public class LogUtil {
 
     @AnyThread
     public static void log(@NonNull String message) {
-        log("EHiComponent", message);
+        log("Component", message);
     }
 
 }

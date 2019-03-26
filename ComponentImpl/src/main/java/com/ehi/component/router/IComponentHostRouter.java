@@ -2,7 +2,7 @@ package com.ehi.component.router;
 
 import android.support.annotation.NonNull;
 
-import com.ehi.component.bean.EHiRouterBean;
+import com.ehi.component.bean.RouterBean;
 
 import java.util.Map;
 
@@ -29,6 +29,6 @@ public interface IComponentHostRouter {
      * @return
      */
     @NonNull
-    Map<String, EHiRouterBean> getRouterMap();
+    Map<String, RouterBean> getRouterMap();
 
 }

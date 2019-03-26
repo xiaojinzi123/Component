@@ -11,7 +11,7 @@ public class ModuleConfig {
     /**
      * 项目的 Scheme,用于跳转项目中的界面
      */
-    public static final String APP_SCHEME = "EHi";
+    public static final String APP_SCHEME = "router";
     public static final String HTTP_SCHEME = "http";
     public static final String HTTPS_SCHEME = "https";
 
