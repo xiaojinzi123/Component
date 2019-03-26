@@ -2,7 +2,7 @@ package com.ehi.component.interceptor;
 
 import android.support.annotation.Nullable;
 
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 
 /**
  * time   : 2018/12/26
@@ -18,6 +18,6 @@ public interface IComponentInterceptor {
      * @return
      */
     @Nullable
-    EHiRouterInterceptor getByName(@Nullable String name);
+    RouterInterceptor getByName(@Nullable String name);
 
 }

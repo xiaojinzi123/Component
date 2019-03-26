@@ -3,8 +3,8 @@ package com.ehi.component.interceptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.ehi.component.impl.EHiRouterInterceptor;
-import com.ehi.component.impl.interceptor.EHiInterceptorBean;
+import com.ehi.component.impl.RouterInterceptor;
+import com.ehi.component.impl.interceptor.InterceptorBean;
 
 import java.util.List;
 import java.util.Map;
@@ -26,13 +26,13 @@ public interface IComponentHostInterceptor extends IComponentInterceptor {
 
     /**
      * 获取全局的拦截器列表,外面使用的地方做了缓存
-     * 然后 {@link EHiInterceptorBean#interceptor} 拦截器也可以是 Class 对象,
+     * 然后 {@link InterceptorBean#interceptor} 拦截器也可以是 Class 对象,
      * 让外面使用的地方去初始化也可以
      *
      * @return
      */
     @NonNull
-    List<EHiInterceptorBean> globalInterceptorList();
+    List<InterceptorBean> globalInterceptorList();
 
     /**
      * 获取普通拦截器的所有名称,然后后面会根据名称来寻找拦截器
@@ -50,6 +50,6 @@ public interface IComponentHostInterceptor extends IComponentInterceptor {
      * @return
      */
     @Nullable
-    Map<String, Class<? extends EHiRouterInterceptor>> getInterceptorMap();
+    Map<String, Class<? extends RouterInterceptor>> getInterceptorMap();
 
 }

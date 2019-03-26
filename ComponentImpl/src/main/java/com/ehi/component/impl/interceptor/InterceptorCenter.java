@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.InterceptorNameExistException;
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.Router;
 import com.ehi.component.interceptor.IComponentCenterInterceptor;
 import com.ehi.component.interceptor.IComponentHostInterceptor;
@@ -26,26 +26,26 @@ import java.util.Set;
  * @author : xiaojinzi 30212
  * @hide
  */
-public class EHiInterceptorCenter implements IComponentCenterInterceptor {
+public class InterceptorCenter implements IComponentCenterInterceptor {
 
-    private EHiInterceptorCenter() {
+    private InterceptorCenter() {
     }
 
     /**
      * 单例对象
      */
-    private static volatile EHiInterceptorCenter instance;
+    private static volatile InterceptorCenter instance;
 
     /**
      * 获取单例对象
      *
      * @return
      */
-    public static EHiInterceptorCenter getInstance() {
+    public static InterceptorCenter getInstance() {
         if (instance == null) {
-            synchronized (EHiInterceptorCenter.class) {
+            synchronized (InterceptorCenter.class) {
                 if (instance == null) {
-                    instance = new EHiInterceptorCenter();
+                    instance = new InterceptorCenter();
                 }
             }
         }
@@ -60,13 +60,13 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
     /**
      * 公共的拦截器列表
      */
-    private List<EHiRouterInterceptor> mGlobalInterceptorList = new ArrayList<>();
+    private List<RouterInterceptor> mGlobalInterceptorList = new ArrayList<>();
 
     /**
      * 每个业务组件的拦截器 name --> Class 映射关系的总的集合
      * 这种拦截器不是全局拦截器,是随时随地使用的拦截器,见 {@link Router.Builder#interceptorNames(String...)}
      */
-    private Map<String, Class<? extends EHiRouterInterceptor>> mInterceptorMap = new HashMap<>();
+    private Map<String, Class<? extends RouterInterceptor>> mInterceptorMap = new HashMap<>();
 
     /**
      * 是否公共的拦截器列表发生变化
@@ -78,7 +78,7 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
      *
      * @return
      */
-    public List<EHiRouterInterceptor> getGlobalInterceptorList() {
+    public List<RouterInterceptor> getGlobalInterceptorList() {
         if (isInterceptorListHaveChange) {
             loadAllGlobalInterceptor();
             isInterceptorListHaveChange = false;
@@ -94,7 +94,7 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
         isInterceptorListHaveChange = true;
         moduleInterceptorMap.put(interceptor.getHost(), interceptor);
         // 子拦截器列表
-        Map<String, Class<? extends EHiRouterInterceptor>> childInterceptorMap = interceptor.getInterceptorMap();
+        Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = interceptor.getInterceptorMap();
         if (childInterceptorMap != null) {
             mInterceptorMap.putAll(childInterceptorMap);
         }
@@ -116,11 +116,11 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
         }
         isInterceptorListHaveChange = true;
         // 子拦截器列表
-        Map<String, Class<? extends EHiRouterInterceptor>> childInterceptorMap = interceptor.getInterceptorMap();
+        Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = interceptor.getInterceptorMap();
         if (childInterceptorMap != null) {
-            for (Map.Entry<String, Class<? extends EHiRouterInterceptor>> entry : childInterceptorMap.entrySet()) {
+            for (Map.Entry<String, Class<? extends RouterInterceptor>> entry : childInterceptorMap.entrySet()) {
                 mInterceptorMap.remove(entry.getKey());
-                EHiRouterInterceptorCache.removeCache(entry.getValue());
+                RouterInterceptorCache.removeCache(entry.getValue());
             }
         }
     }
@@ -136,16 +136,16 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
      */
     private void loadAllGlobalInterceptor() {
         mGlobalInterceptorList.clear();
-        List<EHiInterceptorBean> totalList = new ArrayList<>();
+        List<InterceptorBean> totalList = new ArrayList<>();
         // 加载各个子拦截器对象中的拦截器列表
         for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
-            List<EHiInterceptorBean> list = entry.getValue().globalInterceptorList();
+            List<InterceptorBean> list = entry.getValue().globalInterceptorList();
             totalList.addAll(list);
         }
         // 排序所有的拦截器对象,按照优先级排序
-        Collections.sort(totalList, new Comparator<EHiInterceptorBean>() {
+        Collections.sort(totalList, new Comparator<InterceptorBean>() {
             @Override
-            public int compare(EHiInterceptorBean o1, EHiInterceptorBean o2) {
+            public int compare(InterceptorBean o1, InterceptorBean o2) {
                 if (o1.priority == o2.priority) {
                     return 0;
                 } else if (o1.priority > o2.priority) {
@@ -155,7 +155,7 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
                 }
             }
         });
-        for (EHiInterceptorBean interceptorBean : totalList) {
+        for (InterceptorBean interceptorBean : totalList) {
             mGlobalInterceptorList.add(interceptorBean.interceptor);
         }
     }
@@ -174,18 +174,18 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
 
     @Nullable
     @Override
-    public EHiRouterInterceptor getByName(@Nullable String interceptorName) {
+    public RouterInterceptor getByName(@Nullable String interceptorName) {
         if (interceptorName == null) {
             return null;
         }
         // 先到缓存中找
-        EHiRouterInterceptor result = null;
+        RouterInterceptor result = null;
         // 拿到拦截器的 Class 对象
-        Class<? extends EHiRouterInterceptor> interceptorClass = mInterceptorMap.get(interceptorName);
+        Class<? extends RouterInterceptor> interceptorClass = mInterceptorMap.get(interceptorName);
         if (interceptorClass == null) {
             result = null;
         } else {
-            result = EHiRouterInterceptorCache.getInterceptorByClass(interceptorClass);
+            result = RouterInterceptorCache.getInterceptorByClass(interceptorClass);
         }
         return result;
     }

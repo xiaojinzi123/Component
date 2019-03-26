@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.RouterRequest;
 
 import java.util.List;
@@ -42,6 +42,6 @@ public interface IComponentRouter {
      * @return
      */
     @NonNull
-    List<EHiRouterInterceptor> interceptors(@NonNull Uri uri) throws Exception;
+    List<RouterInterceptor> interceptors(@NonNull Uri uri) throws Exception;
 
 }

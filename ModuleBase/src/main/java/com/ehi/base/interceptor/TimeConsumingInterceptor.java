@@ -1,6 +1,6 @@
 package com.ehi.base.interceptor;
 
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 
 /**
  * 耗时拦截器
@@ -8,7 +8,7 @@ import com.ehi.component.impl.EHiRouterInterceptor;
  *
  * @author : xiaojinzi 30212
  */
-public class TimeConsumingInterceptor implements EHiRouterInterceptor {
+public class TimeConsumingInterceptor implements RouterInterceptor {
     @Override
     public void intercept(final Chain chain) throws Exception {
         new Thread() {

@@ -17,9 +17,9 @@ import com.ehi.component.support.Utils;
  *
  * @author xiaojinzi 30212
  */
-class EHiRouterUtil {
+class RouterUtil {
 
-    private EHiRouterUtil() {
+    private RouterUtil() {
     }
 
     /**
@@ -27,7 +27,7 @@ class EHiRouterUtil {
      *
      * @param callback
      */
-    public static void cancelCallback(@NonNull final RouterRequest request, @Nullable final EHiCallback callback) {
+    public static void cancelCallback(@NonNull final RouterRequest request, @Nullable final Callback callback) {
         if (Utils.isMainThread()) {
             cancelCallbackOnMainThread(request, callback);
         } else {
@@ -45,7 +45,7 @@ class EHiRouterUtil {
      * @param callback
      */
     private static void cancelCallbackOnMainThread(@NonNull RouterRequest request,
-                                                   @Nullable final EHiCallback callback) {
+                                                   @Nullable final Callback callback) {
         LogUtil.log(Router.TAG, "路由取消：" + request.uri.toString());
         if (callback == null) {
             return;
@@ -59,8 +59,8 @@ class EHiRouterUtil {
      * @param callback
      * @param errorResult
      */
-    public static void errorCallback(@Nullable final EHiCallback callback,
-                                     @NonNull final EHiRouterErrorResult errorResult) {
+    public static void errorCallback(@Nullable final Callback callback,
+                                     @NonNull final RouterErrorResult errorResult) {
         if (Utils.isMainThread()) {
             errorCallbackOnMainThread(callback, errorResult);
         } else {
@@ -78,8 +78,8 @@ class EHiRouterUtil {
      * @param callback
      * @param errorResult
      */
-    private static void errorCallbackOnMainThread(@Nullable final EHiCallback callback,
-                                                  @NonNull final EHiRouterErrorResult errorResult) {
+    private static void errorCallbackOnMainThread(@Nullable final Callback callback,
+                                                  @NonNull final RouterErrorResult errorResult) {
         if (errorResult == null) {
             return;
         }
@@ -95,8 +95,8 @@ class EHiRouterUtil {
         callback.onEvent(null, errorResult);
     }
 
-    public static void successCallback(@Nullable final EHiCallback callback,
-                                       @NonNull final EHiRouterResult successResult) {
+    public static void successCallback(@Nullable final Callback callback,
+                                       @NonNull final RouterResult successResult) {
         if (Utils.isMainThread()) {
             successCallbackOnMainThread(callback, successResult);
         } else {
@@ -110,8 +110,8 @@ class EHiRouterUtil {
         deliveryListener(successResult, null, null);
     }
 
-    public static void successCallbackOnMainThread(@Nullable final EHiCallback callback,
-                                                   @NonNull final EHiRouterResult result) {
+    public static void successCallbackOnMainThread(@Nullable final Callback callback,
+                                                   @NonNull final RouterResult result) {
         if (result == null) {
             return;
         }
@@ -127,8 +127,8 @@ class EHiRouterUtil {
         callback.onEvent(result, null);
     }
 
-    public static void deliveryListener(@Nullable final EHiRouterResult successResult,
-                                        @Nullable final EHiRouterErrorResult errorResult,
+    public static void deliveryListener(@Nullable final RouterResult successResult,
+                                        @Nullable final RouterErrorResult errorResult,
                                         @Nullable final RouterRequest cancelRequest) {
         if (Utils.isMainThread()) {
             deliveryListenerOnMainThread(successResult, errorResult, cancelRequest);
@@ -142,10 +142,10 @@ class EHiRouterUtil {
         }
     }
 
-    public static void deliveryListenerOnMainThread(@Nullable final EHiRouterResult successResult,
-                                                    @Nullable final EHiRouterErrorResult errorResult,
+    public static void deliveryListenerOnMainThread(@Nullable final RouterResult successResult,
+                                                    @Nullable final RouterErrorResult errorResult,
                                                     @Nullable final RouterRequest cancelRequest) {
-        for (EHiRouterListener interceptor : Router.routerListeners) {
+        for (RouterListener interceptor : Router.routerListeners) {
             try {
                 if (successResult != null) {
                     interceptor.onSuccess(successResult);

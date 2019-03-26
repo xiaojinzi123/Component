@@ -11,7 +11,7 @@ import com.ehi.base.service.inter.component1.Component1Service;
 import com.ehi.base.service.inter.component2.Component2Service;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.service.EHiRxService;
-import com.ehi.component.impl.service.EHiService;
+import com.ehi.component.impl.service.Service;
 import com.ehi.component.support.Utils;
 import com.ehi.componentdemo.R;
 
@@ -60,7 +60,7 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void findComponent2Service(View view) {
-        service2 = EHiService.get(Component2Service.class);
+        service2 = Service.get(Component2Service.class);
         if (service2 == null) {
             Toast.makeText(this, "Component2Service服务没找到", Toast.LENGTH_SHORT).show();
             return;
@@ -68,7 +68,7 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void findComponent1Service(View view) {
-        service1 = EHiService.get(Component1Service.class);
+        service1 = Service.get(Component1Service.class);
         if (service1 == null) {
             Toast.makeText(this, "Component1Service服务没找到", Toast.LENGTH_SHORT).show();
             return;

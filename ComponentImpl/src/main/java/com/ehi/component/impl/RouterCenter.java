@@ -16,8 +16,8 @@ import com.ehi.component.bean.EHiRouterBean;
 import com.ehi.component.error.ignore.InterceptorNotFoundException;
 import com.ehi.component.error.ignore.NavigationFailException;
 import com.ehi.component.error.ignore.TargetActivityNotFoundException;
-import com.ehi.component.impl.interceptor.EHiInterceptorCenter;
-import com.ehi.component.impl.interceptor.EHiRouterInterceptorCache;
+import com.ehi.component.impl.interceptor.InterceptorCenter;
+import com.ehi.component.impl.interceptor.RouterInterceptorCache;
 import com.ehi.component.router.IComponentCenterRouter;
 import com.ehi.component.router.IComponentHostRouter;
 import com.ehi.component.support.ParameterSupport;
@@ -39,21 +39,21 @@ import static com.ehi.component.ComponentConstants.SEPARATOR;
  * @author xiaojinzi 30212
  * @hide
  */
-public class EHiRouterCenter implements IComponentCenterRouter {
+public class RouterCenter implements IComponentCenterRouter {
 
     /**
      * 单例对象
      */
-    private static volatile EHiRouterCenter instance;
+    private static volatile RouterCenter instance;
 
-    private EHiRouterCenter() {
+    private RouterCenter() {
     }
 
-    public static EHiRouterCenter getInstance() {
+    public static RouterCenter getInstance() {
         if (instance == null) {
-            synchronized (EHiRouterCenter.class) {
+            synchronized (RouterCenter.class) {
                 if (instance == null) {
-                    instance = new EHiRouterCenter();
+                    instance = new RouterCenter();
                 }
             }
         }
@@ -185,23 +185,23 @@ public class EHiRouterCenter implements IComponentCenterRouter {
 
     @NonNull
     @Override
-    public synchronized List<EHiRouterInterceptor> interceptors(@NonNull Uri uri) {
+    public synchronized List<RouterInterceptor> interceptors(@NonNull Uri uri) {
         // 获取目标对象
         final String targetUrl = getTargetUrl(uri);
         final EHiRouterBean routerBean = routerMap.get(targetUrl);
         if (routerBean == null) {
             return Collections.emptyList();
         }
-        final List<Class<? extends EHiRouterInterceptor>> targetInterceptors = routerBean.getInterceptors();
+        final List<Class<? extends RouterInterceptor>> targetInterceptors = routerBean.getInterceptors();
         final List<String> targetInterceptorNames = routerBean.getInterceptorNames();
         // 如果没有拦截器直接返回 null
         if ((targetInterceptors == null || targetInterceptors.isEmpty()) && (targetInterceptorNames == null || targetInterceptorNames.isEmpty())) {
             return Collections.emptyList();
         }
-        final List<EHiRouterInterceptor> result = new ArrayList<>();
+        final List<RouterInterceptor> result = new ArrayList<>();
         if (targetInterceptors != null) {
-            for (Class<? extends EHiRouterInterceptor> interceptorClass : targetInterceptors) {
-                final EHiRouterInterceptor interceptor = EHiRouterInterceptorCache.getInterceptorByClass(interceptorClass);
+            for (Class<? extends RouterInterceptor> interceptorClass : targetInterceptors) {
+                final RouterInterceptor interceptor = RouterInterceptorCache.getInterceptorByClass(interceptorClass);
                 if (interceptor == null) {
                     throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + uri.toString());
                 }
@@ -210,7 +210,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
         }
         if (targetInterceptorNames != null) {
             for (String interceptorName : targetInterceptorNames) {
-                final EHiRouterInterceptor interceptor = EHiInterceptorCenter.getInstance().getByName(interceptorName);
+                final RouterInterceptor interceptor = InterceptorCenter.getInstance().getByName(interceptorName);
                 if (interceptor == null) {
                     throw new InterceptorNotFoundException("can't find the interceptor and it's name is " + interceptorName + ",target url is " + uri.toString());
                 }

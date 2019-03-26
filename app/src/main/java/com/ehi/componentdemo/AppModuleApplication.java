@@ -7,10 +7,10 @@ import android.util.Log;
 import com.ehi.component.anno.EHiModuleAppAnno;
 import com.ehi.component.application.IComponentApplication;
 import com.ehi.component.impl.Router;
-import com.ehi.component.impl.EHiRouterErrorResult;
-import com.ehi.component.impl.EHiRouterListener;
+import com.ehi.component.impl.RouterErrorResult;
+import com.ehi.component.impl.RouterListener;
 import com.ehi.component.impl.RouterRequest;
-import com.ehi.component.impl.EHiRouterResult;
+import com.ehi.component.impl.RouterResult;
 import com.ehi.component.support.Utils;
 
 @EHiModuleAppAnno()
@@ -18,15 +18,15 @@ public class AppModuleApplication implements IComponentApplication {
 
     private final String tag = "appModule";
 
-    private EHiRouterListener listener = new EHiRouterListener() {
+    private RouterListener listener = new RouterListener() {
         @Override
-        public void onSuccess(@NonNull EHiRouterResult successResult) throws Exception {
+        public void onSuccess(@NonNull RouterResult successResult) throws Exception {
             RouterRequest originalRequest = successResult.getOriginalRequest();
             Log.e(tag, "路由成功：" + originalRequest.uri.toString() + ",requestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode));
         }
 
         @Override
-        public void onError(EHiRouterErrorResult errorResult) throws Exception {
+        public void onError(RouterErrorResult errorResult) throws Exception {
             RouterRequest originalRequest = errorResult.getOriginalRequest();
             if (originalRequest == null) {
                 Log.e(tag, "路由失败：没开始就失败了,errorMsg = " + Utils.getRealMessage(errorResult.getError()));

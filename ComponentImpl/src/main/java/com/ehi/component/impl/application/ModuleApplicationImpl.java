@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author xiaojinzi 30212
  */
-abstract class EHiModuleApplicationImpl implements IComponentHostApplication {
+abstract class ModuleApplicationImpl implements IComponentHostApplication {
 
     /**
      * Application的集合

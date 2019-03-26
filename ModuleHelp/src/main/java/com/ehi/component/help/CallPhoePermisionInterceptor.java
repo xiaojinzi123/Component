@@ -6,10 +6,10 @@ import com.ehi.base.InterceptorConfig;
 import com.ehi.base.util.PermissionsCallback;
 import com.ehi.base.util.PermissionsUtil;
 import com.ehi.component.anno.EHiInterceptorAnno;
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 
 @EHiInterceptorAnno(InterceptorConfig.HELP_CALLPHOEPERMISION)
-public class CallPhoePermisionInterceptor implements EHiRouterInterceptor {
+public class CallPhoePermisionInterceptor implements RouterInterceptor {
 
     @Override
     public void intercept(final Chain chain) throws Exception {

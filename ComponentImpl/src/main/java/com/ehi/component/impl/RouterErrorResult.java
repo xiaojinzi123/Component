@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
  *
  * @author xiaojinzi 30212
  */
-public class EHiRouterErrorResult {
+public class RouterErrorResult {
 
     /**
      * 当原始的 request 对象都没构建出来的时候发生错误了,那么这个参数就是可能为 null 的
@@ -27,11 +27,11 @@ public class EHiRouterErrorResult {
     @NonNull
     private final Throwable mError;
 
-    public EHiRouterErrorResult(@NonNull Throwable error) {
+    public RouterErrorResult(@NonNull Throwable error) {
         this(null, error);
     }
 
-    public EHiRouterErrorResult(@Nullable RouterRequest originalRequest, @NonNull Throwable error) {
+    public RouterErrorResult(@Nullable RouterRequest originalRequest, @NonNull Throwable error) {
         this.mOriginalRequest = originalRequest;
         this.mError = error;
     }

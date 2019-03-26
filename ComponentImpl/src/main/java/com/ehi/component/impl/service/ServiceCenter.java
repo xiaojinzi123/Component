@@ -16,20 +16,20 @@ import java.util.Map;
  *
  * @author xiaojinzi 30212
  */
-public class EHiServiceCenter implements IComponentCenterService {
+public class ServiceCenter implements IComponentCenterService {
 
     private Map<String, IComponentHostService> moduleServiceMap = new HashMap<>();
 
-    private EHiServiceCenter() {
+    private ServiceCenter() {
     }
 
-    private static volatile EHiServiceCenter instance;
+    private static volatile ServiceCenter instance;
 
-    public static EHiServiceCenter getInstance() {
+    public static ServiceCenter getInstance() {
         if (instance == null) {
-            synchronized (EHiServiceCenter.class) {
+            synchronized (ServiceCenter.class) {
                 if (instance == null) {
-                    instance = new EHiServiceCenter();
+                    instance = new ServiceCenter();
                 }
             }
         }

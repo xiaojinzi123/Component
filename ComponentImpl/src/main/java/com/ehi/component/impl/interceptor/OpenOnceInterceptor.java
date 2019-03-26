@@ -3,7 +3,7 @@ package com.ehi.component.impl.interceptor;
 import android.net.Uri;
 
 import com.ehi.component.error.ignore.NavigationFailException;
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 
 /**
  * 这个拦截器必须在其他任何一个拦截器之前执行
@@ -15,17 +15,17 @@ import com.ehi.component.impl.EHiRouterInterceptor;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiOpenOnceInterceptor implements EHiRouterInterceptor {
+public class OpenOnceInterceptor implements RouterInterceptor {
 
-    private EHiOpenOnceInterceptor() {
+    private OpenOnceInterceptor() {
     }
 
     private static class SingletonInstance {
-        private static final EHiOpenOnceInterceptor INSTANCE = new EHiOpenOnceInterceptor();
+        private static final OpenOnceInterceptor INSTANCE = new OpenOnceInterceptor();
     }
 
-    public static EHiOpenOnceInterceptor getInstance() {
-        return EHiOpenOnceInterceptor.SingletonInstance.INSTANCE;
+    public static OpenOnceInterceptor getInstance() {
+        return OpenOnceInterceptor.SingletonInstance.INSTANCE;
     }
 
     private String preHost;

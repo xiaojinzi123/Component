@@ -107,12 +107,12 @@ public class EHiRxRouter extends Router {
         }
 
         @Override
-        public Builder interceptors(@NonNull EHiRouterInterceptor... interceptors) {
+        public Builder interceptors(@NonNull RouterInterceptor... interceptors) {
             return (Builder) super.interceptors(interceptors);
         }
 
         @Override
-        public Builder interceptors(@NonNull Class<? extends EHiRouterInterceptor>... interceptors) {
+        public Builder interceptors(@NonNull Class<? extends RouterInterceptor>... interceptors) {
             return (Builder) super.interceptors(interceptors);
         }
 
@@ -483,7 +483,7 @@ public class EHiRxRouter extends Router {
                 final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
                     @Override
                     @MainThread
-                    public void onSuccess(@NonNull final EHiRouterResult routerResult) {
+                    public void onSuccess(@NonNull final RouterResult routerResult) {
                         super.onSuccess(routerResult);
                         // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
                         rxFragment.setSingleEmitter(routerResult.getOriginalRequest(), new com.ehi.component.support.Consumer<EHiActivityResult>() {
@@ -499,7 +499,7 @@ public class EHiRxRouter extends Router {
 
                     @Override
                     @MainThread
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         super.onError(errorResult);
                         Help.removeRequestCode(errorResult.getOriginalRequest());
                         Help.onErrorSolve(emitter, errorResult.getError());
@@ -571,7 +571,7 @@ public class EHiRxRouter extends Router {
                         final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
                             @Override
                             @MainThread
-                            public void onSuccess(@NonNull EHiRouterResult routerResult) {
+                            public void onSuccess(@NonNull RouterResult routerResult) {
                                 super.onSuccess(routerResult);
                                 if (emitter != null && !emitter.isDisposed()) {
                                     emitter.onComplete();
@@ -580,7 +580,7 @@ public class EHiRxRouter extends Router {
 
                             @Override
                             @MainThread
-                            public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                            public void onError(@NonNull RouterErrorResult errorResult) {
                                 super.onError(errorResult);
                                 Help.onErrorSolve(emitter, errorResult.getError());
                             }
@@ -604,8 +604,8 @@ public class EHiRxRouter extends Router {
         /**
          * 检查参数,这个方法和父类的 {@link #onCheck()} 很多项目都一样的,但是没办法
          * 这里的检查是需要提前检查的
-         * 父类的检查是调用 {@link #navigate(EHiCallback)}方法的时候调用 {@link #onCheck()} 检查的
-         * 这个类是调用 {@link #navigate(EHiCallback)} 方法之前检查的,而且检查的项目虽然基本一样,但是有所差别
+         * 父类的检查是调用 {@link #navigate(Callback)}方法的时候调用 {@link #onCheck()} 检查的
+         * 这个类是调用 {@link #navigate(Callback)} 方法之前检查的,而且检查的项目虽然基本一样,但是有所差别
          *
          * @throws RuntimeException
          */

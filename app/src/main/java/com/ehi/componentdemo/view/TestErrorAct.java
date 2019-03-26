@@ -8,8 +8,8 @@ import android.view.View;
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.Router;
-import com.ehi.component.impl.EHiRouterErrorResult;
-import com.ehi.component.impl.EHiRouterResult;
+import com.ehi.component.impl.RouterErrorResult;
+import com.ehi.component.impl.RouterResult;
 import com.ehi.component.support.EHiCallbackAdapter;
 import com.ehi.componentdemo.R;
 
@@ -35,12 +35,12 @@ public class TestErrorAct extends AppCompatActivity {
                 .path(ModuleConfig.Module1.TEST_DIALOG)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         System.out.println("onSuccess");
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         System.out.println("onError");
                     }
                 });
