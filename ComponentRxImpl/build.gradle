@@ -25,7 +25,7 @@ dependencies {
     compileOnly libs.appcompat_v7
     compileOnly libs.rxjava
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        api "com.ehi:component-impl:${rootProject.ext.component_version}"
+        api "com.xiaojinzi:component-impl:${rootProject.ext.component_version}"
     }else {
         api project(':ComponentImpl')
     }
@@ -47,7 +47,7 @@ uploadArchives {
             repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
                 authentication(userName: "admin", password: "admin123")
             }
-            pom.groupId = 'com.ehi'
+            pom.groupId = 'com.xiaojinzi'
             pom.artifactId = 'component-impl-rx'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {

@@ -1,4 +1,4 @@
-com.ehi.component.ModuleAppProcessor
-com.ehi.component.RouterProcessor
-com.ehi.component.InterceptorProcessor
-com.ehi.component.ServiceProcessor
+com.xiaojinzi.component.ModuleAppProcessor
+com.xiaojinzi.component.RouterProcessor
+com.xiaojinzi.component.InterceptorProcessor
+com.xiaojinzi.component.ServiceProcessor

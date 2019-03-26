@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ehi.user">
+    package="com.xiaojinzi.user">
 
     <application>
-        <activity android:name="com.ehi.user.view.LoginAct"/>
-        <activity android:name=".view.PersonCenterAct"/>
+        <activity android:name="com.xiaojinzi.user.view.LoginAct"/>
+        <activity android:name="com.xiaojinzi.user.view.PersonCenterAct"/>
     </application>
 
 </manifest>

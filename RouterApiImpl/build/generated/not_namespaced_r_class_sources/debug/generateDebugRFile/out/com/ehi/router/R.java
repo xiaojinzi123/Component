@@ -4,7 +4,7 @@
  * gradle plugin from the resource data it found. It
  * should not be modified by hand.
  */
-package com.ehi.router;
+package com.xiaojinzi.router;
 
 public final class R {
     private R() {}

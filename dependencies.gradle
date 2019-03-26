@@ -26,16 +26,10 @@ ext.versions = [
         ehi_tools          : "1.0.9",
         ehi_picture_select : "1.0.8",
         ehi_component      : "1.4.3",
-        // 开发者工具
-        ehi_develop_tool   : "1.0.1"
 ]
 
 ext.libs = [
         // test
-        mockito                  : "org.mockito:mockito-core:$versions.mockitoVersion",
-        junit                    : "junit:junit:$versions.junit",
-        test_runner              : 'com.android.support.test:runner:1.0.2',
-        testng                   : "org.testng:testng:$versions.testng",
         // Google 提供的
         support_annotations      : "com.android.support:support-annotations:${versions.support_lib}",
         support_v4               : "com.android.support:support-v4:$versions.support_lib",
@@ -57,13 +51,6 @@ ext.libs = [
         retrofit2_rxjava2_adapter: 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0',
         okhttp                   : 'com.squareup.okhttp3:okhttp:3.6.0',
         // 一嗨公共组件---------------------
-        ehi_component            : "com.ehi:component-impl:$versions.ehi_component", // 组件话的路由跳转和生命周期的Api和注解驱动器
-        ehi_component_compiler   : "com.ehi:component-api-compiler:$versions.ehi_component", // 组件话的路由跳转和生命周期的Api和注解驱动器
-        ehi_base                 : "com.ehi:base:$versions.ehi_base", // 组件库提供Base库,比如BasePresenter,BaseActivity
-        ehi_log                  : "com.ehi:log:$versions.ehi_log", // 陈越提供的Log库
-        ehi_encryption           : "com.ehi:encryption:$versions.ehi_encryption", // 组件库提供加解密操作
-        ehi_tools                : "com.ehi:tools:$versions.ehi_tools", // 工具库
-        ehi_picturepiker         : "com.ehi:picturepiker:$versions.ehi_picture_select", // Android 组件库中的图片选择库,朱晓宇提供
-        // 开发者工具---------------------
-        ehi_develop_tool         : "com.ehi:developTool:$versions.ehi_develop_tool" // 目前里面只有 ServerLog,陈旭金提供
+        ehi_component            : "com.xiaojinzi:component-impl:$versions.ehi_component", // 组件话的路由跳转和生命周期的Api和注解驱动器
+        ehi_component_compiler   : "com.xiaojinzi:component-api-compiler:$versions.ehi_component", // 组件话的路由跳转和生命周期的Api和注解驱动器
 ]

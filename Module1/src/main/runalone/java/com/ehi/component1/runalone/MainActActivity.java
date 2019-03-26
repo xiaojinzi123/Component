@@ -1,15 +1,15 @@
-package com.ehi.component1.runalone;
+package com.xiaojinzi.component1.runalone;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.ehi.base.InterceptorConfig;
-import com.ehi.base.ModuleConfig;
-import com.ehi.base.view.BaseAct;
-import com.ehi.component.impl.Router;
-import com.ehi.component.support.CallbackAdapter;
-import com.ehi.component1.R;
+import com.xiaojinzi.base.InterceptorConfig;
+import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.view.BaseAct;
+import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.support.CallbackAdapter;
+import com.xiaojinzi.component1.R;
 
 public class MainActActivity extends BaseAct {
 

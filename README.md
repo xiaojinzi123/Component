@@ -263,13 +263,13 @@ Router
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
-                .onBeforJump(new com.ehi.component.support.Action() {
+                .onBeforJump(new xiaojinzi.component.support.Action() {
                     @Override
                     public void run() throws Exception {
                         Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .onAfterJump(new com.ehi.component.support.Action() {
+                .onAfterJump(new xiaojinzi.component.support.Action() {
                     @Override
                     public void run() throws Exception {
                         Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show();
