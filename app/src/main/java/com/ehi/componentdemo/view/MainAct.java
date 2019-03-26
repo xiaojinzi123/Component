@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.Router;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.impl.application.EHiModuleManager;
 import com.ehi.componentdemo.R;
@@ -73,7 +73,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testWebRouter(View view) {
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.TEST_WEB_ROUTER)
@@ -81,7 +81,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testQuality(View view) {
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_QUALITY)
@@ -97,7 +97,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testService(View view) {
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_SERVICE)

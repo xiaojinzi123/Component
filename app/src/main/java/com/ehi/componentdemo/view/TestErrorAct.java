@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.Router;
 import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.support.EHiCallbackAdapter;
@@ -29,7 +29,7 @@ public class TestErrorAct extends AppCompatActivity {
     }
 
     public void testError1(View view) {
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_DIALOG)

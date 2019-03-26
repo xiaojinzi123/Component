@@ -13,10 +13,10 @@ import com.ehi.base.interceptor.TimeConsumingInterceptor;
 import com.ehi.base.view.BaseAct;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.bean.EHiActivityResult;
-import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.Router;
 import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterInterceptor;
-import com.ehi.component.impl.EHiRouterRequest;
+import com.ehi.component.impl.RouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
@@ -51,7 +51,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void cancelImmediately(View view) {
-        NavigationDisposable navigationDisposable = EHiRouter
+        NavigationDisposable navigationDisposable = Router
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -73,7 +73,7 @@ public class TestQualityAct extends BaseAct {
                     }
 
                     @Override
-                    public void onCancel(@NonNull EHiRouterRequest request) {
+                    public void onCancel(@NonNull RouterRequest request) {
                         ToastUtil.toastShort("测试成功\n被取消了");
                     }
                 });
@@ -286,7 +286,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void cancelAuto1(View view) {
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -308,7 +308,7 @@ public class TestQualityAct extends BaseAct {
                     }
 
                     @Override
-                    public void onCancel(@NonNull EHiRouterRequest request) {
+                    public void onCancel(@NonNull RouterRequest request) {
                         ToastUtil.toastShort("测试成功\n自动被取消了");
                     }
                 });
@@ -318,7 +318,7 @@ public class TestQualityAct extends BaseAct {
     public void cancelAuto2(View view) {
         Fragment fragment = new Fragment();
         getSupportFragmentManager().beginTransaction().add(fragment, "testFragment").commit();
-        EHiRouter
+        Router
                 .withFragment(fragment)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -340,7 +340,7 @@ public class TestQualityAct extends BaseAct {
                     }
 
                     @Override
-                    public void onCancel(@NonNull EHiRouterRequest request) {
+                    public void onCancel(@NonNull RouterRequest request) {
                         ToastUtil.toastShort("测试成功\n自动被取消了");
                     }
                 });
@@ -348,7 +348,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void targetNotFound(View view) {
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.NOT_FOUND_TEST)
@@ -365,7 +365,7 @@ public class TestQualityAct extends BaseAct {
                     }
 
                     @Override
-                    public void onCancel(@NonNull EHiRouterRequest request) {
+                    public void onCancel(@NonNull RouterRequest request) {
                         ToastUtil.toastShort("测试失败\n自动被取消了");
                     }
                 });
@@ -374,7 +374,7 @@ public class TestQualityAct extends BaseAct {
     private NavigationDisposable temp = null;
 
     public void cancelAfterRouter(View view) {
-        temp = EHiRouter
+        temp = Router
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -391,7 +391,7 @@ public class TestQualityAct extends BaseAct {
                     }
 
                     @Override
-                    public void onCancel(@NonNull EHiRouterRequest originalRequest) {
+                    public void onCancel(@NonNull RouterRequest originalRequest) {
                         ToastUtil.toastShort("测试失败\n自动被取消了");
                     }
 
@@ -409,7 +409,7 @@ public class TestQualityAct extends BaseAct {
             @Override
             public void run() {
                 super.run();
-                EHiRouter
+                Router
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST)
@@ -426,7 +426,7 @@ public class TestQualityAct extends BaseAct {
                             }
 
                             @Override
-                            public void onCancel(@NonNull EHiRouterRequest request) {
+                            public void onCancel(@NonNull RouterRequest request) {
                                 ToastUtil.toastShort("测试失败\n自动被取消了");
                             }
                         });

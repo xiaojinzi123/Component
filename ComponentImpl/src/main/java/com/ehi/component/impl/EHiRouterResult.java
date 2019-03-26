@@ -14,20 +14,20 @@ public class EHiRouterResult {
      * 最原始的请求,谁都更改不了的,而且不可能为空在这里
      */
     @NonNull
-    private final EHiRouterRequest mOriginalRequest;
+    private final RouterRequest mOriginalRequest;
 
     /**
      * 如果成功了,这个会有值,这个可能不是最原始的请求啦,可能是拦截器修改过或者
      * 整个 request 对象都被改了
      */
     @NonNull
-    private final EHiRouterRequest mFinalRequest;
+    private final RouterRequest mFinalRequest;
 
     /**
      * @param originalRequest 最原始的请求
      * @param finalRequest    可能修改过的请求,也可能是和原始请求一样
      */
-    public EHiRouterResult(@NonNull EHiRouterRequest originalRequest, @NonNull EHiRouterRequest finalRequest) {
+    public EHiRouterResult(@NonNull RouterRequest originalRequest, @NonNull RouterRequest finalRequest) {
         this.mOriginalRequest = originalRequest;
         this.mFinalRequest = finalRequest;
     }
@@ -38,7 +38,7 @@ public class EHiRouterResult {
      * @return 最原始的请求
      */
     @NonNull
-    public EHiRouterRequest getOriginalRequest() {
+    public RouterRequest getOriginalRequest() {
         return mOriginalRequest;
     }
 
@@ -48,7 +48,7 @@ public class EHiRouterResult {
      * @return
      */
     @NonNull
-    public EHiRouterRequest getFinalRequest() {
+    public RouterRequest getFinalRequest() {
         return mFinalRequest;
     }
 

@@ -24,7 +24,7 @@ import java.util.Set;
 public final class EHiRxFragment extends Fragment {
 
     @NonNull
-    private Map<EHiRouterRequest, Consumer<EHiActivityResult>> singleEmitterMap = new HashMap<>();
+    private Map<RouterRequest, Consumer<EHiActivityResult>> singleEmitterMap = new HashMap<>();
 
     @Override
     public void onDestroy() {
@@ -40,10 +40,10 @@ public final class EHiRxFragment extends Fragment {
 
         // 根据 requestCode 获取发射器
         Consumer<EHiActivityResult> findConsumer = null;
-        EHiRouterRequest findRequest = null;
+        RouterRequest findRequest = null;
         // 找出 requestCode 一样的那个
-        Set<EHiRouterRequest> keySet = singleEmitterMap.keySet();
-        for (EHiRouterRequest request : keySet) {
+        Set<RouterRequest> keySet = singleEmitterMap.keySet();
+        for (RouterRequest request : keySet) {
             if (request.requestCode != null && request.requestCode.equals(requestCode)) {
                 findRequest = request;
                 break;
@@ -65,17 +65,17 @@ public final class EHiRxFragment extends Fragment {
 
     }
 
-    public boolean isContainsSingleEmitter(@NonNull EHiRouterRequest request) {
+    public boolean isContainsSingleEmitter(@NonNull RouterRequest request) {
         return singleEmitterMap.containsKey(request);
     }
 
-    public void setSingleEmitter(@NonNull EHiRouterRequest request,
+    public void setSingleEmitter(@NonNull RouterRequest request,
                                  @NonNull Consumer<EHiActivityResult> consumer) {
         // 检测是否重复的在这个方法调用之前被检查掉了
         singleEmitterMap.put(request, consumer);
     }
 
-    public void cancal(@NonNull EHiRouterRequest request) {
+    public void cancal(@NonNull RouterRequest request) {
         singleEmitterMap.remove(request);
     }
 

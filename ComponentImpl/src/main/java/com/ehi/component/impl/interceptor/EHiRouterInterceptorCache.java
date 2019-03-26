@@ -12,6 +12,7 @@ import com.ehi.component.cache.CacheType;
 import com.ehi.component.cache.DefaultCacheFactory;
 import com.ehi.component.error.CreateInterceptorException;
 import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.Router;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -20,8 +21,8 @@ import java.lang.reflect.InvocationTargetException;
  * 支持缓存自定义拦截器,工具类
  * 目前就只有给 目标页面在 {@link EHiRouterAnno#interceptors()}
  * or {@link EHiRouterAnno#interceptorNames()}
- * or {@link com.ehi.component.impl.EHiRouter.Builder#interceptors(Class[])}
- * or {@link com.ehi.component.impl.EHiRouter.Builder#interceptorNames(String...)}
+ * or {@link Router.Builder#interceptors(Class[])}
+ * or {@link Router.Builder#interceptorNames(String...)}
  * 写的拦截器做缓存
  * <p>
  * time   : 2018/12/03

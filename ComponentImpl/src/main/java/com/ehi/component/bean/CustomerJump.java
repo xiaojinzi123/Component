@@ -2,7 +2,7 @@ package com.ehi.component.bean;
 
 import android.support.annotation.NonNull;
 
-import com.ehi.component.impl.EHiRouterRequest;
+import com.ehi.component.impl.RouterRequest;
 
 /**
  * 自定义跳转的时候,会调用的接口,{@link com.ehi.component.anno.EHiRouterAnno} 注解标记在静态方法上的时候
@@ -18,6 +18,6 @@ public interface CustomerJump {
      *
      * @param request 路由请求对象
      */
-    void jump(@NonNull EHiRouterRequest request) throws Exception;
+    void jump(@NonNull RouterRequest request) throws Exception;
 
 }

@@ -5,7 +5,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
 import com.ehi.component.impl.EHiRouterInterceptor;
-import com.ehi.component.impl.EHiRouterRequest;
+import com.ehi.component.impl.RouterRequest;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public interface IComponentRouter {
      * @throws android.content.ActivityNotFoundException
      */
     @MainThread
-    void openUri(@NonNull EHiRouterRequest routerRequest) throws Exception;
+    void openUri(@NonNull RouterRequest routerRequest) throws Exception;
 
     /**
      * 是否有匹配的 uri

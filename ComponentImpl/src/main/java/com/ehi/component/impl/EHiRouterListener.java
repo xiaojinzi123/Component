@@ -35,6 +35,6 @@ public interface EHiRouterListener {
      * @throws Exception
      */
     @MainThread
-    void onCancel(@NonNull EHiRouterRequest originalRequest) throws Exception;
+    void onCancel(@NonNull RouterRequest originalRequest) throws Exception;
 
 }

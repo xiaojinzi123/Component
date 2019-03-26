@@ -44,25 +44,25 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiRouter {
+public class Router {
 
-    protected EHiRouter() {
+    protected Router() {
     }
 
     /**
      * 类的标志
      */
-    public static final String TAG = "EHiRouter";
+    public static final String TAG = "Router";
 
     /**
      * 空实现,里头都是不能调用的方法
-     * 这个对象只会在构建 {@link EHiRouterRequest} 对象失败或者构建之前就发生错误的情况才会被返回
-     * 这里为什么会有这个类是因为在调用 {@link EHiRouter.Builder#navigate()} 的时候,会返回一个
+     * 这个对象只会在构建 {@link RouterRequest} 对象失败或者构建之前就发生错误的情况才会被返回
+     * 这里为什么会有这个类是因为在调用 {@link Router.Builder#navigate()} 的时候,会返回一个
      */
     public static final NavigationDisposable emptyNavigationDisposable = new NavigationDisposable() {
         @Nullable
         @Override
-        public EHiRouterRequest originalRequest() {
+        public RouterRequest originalRequest() {
             return null;
         }
 
@@ -127,7 +127,7 @@ public class EHiRouter {
         return EHiRouterCenter.getInstance().isMatchUri(uri);
     }
 
-    public static class Builder extends EHiRouterRequest.Builder {
+    public static class Builder extends RouterRequest.Builder {
 
         /**
          * 自定义的拦截器列表,为了保证顺序才用一个集合的
@@ -425,7 +425,7 @@ public class EHiRouter {
         protected void onCheck() {
             // 一个 Builder 不能被使用多次
             if (isFinish) {
-                throw new NavigationFailException("EHiRouter.Builder can't be used multiple times");
+                throw new NavigationFailException("Router.Builder can't be used multiple times");
             }
             // 检查上下文和fragment
             if (context == null && fragment == null) {
@@ -452,7 +452,7 @@ public class EHiRouter {
         @NonNull
         public synchronized NavigationDisposable navigate(@Nullable final EHiCallback callback) {
             // 构建请求对象
-            EHiRouterRequest originalRequest = null;
+            RouterRequest originalRequest = null;
             try {
                 // 路由前的检查
                 onCheck();
@@ -503,7 +503,7 @@ public class EHiRouter {
          * @param callback           回调对象
          */
         @AnyThread
-        private void realNavigate(@NonNull final EHiRouterRequest originalRequest,
+        private void realNavigate(@NonNull final RouterRequest originalRequest,
                                   @Nullable List<Object> customInterceptors,
                                   @NonNull EHiRouterInterceptor.Callback callback) {
 
@@ -550,7 +550,7 @@ public class EHiRouter {
          * @param customInterceptors
          * @param currentInterceptors
          */
-        private void addCustomInterceptors(@NonNull EHiRouterRequest originalRequest,
+        private void addCustomInterceptors(@NonNull RouterRequest originalRequest,
                                            @Nullable List<Object> customInterceptors,
                                            List<EHiRouterInterceptor> currentInterceptors) {
             if (customInterceptors == null) {
@@ -592,7 +592,7 @@ public class EHiRouter {
              * 最原始的请求,用户构建的,不会更改的
              */
             @NonNull
-            private final EHiRouterRequest mOriginalRequest;
+            private final RouterRequest mOriginalRequest;
 
             /**
              * 标记是否完成,出错或者成功都算是完成了,不能再继续调用了
@@ -613,7 +613,7 @@ public class EHiRouter {
                 return isComplete || isCanceled;
             }
 
-            public InterceptorCallback(@NonNull EHiRouterRequest originalRequest,
+            public InterceptorCallback(@NonNull RouterRequest originalRequest,
                                        @Nullable EHiCallback callback) {
                 this.mOriginalRequest = originalRequest;
                 this.mCallback = callback;
@@ -658,7 +658,7 @@ public class EHiRouter {
 
             @NonNull
             @Override
-            public EHiRouterRequest originalRequest() {
+            public RouterRequest originalRequest() {
                 return mOriginalRequest;
             }
 
@@ -682,9 +682,9 @@ public class EHiRouter {
         private class RealInterceptor implements EHiRouterInterceptor {
 
             @NonNull
-            private final EHiRouterRequest mOriginalRequest;
+            private final RouterRequest mOriginalRequest;
 
-            public RealInterceptor(@NonNull EHiRouterRequest originalRequest) {
+            public RealInterceptor(@NonNull RouterRequest originalRequest) {
                 mOriginalRequest = originalRequest;
             }
 
@@ -698,7 +698,7 @@ public class EHiRouter {
             public void intercept(final Chain chain) throws Exception {
                 try {
                     // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
-                    EHiRouterRequest finalRequest = chain.request();
+                    RouterRequest finalRequest = chain.request();
                     if (finalRequest.beforJumpAction != null) {
                         finalRequest.beforJumpAction.run();
                     }
@@ -728,7 +728,7 @@ public class EHiRouter {
              * 中获取到 request 对象,并且支持拦截器自定义修改 request 对象或者直接创建一个新的传给下一个拦截器执行器
              */
             @NonNull
-            private final EHiRouterRequest mRequest;
+            private final RouterRequest mRequest;
 
             /**
              * 这个是拦截器的回调,这个用户不能自定义,一直都是一个对象
@@ -759,7 +759,7 @@ public class EHiRouter {
              * @param callback
              */
             public InterceptorChain(@NonNull List<EHiRouterInterceptor> interceptors, int index,
-                                    @NonNull EHiRouterRequest request, @NonNull EHiRouterInterceptor.Callback callback) {
+                                    @NonNull RouterRequest request, @NonNull EHiRouterInterceptor.Callback callback) {
                 this.mInterceptors = interceptors;
                 this.mIndex = index;
                 this.mRequest = request;
@@ -767,7 +767,7 @@ public class EHiRouter {
             }
 
             @Override
-            public EHiRouterRequest request() {
+            public RouterRequest request() {
                 // 第一个拦截器的
                 return mRequest;
             }
@@ -778,11 +778,11 @@ public class EHiRouter {
             }
 
             @Override
-            public void proceed(final EHiRouterRequest request) {
+            public void proceed(final RouterRequest request) {
                 proceed(request, mCallback);
             }
 
-            private void proceed(@NonNull final EHiRouterRequest request, @NonNull final EHiRouterInterceptor.Callback callback) {
+            private void proceed(@NonNull final RouterRequest request, @NonNull final EHiRouterInterceptor.Callback callback) {
                 // ui 线程上执行
                 Utils.postActionToMainThreadAnyway(new Runnable() {
                     @Override

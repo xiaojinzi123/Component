@@ -41,14 +41,14 @@ public class ModuleAppProcessor extends BaseHostProcessor {
 
     private TypeElement eHiCenterInterceptorTypeElement;
     private TypeElement ehiCenterServiceTypeElement;
-    private TypeElement ehiRouterTypeElement;
+    private TypeElement routerTypeElement;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         eHiCenterInterceptorTypeElement = mElements.getTypeElement(ComponentConstants.EHICENTERINTERCEPTOR_CLASS_NAME);
         ehiCenterServiceTypeElement = mElements.getTypeElement(ComponentConstants.EHICENTERSERVICE_CLASS_NAME);
-        ehiRouterTypeElement = mElements.getTypeElement(ComponentConstants.EHIROUTER_CLASS_NAME);
+        routerTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_CLASS_NAME);
     }
 
     @Override
@@ -151,7 +151,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addParameter(parameterSpec)
                 .addModifiers(Modifier.PUBLIC);
         methodSpecBuilder.addStatement("super.onCreate(application)");
-        methodSpecBuilder.addStatement("$T.register(getHost())", ehiRouterTypeElement);
+        methodSpecBuilder.addStatement("$T.register(getHost())", routerTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", ehiCenterServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", eHiCenterInterceptorTypeElement);
         return methodSpecBuilder.build();
@@ -165,7 +165,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addModifiers(Modifier.PUBLIC);
 
         methodSpecBuilder.addStatement("super.onDestory()");
-        methodSpecBuilder.addStatement("EHiRouter.unregister(getHost())");
+        methodSpecBuilder.addStatement("$T.unregister(getHost())", routerTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", ehiCenterServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", eHiCenterInterceptorTypeElement);
         return methodSpecBuilder.build();

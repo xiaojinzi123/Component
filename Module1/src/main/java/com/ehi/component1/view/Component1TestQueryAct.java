@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.impl.EHiRouterRequest;
+import com.ehi.component.impl.RouterRequest;
 import com.ehi.component.support.ParameterSupport;
 import com.ehi.component1.R;
 
@@ -20,7 +20,7 @@ public class Component1TestQueryAct extends AppCompatActivity {
             host = ModuleConfig.Module1.NAME,
             value = ModuleConfig.Module1.TEST_QUERY
     )
-    public static Intent createIntent(EHiRouterRequest request) {
+    public static Intent createIntent(RouterRequest request) {
         Intent intent = new Intent(request.getRawContext(), Component1TestQueryAct.class);
         return intent;
     }

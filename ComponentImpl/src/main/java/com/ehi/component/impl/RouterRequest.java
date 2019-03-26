@@ -34,7 +34,7 @@ import java.util.Set;
  *
  * @author xiaojinzi 30212
  */
-public class EHiRouterRequest {
+public class RouterRequest {
 
     @Nullable
     public final Context context;
@@ -175,7 +175,7 @@ public class EHiRouterRequest {
         return builder;
     }
 
-    private EHiRouterRequest(@NonNull Builder builder) {
+    private RouterRequest(@NonNull Builder builder) {
         Uri result = builder.buildURI();
         this.uri = result;
         context = builder.context;
@@ -190,7 +190,7 @@ public class EHiRouterRequest {
     }
 
     /**
-     * 构建一个路由请求对象 {@link EHiRouterRequest} 对象的 Builder
+     * 构建一个路由请求对象 {@link RouterRequest} 对象的 Builder
      *
      * @author xiaojinzi
      */
@@ -467,8 +467,8 @@ public class EHiRouterRequest {
          *
          * @return 可能会抛出一个运行时异常, 由于您的参数在构建 uri 的时候出现的异常
          */
-        public EHiRouterRequest build() {
-            return new EHiRouterRequest(this);
+        public RouterRequest build() {
+            return new RouterRequest(this);
         }
 
     }
