@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.error.InterceptorNameExistException;
 import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.Router;
 import com.ehi.component.interceptor.IComponentCenterInterceptor;
 import com.ehi.component.interceptor.IComponentHostInterceptor;
 
@@ -63,7 +64,7 @@ public class EHiInterceptorCenter implements IComponentCenterInterceptor {
 
     /**
      * 每个业务组件的拦截器 name --> Class 映射关系的总的集合
-     * 这种拦截器不是全局拦截器,是随时随地使用的拦截器,见 {@link com.ehi.component.impl.EHiRouter.Builder#interceptorNames(String...)}
+     * 这种拦截器不是全局拦截器,是随时随地使用的拦截器,见 {@link Router.Builder#interceptorNames(String...)}
      */
     private Map<String, Class<? extends EHiRouterInterceptor>> mInterceptorMap = new HashMap<>();
 

@@ -72,7 +72,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
 
     @Override
     @MainThread
-    public void openUri(@NonNull final EHiRouterRequest routerRequest) throws Exception {
+    public void openUri(@NonNull final RouterRequest routerRequest) throws Exception {
         doOpenUri(routerRequest);
     }
 
@@ -83,9 +83,9 @@ public class EHiRouterCenter implements IComponentCenterRouter {
      * @return
      */
     @MainThread
-    private void doOpenUri(@NonNull final EHiRouterRequest routerRequest) throws Exception {
+    private void doOpenUri(@NonNull final RouterRequest routerRequest) throws Exception {
         if (!Utils.isMainThread()) {
-            throw new NavigationFailException("EHiRouter must run on main thread");
+            throw new NavigationFailException("Router must run on main thread");
         }
         if (routerRequest.uri == null) {
             throw new NavigationFailException("target Uri is null");
@@ -99,7 +99,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
             throw new TargetActivityNotFoundException(uriString);
         }
         if (routerRequest.context == null && routerRequest.fragment == null) {
-            throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nEHiRouter.with(Context) or EHiRouter.withFragment(Fragment)");
+            throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nRouter.with(Context) or Router.withFragment(Fragment)");
         }
         // do startActivity
         Context context = routerRequest.getRawContext();
@@ -149,7 +149,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
      * @param routerRequest
      * @param intent
      */
-    private void jump(@NonNull EHiRouterRequest routerRequest, Intent intent) {
+    private void jump(@NonNull RouterRequest routerRequest, Intent intent) {
         if (routerRequest.requestCode == null) { // 如果是 startActivity
             if (routerRequest.context != null) {
                 routerRequest.context.startActivity(intent);
@@ -281,7 +281,7 @@ public class EHiRouterCenter implements IComponentCenterRouter {
     }
 
     @Nullable
-    private Fragment findFragment(@NonNull EHiRouterRequest request) {
+    private Fragment findFragment(@NonNull RouterRequest request) {
         Fragment fragment = findFragment(request.context);
         if (fragment == null) {
             fragment = findFragment(request.fragment);

@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
-import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.Router;
 
 /**
  * 注册的声明周期回调,用于取消一些调用,这些调用在界面销毁之后
@@ -19,7 +19,7 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
         @Override
         public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
             super.onFragmentDestroyed(fm, f);
-            EHiRouter.cancel(f);
+            Router.cancel(f);
         }
     };
 
@@ -60,7 +60,7 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        EHiRouter.cancel(activity);
+        Router.cancel(activity);
     }
 
 }

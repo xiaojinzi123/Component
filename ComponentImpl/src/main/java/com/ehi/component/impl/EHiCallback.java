@@ -11,7 +11,7 @@ import com.ehi.component.support.NavigationDisposable;
  * 所有的调用顺序整理：
  * 1.{@link #onSuccess(EHiRouterResult)} --> {@link #onEvent(EHiRouterResult, EHiRouterErrorResult)}
  * 2.{@link #onError(EHiRouterErrorResult)} --> {@link #onEvent(EHiRouterResult, EHiRouterErrorResult)}
- * 3.被取消的时候：{@link #onCancel(EHiRouterRequest)}
+ * 3.被取消的时候：{@link #onCancel(RouterRequest)}
  *
  * @author xiaojinzi 30212
  */
@@ -50,6 +50,6 @@ public interface EHiCallback {
      *                        这时候就可以取消了,所以在真正取消的时候,一定会有这个参数的
      */
     @MainThread
-    void onCancel(@NonNull EHiRouterRequest originalRequest);
+    void onCancel(@NonNull RouterRequest originalRequest);
 
 }

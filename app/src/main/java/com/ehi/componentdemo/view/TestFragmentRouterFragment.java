@@ -14,10 +14,10 @@ import android.widget.Toast;
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.component.ComponentConfig;
-import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.Router;
 import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterInterceptor;
-import com.ehi.component.impl.EHiRouterRequest;
+import com.ehi.component.impl.RouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
@@ -101,7 +101,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
     }
 
     private void normalJump() {
-        EHiRouter
+        Router
                 .withFragment(this)
                 .host("component1")
                 .path("test")
@@ -134,7 +134,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                     }
 
                     @Override
-                    public void onCancel(@NonNull EHiRouterRequest request) {
+                    public void onCancel(@NonNull RouterRequest request) {
                         super.onCancel(request);
                         Toast.makeText(ComponentConfig.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
                     }
@@ -173,7 +173,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                     }
 
                     @Override
-                    public void onCancel(@NonNull EHiRouterRequest request) {
+                    public void onCancel(@NonNull RouterRequest request) {
                         super.onCancel(request);
                         Toast.makeText(ComponentConfig.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
                     }

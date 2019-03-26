@@ -46,7 +46,7 @@ public class RouterProcessor extends BaseHostProcessor {
     private static final String ROUTER_BEAN_NAME = "com.ehi.component.bean.EHiRouterBean";
     private static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.ehi.component.bean.CustomerIntentCall";
     private static final String CUSTOMER_JUMP_CLASS_NAME = "com.ehi.component.bean.CustomerJump";
-    private static final String ROUTER_REQUEST_CLASS_NAME = "com.ehi.component.impl.EHiRouterRequest";
+    private static final String ROUTER_REQUEST_CLASS_NAME = "com.ehi.component.impl.RouterRequest";
 
     private static final String NAME_OF_REQUEST = "request";
 

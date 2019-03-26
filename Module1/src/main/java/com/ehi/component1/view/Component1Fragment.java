@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.Router;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component1.R;
 
@@ -33,7 +33,7 @@ public class Component1Fragment extends Fragment {
         bt_go_component2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EHiRouter.withFragment(Component1Fragment.this)
+                Router.withFragment(Component1Fragment.this)
                         .host(ModuleConfig.Module2.NAME)
                         .path(ModuleConfig.Module2.MAIN)
                         .navigate();

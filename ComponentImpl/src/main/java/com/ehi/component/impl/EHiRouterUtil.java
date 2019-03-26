@@ -27,7 +27,7 @@ class EHiRouterUtil {
      *
      * @param callback
      */
-    public static void cancelCallback(@NonNull final EHiRouterRequest request, @Nullable final EHiCallback callback) {
+    public static void cancelCallback(@NonNull final RouterRequest request, @Nullable final EHiCallback callback) {
         if (Utils.isMainThread()) {
             cancelCallbackOnMainThread(request, callback);
         } else {
@@ -44,9 +44,9 @@ class EHiRouterUtil {
     /**
      * @param callback
      */
-    private static void cancelCallbackOnMainThread(@NonNull EHiRouterRequest request,
+    private static void cancelCallbackOnMainThread(@NonNull RouterRequest request,
                                                    @Nullable final EHiCallback callback) {
-        LogUtil.log(EHiRouter.TAG, "路由取消：" + request.uri.toString());
+        LogUtil.log(Router.TAG, "路由取消：" + request.uri.toString());
         if (callback == null) {
             return;
         }
@@ -84,9 +84,9 @@ class EHiRouterUtil {
             return;
         }
         if (errorResult.getOriginalRequest() == null) {
-            LogUtil.log(EHiRouter.TAG, "路由失败：" + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
+            LogUtil.log(Router.TAG, "路由失败：" + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
         } else {
-            LogUtil.log(EHiRouter.TAG, "路由失败：" + errorResult.getOriginalRequest().uri.toString() + "errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
+            LogUtil.log(Router.TAG, "路由失败：" + errorResult.getOriginalRequest().uri.toString() + "errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
         }
         if (callback == null) {
             return;
@@ -115,7 +115,7 @@ class EHiRouterUtil {
         if (result == null) {
             return;
         }
-        LogUtil.log(EHiRouter.TAG, "路由成功：" + result.getOriginalRequest().uri.toString());
+        LogUtil.log(Router.TAG, "路由成功：" + result.getOriginalRequest().uri.toString());
         if (callback == null) {
             return;
         }
@@ -129,7 +129,7 @@ class EHiRouterUtil {
 
     public static void deliveryListener(@Nullable final EHiRouterResult successResult,
                                         @Nullable final EHiRouterErrorResult errorResult,
-                                        @Nullable final EHiRouterRequest cancelRequest) {
+                                        @Nullable final RouterRequest cancelRequest) {
         if (Utils.isMainThread()) {
             deliveryListenerOnMainThread(successResult, errorResult, cancelRequest);
         } else {
@@ -144,8 +144,8 @@ class EHiRouterUtil {
 
     public static void deliveryListenerOnMainThread(@Nullable final EHiRouterResult successResult,
                                                     @Nullable final EHiRouterErrorResult errorResult,
-                                                    @Nullable final EHiRouterRequest cancelRequest) {
-        for (EHiRouterListener interceptor : EHiRouter.routerListeners) {
+                                                    @Nullable final RouterRequest cancelRequest) {
+        for (EHiRouterListener interceptor : Router.routerListeners) {
             try {
                 if (successResult != null) {
                     interceptor.onSuccess(successResult);
@@ -162,7 +162,7 @@ class EHiRouterUtil {
         }
     }
 
-    private static boolean isRequestUnavailabled(@NonNull EHiRouterRequest originalRequest) {
+    private static boolean isRequestUnavailabled(@NonNull RouterRequest originalRequest) {
         Context context = originalRequest.context;
         Fragment fragment = originalRequest.fragment;
         Activity act = Utils.getActivityFromContext(context);

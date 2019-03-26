@@ -49,7 +49,7 @@ import io.reactivex.functions.Function;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiRxRouter extends EHiRouter {
+public class EHiRxRouter extends Router {
 
     /**
      * requestCode 如果等于这个值,就表示是随机生成的
@@ -60,7 +60,7 @@ public class EHiRxRouter extends EHiRouter {
     public static final String TAG = "EHiRxRouter";
 
     /**
-     * 这个方法父类也有一个静态的,但是父类返回的是 {@link EHiRouter.Builder} 而这个返回的是
+     * 这个方法父类也有一个静态的,但是父类返回的是 {@link Router.Builder} 而这个返回的是
      * {@link EHiRxRouter.Builder}
      *
      * @param context
@@ -71,7 +71,7 @@ public class EHiRxRouter extends EHiRouter {
     }
 
     /**
-     * 这个方法父类也有一个静态的,但是父类返回的是 {@link EHiRouter.Builder} 而这个返回的是
+     * 这个方法父类也有一个静态的,但是父类返回的是 {@link Router.Builder} 而这个返回的是
      * {@link EHiRxRouter.Builder}
      *
      * @param fragment
@@ -81,7 +81,7 @@ public class EHiRxRouter extends EHiRouter {
         return new Builder(fragment);
     }
 
-    public static class Builder extends EHiRouter.Builder {
+    public static class Builder extends Router.Builder {
 
         private Builder(@NonNull Context context) {
             super(context);
@@ -507,7 +507,7 @@ public class EHiRxRouter extends EHiRouter {
 
                     @Override
                     @MainThread
-                    public void onCancel(@NonNull EHiRouterRequest originalRequest) {
+                    public void onCancel(@NonNull RouterRequest originalRequest) {
                         super.onCancel(originalRequest);
                         rxFragment.cancal(originalRequest);
                         Help.removeRequestCode(originalRequest);
@@ -547,7 +547,7 @@ public class EHiRxRouter extends EHiRouter {
          * @return
          */
         @Override
-        public EHiRouterRequest build() {
+        public RouterRequest build() {
             return Help.randomlyGenerateRequestCode(super.build());
         }
 
@@ -641,14 +641,14 @@ public class EHiRxRouter extends EHiRouter {
          * @return [1, 256]
          */
         @NonNull
-        public static EHiRouterRequest randomlyGenerateRequestCode(@NonNull EHiRouterRequest request) {
+        public static RouterRequest randomlyGenerateRequestCode(@NonNull RouterRequest request) {
             Utils.checkNullPointer(request, "request");
             // 如果不是想要随机生成,就直接返回
             if (!EHiRxRouter.RANDOM_REQUSET_CODE.equals(request.requestCode)) {
                 return request;
             }
             // 转化为构建对象
-            EHiRouterRequest.Builder requestBuilder = request.toBuilder();
+            RouterRequest.Builder requestBuilder = request.toBuilder();
             int generateRequestCode = r.nextInt(256) + 1;
             // 如果生成的这个 requestCode 存在,就重新生成
             while (isExist(Utils.getActivityFromContext(requestBuilder.context), requestBuilder.fragment, generateRequestCode)) {
@@ -663,7 +663,7 @@ public class EHiRxRouter extends EHiRouter {
          * @param request 路由请求对象
          * @return
          */
-        public static boolean isExist(@Nullable EHiRouterRequest request) {
+        public static boolean isExist(@Nullable RouterRequest request) {
             if (request == null || request.requestCode == null) {
                 return false;
             }
@@ -688,7 +688,7 @@ public class EHiRxRouter extends EHiRouter {
          *
          * @param request 路由请求对象
          */
-        public static void addRequestCode(@Nullable EHiRouterRequest request) {
+        public static void addRequestCode(@Nullable RouterRequest request) {
             if (request == null || request.requestCode == null) {
                 return;
             }
@@ -708,7 +708,7 @@ public class EHiRxRouter extends EHiRouter {
          *
          * @param request 路由请求对象
          */
-        public static void removeRequestCode(@Nullable EHiRouterRequest request) {
+        public static void removeRequestCode(@Nullable RouterRequest request) {
             if (request == null || request.requestCode == null) {
                 return;
             }

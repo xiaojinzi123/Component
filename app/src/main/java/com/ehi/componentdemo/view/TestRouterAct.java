@@ -17,10 +17,10 @@ import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.base.view.BaseAct;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.Router;
 import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterInterceptor;
-import com.ehi.component.impl.EHiRouterRequest;
+import com.ehi.component.impl.RouterRequest;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
@@ -44,7 +44,7 @@ public class TestRouterAct extends BaseAct {
             value = ModuleConfig.App.TEST_ROUTER,
             desc = "测试跳转的界面"
     )
-    public static void startActivity(@NonNull EHiRouterRequest request) {
+    public static void startActivity(@NonNull RouterRequest request) {
         Intent intent = new Intent(request.getRawContext(), TestRouterAct.class);
         request.getRawContext().startActivity(intent);
     }
@@ -80,7 +80,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void goToInOtherModuleView(View view) {
-        EHiRouter
+        Router
                 .with(TestRouterAct.this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_IN_OTHER_MODULE)
@@ -98,7 +98,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void normalJump(View view) {
-        EHiRouter
+        Router
                 .with(TestRouterAct.this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -177,7 +177,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void jumpToWeb(View v) {
-        EHiRouter.with(this)
+        Router.with(this)
                 .scheme("https")
                 .host("www.baidu.com")
                 .navigate(new EHiCallbackAdapter() {
@@ -341,7 +341,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void testQueryPass(View view) {
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_QUERY)
@@ -362,21 +362,21 @@ public class TestRouterAct extends BaseAct {
 
     public void openUrl(View view) {
 
-        Uri uri = new EHiRouterRequest.URIBuilder()
+        Uri uri = new RouterRequest.URIBuilder()
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_QUERY)
                 .query("name", "openUrlName")
                 .query("pass", "openUrlPassword")
                 .buildURI();
 
-        final String url = new EHiRouterRequest.URIBuilder()
+        final String url = new RouterRequest.URIBuilder()
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_QUERY)
                 .query("name", "openUrlName")
                 .query("pass", "openUrlPassword")
                 .buildURL();
 
-        EHiRouter
+        Router
                 .with(this)
                 .url(url)
                 .navigate(new EHiCallbackAdapter() {
@@ -393,7 +393,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void testLogin(View view) {
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_LOGIN)
@@ -411,7 +411,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void testDialog(View view) {
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_DIALOG)
@@ -429,7 +429,7 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void testGotoKotlin(View view) {
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.Module2.NAME)
                 .path(ModuleConfig.Module2.MAIN)
@@ -448,7 +448,7 @@ public class TestRouterAct extends BaseAct {
 
     public void testCustomIntent(View view) {
 
-        EHiRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.Module2.NAME)
                 .path(ModuleConfig.Module2.MAIN)
@@ -574,7 +574,7 @@ public class TestRouterAct extends BaseAct {
                     }
 
                     @Override
-                    public void onCancel(@NonNull EHiRouterRequest request) {
+                    public void onCancel(@NonNull RouterRequest request) {
                         super.onCancel(request);
                         Toast.makeText(ComponentConfig.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
                     }
@@ -610,14 +610,14 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void testFragmentJump(View view) {
-        EHiRouter.with(mContext)
+        Router.with(mContext)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_FRAGMENT_ROUTER)
                 .navigate();
     }
 
     public void modifyDataWithInteceptor(View view) {
-        EHiRouter
+        Router
                 .with(TestRouterAct.this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_QUERY)

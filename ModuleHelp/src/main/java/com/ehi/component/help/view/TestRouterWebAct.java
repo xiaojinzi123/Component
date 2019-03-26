@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.help.R;
-import com.ehi.component.impl.EHiRouter;
+import com.ehi.component.impl.Router;
 import com.ehi.component.impl.EHiRouterErrorResult;
 import com.ehi.component.impl.EHiRouterResult;
 import com.ehi.component.support.EHiCallbackAdapter;
@@ -44,7 +44,7 @@ public class TestRouterWebAct extends AppCompatActivity {
      */
     @JavascriptInterface
     public void openUrl(final String url) {
-        EHiRouter.with(this)
+        Router.with(this)
                 .url(url)
                 .navigate(new EHiCallbackAdapter() {
                     @Override

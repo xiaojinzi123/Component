@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 /**
  * 路由跳转的拦截器,设计是 callback 机制代替即时返回的,即时返回比如 OkHttp的拦截器
  * 和这类功能性库不同的是这个是组件路由的拦截器,大部分代码需要在主线程执行,所以设计的初衷：
- * {@link EHiRouterInterceptor#intercept(Chain)} 方法内的代码会在主线程执行,需要用户调用的下面几个方法 {@link Chain#proceed(EHiRouterRequest)}
+ * {@link EHiRouterInterceptor#intercept(Chain)} 方法内的代码会在主线程执行,需要用户调用的下面几个方法 {@link Chain#proceed(RouterRequest)}
  * {@link Callback#onError(Throwable)}  和 {@link Callback#onSuccess(EHiRouterResult)} 可以在任何线程调用
  * 这么做的目的也是为了方便用户在任何时候都可以调用而不用关心线程
  * <p>
@@ -42,7 +42,7 @@ public interface EHiRouterInterceptor {
          * @return 返回当前的路由请求对象
          */
         @NonNull
-        EHiRouterRequest request();
+        RouterRequest request();
 
         /**
          * 获取回调对象
@@ -58,7 +58,7 @@ public interface EHiRouterInterceptor {
          * @param request 继续路由下去的请求对象
          */
         @AnyThread
-        void proceed(@NonNull EHiRouterRequest request);
+        void proceed(@NonNull RouterRequest request);
 
     }
 
