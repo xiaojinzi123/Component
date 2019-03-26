@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp">
 
-            <com.ehi.componentdemo.view.XFlowLayout
+            <com.xiaojinzi.componentdemo.view.XFlowLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:h_space="0dp"
@@ -197,7 +197,7 @@
                     android:textAllCaps="false"
                     android:textSize="@dimen/test_router_textsize" />
 
-            </com.ehi.componentdemo.view.XFlowLayout>
+            </com.xiaojinzi.componentdemo.view.XFlowLayout>
 
         </android.support.v4.widget.NestedScrollView>
 

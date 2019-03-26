@@ -24,7 +24,7 @@ android {
 dependencies {
     compileOnly libs.appcompat_v7
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        api "com.ehi:component-api:${rootProject.ext.component_version}"
+        api "com.xiaojinzi:component-api:${rootProject.ext.component_version}"
     }else {
         api project(':ComponentApi')
     }
@@ -47,7 +47,7 @@ uploadArchives {
             repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
                 authentication(userName: "admin", password: "admin123")
             }
-            pom.groupId = 'com.ehi'
+            pom.groupId = 'com.xiaojinzi'
             pom.artifactId = 'component-impl'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {

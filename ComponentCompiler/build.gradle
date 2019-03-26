@@ -16,7 +16,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.4'
     implementation 'org.apache.commons:commons-collections4:4.1'
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        compile "com.ehi:component-api:${rootProject.ext.component_version}"
+        compile "com.xiaojinzi:component-api:${rootProject.ext.component_version}"
     }else {
         compile project(':ComponentApi')
     }
@@ -33,7 +33,7 @@ uploadArchives {
             repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
                 authentication(userName: "admin", password: "admin123")
             }
-            pom.groupId = 'com.ehi'
+            pom.groupId = 'com.xiaojinzi'
             pom.artifactId = 'component-api-compiler'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {

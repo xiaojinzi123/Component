@@ -1,12 +1,12 @@
-package com.ehi.component1.runalone;
+package com.xiaojinzi.component1.runalone;
 
 import android.app.Application;
 
-import com.ehi.base.ModuleConfig;
-import com.ehi.component.ComponentConfig;
-import com.ehi.component.impl.RxRouter;
-import com.ehi.component.impl.application.ModuleManager;
-import com.ehi.component1.BuildConfig;
+import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.impl.RxRouter;
+import com.xiaojinzi.component.impl.application.ModuleManager;
+import com.xiaojinzi.component1.BuildConfig;
 
 /**
  * time   : 2019/01/21

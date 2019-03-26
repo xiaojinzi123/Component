@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ehi.component2">
+    package="com.xiaojinzi.component2">
 
     <application>
-        <activity android:name=".view.Component2Act" />
-        <activity android:name=".view.Component2TestAct"></activity>
+        <activity android:name="com.xiaojinzi.component2.view.Component2Act" />
+        <activity android:name="com.xiaojinzi.component2.view.Component2TestAct"></activity>
     </application>
 
 </manifest>

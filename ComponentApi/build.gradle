@@ -21,7 +21,7 @@ uploadArchives {
             repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
                 authentication(userName: "admin", password: "admin123")
             }
-            pom.groupId = 'com.ehi'
+            pom.groupId = 'com.xiaojinzi'
             pom.artifactId = 'component-api'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {

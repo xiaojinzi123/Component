@@ -1,4 +1,4 @@
-//apply plugin: 'com.ehi.test'
+//apply plugin: 'com.xiaojinzi.test'
 apply plugin: 'com.android.library'
 
 android {
@@ -37,7 +37,7 @@ dependencies {
     implementation libs.appcompat_v7
     api project(':ModuleBase')
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
+        annotationProcessor "com.xiaojinzi:component-api-compiler:${rootProject.ext.component_version}"
     }else {
         annotationProcessor project(':ComponentCompiler')
     }

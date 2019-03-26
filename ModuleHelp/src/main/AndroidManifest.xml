@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ehi.component.help">
+    package="com.xiaojinzi.component.help">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-        <activity android:name=".view.WebAct"></activity>
-        <activity android:name=".view.TestRouterWebAct" />
+        <activity android:name="com.xiaojinzi.component.help.view.WebAct"></activity>
+        <activity android:name="com.xiaojinzi.component.help.view.TestRouterWebAct" />
     </application>
 
 </manifest>
