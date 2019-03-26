@@ -52,7 +52,7 @@ public class ServiceProcessor extends BaseHostProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-        final TypeElement typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.EHISERVICE_CLASS_NAME);
+        final TypeElement typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.SERVICE_CLASS_NAME);
         classNameServiceContainer = ClassName.get(typeElementServiceContainer);
         final TypeElement service1TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME1);
         final TypeElement service2TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME2);

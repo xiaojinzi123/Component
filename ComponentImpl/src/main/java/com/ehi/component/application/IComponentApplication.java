@@ -7,7 +7,7 @@ import com.ehi.component.ComponentConstants;
 
 /**
  * 这是每一个模块中的生命周期类都需要实现的类
- * 如果这个类被移动了,一定要格外关注 {@link ComponentConstants#EHIAPPLCATON_INTERFACE_CLASS_NAME} 的值
+ * 如果这个类被移动了,一定要格外关注 {@link ComponentConstants#APPLCATON_INTERFACE_CLASS_NAME} 的值
  */
 public interface IComponentApplication {
 

@@ -14,14 +14,14 @@ public class ComponentConstants {
 
     public static final String ACTIVITY = "android.app.Activity";
 
-    public static final String EHIAPPLCATON_INTERFACE_CLASS_NAME = "com.ehi.component.application.IComponentApplication";
-    public static final String EHIINTERCEPTOR_INTERFACE_CLASS_NAME = "com.ehi.component.impl.EHiRouterInterceptor";
-    public static final String EHIINTERCEPTOR_UTIL_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiRouterInterceptorCache";
+    public static final String APPLCATON_INTERFACE_CLASS_NAME = "com.ehi.component.application.IComponentApplication";
+    public static final String INTERCEPTOR_INTERFACE_CLASS_NAME = "com.ehi.component.impl.EHiRouterInterceptor";
+    public static final String INTERCEPTOR_UTIL_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiRouterInterceptorCache";
     public static final String ROUTER_CLASS_NAME = "com.ehi.component.impl.Router";
-    public static final String EHIINTERCEPTOR_BEAN_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiInterceptorBean";
-    public static final String EHICENTERINTERCEPTOR_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiInterceptorCenter";
-    public static final String EHISERVICE_CLASS_NAME = "com.ehi.component.impl.service.EHiService";
-    public static final String EHICENTERSERVICE_CLASS_NAME = "com.ehi.component.impl.service.EHiServiceCenter";
+    public static final String INTERCEPTOR_BEAN_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiInterceptorBean";
+    public static final String CENTERINTERCEPTOR_CLASS_NAME = "com.ehi.component.impl.interceptor.EHiInterceptorCenter";
+    public static final String SERVICE_CLASS_NAME = "com.ehi.component.impl.service.EHiService";
+    public static final String CENTERSERVICE_CLASS_NAME = "com.ehi.component.impl.service.EHiServiceCenter";
     public static final String PARAMETERSUPPORT_CLASS_NAME = "com.ehi.component.support.ParameterSupport";
 
     public static final String ANDROID_PARCELABLE = "android.os.Parcelable";

@@ -46,8 +46,8 @@ public class ModuleAppProcessor extends BaseHostProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-        eHiCenterInterceptorTypeElement = mElements.getTypeElement(ComponentConstants.EHICENTERINTERCEPTOR_CLASS_NAME);
-        ehiCenterServiceTypeElement = mElements.getTypeElement(ComponentConstants.EHICENTERSERVICE_CLASS_NAME);
+        eHiCenterInterceptorTypeElement = mElements.getTypeElement(ComponentConstants.CENTERINTERCEPTOR_CLASS_NAME);
+        ehiCenterServiceTypeElement = mElements.getTypeElement(ComponentConstants.CENTERSERVICE_CLASS_NAME);
         routerTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_CLASS_NAME);
     }
 
@@ -69,7 +69,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
 
     private void parseAnnotation(Set<? extends Element> moduleAppElements) {
         applicationList.clear();
-        TypeMirror typeApplication = mElements.getTypeElement(ComponentConstants.EHIAPPLCATON_INTERFACE_CLASS_NAME).asType();
+        TypeMirror typeApplication = mElements.getTypeElement(ComponentConstants.APPLCATON_INTERFACE_CLASS_NAME).asType();
         for (Element element : moduleAppElements) {
             TypeMirror tm = element.asType();
             if (!(element instanceof TypeElement)) {
