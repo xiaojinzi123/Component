@@ -6,5 +6,5 @@
 5.自定义跳转和自定义Intent 是否正常
 6.当Activity销毁路由请求是否自动取消
 7.当Fragment销毁路由请求是否自动取消
-8.EHiRxRouter 的错误默认忽略是否全部正常
-9.EHiRxRouter 获取 Intent 是否正常
+8.RxRouter 的错误默认忽略是否全部正常
+9.RxRouter 获取 Intent 是否正常

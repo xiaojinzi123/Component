@@ -4,7 +4,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.ehi.component.ComponentUtil;
-import com.ehi.component.bean.EHiRouterBean;
+import com.ehi.component.bean.RouterBean;
 import com.ehi.component.router.IComponentHostRouter;
 
 import java.util.Collections;
@@ -25,7 +25,7 @@ abstract class ModuleRouterImpl implements IComponentHostRouter {
      * component/test
      * 保存映射关系的map集合
      */
-    protected final Map<String, EHiRouterBean> routerBeanMap = new HashMap<>();
+    protected final Map<String, RouterBean> routerBeanMap = new HashMap<>();
 
     /**
      * 是否初始化了map,懒加载
@@ -46,7 +46,7 @@ abstract class ModuleRouterImpl implements IComponentHostRouter {
      * @return
      */
     @NonNull
-    public Map<String, EHiRouterBean> getRouterMap() {
+    public Map<String, RouterBean> getRouterMap() {
         if (!hasInitMap) {
             initMap();
         }

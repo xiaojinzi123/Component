@@ -7,14 +7,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component.support.ParameterSupport;
 import com.ehi.component1.R;
 
 /**
  * 这个界面用于显示传递过来的 Data 数据,并且返回一个Result
  */
-@EHiRouterAnno(
+@RouterAnno(
         host = ModuleConfig.Module1.NAME,
         value = ModuleConfig.Module1.TEST,
         desc = "业务组件1的测试界面"

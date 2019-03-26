@@ -8,15 +8,15 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component.help.R;
 import com.ehi.component.impl.Router;
 import com.ehi.component.impl.RouterErrorResult;
 import com.ehi.component.impl.RouterResult;
-import com.ehi.component.support.EHiCallbackAdapter;
+import com.ehi.component.support.CallbackAdapter;
 import com.ehi.component.support.Utils;
 
-@EHiRouterAnno(
+@RouterAnno(
         host = ModuleConfig.Help.NAME,
         value = ModuleConfig.Help.TEST_WEB_ROUTER,
         desc = "网页测试跳转"
@@ -46,7 +46,7 @@ public class TestRouterWebAct extends AppCompatActivity {
     public void openUrl(final String url) {
         Router.with(this)
                 .url(url)
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         super.onSuccess(result);

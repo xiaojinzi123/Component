@@ -1,6 +1,6 @@
 package com.ehi.component;
 
-import com.ehi.component.anno.EHiServiceAnno;
+import com.ehi.component.anno.ServiceAnno;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -34,7 +34,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
 /**
- * 负责处理 {@link EHiServiceAnno}
+ * 负责处理 {@link ServiceAnno}
  */
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
@@ -67,7 +67,7 @@ public class ServiceProcessor extends BaseHostProcessor {
             return false;
         }
         if (CollectionUtils.isNotEmpty(set)) {
-            Set<? extends Element> annoElements = roundEnvironment.getElementsAnnotatedWith(EHiServiceAnno.class);
+            Set<? extends Element> annoElements = roundEnvironment.getElementsAnnotatedWith(ServiceAnno.class);
             parseAnnotation(annoElements);
             createImpl();
             return true;
@@ -81,7 +81,7 @@ public class ServiceProcessor extends BaseHostProcessor {
         annoElementList.clear();
         for (Element element : annoElements) {
             // 如果是一个 Service
-            final EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
+            final ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
             if (!(element instanceof TypeElement) || anno == null) {
                 mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
                 continue;
@@ -137,7 +137,7 @@ public class ServiceProcessor extends BaseHostProcessor {
             public void accept(Element element) {
                 String serviceImplClassName = element.toString();
                 TypeElement serviceImplTypeElement = mElements.getTypeElement(serviceImplClassName);
-                EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
+                ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
                 boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
                 String implName = "implName" + atomicInteger.incrementAndGet();
 
@@ -192,7 +192,7 @@ public class ServiceProcessor extends BaseHostProcessor {
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {
-                EHiServiceAnno anno = element.getAnnotation(EHiServiceAnno.class);
+                ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 for (String interServiceClassName : interServiceClassNames) {
                     methodSpecBuilder.addStatement("$T.unregister($T.class)", classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)));
@@ -219,7 +219,7 @@ public class ServiceProcessor extends BaseHostProcessor {
      * @param anno
      * @return
      */
-    private List<String> getInterServiceClassNames(EHiServiceAnno anno) {
+    private List<String> getInterServiceClassNames(ServiceAnno anno) {
         List<String> implClassNames = new ArrayList<>();
         try {
             implClassNames.clear();

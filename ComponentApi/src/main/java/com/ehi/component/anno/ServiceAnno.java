@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.CLASS)
-public @interface EHiServiceAnno {
+public @interface ServiceAnno {
 
     /**
      * 这个服务对应的接口

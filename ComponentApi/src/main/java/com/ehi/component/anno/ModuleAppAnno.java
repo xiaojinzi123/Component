@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.CLASS)
-public @interface EHiModuleAppAnno {
+public @interface ModuleAppAnno {
 }

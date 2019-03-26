@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.view.BaseAct;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.componentdemo.R;
 
 /**
@@ -15,7 +15,7 @@ import com.ehi.componentdemo.R;
  *
  * @author : xiaojinzi 30212
  */
-@EHiRouterAnno(
+@RouterAnno(
         host = ModuleConfig.App.NAME,
         value = ModuleConfig.App.TEST_FRAGMENT_ROUTER,
         desc = "测试跳转的界面"

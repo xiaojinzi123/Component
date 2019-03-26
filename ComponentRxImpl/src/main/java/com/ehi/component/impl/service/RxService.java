@@ -34,9 +34,9 @@ import io.reactivex.functions.Function;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiRxService {
+public class RxService {
 
-    private EHiRxService() {
+    private RxService() {
     }
 
     /**

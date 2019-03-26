@@ -13,7 +13,7 @@ public class ComponentUtil {
     /**
      * 当使用 Fragment 或者 Context 中有这个 tag 的 fragment,那么就会最终用这个实现跳转
      */
-    public static final String FRAGMENT_TAG = "EHiRxFragment";
+    public static final String FRAGMENT_TAG = "RouterRxFragment";
 
     /**
      * 1.这是注解驱动器生成类的时候的目录
@@ -47,11 +47,11 @@ public class ComponentUtil {
      */
     public static final String INTERCEPTOR = "InterceptorGenerated";
 
-    public static final String GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiGlobalInterceptorAnno";
-    public static final String INTERCEPTOR_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiInterceptorAnno";
-    public static final String ROUTER_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiRouterAnno";
-    public static final String MODULE_APP_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiModuleAppAnno";
-    public static final String SERVICE_ANNO_CLASS_NAME = "com.ehi.component.anno.EHiServiceAnno";
+    public static final String GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME = "com.ehi.component.anno.GlobalInterceptorAnno";
+    public static final String INTERCEPTOR_ANNO_CLASS_NAME = "com.ehi.component.anno.InterceptorAnno";
+    public static final String ROUTER_ANNO_CLASS_NAME = "com.ehi.component.anno.RouterAnno";
+    public static final String MODULE_APP_ANNO_CLASS_NAME = "com.ehi.component.anno.ModuleAppAnno";
+    public static final String SERVICE_ANNO_CLASS_NAME = "com.ehi.component.anno.ServiceAnno";
 
     // 路由框架基础实现类的全类名
 

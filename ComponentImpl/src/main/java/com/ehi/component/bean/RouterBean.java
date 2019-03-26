@@ -2,19 +2,20 @@ package com.ehi.component.bean;
 
 import android.support.annotation.Nullable;
 
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.interceptor.InterceptorCenter;
 
 import java.util.List;
 
 /**
- * 和注解{@link com.ehi.component.anno.EHiRouterAnno}是--对应的
+ * 和注解{@link RouterAnno}是--对应的
  * <p>
  * time   : 2018/12/03
  *
  * @author : xiaojinzi 30212
  */
-public class EHiRouterBean {
+public class RouterBean {
 
     /**
      * 可能会生成文档之类的

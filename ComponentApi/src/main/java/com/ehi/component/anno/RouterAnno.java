@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)
-public @interface EHiRouterAnno {
+public @interface RouterAnno {
 
     /**
      * 定义host

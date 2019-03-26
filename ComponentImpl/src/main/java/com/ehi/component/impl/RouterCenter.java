@@ -12,7 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.ehi.component.ComponentUtil;
-import com.ehi.component.bean.EHiRouterBean;
+import com.ehi.component.bean.RouterBean;
 import com.ehi.component.error.ignore.InterceptorNotFoundException;
 import com.ehi.component.error.ignore.NavigationFailException;
 import com.ehi.component.error.ignore.TargetActivityNotFoundException;
@@ -68,7 +68,7 @@ public class RouterCenter implements IComponentCenterRouter {
     /**
      * 保存映射关系的map集合,是一个总路由表
      */
-    protected final Map<String, EHiRouterBean> routerMap = new HashMap<>();
+    protected final Map<String, RouterBean> routerMap = new HashMap<>();
 
     @Override
     @MainThread
@@ -91,8 +91,8 @@ public class RouterCenter implements IComponentCenterRouter {
             throw new NavigationFailException("target Uri is null");
         }
         // 参数检测完毕
-        EHiRouterBean target = getTarget(routerRequest.uri);
-        // EHi://component1/test?data=xxxx
+        RouterBean target = getTarget(routerRequest.uri);
+        // router://component1/test?data=xxxx
         String uriString = routerRequest.uri.toString();
         // 没有找到目标界面
         if (target == null) {
@@ -188,7 +188,7 @@ public class RouterCenter implements IComponentCenterRouter {
     public synchronized List<RouterInterceptor> interceptors(@NonNull Uri uri) {
         // 获取目标对象
         final String targetUrl = getTargetUrl(uri);
-        final EHiRouterBean routerBean = routerMap.get(targetUrl);
+        final RouterBean routerBean = routerMap.get(targetUrl);
         if (routerBean == null) {
             return Collections.emptyList();
         }
@@ -240,7 +240,7 @@ public class RouterCenter implements IComponentCenterRouter {
     }
 
     @Nullable
-    private EHiRouterBean getTarget(@NonNull Uri uri) {
+    private RouterBean getTarget(@NonNull Uri uri) {
         // "/component1/test" 不含host
         String targetPath = uri.getPath();
 
@@ -315,7 +315,7 @@ public class RouterCenter implements IComponentCenterRouter {
             return;
         }
         hostRouterMap.remove(router.getHost());
-        Map<String, EHiRouterBean> childRouterMap = router.getRouterMap();
+        Map<String, RouterBean> childRouterMap = router.getRouterMap();
         if (childRouterMap != null) {
             // key = host/path
             for (String key : childRouterMap.keySet()) {
@@ -359,7 +359,7 @@ public class RouterCenter implements IComponentCenterRouter {
             if (childRouter == null || childRouter.getRouterMap() == null) {
                 continue;
             }
-            Map<String, EHiRouterBean> childRouterMap = childRouter.getRouterMap();
+            Map<String, RouterBean> childRouterMap = childRouter.getRouterMap();
             for (String key : childRouterMap.keySet()) {
                 if (set.contains(key)) {
                     throw new IllegalStateException("the target uri is exist：" + key);

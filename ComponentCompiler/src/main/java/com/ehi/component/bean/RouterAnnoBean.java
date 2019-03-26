@@ -10,7 +10,7 @@ import javax.lang.model.element.Element;
  *
  * @author : xiaojinzi 30212
  */
-public class RouterBean {
+public class RouterAnnoBean {
 
     private String host;
     private String path;

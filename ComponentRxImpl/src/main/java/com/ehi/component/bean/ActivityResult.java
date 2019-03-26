@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiActivityResult {
+public class ActivityResult {
 
     public final int requestCode;
 
@@ -18,7 +18,7 @@ public class EHiActivityResult {
     @Nullable
     public final Intent data;
 
-    public EHiActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public ActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.data = data;

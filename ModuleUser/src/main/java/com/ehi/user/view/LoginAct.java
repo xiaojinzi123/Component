@@ -7,11 +7,11 @@ import android.view.View;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.user.R;
 import com.ehi.user.service.UserServiceImpl;
 
-@EHiRouterAnno(
+@RouterAnno(
         host = ModuleConfig.User.NAME,
         value = ModuleConfig.User.LOGIN,
         desc = "用户模块的登录界面"

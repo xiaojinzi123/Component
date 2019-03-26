@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.CLASS)
-public @interface EHiGlobalInterceptorAnno {
+public @interface GlobalInterceptorAnno {
 
     /**
      * 定义优先级,值越大优先级越高

@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component.impl.RouterRequest;
 import com.ehi.component.support.ParameterSupport;
 import com.ehi.component1.R;
@@ -16,7 +16,7 @@ import com.ehi.component1.R;
  */
 public class Component1TestQueryAct extends AppCompatActivity {
 
-    @EHiRouterAnno(
+    @RouterAnno(
             host = ModuleConfig.Module1.NAME,
             value = ModuleConfig.Module1.TEST_QUERY
     )

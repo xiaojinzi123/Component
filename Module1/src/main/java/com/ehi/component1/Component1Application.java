@@ -4,10 +4,10 @@ package com.ehi.component1;
 import android.app.Application;
 import android.support.annotation.NonNull;
 
-import com.ehi.component.anno.EHiModuleAppAnno;
+import com.ehi.component.anno.ModuleAppAnno;
 import com.ehi.component.application.IComponentApplication;
 
-@EHiModuleAppAnno()
+@ModuleAppAnno()
 public class Component1Application implements IComponentApplication {
 
     @NonNull

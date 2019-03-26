@@ -5,13 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component1.R;
 
 /**
  * 这个是一个测试登录的界面
  */
-@EHiRouterAnno(
+@RouterAnno(
         host = ModuleConfig.Module1.NAME,
         value = ModuleConfig.Module1.TEST_LOGIN,
         interceptorNames = InterceptorConfig.USER_LOGIN

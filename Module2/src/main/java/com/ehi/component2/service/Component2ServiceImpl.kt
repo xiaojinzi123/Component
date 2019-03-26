@@ -3,14 +3,14 @@ package com.ehi.component2.service
 import android.app.Application
 import android.widget.Toast
 import com.ehi.base.service.inter.component2.Component2Service
-import com.ehi.component.anno.EHiServiceAnno
+import com.ehi.component.anno.ServiceAnno
 
 /**
  * time   : 2018/12/06
  *
  * @author : xiaojinzi 30212
  */
-@EHiServiceAnno(value = [Component2Service::class], singleTon = false)
+@ServiceAnno(value = [Component2Service::class], singleTon = false)
 class Component2ServiceImpl : Component2Service {
 
     var app: Application;

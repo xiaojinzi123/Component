@@ -4,8 +4,8 @@ import android.app.Application;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.ComponentConfig;
-import com.ehi.component.impl.EHiRxRouter;
-import com.ehi.component.impl.application.EHiModuleManager;
+import com.ehi.component.impl.RxRouter;
+import com.ehi.component.impl.application.ModuleManager;
 import com.ehi.component1.BuildConfig;
 
 /**
@@ -20,9 +20,9 @@ public class App extends Application {
         super.onCreate();
 
         ComponentConfig.init(this, BuildConfig.DEBUG);
-        EHiRxRouter.tryErrorCatch();
+        RxRouter.tryErrorCatch();
 
-        EHiModuleManager moduleManager = EHiModuleManager.getInstance();
+        ModuleManager moduleManager = ModuleManager.getInstance();
         moduleManager.register(ModuleConfig.Component1.NAME);
 
         if (BuildConfig.DEBUG) {

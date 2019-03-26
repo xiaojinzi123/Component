@@ -11,8 +11,8 @@ import android.text.TextUtils;
 
 import com.ehi.base.InterceptorConfig;
 import com.ehi.base.ModuleConfig;
-import com.ehi.component.anno.EHiParameterAnno;
-import com.ehi.component.anno.EHiRouterAnno;
+import com.ehi.component.anno.ParameterAnno;
+import com.ehi.component.anno.RouterAnno;
 import com.ehi.component.impl.RouterRequest;
 
 /**
@@ -27,13 +27,13 @@ public class CustomerRouterImpl {
      * @return
      */
     @Nullable
-    @EHiRouterAnno(
+    @RouterAnno(
             host = ModuleConfig.System.NAME,
             value = ModuleConfig.System.CALL_PHONE,
             interceptorNames = InterceptorConfig.HELP_CALLPHOEPERMISION
     )
     public static Intent callPhoneIntent(@NonNull RouterRequest request,
-                                         @EHiParameterAnno("tel") String tel) {
+                                         @ParameterAnno("tel") String tel) {
         if (TextUtils.isEmpty(tel)) {
             throw new NullPointerException("the tel is empty");
         }
@@ -48,7 +48,7 @@ public class CustomerRouterImpl {
      * @return
      */
     @Nullable
-    @EHiRouterAnno(
+    @RouterAnno(
             host = ModuleConfig.System.NAME,
             value = ModuleConfig.System.TAKE_PHONE,
             interceptorNames = InterceptorConfig.HELP_CAMERAPERMISION
@@ -67,7 +67,7 @@ public class CustomerRouterImpl {
      * @param request
      * @return
      */
-    @EHiRouterAnno(
+    @RouterAnno(
             host = ModuleConfig.System.NAME,
             value = ModuleConfig.System.SYSTEM_APP_DETAIL
     )
@@ -90,13 +90,13 @@ public class CustomerRouterImpl {
         }
     }
 
-    @EHiRouterAnno(
+    @RouterAnno(
             host = ModuleConfig.System.NAME,
             value = ModuleConfig.System.TEST_PARAMETER
     )
     public static void testParameter(@NonNull RouterRequest request,
-                                     @EHiParameterAnno("name") String name,
-                                     @EHiParameterAnno("age") int age) {
+                                     @ParameterAnno("name") String name,
+                                     @ParameterAnno("age") int age) {
 
     }
 

@@ -5,10 +5,10 @@ import android.Manifest;
 import com.ehi.base.InterceptorConfig;
 import com.ehi.base.util.PermissionsCallback;
 import com.ehi.base.util.PermissionsUtil;
-import com.ehi.component.anno.EHiInterceptorAnno;
+import com.ehi.component.anno.InterceptorAnno;
 import com.ehi.component.impl.RouterInterceptor;
 
-@EHiInterceptorAnno(InterceptorConfig.HELP_CAMERAPERMISION)
+@InterceptorAnno(InterceptorConfig.HELP_CAMERAPERMISION)
 public class TakePhonePermisionInterceptor implements RouterInterceptor {
     @Override
     public void intercept(final Chain chain) throws Exception {

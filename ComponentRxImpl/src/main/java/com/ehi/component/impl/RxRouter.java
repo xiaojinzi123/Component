@@ -14,14 +14,14 @@ import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
 import com.ehi.component.ComponentUtil;
-import com.ehi.component.bean.EHiActivityResult;
+import com.ehi.component.bean.ActivityResult;
 import com.ehi.component.error.ActivityResultException;
 import com.ehi.component.error.UnknowException;
 import com.ehi.component.error.ignore.InterceptorNotFoundException;
 import com.ehi.component.error.ignore.NavigationFailException;
 import com.ehi.component.error.ignore.TargetActivityNotFoundException;
 import com.ehi.component.support.Action;
-import com.ehi.component.support.EHiCallbackAdapter;
+import com.ehi.component.support.CallbackAdapter;
 import com.ehi.component.support.LogUtil;
 import com.ehi.component.support.NavigationDisposable;
 import com.ehi.component.support.Utils;
@@ -49,7 +49,7 @@ import io.reactivex.functions.Function;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiRxRouter extends Router {
+public class RxRouter extends Router {
 
     /**
      * requestCode 如果等于这个值,就表示是随机生成的
@@ -57,11 +57,11 @@ public class EHiRxRouter extends Router {
      */
     public static final Integer RANDOM_REQUSET_CODE = Integer.MIN_VALUE;
 
-    public static final String TAG = "EHiRxRouter";
+    public static final String TAG = "RxRouter";
 
     /**
      * 这个方法父类也有一个静态的,但是父类返回的是 {@link Router.Builder} 而这个返回的是
-     * {@link EHiRxRouter.Builder}
+     * {@link RxRouter.Builder}
      *
      * @param context
      * @return
@@ -72,7 +72,7 @@ public class EHiRxRouter extends Router {
 
     /**
      * 这个方法父类也有一个静态的,但是父类返回的是 {@link Router.Builder} 而这个返回的是
-     * {@link EHiRxRouter.Builder}
+     * {@link RxRouter.Builder}
      *
      * @param fragment
      * @return
@@ -348,17 +348,17 @@ public class EHiRxRouter extends Router {
          */
         public Single<Intent> intentCall() {
             return activityResultCall()
-                    .doOnSuccess(new Consumer<EHiActivityResult>() {
+                    .doOnSuccess(new Consumer<ActivityResult>() {
                         @Override
-                        public void accept(EHiActivityResult activityResult) throws Exception {
+                        public void accept(ActivityResult activityResult) throws Exception {
                             if (activityResult.data == null) {
                                 throw new ActivityResultException("the intent result data is null");
                             }
                         }
                     })
-                    .map(new Function<EHiActivityResult, Intent>() {
+                    .map(new Function<ActivityResult, Intent>() {
                         @Override
-                        public Intent apply(EHiActivityResult activityResult) throws Exception {
+                        public Intent apply(ActivityResult activityResult) throws Exception {
                             return activityResult.data;
                         }
                     });
@@ -371,9 +371,9 @@ public class EHiRxRouter extends Router {
          */
         public Single<Integer> resultCodeCall() {
             return activityResultCall()
-                    .map(new Function<EHiActivityResult, Integer>() {
+                    .map(new Function<ActivityResult, Integer>() {
                         @Override
-                        public Integer apply(EHiActivityResult activityResult) throws Exception {
+                        public Integer apply(ActivityResult activityResult) throws Exception {
                             return activityResult.resultCode;
                         }
                     });
@@ -390,9 +390,9 @@ public class EHiRxRouter extends Router {
          */
         public Completable resultCodeMatchCall(final int expectedResultCode) {
             return activityResultCall()
-                    .doOnSuccess(new Consumer<EHiActivityResult>() {
+                    .doOnSuccess(new Consumer<ActivityResult>() {
                         @Override
-                        public void accept(EHiActivityResult activityResult) throws Exception {
+                        public void accept(ActivityResult activityResult) throws Exception {
                             if (activityResult.resultCode != expectedResultCode) {
                                 throw new ActivityResultException("the resultCode is not matching " + expectedResultCode);
                             }
@@ -410,9 +410,9 @@ public class EHiRxRouter extends Router {
          */
         public Single<Intent> intentResultCodeMatchCall(final int expectedResultCode) {
             return activityResultCall()
-                    .doOnSuccess(new Consumer<EHiActivityResult>() {
+                    .doOnSuccess(new Consumer<ActivityResult>() {
                         @Override
-                        public void accept(EHiActivityResult activityResult) throws Exception {
+                        public void accept(ActivityResult activityResult) throws Exception {
                             if (activityResult.resultCode != expectedResultCode) {
                                 throw new ActivityResultException("the resultCode is not matching " + expectedResultCode);
                             }
@@ -421,9 +421,9 @@ public class EHiRxRouter extends Router {
                             }
                         }
                     })
-                    .map(new Function<EHiActivityResult, Intent>() {
+                    .map(new Function<ActivityResult, Intent>() {
                         @Override
-                        public Intent apply(EHiActivityResult activityResult) throws Exception {
+                        public Intent apply(ActivityResult activityResult) throws Exception {
                             return activityResult.data;
                         }
                     });
@@ -434,10 +434,10 @@ public class EHiRxRouter extends Router {
          *
          * @return
          */
-        public Single<EHiActivityResult> activityResultCall() {
-            return Single.create(new SingleOnSubscribe<EHiActivityResult>() {
+        public Single<ActivityResult> activityResultCall() {
+            return Single.create(new SingleOnSubscribe<ActivityResult>() {
                 @Override
-                public void subscribe(final SingleEmitter<EHiActivityResult> emitter) throws Exception {
+                public void subscribe(final SingleEmitter<ActivityResult> emitter) throws Exception {
                     // 这里要运行在主线程的原因是因为这里要操作 Fragment,必须在主线程
                     Utils.postActionToMainThread(new Runnable() {
                         @Override
@@ -454,7 +454,7 @@ public class EHiRxRouter extends Router {
          *
          * @param emitter
          */
-        private void doActivityResultCall(@NonNull final SingleEmitter<EHiActivityResult> emitter) {
+        private void doActivityResultCall(@NonNull final SingleEmitter<ActivityResult> emitter) {
             try {
                 if (emitter.isDisposed()) {
                     return;
@@ -469,26 +469,26 @@ public class EHiRxRouter extends Router {
                     fm = ((FragmentActivity) Utils.getActivityFromContext(context)).getSupportFragmentManager();
                 }
                 // 寻找是否添加过 Fragment
-                EHiRxFragment findRxFragment = (EHiRxFragment) fm.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+                RouterRxFragment findRxFragment = (RouterRxFragment) fm.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
                 if (findRxFragment == null) {
-                    findRxFragment = new EHiRxFragment();
+                    findRxFragment = new RouterRxFragment();
                     fm.beginTransaction()
                             .add(findRxFragment, ComponentUtil.FRAGMENT_TAG)
                             .commitNow();
                 }
-                final EHiRxFragment rxFragment = findRxFragment;
+                final RouterRxFragment rxFragment = findRxFragment;
                 // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
                 // 导航拿到 NavigationDisposable 对象
                 // 可能是一个 空实现
-                final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
+                final NavigationDisposable navigationDisposable = navigate(new CallbackAdapter() {
                     @Override
                     @MainThread
                     public void onSuccess(@NonNull final RouterResult routerResult) {
                         super.onSuccess(routerResult);
                         // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
-                        rxFragment.setSingleEmitter(routerResult.getOriginalRequest(), new com.ehi.component.support.Consumer<EHiActivityResult>() {
+                        rxFragment.setSingleEmitter(routerResult.getOriginalRequest(), new com.ehi.component.support.Consumer<ActivityResult>() {
                             @Override
-                            public void accept(@NonNull EHiActivityResult result) throws Exception {
+                            public void accept(@NonNull ActivityResult result) throws Exception {
                                 Help.removeRequestCode(routerResult.getOriginalRequest());
                                 if (emitter != null && !emitter.isDisposed()) {
                                     emitter.onSuccess(result);
@@ -521,9 +521,9 @@ public class EHiRxRouter extends Router {
                         navigationDisposable.cancel();
                     }
                 });
-                // 现在可以检测 requestCode 是否重复,除了 EHiRxRouter 之外的地方使用同一个 requestCode 是可以的
-                // 因为 EHiRxRouter 的 requestCode 是直接配合 EHiRxFragment 使用的
-                // 其他地方是用不到 EHiRxFragment,所以可以重复
+                // 现在可以检测 requestCode 是否重复,除了 RxRouter 之外的地方使用同一个 requestCode 是可以的
+                // 因为 RxRouter 的 requestCode 是直接配合 RouterRxFragment 使用的
+                // 其他地方是用不到 RouterRxFragment,所以可以重复
                 boolean isExist = Help.isExist(navigationDisposable.originalRequest());
                 if (isExist) { // 如果存在直接取消这个路由任务,然后直接返回错误
                     navigationDisposable.cancel();
@@ -568,7 +568,7 @@ public class EHiRxRouter extends Router {
                         onCheck(false);
                         // 导航拿到 NavigationDisposable 对象
                         // 可能是一个 空实现,这些个回调都是回调在主线程的
-                        final NavigationDisposable navigationDisposable = navigate(new EHiCallbackAdapter() {
+                        final NavigationDisposable navigationDisposable = navigate(new CallbackAdapter() {
                             @Override
                             @MainThread
                             public void onSuccess(@NonNull RouterResult routerResult) {
@@ -629,14 +629,14 @@ public class EHiRxRouter extends Router {
     private static class Help {
 
         /**
-         * 和{@link EHiRxFragment} 配套使用
+         * 和{@link RouterRxFragment} 配套使用
          */
         private static Set<String> mRequestCodeSet = new HashSet<>();
 
         private static Random r = new Random();
 
         /**
-         * 随机生成一个 requestCode,调用这个方法的 requestCode 是 {@link EHiRxRouter#RANDOM_REQUSET_CODE}
+         * 随机生成一个 requestCode,调用这个方法的 requestCode 是 {@link RxRouter#RANDOM_REQUSET_CODE}
          *
          * @return [1, 256]
          */
@@ -644,7 +644,7 @@ public class EHiRxRouter extends Router {
         public static RouterRequest randomlyGenerateRequestCode(@NonNull RouterRequest request) {
             Utils.checkNullPointer(request, "request");
             // 如果不是想要随机生成,就直接返回
-            if (!EHiRxRouter.RANDOM_REQUSET_CODE.equals(request.requestCode)) {
+            if (!RxRouter.RANDOM_REQUSET_CODE.equals(request.requestCode)) {
                 return request;
             }
             // 转化为构建对象
@@ -758,7 +758,7 @@ public class EHiRxRouter extends Router {
         }
 
         /**
-         * 发射错误,目前这些个发射错误都是为了 {@link EHiRxRouter} 写的,发射的错误和正确的 item 被发射都应该
+         * 发射错误,目前这些个发射错误都是为了 {@link RxRouter} 写的,发射的错误和正确的 item 被发射都应该
          * 最终发射在主线程
          *
          * @param emitter
@@ -782,7 +782,7 @@ public class EHiRxRouter extends Router {
         }
 
         /**
-         * 发射错误,目前这些个发射错误都是为了 {@link EHiRxRouter} 写的,发射的错误和正确的 item 被发射都应该
+         * 发射错误,目前这些个发射错误都是为了 {@link RxRouter} 写的,发射的错误和正确的 item 被发射都应该
          * 最终发射在主线程
          *
          * @param emitter

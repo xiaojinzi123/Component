@@ -11,15 +11,15 @@ import com.ehi.base.ModuleConfig;
 import com.ehi.base.bean.User;
 import com.ehi.base.interceptor.TimeConsumingInterceptor;
 import com.ehi.base.view.BaseAct;
-import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.bean.EHiActivityResult;
+import com.ehi.component.anno.RouterAnno;
+import com.ehi.component.bean.ActivityResult;
 import com.ehi.component.impl.Router;
 import com.ehi.component.impl.RouterErrorResult;
 import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.RouterRequest;
 import com.ehi.component.impl.RouterResult;
-import com.ehi.component.impl.EHiRxRouter;
-import com.ehi.component.support.EHiCallbackAdapter;
+import com.ehi.component.impl.RxRouter;
+import com.ehi.component.support.CallbackAdapter;
 import com.ehi.component.support.NavigationDisposable;
 import com.ehi.component.support.Utils;
 import com.ehi.componentdemo.R;
@@ -37,7 +37,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * 测试代码质量的界面
  */
-@EHiRouterAnno(
+@RouterAnno(
         host = ModuleConfig.App.NAME,
         value = ModuleConfig.App.TEST_QUALITY,
         desc = "测试代码质量的界面"
@@ -56,7 +56,7 @@ public class TestQualityAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .query("data", "cancelImmediately")
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
@@ -81,7 +81,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void cancelImmediatelyWithGetRx(View view) {
-        Disposable disposable = EHiRxRouter
+        Disposable disposable = RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -110,7 +110,7 @@ public class TestQualityAct extends BaseAct {
 
     public void cancelImmediatelyWithGetIntent(View view) {
 
-        Disposable disposable = EHiRxRouter
+        Disposable disposable = RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -139,7 +139,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void withoutHostOrPath1(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 //.host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -160,7 +160,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void withoutHostOrPath2(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 //.path(ModuleConfig.Module1.TEST)
@@ -181,7 +181,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void useSameRequestCode(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -189,7 +189,7 @@ public class TestQualityAct extends BaseAct {
                 .interceptors(new RouterInterceptor() {
                     @Override
                     public void intercept(final Chain chain) throws Exception {
-                        EHiRxRouter.with(chain.request().getRawContext())
+                        RxRouter.with(chain.request().getRawContext())
                                 .host(ModuleConfig.User.NAME)
                                 .path(ModuleConfig.User.LOGIN)
                                 .requestCode(123)
@@ -239,7 +239,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void useSameRequestCode1(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -266,7 +266,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     public void getIntentWithoutRequestCode(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -292,7 +292,7 @@ public class TestQualityAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST)
                 .interceptors(TimeConsumingInterceptor.class)
                 .query("data", "cancelAuto2")
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
@@ -324,7 +324,7 @@ public class TestQualityAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST)
                 .interceptors(TimeConsumingInterceptor.class)
                 .query("data", "cancelAuto3")
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
@@ -353,7 +353,7 @@ public class TestQualityAct extends BaseAct {
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.NOT_FOUND_TEST)
                 .query("data", "targetNotFound")
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
@@ -379,7 +379,7 @@ public class TestQualityAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .query("data", "cancelAfterRouter")
-                .navigate(new EHiCallbackAdapter() {
+                .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         ToastUtil.toastShort("测试成功\n路由成功");
@@ -414,7 +414,7 @@ public class TestQualityAct extends BaseAct {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST)
                         .query("data", "runOnChildThread")
-                        .navigate(new EHiCallbackAdapter() {
+                        .navigate(new CallbackAdapter() {
                             @Override
                             public void onSuccess(@NonNull RouterResult result) {
                                 ToastUtil.toastShort("测试成功\n路由成功");
@@ -439,7 +439,7 @@ public class TestQualityAct extends BaseAct {
             @Override
             public void run() {
                 super.run();
-                EHiRxRouter
+                RxRouter
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST)
@@ -466,7 +466,7 @@ public class TestQualityAct extends BaseAct {
      * @param view
      */
     public void crashOnAfterJumpAction(View view) {
-        EHiRxRouter
+        RxRouter
                 .with(mContext)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -479,9 +479,9 @@ public class TestQualityAct extends BaseAct {
                     }
                 })
                 .activityResultCall()
-                .subscribe(new Consumer<EHiActivityResult>() {
+                .subscribe(new Consumer<ActivityResult>() {
                     @Override
-                    public void accept(EHiActivityResult eHiActivityResult) throws Exception {
+                    public void accept(ActivityResult activityResult) throws Exception {
                         ToastUtil.toastShort("测试失败\n,onSuccess");
                     }
                 }, new Consumer<Throwable>() {
