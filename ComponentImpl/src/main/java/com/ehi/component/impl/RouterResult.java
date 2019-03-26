@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
  *
  * @author : xiaojinzi 30212
  */
-public class EHiRouterResult {
+public class RouterResult {
 
     /**
      * 最原始的请求,谁都更改不了的,而且不可能为空在这里
@@ -27,7 +27,7 @@ public class EHiRouterResult {
      * @param originalRequest 最原始的请求
      * @param finalRequest    可能修改过的请求,也可能是和原始请求一样
      */
-    public EHiRouterResult(@NonNull RouterRequest originalRequest, @NonNull RouterRequest finalRequest) {
+    public RouterResult(@NonNull RouterRequest originalRequest, @NonNull RouterRequest finalRequest) {
         this.mOriginalRequest = originalRequest;
         this.mFinalRequest = finalRequest;
     }

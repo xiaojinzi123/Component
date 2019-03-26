@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.anno.EHiGlobalInterceptorAnno;
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.RouterRequest;
 
 /**
@@ -12,7 +12,7 @@ import com.ehi.component.impl.RouterRequest;
  * 优先级设置的高一些
  */
 @EHiGlobalInterceptorAnno(priority = 1000)
-public class WebViewInterceptor implements EHiRouterInterceptor {
+public class WebViewInterceptor implements RouterInterceptor {
 
     @Override
     public void intercept(Chain chain) throws Exception {

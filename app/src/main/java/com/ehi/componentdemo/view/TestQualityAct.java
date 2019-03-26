@@ -14,10 +14,10 @@ import com.ehi.base.view.BaseAct;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.bean.EHiActivityResult;
 import com.ehi.component.impl.Router;
-import com.ehi.component.impl.EHiRouterErrorResult;
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterErrorResult;
+import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.RouterRequest;
-import com.ehi.component.impl.EHiRouterResult;
+import com.ehi.component.impl.RouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
 import com.ehi.component.support.NavigationDisposable;
@@ -58,17 +58,17 @@ public class TestQualityAct extends BaseAct {
                 .query("data", "cancelImmediately")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(errorResult.getError()));
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
+                    public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                         ToastUtil.toastLong("测试失败\n路由失败：onEvent方法");
                     }
 
@@ -186,7 +186,7 @@ public class TestQualityAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .requestCode(123)
-                .interceptors(new EHiRouterInterceptor() {
+                .interceptors(new RouterInterceptor() {
                     @Override
                     public void intercept(final Chain chain) throws Exception {
                         EHiRxRouter.with(chain.request().getRawContext())
@@ -244,7 +244,7 @@ public class TestQualityAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .requestCode(123)
-                .interceptors(new EHiRouterInterceptor() {
+                .interceptors(new RouterInterceptor() {
                     @Override
                     public void intercept(Chain chain) throws Exception {
                         chain.callback().onError(new RuntimeException("模拟发生错误"));
@@ -294,17 +294,17 @@ public class TestQualityAct extends BaseAct {
                 .query("data", "cancelAuto2")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(errorResult.getError()));
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
+                    public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                     }
 
                     @Override
@@ -326,17 +326,17 @@ public class TestQualityAct extends BaseAct {
                 .query("data", "cancelAuto3")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(errorResult.getError()));
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
+                    public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                     }
 
                     @Override
@@ -355,12 +355,12 @@ public class TestQualityAct extends BaseAct {
                 .query("data", "targetNotFound")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         ToastUtil.toastShort("测试失败\n路由成功");
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         ToastUtil.toastLong("测试成功\n路由失败：\n" + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
                     }
 
@@ -381,12 +381,12 @@ public class TestQualityAct extends BaseAct {
                 .query("data", "cancelAfterRouter")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         ToastUtil.toastShort("测试成功\n路由成功");
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         ToastUtil.toastLong("测试失败\n路由失败：\n" + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
                     }
 
@@ -396,7 +396,7 @@ public class TestQualityAct extends BaseAct {
                     }
 
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
+                    public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                         if (temp != null) {
                             temp.cancel();
                         }
@@ -416,12 +416,12 @@ public class TestQualityAct extends BaseAct {
                         .query("data", "runOnChildThread")
                         .navigate(new EHiCallbackAdapter() {
                             @Override
-                            public void onSuccess(@NonNull EHiRouterResult result) {
+                            public void onSuccess(@NonNull RouterResult result) {
                                 ToastUtil.toastShort("测试成功\n路由成功");
                             }
 
                             @Override
-                            public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                            public void onError(@NonNull RouterErrorResult errorResult) {
                                 ToastUtil.toastLong("测试失败\n路由失败：" + Utils.getRealMessage(errorResult.getError()));
                             }
 

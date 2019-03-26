@@ -26,8 +26,8 @@ import java.util.Set;
 
 /**
  * 表示路由的一个请求类,构建时候如果参数不对是有异常会发生的,使用的时候注意这一点
- * 但是在拦截器 {@link EHiRouterInterceptor} 中构建是不用关心错误的,
- * 因为拦截器的 {@link EHiRouterInterceptor#intercept(EHiRouterInterceptor.Chain)} 方法
+ * 但是在拦截器 {@link RouterInterceptor} 中构建是不用关心错误的,
+ * 因为拦截器的 {@link RouterInterceptor#intercept(RouterInterceptor.Chain)} 方法
  * 允许抛出异常
  * <p>
  * time   : 2018/11/29

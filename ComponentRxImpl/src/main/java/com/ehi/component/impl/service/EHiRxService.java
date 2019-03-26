@@ -61,7 +61,7 @@ public class EHiRxService {
             public T call() throws Exception {
                 T tempImpl = null;
                 if (Utils.isMainThread()) {
-                    tempImpl = EHiService.get(tClass);
+                    tempImpl = Service.get(tClass);
                 } else {
                     // 这段代码如何为空的话会直接抛出异常
                     tempImpl = blockingGetInChildThread(tClass);
@@ -171,7 +171,7 @@ public class EHiRxService {
                 Utils.postActionToMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        T t = EHiService.get(tClass);
+                        T t = Service.get(tClass);
                         if (emitter.isDisposed()) {
                             return;
                         }

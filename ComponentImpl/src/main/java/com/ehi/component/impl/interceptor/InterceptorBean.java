@@ -1,25 +1,25 @@
 package com.ehi.component.impl.interceptor;
 
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 
 /**
  * time   : 2018/12/26
  *
  * @author : xiaojinzi 30212
  */
-public class EHiInterceptorBean {
+public class InterceptorBean {
 
     /**
      * 拦截器
      */
-    public final EHiRouterInterceptor interceptor;
+    public final RouterInterceptor interceptor;
 
     /**
      * 优先级
      */
     public final int priority;
 
-    public EHiInterceptorBean(EHiRouterInterceptor interceptor, int priority) {
+    public InterceptorBean(RouterInterceptor interceptor, int priority) {
         this.interceptor = interceptor;
         this.priority = priority;
     }

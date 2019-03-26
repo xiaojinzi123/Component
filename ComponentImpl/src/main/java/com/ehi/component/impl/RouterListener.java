@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
  * @author xiaojinzi
  */
 @MainThread
-public interface EHiRouterListener {
+public interface RouterListener {
 
     /**
      * 路由成功的时候回调
@@ -18,7 +18,7 @@ public interface EHiRouterListener {
      * @param successResult
      */
     @MainThread
-    void onSuccess(@NonNull EHiRouterResult successResult) throws Exception;
+    void onSuccess(@NonNull RouterResult successResult) throws Exception;
 
     /**
      * 发生错误的时候的回调
@@ -26,7 +26,7 @@ public interface EHiRouterListener {
      * @param errorResult
      */
     @MainThread
-    void onError(EHiRouterErrorResult errorResult) throws Exception;
+    void onError(RouterErrorResult errorResult) throws Exception;
 
     /**
      * 当被取消的时候回调

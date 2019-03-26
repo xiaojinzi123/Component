@@ -10,9 +10,9 @@ import com.ehi.base.bean.User;
 import com.ehi.base.service.inter.user.UserService;
 import com.ehi.component.anno.EHiInterceptorAnno;
 import com.ehi.component.error.ServiceNotFoundException;
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.EHiRxRouter;
-import com.ehi.component.impl.service.EHiService;
+import com.ehi.component.impl.service.Service;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +26,7 @@ import io.reactivex.schedulers.Schedulers;
  * @author : xiaojinzi 30212
  */
 @EHiInterceptorAnno(InterceptorConfig.USER_LOGIN)
-public class LoginInterceptor implements EHiRouterInterceptor {
+public class LoginInterceptor implements RouterInterceptor {
 
     public LoginInterceptor(Context app) {
     }
@@ -34,7 +34,7 @@ public class LoginInterceptor implements EHiRouterInterceptor {
     @Override
     public void intercept(final Chain chain) throws Exception {
         final Context context = chain.request().getRawContext();
-        UserService userService = EHiService.get(UserService.class);
+        UserService userService = Service.get(UserService.class);
         if (chain.request().uri.toString().contains("user/login")) {
             chain.proceed(chain.request());
             return;

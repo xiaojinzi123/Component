@@ -4,7 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.ehi.component.anno.EHiRouterAnno;
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +23,7 @@ import io.reactivex.schedulers.Schedulers;
  *
  * @author : xiaojinzi 30212
  */
-public class DialogShowInterceptor implements EHiRouterInterceptor {
+public class DialogShowInterceptor implements RouterInterceptor {
 
     @Override
     public void intercept(final Chain chain) throws Exception {

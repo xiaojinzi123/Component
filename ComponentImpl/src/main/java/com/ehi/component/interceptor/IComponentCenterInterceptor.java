@@ -2,7 +2,7 @@ package com.ehi.component.interceptor;
 
 import android.support.annotation.NonNull;
 
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface IComponentCenterInterceptor extends IComponentInterceptor {
      *
      * @return
      */
-    List<EHiRouterInterceptor> getGlobalInterceptorList();
+    List<RouterInterceptor> getGlobalInterceptorList();
 
     /**
      * 注册每一个模块的拦截器

@@ -15,10 +15,10 @@ import com.ehi.base.ModuleConfig;
 import com.ehi.base.interceptor.DialogShowInterceptor;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.impl.Router;
-import com.ehi.component.impl.EHiRouterErrorResult;
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterErrorResult;
+import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.RouterRequest;
-import com.ehi.component.impl.EHiRouterResult;
+import com.ehi.component.impl.RouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
 import com.ehi.componentdemo.R;
@@ -63,7 +63,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
         }
     }
 
-    private void addInfo(@Nullable EHiRouterResult routerResult, @Nullable Throwable error, @NonNull String url, @Nullable Integer requestCode) {
+    private void addInfo(@Nullable RouterResult routerResult, @Nullable Throwable error, @NonNull String url, @Nullable Integer requestCode) {
         if (requestCode == null) {
             if (routerResult != null) {
                 tv_detail.setText(tv_detail.getText() + "\n\n普通跳转成功,目标:" + url);
@@ -110,12 +110,12 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .putInt("age", 25)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=normalJump", null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), "component1/test?data=normalJump", null);
                     }
                 });
@@ -130,7 +130,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .interceptors(DialogShowInterceptor.class)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
+                    public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                     }
 
                     @Override
@@ -149,7 +149,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .putString("tel", "xxx")
-                .interceptors(new EHiRouterInterceptor() {
+                .interceptors(new RouterInterceptor() {
                     @Override
                     public void intercept(final Chain chain) throws Exception {
                         new Thread(){
@@ -168,7 +168,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .interceptors(DialogShowInterceptor.class)
                 .navigate(new EHiCallbackAdapter(){
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
+                    public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                         Toast.makeText(ComponentConfig.getApplication(), "onEvent", Toast.LENGTH_SHORT).show();
                     }
 

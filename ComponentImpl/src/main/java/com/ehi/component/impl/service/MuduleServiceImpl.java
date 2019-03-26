@@ -9,7 +9,7 @@ import com.ehi.component.service.IComponentHostService;
  *
  * @author xiaojinzi 30212
  */
-abstract class EHiMuduleServiceImpl implements IComponentHostService {
+abstract class MuduleServiceImpl implements IComponentHostService {
     @Override
     public void onCreate(Application app) {
     }

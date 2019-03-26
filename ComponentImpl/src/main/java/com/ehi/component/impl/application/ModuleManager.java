@@ -7,8 +7,8 @@ import com.ehi.component.ComponentConfig;
 import com.ehi.component.ComponentUtil;
 import com.ehi.component.application.IComponentHostApplication;
 import com.ehi.component.application.IComponentModuleApplication;
-import com.ehi.component.impl.EHiRouterCenter;
-import com.ehi.component.impl.interceptor.EHiInterceptorCenter;
+import com.ehi.component.impl.RouterCenter;
+import com.ehi.component.impl.interceptor.InterceptorCenter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,14 +19,14 @@ import java.util.Map;
  *
  * @author xiaojinzi 30212
  */
-public class EHiModuleManager implements IComponentModuleApplication {
+public class ModuleManager implements IComponentModuleApplication {
 
     /**
      * 单例对象
      */
-    private static volatile EHiModuleManager instance;
+    private static volatile ModuleManager instance;
 
-    private EHiModuleManager() {
+    private ModuleManager() {
     }
 
     /**
@@ -34,11 +34,11 @@ public class EHiModuleManager implements IComponentModuleApplication {
      *
      * @return
      */
-    public static EHiModuleManager getInstance() {
+    public static ModuleManager getInstance() {
         if (instance == null) {
-            synchronized (EHiModuleManager.class) {
+            synchronized (ModuleManager.class) {
                 if (instance == null) {
-                    instance = new EHiModuleManager();
+                    instance = new ModuleManager();
                 }
             }
         }
@@ -106,8 +106,8 @@ public class EHiModuleManager implements IComponentModuleApplication {
      * 2.服务在不同模块中的声明是否也有重复的名称
      */
     public void check() {
-        EHiRouterCenter.getInstance().check();
-        EHiInterceptorCenter.getInstance().check();
+        RouterCenter.getInstance().check();
+        InterceptorCenter.getInstance().check();
     }
 
 }

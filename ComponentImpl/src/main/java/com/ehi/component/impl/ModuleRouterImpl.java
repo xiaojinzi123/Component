@@ -19,7 +19,7 @@ import java.util.Map;
  *
  * @author : xiaojinzi 30212
  */
-abstract class EHiModuleRouterImpl implements IComponentHostRouter {
+abstract class ModuleRouterImpl implements IComponentHostRouter {
 
     /**
      * component/test

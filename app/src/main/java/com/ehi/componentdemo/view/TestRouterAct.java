@@ -18,10 +18,10 @@ import com.ehi.base.view.BaseAct;
 import com.ehi.component.ComponentConfig;
 import com.ehi.component.anno.EHiRouterAnno;
 import com.ehi.component.impl.Router;
-import com.ehi.component.impl.EHiRouterErrorResult;
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterErrorResult;
+import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.impl.RouterRequest;
-import com.ehi.component.impl.EHiRouterResult;
+import com.ehi.component.impl.RouterResult;
 import com.ehi.component.impl.EHiRxRouter;
 import com.ehi.component.support.EHiCallbackAdapter;
 import com.ehi.componentdemo.R;
@@ -63,7 +63,7 @@ public class TestRouterAct extends BaseAct {
         tv_detail.setText(tv_detail.getText() + "\n\n" + info);
     }
 
-    private void addInfo(@Nullable EHiRouterResult routerResult, @Nullable Throwable error, @NonNull String url, @Nullable Integer requestCode) {
+    private void addInfo(@Nullable RouterResult routerResult, @Nullable Throwable error, @NonNull String url, @Nullable Integer requestCode) {
         if (requestCode == null) {
             if (routerResult != null) {
                 tv_detail.setText(tv_detail.getText() + "\n\n普通跳转成功,目标:" + url);
@@ -86,12 +86,12 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST_IN_OTHER_MODULE)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_IN_OTHER_MODULE, null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_IN_OTHER_MODULE, null);
                     }
                 });
@@ -107,12 +107,12 @@ public class TestRouterAct extends BaseAct {
                 .putInt("age", 25)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "?data=normalJump", null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "data=normalJump", null);
                     }
                 });
@@ -127,12 +127,12 @@ public class TestRouterAct extends BaseAct {
                 .putString("data", "normalJumpTwice1")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=normalJumpTwice1", null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), "component1/test?data=normalJumpTwice1", null);
                     }
                 });
@@ -144,12 +144,12 @@ public class TestRouterAct extends BaseAct {
                 .putString("data", "normalJumpTwice2")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=normalJumpTwice2", null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), "component1/test?data=normalJumpTwice2", null);
                     }
                 });
@@ -165,12 +165,12 @@ public class TestRouterAct extends BaseAct {
                 .requestCode(123)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=jumpGetData", 123);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), "component1/test?data=jumpGetData", 123);
                     }
                 });
@@ -182,12 +182,12 @@ public class TestRouterAct extends BaseAct {
                 .host("www.baidu.com")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "https://www.baidu.com", null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), "https://www.baidu.com", null);
                     }
                 });
@@ -293,7 +293,7 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST)
                 .putString("data", "jumpWithInterceptor")
                 .requestCode(123)
-                .interceptors(new EHiRouterInterceptor() {
+                .interceptors(new RouterInterceptor() {
                     @Override
                     public void intercept(final Chain chain) throws Exception {
                         final ProgressDialog dialog = ProgressDialog.show(chain.request().getRawContext(), "温馨提示", "耗时操作进行中,2秒后结束", true, false);
@@ -315,12 +315,12 @@ public class TestRouterAct extends BaseAct {
                 .interceptorNames(InterceptorConfig.USER_LOGIN)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=jumpWithInterceptor", 123);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), "component1/test?data=jumpWithInterceptor", 123);
                     }
                 });
@@ -349,12 +349,12 @@ public class TestRouterAct extends BaseAct {
                 .query("pass", "我是小金子的密码")
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_QUERY + "?name=我是小金子&pass=我是小金子的密码", null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_QUERY, null);
                     }
                 });
@@ -381,12 +381,12 @@ public class TestRouterAct extends BaseAct {
                 .url(url)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, url, null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), url, null);
                     }
                 });
@@ -399,12 +399,12 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST_LOGIN)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_LOGIN, null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_LOGIN, null);
                     }
                 });
@@ -417,12 +417,12 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST_DIALOG)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_DIALOG, null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_DIALOG, null);
                     }
                 });
@@ -435,12 +435,12 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.Module2.MAIN)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
                     }
                 });
@@ -460,12 +460,12 @@ public class TestRouterAct extends BaseAct {
                 })
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
                     }
                 });
@@ -569,7 +569,7 @@ public class TestRouterAct extends BaseAct {
                 .interceptors(DialogShowInterceptor.class)
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
+                    public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                         // 这里的代码不会被调用
                     }
 
@@ -603,7 +603,7 @@ public class TestRouterAct extends BaseAct {
                 })
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onEvent(@Nullable EHiRouterResult result, @Nullable EHiRouterErrorResult errorResult) {
+                    public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                     }
                 });
 
@@ -623,7 +623,7 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST_QUERY)
                 .query("name", "我是小金子")
                 .query("pass", "我是小金子的密码")
-                .interceptors((EHiRouterInterceptor) chain -> {
+                .interceptors((RouterInterceptor) chain -> {
                     AlertDialog dialog = new AlertDialog.Builder(chain.request().getRawActivity())
                             .setMessage("如果您点击确定,传递过去的名称 '我是小金子' 会被修改为 '我是被拦截器修改的小金子'")
                             .setPositiveButton("确定", (dialog12, which) -> chain.proceed(chain.request().toBuilder().query("name", "被拦截器修改的小金子").build()))
@@ -633,12 +633,12 @@ public class TestRouterAct extends BaseAct {
                 })
                 .navigate(new EHiCallbackAdapter() {
                     @Override
-                    public void onSuccess(@NonNull EHiRouterResult result) {
+                    public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "?data=normalJump", null);
                     }
 
                     @Override
-                    public void onError(@NonNull EHiRouterErrorResult errorResult) {
+                    public void onError(@NonNull RouterErrorResult errorResult) {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "data=normalJump", null);
                     }
                 });

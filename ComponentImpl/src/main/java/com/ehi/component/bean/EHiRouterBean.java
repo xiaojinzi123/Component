@@ -2,7 +2,8 @@ package com.ehi.component.bean;
 
 import android.support.annotation.Nullable;
 
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
+import com.ehi.component.impl.interceptor.InterceptorCenter;
 
 import java.util.List;
 
@@ -41,13 +42,13 @@ public class EHiRouterBean {
      * 这个目标界面要执行的拦截器
      */
     @Nullable
-    private List<Class<? extends EHiRouterInterceptor>> interceptors;
+    private List<Class<? extends RouterInterceptor>> interceptors;
 
     /**
      * 这是也是目标界面要执行的拦截器,不过这个是字符串表示的
      * 更加的跨越模块,但是寻找可能就没有上面的方式来的直接了
      *
-     * @see com.ehi.component.impl.interceptor.EHiInterceptorCenter#getByName(String)
+     * @see InterceptorCenter#getByName(String)
      */
     @Nullable
     private List<String> interceptorNames;
@@ -101,11 +102,11 @@ public class EHiRouterBean {
     }
 
     @Nullable
-    public List<Class<? extends EHiRouterInterceptor>> getInterceptors() {
+    public List<Class<? extends RouterInterceptor>> getInterceptors() {
         return interceptors;
     }
 
-    public void setInterceptors(@Nullable List<Class<? extends EHiRouterInterceptor>> interceptors) {
+    public void setInterceptors(@Nullable List<Class<? extends RouterInterceptor>> interceptors) {
         this.interceptors = interceptors;
     }
 

@@ -4,7 +4,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.interceptor.IComponentHostInterceptor;
 
 import java.util.Collections;
@@ -19,15 +19,15 @@ import java.util.Set;
  *
  * @author : xiaojinzi 30212
  */
-abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
+abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
 
-    protected Map<String, Class<? extends EHiRouterInterceptor>> interceptorMap = new HashMap<>();
+    protected Map<String, Class<? extends RouterInterceptor>> interceptorMap = new HashMap<>();
 
     private boolean isInitMap = false;
 
     @Override
     @NonNull
-    public List<EHiInterceptorBean> globalInterceptorList() {
+    public List<InterceptorBean> globalInterceptorList() {
         return Collections.emptyList();
     }
 
@@ -50,7 +50,7 @@ abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
 
     @Nullable
     @Override
-    public Map<String, Class<? extends EHiRouterInterceptor>> getInterceptorMap() {
+    public Map<String, Class<? extends RouterInterceptor>> getInterceptorMap() {
         if (!isInitMap) {
             initInterceptorMap();
         }
@@ -59,18 +59,18 @@ abstract class EHiMuduleInterceptorImpl implements IComponentHostInterceptor {
 
     @Override
     @Nullable
-    public EHiRouterInterceptor getByName(@Nullable String name) {
+    public RouterInterceptor getByName(@Nullable String name) {
         if (name == null) {
             return null;
         }
         if (!isInitMap) {
             initInterceptorMap();
         }
-        Class<? extends EHiRouterInterceptor> interceptorClass = interceptorMap.get(name);
+        Class<? extends RouterInterceptor> interceptorClass = interceptorMap.get(name);
         if (interceptorClass == null) {
             return null;
         }
-        return EHiRouterInterceptorCache.getInterceptorByClass(interceptorClass);
+        return RouterInterceptorCache.getInterceptorByClass(interceptorClass);
     }
 
 }

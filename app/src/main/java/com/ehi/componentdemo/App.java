@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.ehi.base.ModuleConfig;
 import com.ehi.component.ComponentConfig;
-import com.ehi.component.impl.application.EHiModuleManager;
+import com.ehi.component.impl.application.ModuleManager;
 import com.ehi.component.support.RxErrorIgnoreUtil;
 
 public class App extends Application {
@@ -30,14 +30,14 @@ public class App extends Application {
         RxErrorIgnoreUtil.ignoreError();
 
         // 装载各个业务组件
-        EHiModuleManager.getInstance().registerArr(
+        ModuleManager.getInstance().registerArr(
                 ModuleConfig.App.NAME, ModuleConfig.Module1.NAME,
                 ModuleConfig.Module2.NAME, ModuleConfig.User.NAME,
                 ModuleConfig.Help.NAME
         );
 
         if (BuildConfig.DEBUG) {
-            EHiModuleManager.getInstance().check();
+            ModuleManager.getInstance().check();
         }
 
     }

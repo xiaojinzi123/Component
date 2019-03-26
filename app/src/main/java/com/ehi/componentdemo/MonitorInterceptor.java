@@ -3,7 +3,7 @@ package com.ehi.componentdemo;
 import android.util.Log;
 
 import com.ehi.component.anno.EHiGlobalInterceptorAnno;
-import com.ehi.component.impl.EHiRouterInterceptor;
+import com.ehi.component.impl.RouterInterceptor;
 
 /**
  * 全局的一个监测的拦截器
@@ -12,7 +12,7 @@ import com.ehi.component.impl.EHiRouterInterceptor;
  * @author : xiaojinzi 30212
  */
 @EHiGlobalInterceptorAnno
-public class MonitorInterceptor implements EHiRouterInterceptor{
+public class MonitorInterceptor implements RouterInterceptor {
 
     @Override
     public void intercept(Chain chain) throws Exception {

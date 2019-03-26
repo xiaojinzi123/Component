@@ -3,6 +3,7 @@ package com.ehi.component.cache;
 import android.app.ActivityManager;
 import android.content.Context;
 
+import com.ehi.component.impl.RouterInterceptor;
 import com.ehi.component.support.Utils;
 
 /**
@@ -13,7 +14,7 @@ public interface CacheType {
     int ROUTER_INTERCEPTOR_CACHE_TYPE_ID = 0;
 
     /**
-     * 缓存 {@link com.ehi.component.impl.EHiRouterInterceptor} 的容器
+     * 缓存 {@link RouterInterceptor} 的容器
      */
     CacheType ROUTER_INTERCEPTOR_CACHE = new CacheType() {
         private static final int MAX_SIZE = 25;
