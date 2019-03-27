@@ -22,7 +22,7 @@ uploadArchives {
             }
             pom.groupId = "${component_group_id}"
             pom.artifactId = 'component-annotation'
-            pom.version = "${rootProject.ext.component_version}"
+            pom.version = "${versions.component_version}"
             pom.project {
                 licenses {
                     license {
