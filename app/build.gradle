@@ -44,7 +44,6 @@ dependencies {
     implementation libs.appcompat_v7
     implementation libs.support_annotations
     implementation libs.constraintLayout
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
     api project(':ModuleBase')
     api project(':Module1')
@@ -53,7 +52,7 @@ dependencies {
     api project(':ModuleUser')
 
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        annotationProcessor "com.xiaojinzi:component-api-compiler:${rootProject.ext.component_version}"
+        annotationProcessor libs.component_compiler
     } else {
         annotationProcessor project(':ComponentCompiler')
     }

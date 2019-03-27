@@ -24,7 +24,7 @@ android {
 dependencies {
     compileOnly libs.appcompat_v7
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        api "com.xiaojinzi:component-api:${rootProject.ext.component_version}"
+        api libs.component_annotation
     }else {
         api project(':ComponentApi')
     }
@@ -44,10 +44,10 @@ uploadArchives {
     repositories {
         mavenDeployer {
 
-            repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
+            repository(url: "${mavenServerUrl}") {
                 authentication(userName: "admin", password: "admin123")
             }
-            pom.groupId = 'com.xiaojinzi'
+            pom.groupId = "${component_group_id}"
             pom.artifactId = 'component-impl'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {
