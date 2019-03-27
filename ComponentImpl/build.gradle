@@ -49,7 +49,7 @@ uploadArchives {
             }
             pom.groupId = "${component_group_id}"
             pom.artifactId = 'component-impl'
-            pom.version = "${rootProject.ext.component_version}"
+            pom.version = "${versions.component_version}"
             pom.project {
                 licenses {
                     license {
