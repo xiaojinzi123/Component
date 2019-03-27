@@ -17,12 +17,11 @@ repositories {
 uploadArchives {
     repositories {
         mavenDeployer {
-
-            repository(url: "http://192.168.9.230:8081/repository/app-releases/") {
+            repository(url: "${mavenServerUrl}") {
                 authentication(userName: "admin", password: "admin123")
             }
-            pom.groupId = 'com.xiaojinzi'
-            pom.artifactId = 'component-api'
+            pom.groupId = "${component_group_id}"
+            pom.artifactId = 'component-annotation'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {
                 licenses {

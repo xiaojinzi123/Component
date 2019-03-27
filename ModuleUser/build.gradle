@@ -31,13 +31,10 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.constraintLayout
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation libs.appcompat_v7
     api project(':ModuleBase')
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        annotationProcessor "com.xiaojinzi:component-api-compiler:${rootProject.ext.component_version}"
+        annotationProcessor libs.component_compiler
     }else {
         annotationProcessor project(':ComponentCompiler')
     }

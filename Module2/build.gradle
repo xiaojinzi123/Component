@@ -37,7 +37,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api project(':ModuleBase')
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        kapt "com.xiaojinzi:component-api-compiler:${rootProject.ext.component_version}"
+        kapt libs.component_compiler
     }else {
         kapt project(':ComponentCompiler')
     }
