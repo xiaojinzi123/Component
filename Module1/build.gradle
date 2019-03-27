@@ -12,7 +12,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [HOST: "component1"]
+                arguments = ["HOST": "component1"]
             }
         }
 
@@ -30,12 +30,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.constraintLayout
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation libs.junit
     implementation libs.appcompat_v7
     api project(':ModuleBase')
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        annotationProcessor "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
+        annotationProcessor libs.component_compiler
     }else {
         annotationProcessor project(':ComponentCompiler')
     }

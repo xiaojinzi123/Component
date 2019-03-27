@@ -11,12 +11,12 @@ sourceCompatibility = "7"
 targetCompatibility = "7"
 
 dependencies {
-    compile 'com.google.auto.service:auto-service:1.0-rc2'
-    compile 'com.squareup:javapoet:1.11.1'
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'org.apache.commons:commons-collections4:4.1'
+    implementation 'com.google.auto.service:auto-service:1.0-rc4'
+    implementation 'com.squareup:javapoet:1.11.1'
+    implementation 'org.apache.commons:commons-lang3:3.4'
+    implementation 'org.apache.commons:commons-collections4:4.1'
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        compile "com.xiaojinzi:annotation:${rootProject.ext.component_version}"
+        compile libs.component_annotation
     }else {
         compile project(':ComponentApi')
     }
@@ -29,11 +29,12 @@ repositories {
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "${rootProject.ext.mavenPublishUrl}") {
+
+            repository(url: "${mavenServerUrl}") {
                 authentication(userName: "admin", password: "admin123")
             }
-            pom.groupId = 'com.xiaojinzi'
-            pom.artifactId = 'compiler'
+            pom.groupId = "${component_group_id}"
+            pom.artifactId = 'component-annotation-compiler'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {
                 licenses {

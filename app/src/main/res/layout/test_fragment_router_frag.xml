@@ -5,7 +5,7 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.ehi.componentdemo.view.XFlowLayout
+    <com.xiaojinzi.componentdemo.view.XFlowLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:h_space="0dp"
@@ -43,7 +43,7 @@
             android:textAllCaps="false"
             android:textSize="10dp" />
 
-    </com.ehi.componentdemo.view.XFlowLayout>
+    </com.xiaojinzi.componentdemo.view.XFlowLayout>
 
     <Button
         android:id="@+id/bt_clearInfo"

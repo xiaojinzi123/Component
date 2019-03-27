@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp">
 
-            <com.ehi.componentdemo.view.XFlowLayout
+            <com.xiaojinzi.componentdemo.view.XFlowLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:h_space="0dp"
@@ -82,6 +82,30 @@
                     android:layout_height="wrap_content"
                     android:onClick="rxJumpGetData"
                     android:text="跳转获取数据(不用onActivityResult)"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="modifyDataWithInteceptor"
+                    android:text="拦截器修改参数"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="rxJumpGetDataAfterLogin"
+                    android:text="跳转获取数据,先登录(不用onActivityResult)"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="openUrl"
+                    android:text="直接打开一个Url"
                     android:textAllCaps="false"
                     android:textSize="@dimen/test_router_textsize" />
 
@@ -173,7 +197,7 @@
                     android:textAllCaps="false"
                     android:textSize="@dimen/test_router_textsize" />
 
-            </com.ehi.componentdemo.view.XFlowLayout>
+            </com.xiaojinzi.componentdemo.view.XFlowLayout>
 
         </android.support.v4.widget.NestedScrollView>
 

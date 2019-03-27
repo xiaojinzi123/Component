@@ -1,4 +1,4 @@
-package com.ehi.plugin.gradle;
+package com.xiaojinzi.plugin.gradle;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.ehi.plugin.gradle.test", appContext.getPackageName());
+        assertEquals("com.xiaojinzi.plugin.gradle.test", appContext.getPackageName());
     }
 }

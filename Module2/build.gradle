@@ -15,7 +15,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [HOST: "component2"]
+                arguments = ["HOST": "component2"]
             }
         }
 
@@ -34,11 +34,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.appcompat_v7
     implementation libs.constraintLayout
-    testImplementation libs.junit
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api project(':ModuleBase')
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        kapt "com.ehi:component-api-compiler:${rootProject.ext.component_version}"
+        kapt libs.component_compiler
     }else {
         kapt project(':ComponentCompiler')
     }

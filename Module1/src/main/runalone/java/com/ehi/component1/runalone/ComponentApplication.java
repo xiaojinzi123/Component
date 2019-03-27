@@ -1,12 +1,12 @@
-package com.ehi.component1.runalone;
+package com.xiaojinzi.component1.runalone;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
 
-import com.ehi.component.anno.EHiModuleAppAnno;
-import com.ehi.component.application.IComponentApplication;
+import com.xiaojinzi.component.anno.ModuleAppAnno;
+import com.xiaojinzi.component.application.IComponentApplication;
 
-@EHiModuleAppAnno
+@ModuleAppAnno
 public class ComponentApplication implements IComponentApplication {
 
     @Override

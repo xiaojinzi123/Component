@@ -1,4 +1,4 @@
-package com.ehi.plugin.gradle
+package com.xiaojinzi.plugin.gradle
 
 
 import org.gradle.api.Plugin
