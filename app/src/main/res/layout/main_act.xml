@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".view.MainAct">
 
-    <com.ehi.componentdemo.view.XFlowLayout
+    <com.xiaojinzi.componentdemo.view.XFlowLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:h_space="1dp"
@@ -83,7 +83,7 @@
             android:text="卸载Module2模块"
             android:textAllCaps="false" />
 
-    </com.ehi.componentdemo.view.XFlowLayout>
+    </com.xiaojinzi.componentdemo.view.XFlowLayout>
 
     <Button
         android:layout_width="match_parent"

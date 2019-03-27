@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".view.TestQualityAct">
 
-    <com.ehi.componentdemo.view.XFlowLayout
+    <com.xiaojinzi.componentdemo.view.XFlowLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:h_space="0dp"
@@ -125,6 +125,14 @@
             android:text="在子线程中执行(RxRouter)"
             android:textSize="@dimen/test_quality_textsize" />
 
-    </com.ehi.componentdemo.view.XFlowLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="crashOnAfterJumpAction"
+            android:textAllCaps="false"
+            android:text="afterJumpAction 中出现异常"
+            android:textSize="@dimen/test_quality_textsize" />
+
+    </com.xiaojinzi.componentdemo.view.XFlowLayout>
 
 </LinearLayout>

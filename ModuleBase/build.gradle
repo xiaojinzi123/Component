@@ -26,7 +26,7 @@ dependencies {
     api libs.rxandroid
 
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        api "com.xiaojinzi:impl-rx:${rootProject.ext.component_version}"
+        api libs.component_impl_rx
     }else {
         api project(':ComponentRxImpl')
     }

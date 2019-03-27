@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ehi.user">
+    package="com.xiaojinzi.user">
 
     <application>
-        <activity android:name="com.ehi.user.view.LoginAct"></activity>
+        <activity android:name="com.xiaojinzi.user.view.LoginAct"></activity>
     </application>
 
 </manifest>

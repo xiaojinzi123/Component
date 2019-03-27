@@ -22,17 +22,16 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation libs.appcompat_v7
+    compileOnly libs.appcompat_v7
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        api "com.xiaojinzi:annotation:${rootProject.ext.component_version}"
+        api libs.component_annotation
     }else {
         api project(':ComponentApi')
     }
 }
 
 task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     from android.sourceSets.main.java.srcDirs
 }
 
@@ -44,11 +43,12 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "${rootProject.ext.mavenPublishUrl}") {
+
+            repository(url: "${mavenServerUrl}") {
                 authentication(userName: "admin", password: "admin123")
             }
-            pom.groupId = 'com.xiaojinzi'
-            pom.artifactId = 'impl'
+            pom.groupId = "${component_group_id}"
+            pom.artifactId = 'component-impl'
             pom.version = "${rootProject.ext.component_version}"
             pom.project {
                 licenses {
