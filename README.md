@@ -13,18 +13,18 @@ maven { url 'http://xiaojinzi.tpddns.cn:18081/repository/maven-releases/' }
 在基础工程 BaseModule 中添加依赖：(版本号强烈建议你可以先写+,拉下来之后再写死)
 
 ```java
-api "com.xiaojinzi.component:impl:+"
+api "com.xiaojinzi:component-impl:+"
 ```
 或者 RxJava2的实现
 ```java
-api "com.xiaojinzi.component:impl-rx:+"
+api "com.xiaojinzi:component-impl-rx:+"
 ```
 强烈建议使用 Rx 版本,基础版本很多功能不及 Rx版本,强烈建议
 各个业务组件会依赖 BaseModule,所以自动会有上述的依赖
 
 然后在各个业务组件中添加注解驱动器
 ```java
-annotationProcessor "com.xiaojinzi.component:compiler:+"
+annotationProcessor "com.xiaojinzi:component-compiler:+"
 ```
 这个会生成各个业务组件的 Application 管理类和路由表
 
