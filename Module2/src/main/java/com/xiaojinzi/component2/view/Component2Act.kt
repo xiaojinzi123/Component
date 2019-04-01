@@ -8,7 +8,7 @@ import com.xiaojinzi.component.support.ParameterSupport
 import com.xiaojinzi.component2.R
 import kotlinx.android.synthetic.main.component2_act.*
 
-@RouterAnno(host = ModuleConfig.Module2.NAME, value = ModuleConfig.Module2.MAIN, desc = " 业务组件2的主界面 ")
+@RouterAnno(host = ModuleConfig.Module2.NAME, path = ModuleConfig.Module2.MAIN, desc = " 业务组件2的主界面 ")
 class Component2Act : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

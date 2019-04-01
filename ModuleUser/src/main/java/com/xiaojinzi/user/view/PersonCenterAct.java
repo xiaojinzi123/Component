@@ -10,7 +10,7 @@ import com.xiaojinzi.user.R;
 
 @RouterAnno(
         host = ModuleConfig.User.NAME,
-        value = ModuleConfig.User.PERSON_CENTER,
+        path = ModuleConfig.User.PERSON_CENTER,
         interceptorNames = InterceptorConfig.USER_LOGIN,
         desc = "用户个人中心界面"
 )

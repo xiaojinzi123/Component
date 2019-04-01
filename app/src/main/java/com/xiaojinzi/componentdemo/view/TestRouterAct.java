@@ -41,7 +41,7 @@ public class TestRouterAct extends BaseAct {
 
     @RouterAnno(
             host = ModuleConfig.App.NAME,
-            value = ModuleConfig.App.TEST_ROUTER,
+            path = ModuleConfig.App.TEST_ROUTER,
             desc = "测试跳转的界面"
     )
     public static void startActivity(@NonNull RouterRequest request) {

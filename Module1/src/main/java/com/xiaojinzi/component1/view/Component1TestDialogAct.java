@@ -13,7 +13,7 @@ import com.xiaojinzi.component1.R;
  */
 @RouterAnno(
         host = ModuleConfig.Module1.NAME,
-        value = ModuleConfig.Module1.TEST_DIALOG,
+        path = ModuleConfig.Module1.TEST_DIALOG,
         interceptors = DialogShowInterceptor.class
 )
 public class Component1TestDialogAct extends AppCompatActivity {

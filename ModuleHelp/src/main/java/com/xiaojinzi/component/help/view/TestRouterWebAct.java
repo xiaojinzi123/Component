@@ -18,7 +18,7 @@ import com.xiaojinzi.component.support.Utils;
 
 @RouterAnno(
         host = ModuleConfig.Help.NAME,
-        value = ModuleConfig.Help.TEST_WEB_ROUTER,
+        path = ModuleConfig.Help.TEST_WEB_ROUTER,
         desc = "网页测试跳转"
 )
 public class TestRouterWebAct extends AppCompatActivity {

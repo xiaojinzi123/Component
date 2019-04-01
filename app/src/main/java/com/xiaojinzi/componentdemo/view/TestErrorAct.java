@@ -18,7 +18,7 @@ import com.xiaojinzi.componentdemo.R;
  */
 @RouterAnno(
         host = ModuleConfig.App.NAME,
-        value = ModuleConfig.App.TEST_ERROR
+        path = ModuleConfig.App.TEST_ERROR
 )
 public class TestErrorAct extends AppCompatActivity {
 
