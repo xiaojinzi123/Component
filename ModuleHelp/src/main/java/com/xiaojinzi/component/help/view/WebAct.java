@@ -13,7 +13,7 @@ import com.xiaojinzi.component.help.R;
 
 @RouterAnno(
         host = ModuleConfig.Help.NAME,
-        value = ModuleConfig.Help.WEB,
+        path = ModuleConfig.Help.WEB,
         desc = "项目的网页展示界面"
 )
 public class WebAct extends AppCompatActivity {

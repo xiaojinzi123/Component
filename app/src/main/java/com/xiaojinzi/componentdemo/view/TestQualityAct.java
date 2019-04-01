@@ -39,7 +39,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 @RouterAnno(
         host = ModuleConfig.App.NAME,
-        value = ModuleConfig.App.TEST_QUALITY,
+        path = ModuleConfig.App.TEST_QUALITY,
         desc = "测试代码质量的界面"
 )
 public class TestQualityAct extends BaseAct {

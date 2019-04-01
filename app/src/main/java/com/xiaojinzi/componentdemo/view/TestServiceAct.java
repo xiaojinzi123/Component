@@ -26,7 +26,7 @@ import io.reactivex.schedulers.Schedulers;
  *
  * @author xiaojinzi
  */
-@RouterAnno(host = ModuleConfig.App.NAME, value = ModuleConfig.App.TEST_SERVICE, desc = "测试服务的界面")
+@RouterAnno(host = ModuleConfig.App.NAME, path = ModuleConfig.App.TEST_SERVICE, desc = "测试服务的界面")
 public class TestServiceAct extends AppCompatActivity {
 
     @Override
