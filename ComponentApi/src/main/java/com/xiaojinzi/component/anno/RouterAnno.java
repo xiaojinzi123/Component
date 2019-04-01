@@ -24,7 +24,7 @@ public @interface RouterAnno {
      *
      * @return
      */
-    String value();
+    String path();
 
     /**
      * 拦截器的地址

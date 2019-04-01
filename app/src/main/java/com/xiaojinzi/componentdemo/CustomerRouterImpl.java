@@ -29,7 +29,7 @@ public class CustomerRouterImpl {
     @Nullable
     @RouterAnno(
             host = ModuleConfig.System.NAME,
-            value = ModuleConfig.System.CALL_PHONE,
+            path = ModuleConfig.System.CALL_PHONE,
             interceptorNames = InterceptorConfig.HELP_CALLPHOEPERMISION
     )
     public static Intent callPhoneIntent(@NonNull RouterRequest request,
@@ -50,7 +50,7 @@ public class CustomerRouterImpl {
     @Nullable
     @RouterAnno(
             host = ModuleConfig.System.NAME,
-            value = ModuleConfig.System.TAKE_PHONE,
+            path = ModuleConfig.System.TAKE_PHONE,
             interceptorNames = InterceptorConfig.HELP_CAMERAPERMISION
     )
     public static Intent takePictureIntent(@NonNull RouterRequest request) {
@@ -69,7 +69,7 @@ public class CustomerRouterImpl {
      */
     @RouterAnno(
             host = ModuleConfig.System.NAME,
-            value = ModuleConfig.System.SYSTEM_APP_DETAIL
+            path = ModuleConfig.System.SYSTEM_APP_DETAIL
     )
     public static void appDetail(@NonNull RouterRequest request) {
         Activity act = request.getActivity();
@@ -92,7 +92,7 @@ public class CustomerRouterImpl {
 
     @RouterAnno(
             host = ModuleConfig.System.NAME,
-            value = ModuleConfig.System.TEST_PARAMETER
+            path = ModuleConfig.System.TEST_PARAMETER
     )
     public static void testParameter(@NonNull RouterRequest request,
                                      @ParameterAnno("name") String name,

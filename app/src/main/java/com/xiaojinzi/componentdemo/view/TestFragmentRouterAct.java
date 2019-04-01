@@ -17,7 +17,7 @@ import com.xiaojinzi.componentdemo.R;
  */
 @RouterAnno(
         host = ModuleConfig.App.NAME,
-        value = ModuleConfig.App.TEST_FRAGMENT_ROUTER,
+        path = ModuleConfig.App.TEST_FRAGMENT_ROUTER,
         desc = "测试跳转的界面"
 )
 public class TestFragmentRouterAct extends BaseAct {

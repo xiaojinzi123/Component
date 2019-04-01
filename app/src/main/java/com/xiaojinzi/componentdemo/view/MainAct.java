@@ -16,7 +16,7 @@ import com.xiaojinzi.componentdemo.R;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 
-@RouterAnno(value = ModuleConfig.App.NAME, desc = "主界面")
+@RouterAnno(path = ModuleConfig.App.NAME, desc = "主界面")
 public class MainAct extends AppCompatActivity {
 
     @Override

@@ -18,7 +18,7 @@ public class Component1TestQueryAct extends AppCompatActivity {
 
     @RouterAnno(
             host = ModuleConfig.Module1.NAME,
-            value = ModuleConfig.Module1.TEST_QUERY
+            path = ModuleConfig.Module1.TEST_QUERY
     )
     public static Intent createIntent(RouterRequest request) {
         Intent intent = new Intent(request.getRawContext(), Component1TestQueryAct.class);

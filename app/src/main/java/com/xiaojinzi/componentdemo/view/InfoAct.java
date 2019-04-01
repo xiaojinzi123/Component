@@ -9,7 +9,7 @@ import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
-@RouterAnno(host = ModuleConfig.App.NAME,value = ModuleConfig.App.INFO)
+@RouterAnno(host = ModuleConfig.App.NAME, path = ModuleConfig.App.INFO)
 public class InfoAct extends AppCompatActivity {
 
     @Override

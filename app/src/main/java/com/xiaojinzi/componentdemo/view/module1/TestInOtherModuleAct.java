@@ -9,7 +9,7 @@ import com.xiaojinzi.componentdemo.R;
 
 @RouterAnno(
         host = ModuleConfig.Module1.NAME,
-        value = ModuleConfig.Module1.TEST_IN_OTHER_MODULE
+        path = ModuleConfig.Module1.TEST_IN_OTHER_MODULE
 )
 public class TestInOtherModuleAct extends AppCompatActivity {
 

@@ -38,12 +38,15 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static String getQueryString(@NonNull Bundle bundle, @NonNull String key) {
+    public static String getQueryString(@Nullable Bundle bundle, @NonNull String key) {
         return getQueryString(bundle, key, null);
     }
 
     @Nullable
-    public static String getQueryString(@NonNull Bundle bundle, @NonNull String key, String defaultValue) {
+    public static String getQueryString(@Nullable Bundle bundle, @NonNull String key, String defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
@@ -66,12 +69,15 @@ public class ParameterSupport {
         return getQueryInt(intent.getExtras(), key, defaultValue);
     }
 
-    public static Integer getQueryInt(@NonNull Bundle bundle, @NonNull String key) {
+    public static Integer getQueryInt(@Nullable Bundle bundle, @NonNull String key) {
         return getQueryInt(bundle, key, null);
     }
 
     @Nullable
-    public static Integer getQueryInt(@NonNull Bundle bundle, @NonNull String key, Integer defaultValue) {
+    public static Integer getQueryInt(@Nullable Bundle bundle, @NonNull String key, Integer defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
@@ -99,12 +105,15 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Long getQueryLong(@NonNull Bundle bundle, @NonNull String key) {
+    public static Long getQueryLong(@Nullable Bundle bundle, @NonNull String key) {
         return getQueryLong(bundle, key, null);
     }
 
     @Nullable
-    public static Long getQueryLong(@NonNull Bundle bundle, @NonNull String key, Long defaultValue) {
+    public static Long getQueryLong(@Nullable Bundle bundle, @NonNull String key, Long defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
@@ -133,12 +142,15 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Double getQueryDouble(@NonNull Bundle bundle, @NonNull String key) {
+    public static Double getQueryDouble(@Nullable Bundle bundle, @NonNull String key) {
         return getQueryDouble(bundle, key, null);
     }
 
     @Nullable
-    public static Double getQueryDouble(@NonNull Bundle bundle, @NonNull String key, Double defaultValue) {
+    public static Double getQueryDouble(@Nullable Bundle bundle, @NonNull String key, Double defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
@@ -166,12 +178,15 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Float getQueryFloat(@NonNull Bundle bundle, @NonNull String key) {
+    public static Float getQueryFloat(@Nullable Bundle bundle, @NonNull String key) {
         return getQueryFloat(bundle, key, null);
     }
 
     @Nullable
-    public static Float getQueryFloat(@NonNull Bundle bundle, @NonNull String key, Float defaultValue) {
+    public static Float getQueryFloat(@Nullable Bundle bundle, @NonNull String key, Float defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
@@ -200,12 +215,15 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Boolean getQueryBoolean(@NonNull Bundle bundle, @NonNull String key) {
+    public static Boolean getQueryBoolean(@Nullable Bundle bundle, @NonNull String key) {
         return getQueryBoolean(bundle, key, null);
     }
 
     @Nullable
-    public static Boolean getQueryBoolean(@NonNull Bundle bundle, @NonNull String key, Boolean defaultValue) {
+    public static Boolean getQueryBoolean(@Nullable Bundle bundle, @NonNull String key, Boolean defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
@@ -233,12 +251,15 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Short getQueryShort(@NonNull Bundle bundle, @NonNull String key) {
+    public static Short getQueryShort(@Nullable Bundle bundle, @NonNull String key) {
         return getQueryShort(bundle, key, null);
     }
 
     @Nullable
-    public static Short getQueryShort(@NonNull Bundle bundle, @NonNull String key, Short defaultValue) {
+    public static Short getQueryShort(@Nullable Bundle bundle, @NonNull String key, Short defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
@@ -266,12 +287,15 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Byte getQueryByte(@NonNull Bundle bundle, @NonNull String key) {
+    public static Byte getQueryByte(@Nullable Bundle bundle, @NonNull String key) {
         return getQueryByte(bundle, key, null);
     }
 
     @Nullable
-    public static Byte getQueryByte(@NonNull Bundle bundle, @NonNull String key, Byte defaultValue) {
+    public static Byte getQueryByte(@Nullable Bundle bundle, @NonNull String key, Byte defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
@@ -316,17 +340,24 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static String getString(@NonNull Bundle bundle, @NonNull String key) {
+    public static String getString(@Nullable Bundle bundle, @NonNull String key) {
         return getString(bundle, key, null);
     }
 
     @Nullable
-    public static String getString(@NonNull Bundle bundle, @NonNull String key, String defaultValue) {
+    public static String getString(@Nullable Bundle bundle, @NonNull String key, String defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         String value = null;
         // 获取 query 中的
         value = getQueryString(bundle, key, null);
         if (value == null) {
-            value = bundle.getString(key);
+            if (bundle.containsKey(key)) {
+                value = bundle.getString(key);
+            } else {
+                value = defaultValue;
+            }
         }
         return value;
     }
@@ -341,19 +372,22 @@ public class ParameterSupport {
         return getInt(intent.getExtras(), key, defaultValue);
     }
 
-    public static Integer getInt(@NonNull Bundle bundle, @NonNull String key) {
+    public static Integer getInt(@Nullable Bundle bundle, @NonNull String key) {
         return getInt(bundle, key, null);
     }
 
     @Nullable
-    public static Integer getInt(@NonNull Bundle bundle, @NonNull String key, Integer defaultValue) {
+    public static Integer getInt(@Nullable Bundle bundle, @NonNull String key, Integer defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Integer value = null;
         // 获取 query 中的
         value = getQueryInt(bundle, key, null);
         if (value == null) {
             if (bundle.containsKey(key)) {
                 value = bundle.getInt(key);
-            }else {
+            } else {
                 value = defaultValue;
             }
         }
@@ -371,19 +405,22 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Long getLong(@NonNull Bundle bundle, @NonNull String key) {
+    public static Long getLong(@Nullable Bundle bundle, @NonNull String key) {
         return getLong(bundle, key, null);
     }
 
     @Nullable
-    public static Long getLong(@NonNull Bundle bundle, @NonNull String key, Long defaultValue) {
+    public static Long getLong(@Nullable Bundle bundle, @NonNull String key, Long defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Long value = null;
         // 获取 query 中的
         value = getQueryLong(bundle, key, null);
         if (value == null) {
             if (bundle.containsKey(key)) {
                 value = bundle.getLong(key);
-            }else {
+            } else {
                 value = defaultValue;
             }
         }
@@ -401,19 +438,55 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Double getDouble(@NonNull Bundle bundle, @NonNull String key) {
+    public static Double getDouble(@Nullable Bundle bundle, @NonNull String key) {
         return getDouble(bundle, key, null);
     }
 
     @Nullable
-    public static Double getDouble(@NonNull Bundle bundle, @NonNull String key, Double defaultValue) {
+    public static Double getDouble(@Nullable Bundle bundle, @NonNull String key, Double defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Double value = null;
         // 获取 query 中的
         value = getQueryDouble(bundle, key, null);
         if (value == null) {
             if (bundle.containsKey(key)) {
                 value = bundle.getDouble(key);
-            }else {
+            } else {
+                value = defaultValue;
+            }
+        }
+        return value;
+    }
+
+    @Nullable
+    public static Byte getByte(@NonNull Intent intent, @NonNull String key) {
+        return getByte(intent, key, null);
+    }
+
+    @Nullable
+    public static Byte getByte(@NonNull Intent intent, @NonNull String key, Byte defaultValue) {
+        return getByte(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static Byte getByte(@Nullable Bundle bundle, @NonNull String key) {
+        return getByte(bundle, key, null);
+    }
+
+    @Nullable
+    public static Byte getByte(@Nullable Bundle bundle, @NonNull String key, Byte defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        Byte value = null;
+        // 获取 query 中的
+        value = getQueryByte(bundle, key, null);
+        if (value == null) {
+            if (bundle.containsKey(key)) {
+                value = bundle.getByte(key);
+            } else {
                 value = defaultValue;
             }
         }
@@ -431,49 +504,22 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Float getFloat(@NonNull Bundle bundle, @NonNull String key) {
+    public static Float getFloat(@Nullable Bundle bundle, @NonNull String key) {
         return getFloat(bundle, key, null);
     }
 
     @Nullable
-    public static Byte getByte(@NonNull Intent intent, @NonNull String key) {
-        return getByte(intent, key, null);
-    }
-
-    @Nullable
-    public static Byte getByte(@NonNull Intent intent, @NonNull String key, Byte defaultValue) {
-        return getByte(intent.getExtras(), key, defaultValue);
-    }
-
-    @Nullable
-    public static Byte getByte(@NonNull Bundle bundle, @NonNull String key) {
-        return getByte(bundle, key, null);
-    }
-
-    @Nullable
-    public static Byte getByte(@NonNull Bundle bundle, @NonNull String key, Byte defaultValue) {
-        Byte value = null;
-        // 获取 query 中的
-        value = getQueryByte(bundle, key, null);
-        if (value == null) {
-            if (bundle.containsKey(key)) {
-                value = bundle.getByte(key);
-            }else {
-                value = defaultValue;
-            }
+    public static Float getFloat(@Nullable Bundle bundle, @NonNull String key, Float defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
         }
-        return value;
-    }
-
-    @Nullable
-    public static Float getFloat(@NonNull Bundle bundle, @NonNull String key, Float defaultValue) {
         Float value = null;
         // 获取 query 中的
         value = getQueryFloat(bundle, key, null);
         if (value == null) {
             if (bundle.containsKey(key)) {
                 value = bundle.getFloat(key);
-            }else {
+            } else {
                 value = defaultValue;
             }
         }
@@ -491,19 +537,22 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Short getShort(@NonNull Bundle bundle, @NonNull String key) {
+    public static Short getShort(@Nullable Bundle bundle, @NonNull String key) {
         return getShort(bundle, key, null);
     }
 
     @Nullable
-    public static Short getShort(@NonNull Bundle bundle, @NonNull String key, Short defaultValue) {
+    public static Short getShort(@Nullable Bundle bundle, @NonNull String key, Short defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Short value = null;
         // 获取 query 中的
         value = getQueryShort(bundle, key, null);
         if (value == null) {
             if (bundle.containsKey(key)) {
                 value = bundle.getShort(key);
-            }else {
+            } else {
                 value = defaultValue;
             }
         }
@@ -521,19 +570,22 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static Boolean getBoolean(@NonNull Bundle bundle, @NonNull String key) {
+    public static Boolean getBoolean(@Nullable Bundle bundle, @NonNull String key) {
         return getBoolean(bundle, key, null);
     }
 
     @Nullable
-    public static Boolean getBoolean(@NonNull Bundle bundle, @NonNull String key, Boolean defaultValue) {
+    public static Boolean getBoolean(@Nullable Bundle bundle, @NonNull String key, Boolean defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
         Boolean value = null;
         // 获取 query 中的
         value = getQueryBoolean(bundle, key, null);
         if (value == null) {
             if (bundle.containsKey(key)) {
                 value = bundle.getBoolean(key);
-            }else {
+            } else {
                 value = defaultValue;
             }
         }
