@@ -112,20 +112,20 @@ public class RouterProcessor extends BaseHostProcessor {
         for (Element element : routeElements) {
             // 如果是一个Activity 才会走到这里
             final RouterAnno router = element.getAnnotation(RouterAnno.class);
-            if (router == null || router.value() == null || router.value().isEmpty()) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：RouterAnno'value can;t be null or empty string");
+            if (router == null || router.path() == null || router.path().isEmpty()) {
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：RouterAnno'path can;t be null or empty string");
                 continue;
             }
             // 如果有host那就必须满足规范
             if (router.host() != null && !router.host().isEmpty() && router.host().contains("/")) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, "the host value '" + router.host() + "' can't contains '/'");
+                mMessager.printMessage(Diagnostic.Kind.ERROR, "the host path '" + router.host() + "' can't contains '/'");
             }
-            if (routerMap.containsKey(getHostAndPath(router.host(), router.value()))) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：RouterAnno'value is alreay exist");
+            if (routerMap.containsKey(getHostAndPath(router.host(), router.path()))) {
+                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：RouterAnno'path is alreay exist");
             }
             final RouterAnnoBean routerBean = new RouterAnnoBean();
             routerBean.setHost(router.host());
-            routerBean.setPath(router.value());
+            routerBean.setPath(router.path());
             routerBean.setDesc(router.desc());
             routerBean.setRawType(element);
             routerBean.getInterceptors().clear();
@@ -136,7 +136,7 @@ public class RouterProcessor extends BaseHostProcessor {
                     routerBean.getInterceptorNames().add(interceptorName);
                 }
             }
-            routerMap.put(getHostAndPath(router.host(), router.value()), routerBean);
+            routerMap.put(getHostAndPath(router.host(), router.path()), routerBean);
         }
     }
 

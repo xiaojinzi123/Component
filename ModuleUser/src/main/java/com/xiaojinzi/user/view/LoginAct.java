@@ -13,7 +13,7 @@ import com.xiaojinzi.user.service.UserServiceImpl;
 
 @RouterAnno(
         host = ModuleConfig.User.NAME,
-        value = ModuleConfig.User.LOGIN,
+        path = ModuleConfig.User.LOGIN,
         desc = "用户模块的登录界面"
 )
 public class LoginAct extends AppCompatActivity {

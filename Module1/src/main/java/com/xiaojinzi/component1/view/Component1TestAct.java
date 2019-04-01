@@ -16,7 +16,7 @@ import com.xiaojinzi.component1.R;
  */
 @RouterAnno(
         host = ModuleConfig.Module1.NAME,
-        value = ModuleConfig.Module1.TEST,
+        path = ModuleConfig.Module1.TEST,
         desc = "业务组件1的测试界面"
 )
 public class Component1TestAct extends AppCompatActivity {
