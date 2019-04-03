@@ -8,6 +8,7 @@ package com.xiaojinzi.base;
 public class InterceptorConfig {
 
     public static final String USER_LOGIN = "user.login";
+    public static final String USER_LOGIN_FOR_TEST = "user.loginForTest";
     public static final String HELP_CALLPHOEPERMISION = "help.callPhoePermision";
     public static final String HELP_CAMERAPERMISION = "help.cameraPermision";
 

@@ -11,7 +11,7 @@ public class ModuleConfig {
     /**
      * 项目的 Scheme,用于跳转项目中的界面
      */
-    public static final String APP_SCHEME = "router";
+    public static final String APP_SCHEME = "EHi";
     public static final String HTTP_SCHEME = "http";
     public static final String HTTPS_SCHEME = "https";
 
@@ -55,6 +55,8 @@ public class ModuleConfig {
 
         public static final String NAME = "component1";
         public static final String TEST = "test";
+        public static final String TEST_AUTORETURN = "testAutoReturn";
+        public static final String TEST_AUTORETURN1 = "testAutoReturn1";
         public static final String TEST_QUERY = "testQuery";
         public static final String TEST_LOGIN = "testLogin";
         public static final String TEST_DIALOG = "testDialog";
@@ -74,6 +76,7 @@ public class ModuleConfig {
         public static final String NAME = "user";
         public static final String LOGIN = "login";
         public static final String PERSON_CENTER = "personCenter";
+        public static final String PERSON_CENTER_FOR_TEST = "personCenterForTest";
 
     }
 
@@ -81,6 +84,8 @@ public class ModuleConfig {
         public static final String NAME = "help";
         public static final String WEB = "web";
         public static final String TEST_WEB_ROUTER = "testWebRouter";
+        public static final String CANCEL_FOR_TEST = "cancelForTest";
+        public static final String SHOULD_NOT_APPEAR = "shouldNotAppear";
     }
 
 }

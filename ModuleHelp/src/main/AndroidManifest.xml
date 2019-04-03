@@ -2,11 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.xiaojinzi.component.help">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application>
-        <activity android:name="com.xiaojinzi.component.help.view.WebAct"></activity>
+        <activity android:name="com.xiaojinzi.component.help.view.WebAct" />
+        <activity android:name=".view.ShouldNotAppearAct"/>
+        <activity android:name=".view.CancelForTestAct" />
         <activity android:name="com.xiaojinzi.component.help.view.TestRouterWebAct" />
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
