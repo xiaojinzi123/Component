@@ -2,10 +2,11 @@ package com.xiaojinzi.component1.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 import com.xiaojinzi.component.support.ParameterSupport;
@@ -14,7 +15,7 @@ import com.xiaojinzi.component1.R;
 /**
  * 我是一个测试query传递参数的界面
  */
-public class Component1TestQueryAct extends AppCompatActivity {
+public class Component1TestQueryAct extends BaseAct {
 
     @RouterAnno(
             host = ModuleConfig.Module1.NAME,
@@ -38,6 +39,22 @@ public class Component1TestQueryAct extends AppCompatActivity {
 
         tv_name.setText(name);
         tv_pass.setText(pass);
+
+    }
+
+    @Override
+    protected void returnData() {
+
+        String name = ParameterSupport.getString(getIntent(), "name", null);
+        String pass = ParameterSupport.getString(getIntent(), "pass", null);
+        String expectName = ParameterSupport.getString(getIntent(), "expectName", null);
+
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(pass) || (!TextUtils.isEmpty(expectName) && !expectName.equals(name))) {
+            setResult(RESULT_ERROR);
+        }else {
+            setResult(RESULT_OK);
+        }
+        finish();
 
     }
 

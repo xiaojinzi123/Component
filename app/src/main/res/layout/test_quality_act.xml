@@ -7,6 +7,14 @@
     android:orientation="vertical"
     tools:context=".view.TestQualityAct">
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="testAll"
+        android:text="一键测试全部例子"
+        android:textAllCaps="false"
+        android:textSize="@dimen/test_quality_textsize" />
+
     <com.xiaojinzi.componentdemo.view.XFlowLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,123 +24,36 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="cancelImmediately"
+            android:onClick="testAllCancel"
+            android:text="一键测试取消的例子"
             android:textAllCaps="false"
-            android:text="测试立马取消路由"
             android:textSize="@dimen/test_quality_textsize" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="cancelImmediatelyWithGetRx"
+            android:onClick="testAllFailure"
+            android:text="一键测试失败的例子"
             android:textAllCaps="false"
-            android:text="测试rx取消"
             android:textSize="@dimen/test_quality_textsize" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="cancelImmediatelyWithGetIntent"
+            android:onClick="testAllSuccess"
+            android:text="一键测试成功的例子"
             android:textAllCaps="false"
-            android:text="测试获取Intent取消"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="withoutHostOrPath1"
-            android:textAllCaps="false"
-            android:text="测试不填写host"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="withoutHostOrPath2"
-            android:textAllCaps="false"
-            android:text="测试不填写path"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="useSameRequestCode"
-            android:textAllCaps="false"
-            android:text="测试使用同一个requestCode"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="useSameRequestCode1"
-            android:textAllCaps="false"
-            android:text="测试使用同一个requestCode(点击我两次)"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="getIntentWithoutRequestCode"
-            android:textAllCaps="false"
-            android:text="测试获取Intent不填写requestCode"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="cancelAuto1"
-            android:textAllCaps="false"
-            android:text="测试自动取消Activity发起的路由(finish activity)"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="cancelAuto2"
-            android:textAllCaps="false"
-            android:text="测试自动取消Fragment发起的路由(finish activity)"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="targetNotFound"
-            android:textAllCaps="false"
-            android:text="目标不存在测试"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="cancelAfterRouter"
-            android:textAllCaps="false"
-            android:text="路由成功后取消"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="runOnChildThread"
-            android:textAllCaps="false"
-            android:text="在子线程中执行"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="runOnChildThread1"
-            android:textAllCaps="false"
-            android:text="在子线程中执行(RxRouter)"
-            android:textSize="@dimen/test_quality_textsize" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="crashOnAfterJumpAction"
-            android:textAllCaps="false"
-            android:text="afterJumpAction 中出现异常"
             android:textSize="@dimen/test_quality_textsize" />
 
     </com.xiaojinzi.componentdemo.view.XFlowLayout>
+
+    <TextView
+        android:id="@+id/view_result_color"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00FF00"
+        android:gravity="center"
+        android:text="这里显示结果"
+        android:textColor="#0000FF" />
 
 </LinearLayout>

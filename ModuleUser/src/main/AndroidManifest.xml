@@ -5,6 +5,7 @@
     <application>
         <activity android:name="com.xiaojinzi.user.view.LoginAct"/>
         <activity android:name="com.xiaojinzi.user.view.PersonCenterAct"/>
+        <activity android:name=".view.PersonCenterForTestAct"/>
     </application>
 
 </manifest>
