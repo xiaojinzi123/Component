@@ -77,7 +77,7 @@ public class RxRouter extends Router {
      * @param fragment
      * @return
      */
-    public static Builder withFragment(@NonNull Fragment fragment) {
+    public static Builder with(@NonNull Fragment fragment) {
         return new Builder(fragment);
     }
 
@@ -474,7 +474,7 @@ public class RxRouter extends Router {
                     findRxFragment = new RouterRxFragment();
                     fm.beginTransaction()
                             .add(findRxFragment, ComponentUtil.FRAGMENT_TAG)
-                            .commitNow();
+                            .commitAllowingStateLoss();
                 }
                 final RouterRxFragment rxFragment = findRxFragment;
                 // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
@@ -613,7 +613,9 @@ public class RxRouter extends Router {
             if (context == null && fragment == null) {
                 throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router"));
             }
-            if (!(Utils.getActivityFromContext(context) instanceof FragmentActivity)) {
+            // 如果是使用 Context 的,那么就必须是 FragmentActivity
+            // 这里的 context != null 判断条件不能去掉,不然使用 Fragment 跳转的就过不去了
+            if (context != null && !(Utils.getActivityFromContext(context) instanceof FragmentActivity)) {
                 throw new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity"));
             }
             if (isForResult && requestCode == null) {

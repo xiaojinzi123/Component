@@ -43,7 +43,7 @@ public class Component1Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 RxRouter
-                        .withFragment(Component1Fragment.this)
+                        .with(Component1Fragment.this)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST)
                         .query("data", "rxJumpGetData")

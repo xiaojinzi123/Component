@@ -17,7 +17,7 @@ public @interface ServiceAnno {
      *
      * @return
      */
-    Class[] value() default {};
+    Class[] value();
 
     /**
      * 是否是单例,默认是单例模式的
