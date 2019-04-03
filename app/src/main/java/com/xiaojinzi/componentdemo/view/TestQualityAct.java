@@ -909,7 +909,7 @@ public class TestQualityAct extends BaseAct {
                     return;
                 }
 
-                RxRouter.withFragment(innerFragment)
+                RxRouter.with(innerFragment)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
