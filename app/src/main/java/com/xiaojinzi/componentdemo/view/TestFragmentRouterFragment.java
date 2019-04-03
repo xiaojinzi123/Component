@@ -81,7 +81,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
 
     private void rxJumpGetData(){
         RxRouter
-                .withFragment(this)
+                .with(this)
                 .host("component1")
                 .path("test")
                 .query("data", "rxJumpGetData")
@@ -123,7 +123,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
 
     public void testCallbackAfterFinish() {
         RxRouter
-                .withFragment(this)
+                .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .putString("tel", "xxx")
@@ -145,7 +145,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
 
     public void testCallbackAfterFinishActivity() {
         RxRouter
-                .withFragment(this)
+                .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .putString("tel", "xxx")

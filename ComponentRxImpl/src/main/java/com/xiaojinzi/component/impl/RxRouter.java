@@ -77,7 +77,7 @@ public class RxRouter extends Router {
      * @param fragment
      * @return
      */
-    public static Builder withFragment(@NonNull Fragment fragment) {
+    public static Builder with(@NonNull Fragment fragment) {
         return new Builder(fragment);
     }
 

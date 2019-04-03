@@ -15,7 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 
-@ServiceAnno(value = {Component1Service.class})
+//@ServiceAnno(value = {Component1Service.class})
+@ServiceAnno(Component1Service.class)
 public class Component1ServiceImpl implements Component1Service {
 
     private Random r = new Random();
