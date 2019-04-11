@@ -102,7 +102,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
 
     private void normalJump() {
         Router
-                .withFragment(this)
+                .with(this)
                 .host("component1")
                 .path("test")
                 .query("data", "normalJump")
