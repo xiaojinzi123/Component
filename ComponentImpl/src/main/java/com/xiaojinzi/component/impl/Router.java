@@ -119,7 +119,7 @@ public class Router {
         return new Builder(context);
     }
 
-    public static Builder withFragment(@NonNull Fragment fragment) {
+    public static Builder with(@NonNull Fragment fragment) {
         return new Builder(fragment);
     }
 
