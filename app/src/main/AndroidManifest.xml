@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.xiaojinzi.componentdemo">
+          package="com.xiaojinzi.componentdemo">
 
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
-        android:name="com.xiaojinzi.componentdemo.App"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/app_icon"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+            android:name="com.xiaojinzi.componentdemo.App"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/app_icon"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
+        <meta-data android:name="HOST" android:value="app"/>
         <activity android:name="com.xiaojinzi.componentdemo.view.module1.TestInOtherModuleAct"></activity>
-        <activity android:name="com.xiaojinzi.componentdemo.view.TestQualityAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.TestErrorAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.InfoAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.TestServiceAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.TestRouterAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.TestFragmentRouterAct" />
+        <activity android:name="com.xiaojinzi.componentdemo.view.TestQualityAct"/>
+        <activity android:name="com.xiaojinzi.componentdemo.view.TestErrorAct"/>
+        <activity android:name="com.xiaojinzi.componentdemo.view.InfoAct"/>
+        <activity android:name="com.xiaojinzi.componentdemo.view.TestServiceAct"/>
+        <activity android:name="com.xiaojinzi.componentdemo.view.TestRouterAct"/>
+        <activity android:name="com.xiaojinzi.componentdemo.view.TestFragmentRouterAct"/>
         <activity android:name="com.xiaojinzi.componentdemo.view.MainAct">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
     </application>

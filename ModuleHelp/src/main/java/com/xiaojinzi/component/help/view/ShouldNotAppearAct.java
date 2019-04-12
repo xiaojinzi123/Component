@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.help.R;
+import com.xiaojinzi.component.impl.RxRouter;
 
 @RouterAnno(
         host = ModuleConfig.Help.NAME,
@@ -18,6 +19,7 @@ public class ShouldNotAppearAct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.help_should_not_appear_act);
+        RxRouter.Builder builder = RxRouter.with(this);
     }
 
 }
