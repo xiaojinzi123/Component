@@ -6,10 +6,14 @@ import android.widget.TextView;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
-@RouterAnno(host = ModuleConfig.App.NAME, path = ModuleConfig.App.INFO)
+@RouterAnno(
+        host = ModuleConfig.App.NAME,
+        path = ModuleConfig.App.INFO
+)
 public class InfoAct extends AppCompatActivity {
 
     @Override
