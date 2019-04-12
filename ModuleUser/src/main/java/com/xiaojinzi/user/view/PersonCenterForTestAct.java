@@ -14,7 +14,10 @@ import com.xiaojinzi.user.R;
 @RouterAnno(
         host = ModuleConfig.User.NAME,
         path = ModuleConfig.User.PERSON_CENTER_FOR_TEST,
-        interceptorNames = InterceptorConfig.USER_LOGIN_FOR_TEST,
+        interceptorNames = {
+                InterceptorConfig.USER_LOGIN_FOR_TEST,
+                InterceptorConfig.USER_LOGIN_FOR_TEST
+        }
         desc = "用户个人中心界面"
 )
 public class PersonCenterForTestAct extends BaseAct {

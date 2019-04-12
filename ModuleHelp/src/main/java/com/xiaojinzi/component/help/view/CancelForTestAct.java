@@ -55,7 +55,7 @@ public class CancelForTestAct extends AppCompatActivity {
         if (isUseFragment) {
             Fragment fragment = new Fragment();
             getSupportFragmentManager().beginTransaction().add(fragment, "testFragment").commitNowAllowingStateLoss();
-            builder = Router.withFragment(fragment);
+            builder = Router.with(fragment);
         } else {
             builder = Router.with(this);
         }
