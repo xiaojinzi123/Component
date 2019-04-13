@@ -1087,7 +1087,7 @@ public class TestQualityAct extends BaseAct {
                 return;
             }
             Router
-                    .withFragment(innerFragment)
+                    .with(innerFragment)
                     .host(ModuleConfig.Module1.NAME)
                     .path(ModuleConfig.Module1.TEST_AUTORETURN1)
                     .putString("data", "testNormalJump")

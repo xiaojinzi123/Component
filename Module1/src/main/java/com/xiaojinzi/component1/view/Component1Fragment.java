@@ -33,7 +33,7 @@ public class Component1Fragment extends Fragment {
         bt_go_component2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Router.withFragment(Component1Fragment.this)
+                Router.with(Component1Fragment.this)
                         .host(ModuleConfig.Module2.NAME)
                         .path(ModuleConfig.Module2.MAIN)
                         .navigate();
