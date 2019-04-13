@@ -99,7 +99,7 @@ public class RouterCenter implements IComponentCenterRouter {
             throw new TargetActivityNotFoundException(uriString);
         }
         if (routerRequest.context == null && routerRequest.fragment == null) {
-            throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nRouter.with(Context) or Router.withFragment(Fragment)");
+            throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nRouter.with(Context) or Router.with(Fragment)");
         }
         // do startActivity
         Context context = routerRequest.getRawContext();

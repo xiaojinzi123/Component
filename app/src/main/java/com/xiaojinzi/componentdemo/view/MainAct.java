@@ -6,15 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
-
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 
 @RouterAnno(path = ModuleConfig.App.NAME, desc = "主界面")
 public class MainAct extends AppCompatActivity {
@@ -72,17 +70,7 @@ public class MainAct extends AppCompatActivity {
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_ROUTER)
                 .call()
-                .subscribe(new Action() {
-                    @Override
-                    public void run() throws Exception {
-
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        System.out.println("123123");
-                    }
-                });
+                .subscribe();
     }
 
     public void testWebRouter(View view) {
