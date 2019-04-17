@@ -20,7 +20,7 @@ RouterGoPlugin
 如何使用见 wiki 
 -------
 
-[usage](https://github.com/xiaojinzi123/Component/wiki/how-to-use)
+[wiki](https://github.com/xiaojinzi123/Component/wiki/)
 
 License
 -------
