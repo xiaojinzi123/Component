@@ -11,9 +11,15 @@ import android.text.TextUtils;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
 import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.anno.ServiceAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * 自定义路由实现的范例
@@ -98,6 +104,16 @@ public class CustomerRouterImpl {
                                      @ParameterAnno("name") String name,
                                      @ParameterAnno("age") int age) {
 
+    }
+
+    @ServiceAnno(AnnoMethodService.class)
+    public static AnnoMethodService getTestService() {
+        return (AnnoMethodService) Proxy.newProxyInstance(AnnoMethodService.class.getClassLoader(), new Class[]{AnnoMethodService.class}, new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                return "hello msg from proxy class";
+            }
+        });
     }
 
 }

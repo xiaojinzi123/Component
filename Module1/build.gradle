@@ -31,11 +31,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libs.constraintLayout
     implementation libs.appcompat_v7
-    api project(':ModuleBase')
-    if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        annotationProcessor libs.component_compiler
-    }else {
-        annotationProcessor project(':ComponentCompiler')
-    }
 
+    api project(':ModuleBase')
+    annotationProcessor libs.component_compiler
+    
 }
