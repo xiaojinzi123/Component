@@ -11,7 +11,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                // 组件化注解驱动器的配置
+                // 配置业务模块的模块名称
                 arguments = ["HOST": "app"]
             }
         }

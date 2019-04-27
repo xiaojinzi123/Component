@@ -14,6 +14,17 @@ import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.Maybe;
+import io.reactivex.MaybeObserver;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+
 @RouterAnno(path = ModuleConfig.App.NAME, desc = "主界面")
 public class MainAct extends AppCompatActivity {
 
@@ -98,6 +109,18 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testService(View view) {
+
+        List<String> list = new ArrayList<>();
+        list.add("123123");
+
+        Observable<String> observable = Single.just(list)
+                .flatMapObservable(new Function<List<String>, ObservableSource<String>>() {
+                    @Override
+                    public ObservableSource<String> apply(List<String> strings) throws Exception {
+                        return Observable.fromIterable(strings);
+                    }
+                });
+
         Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)

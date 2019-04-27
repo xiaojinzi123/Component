@@ -4,7 +4,7 @@ apply from: "dependencies.gradle"
 
 ext {
     component_group_id = "com.xiaojinzi"
-    isDependMavenOnline = "false"
+    isDependMavenOnline = "flase"
     mavenServerUrl = "http://xiaojinzi.tpddns.cn:18081/repository/maven-releases/"
 }
 
@@ -15,7 +15,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0-alpha10'
+        classpath 'com.android.tools.build:gradle:3.5.0-alpha13'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
