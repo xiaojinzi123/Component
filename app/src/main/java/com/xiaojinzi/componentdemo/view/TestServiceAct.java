@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
 import com.xiaojinzi.base.service.inter.component1.Component1Service;
 import com.xiaojinzi.base.service.inter.component2.Component2Service;
 import com.xiaojinzi.component.anno.RouterAnno;
@@ -78,7 +79,30 @@ public class TestServiceAct extends AppCompatActivity {
         }
     }
 
-    public void rxServiceUse(View view) {
+    public void rxServiceUse1(View view) {
+        RxService.with(AnnoMethodService.class)
+                .map(new Function<AnnoMethodService, String>() {
+                    @Override
+                    public String apply(AnnoMethodService service) throws Exception {
+                        return service.test();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        Toast.makeText(TestServiceAct.this, "完成服务的调用啦,内容是：" + s, Toast.LENGTH_SHORT).show();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Toast.makeText(TestServiceAct.this, "可以不用处理的错误,错误信息：" + Utils.getRealThrowable(throwable), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void rxServiceUse2(View view) {
         RxService.with(Component1Service.class)
                 .flatMap(new Function<Component1Service, SingleSource<String>>() {
                     @Override

@@ -27,6 +27,7 @@ import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypesException;
@@ -41,6 +42,7 @@ import javax.tools.Diagnostic;
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedAnnotationTypes({com.xiaojinzi.component.ComponentUtil.SERVICE_ANNO_CLASS_NAME})
 public class ServiceProcessor extends BaseHostProcessor {
+
     private static final String SERVICE_SEPER_NAME1 = "com.xiaojinzi.component.service.IServiceLoad";
     private static final String SERVICE_SEPER_NAME2 = "com.xiaojinzi.component.service.SingletonService";
     private static final String NAME_OF_APPLICATION = "application";
@@ -82,8 +84,7 @@ public class ServiceProcessor extends BaseHostProcessor {
         for (Element element : annoElements) {
             // 如果是一个 Service
             final ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
-            if (!(element instanceof TypeElement) || anno == null) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
+            if (anno == null) {
                 continue;
             }
             annoElementList.add(element);
@@ -91,7 +92,8 @@ public class ServiceProcessor extends BaseHostProcessor {
     }
 
     private void createImpl() {
-        String claName = com.xiaojinzi.component.ComponentUtil.genHostServiceClassName(componentHost);
+
+        String claName = ComponentUtil.genHostServiceClassName(componentHost);
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf('.'));
 
@@ -135,38 +137,59 @@ public class ServiceProcessor extends BaseHostProcessor {
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {
-                String serviceImplClassName = element.toString();
-                TypeElement serviceImplTypeElement = mElements.getTypeElement(serviceImplClassName);
+                String serviceImplCallPath = null;
+                TypeName serviceImplTypeName = null;
+                if (element instanceof ExecutableElement) {
+                    // 注解在方法上了
+                    ExecutableElement methodElement = (ExecutableElement) element;
+                    serviceImplTypeName = TypeName.get(methodElement.getReturnType());
+                    // 获取声明这个方法的类的 TypeElement
+                    TypeElement declareClassType = (TypeElement) methodElement.getEnclosingElement();
+                    // 调用这个静态方法的全路径
+                    serviceImplCallPath = declareClassType.toString() + "." + methodElement.getSimpleName();
+                } else {
+                    String serviceImplClassName = element.toString();
+                    serviceImplTypeName = TypeName.get(mElements.getTypeElement(serviceImplClassName).asType());
+                }
                 ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
-                boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
                 String implName = "implName" + atomicInteger.incrementAndGet();
-
                 if (anno.singleTon()) {
-
+                    MethodSpec.Builder getRawMethodBuilder = MethodSpec.methodBuilder("getRaw")
+                            .addAnnotation(Override.class)
+                            .addModifiers(Modifier.PROTECTED);
+                    if (serviceImplCallPath == null) {
+                        boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
+                        getRawMethodBuilder
+                                .addStatement("return new $T($N)", serviceImplTypeName, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
+                                .returns(TypeName.get(element.asType()));
+                    } else {
+                        getRawMethodBuilder
+                                .addStatement("return $N()", serviceImplCallPath)
+                                .returns(serviceImplTypeName);
+                    }
                     TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(service2ClassName, TypeName.get(serviceImplTypeElement.asType())))
-                            .addMethod(
-                                    MethodSpec.methodBuilder("getRaw")
-                                            .addAnnotation(Override.class)
-                                            .addModifiers(Modifier.PROTECTED)
-                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
-                                            .returns(TypeName.get(element.asType()))
-                                            .build()
-                            )
+                            .addSuperinterface(ParameterizedTypeName.get(service2ClassName, serviceImplTypeName))
+                            .addMethod(getRawMethodBuilder.build())
                             .build();
                     methodSpecBuilder.addStatement("$T $N = $L", service1ClassName, implName, innerTypeSpec);
-
                 } else {
+                    MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder("get")
+                            .addAnnotation(Override.class)
+                            .addModifiers(Modifier.PUBLIC)
+                            .returns(TypeName.get(element.asType()));
+                    if (serviceImplCallPath == null) {
+                        boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
+                        getMethodBuilder
+                                .addStatement("return new $T($N)", serviceImplTypeName, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
+                                .returns(TypeName.get(element.asType()));
+                    } else {
+                        getMethodBuilder
+                                .addStatement("return $N()", serviceImplCallPath)
+                                .returns(serviceImplTypeName);
+                    }
                     TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(service1ClassName, TypeName.get(serviceImplTypeElement.asType())))
-                            .addMethod(
-                                    MethodSpec.methodBuilder("get")
-                                            .addAnnotation(Override.class)
-                                            .addModifiers(Modifier.PUBLIC)
-                                            .addStatement("return new $T($N)", serviceImplTypeElement, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
-                                            .returns(TypeName.get(element.asType()))
-                                            .build()
-                            )
+                            .addSuperinterface(ParameterizedTypeName.get(service1ClassName, serviceImplTypeName))
+                            .addMethod(getMethodBuilder.build())
                             .build();
                     methodSpecBuilder.addStatement("$T $N = $L", service1ClassName, implName, innerTypeSpec);
                 }
@@ -237,6 +260,12 @@ public class ServiceProcessor extends BaseHostProcessor {
         return implClassNames;
     }
 
+    /**
+     * 是否有默认的构造器
+     *
+     * @param className
+     * @return
+     */
     private boolean isHaveDefaultConstructor(String className) {
         // 实现类的类型
         TypeElement typeElementClassImpl = mElements.getTypeElement(className);
