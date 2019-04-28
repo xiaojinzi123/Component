@@ -3,7 +3,7 @@ Component
 
 **直接拿到 onActivityResult 的酸爽**
 
-<img src="imgs/componentDesc.gif" width="630px" height="360px"/>
+<img src="imgs/rxGetData.png" width="630px" height="360px"/>
 
 **网页无缝调用的酸爽**
 
