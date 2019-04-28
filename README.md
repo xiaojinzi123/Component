@@ -1,6 +1,14 @@
 Component
 -------
 
+**直接拿到 onActivityResult 的酸爽**
+
+<img src="imgs/rxGetData.png" width="630px" height="360px"/>
+
+**网页无缝调用的酸爽**
+
+<img src="imgs/componentDesc.gif" width="250px" height="400px"/>
+
 这个组件化方案参考了 ARouter,WMRouter,ActivityRouter,CC,DDComponent等开源的组件化框架
 结合了其中的一些优点并且扩展了几个很好用的特性：
 
@@ -11,6 +19,8 @@ Component
 - 把服务发现和Router跳转分开,Arouter,WMRouter等都是一起的,我个人认为分开更好
 - 采取了WMRouter等框架设计的页面拦截器(具体怎么回事看wiki)
 - Rx扩展库扩展完美结合了 RxJava2
+
+**更多功能等你来发现**
 
 RouterGoPlugin
 -------
