@@ -1,9 +1,9 @@
 Component
 -------
 
-![](imgs/componentDesc1.gif)
-![](imgs/componentDesc2.gif)
-![](imgs/componentDesc3.gif)
+<img src="imgs/componentDesc1.gif" width="100px" height="200px"/>
+<img src="imgs/componentDesc2.gif" width="100px" height="200px"/>
+<img src="imgs/componentDesc3.gif" width="100px" height="200px"/>
 
 这个组件化方案参考了 ARouter,WMRouter,ActivityRouter,CC,DDComponent等开源的组件化框架
 结合了其中的一些优点并且扩展了几个很好用的特性：
