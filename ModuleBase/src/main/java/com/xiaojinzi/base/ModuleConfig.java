@@ -61,6 +61,8 @@ public class ModuleConfig {
         public static final String TEST_LOGIN = "testLogin";
         public static final String TEST_DIALOG = "testDialog";
         public static final String TEST_IN_OTHER_MODULE = "testInOtherModule";
+        public static final String TEST_INJECT1 = "testInject1";
+        public static final String TEST_INJECT2 = "testInject2";
 
     }
 

@@ -86,7 +86,7 @@ class RouterUtil {
         if (errorResult.getOriginalRequest() == null) {
             LogUtil.log(Router.TAG, "路由失败：" + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
         } else {
-            LogUtil.log(Router.TAG, "路由失败：" + errorResult.getOriginalRequest().uri.toString() + "errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
+            LogUtil.log(Router.TAG, "路由失败：" + errorResult.getOriginalRequest().uri.toString() + " and errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
         }
         if (callback == null) {
             return;

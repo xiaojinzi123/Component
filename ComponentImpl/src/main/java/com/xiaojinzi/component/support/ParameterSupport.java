@@ -27,6 +27,11 @@ public class ParameterSupport {
      */
     public static final String KEY_BUNDLE = "RouterQueryBundle";
 
+    /**
+     * 默认的目标字段注入的class后缀
+     */
+    public static final String INJECT_SUFFIX = "_inject";
+
     @Nullable
     public static String getQueryString(@NonNull Intent intent, @NonNull String key) {
         return getQueryString(intent, key, null);
@@ -590,6 +595,16 @@ public class ParameterSupport {
             }
         }
         return value;
+    }
+
+    public static void inject(@NonNull Object target) {
+        Utils.checkNullPointer(target, "target");
+        String injectClassName = target.getClass().getName() + INJECT_SUFFIX;
+        try {
+            Class<?> targetInjectClass = Class.forName(injectClassName);
+
+        } catch (ClassNotFoundException e) {
+        }
     }
 
 }
