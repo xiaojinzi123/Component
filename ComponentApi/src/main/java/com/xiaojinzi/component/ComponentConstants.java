@@ -23,6 +23,7 @@ public class ComponentConstants {
     public static final String SERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.Service";
     public static final String CENTERSERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.ServiceCenter";
     public static final String PARAMETERSUPPORT_CLASS_NAME = "com.xiaojinzi.component.support.ParameterSupport";
+    public static final String PARAMETERINJECT_CLASS_NAME = "com.xiaojinzi.component.support.ParameterInject";
 
     public static final String ANDROID_PARCELABLE = "android.os.Parcelable";
     public static final String ANDROID_APPLICATION = "android.app.Application";

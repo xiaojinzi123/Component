@@ -102,6 +102,7 @@ public class CustomerRouterImpl {
     )
     public static void testParameter(@NonNull RouterRequest request,
                                      @ParameterAnno("name") String name,
+                                     @ParameterAnno("pass") String pass,
                                      @ParameterAnno("age") int age) {
 
     }

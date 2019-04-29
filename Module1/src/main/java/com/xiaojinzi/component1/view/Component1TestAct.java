@@ -46,14 +46,6 @@ public class Component1TestAct extends BaseAct {
         return intent;
     }
 
-    private Handler h = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            returnData(null);
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
