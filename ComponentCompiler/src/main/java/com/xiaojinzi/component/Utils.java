@@ -165,10 +165,10 @@ class Utils {
             methodBuilder.addStatement("$N = $T.getString($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
         } else if (parameterTypeName.equals(ClassName.BYTE) || parameterTypeName.equals(ClassName.BYTE.box())) { // 如果是一个byte or Byte
             ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-            methodBuilder.addStatement("$N = $T.getByte($N,$S,(byte)$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
+            methodBuilder.addStatement("$N = $T.getByte($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
         } else if (parameterTypeName.equals(ClassName.SHORT) || parameterTypeName.equals(ClassName.SHORT.box())) { // 如果是一个short or Short
             ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-            methodBuilder.addStatement("$N = $T.getShort($N,$S,(short)$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
+            methodBuilder.addStatement("$N = $T.getShort($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
         } else if (parameterTypeName.equals(ClassName.INT) || parameterTypeName.equals(ClassName.INT.box())) { // 如果是一个int or Integer
             ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
             methodBuilder.addStatement("$N = $T.getInt($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
