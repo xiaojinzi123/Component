@@ -149,7 +149,7 @@ public class TestQualityAct extends BaseAct {
 
         );*/
         return Completable.concatArray(
-                wrapTask(testParameterString()).doOnComplete(() -> addTaskPassMsg("testParameterString"))
+                wrapTask(testFieldInject()).doOnComplete(() -> addTaskPassMsg("testFieldInject"))
         );
     }
 
@@ -1467,6 +1467,38 @@ public class TestQualityAct extends BaseAct {
                 .putString("valueDefault", null)
                 .call();
         return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3));
+    }
+
+    private Completable testFieldInject() {
+
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_INJECT1)
+                .requestCodeRandom()
+                .putBoolean("isReturnAuto", true)
+                .putString("valueString", "valueString")
+                .putString("valueStringDefault", "valueStringDefault")
+                .putByte("valueByte", (byte) 1)
+                .putByte("valueByteDefalut", (byte) 1)
+                .putByte("valueByteBox", (byte) 1)
+                .putByte("valueByteBoxDefalut", (byte) 1)
+                .putShort("valueShort", (short) 1)
+                .putShort("valueShortDefalut", (short) 1)
+                .putShort("valueShortBox", (short) 1)
+                .putShort("valueShortBoxDefalut", (short) 1)
+                .resultCodeMatchCall(RESULT_OK);
+
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_INJECT1)
+                .requestCodeRandom()
+                .putBoolean("isReturnAuto", true)
+                .resultCodeMatchCall(RESULT_OK);
+
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2));
+
     }
 
     // -------------------------------------------------------- 成功的例子 -------------------------------end

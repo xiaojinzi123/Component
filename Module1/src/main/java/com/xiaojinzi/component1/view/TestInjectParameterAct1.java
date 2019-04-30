@@ -17,23 +17,31 @@ import com.xiaojinzi.component1.R;
 )
 public class TestInjectParameterAct1 extends BaseAct {
 
-    @ParameterAnno("name")
-    String name;
+    public static final int defaultValue = -1;
 
-    @ParameterAnno("defaultName")
-    String nameDefault = "hello name";
+    @ParameterAnno("valueString")
+    String valueString;
 
-    @ParameterAnno("age")
-    Integer age;
+    @ParameterAnno("valueStringDefault")
+    String valueStringDefault = "hello";
 
-    @ParameterAnno(value = "ageDefault")
-    int ageDefault;
+    @ParameterAnno("valueByte")
+    byte valueByte;
+    @ParameterAnno("valueByteDefalut")
+    byte valueByteDefalut = defaultValue;
+    @ParameterAnno("valueByteBox")
+    Byte valueByteBox;
+    @ParameterAnno("valueByteBoxDefalut")
+    Byte valueByteBoxDefalut = defaultValue;
 
-    @ParameterAnno("isStudent")
-    boolean isStudent;
-
-    @ParameterAnno(value = "isStudentDefault")
-    boolean isStudentDefault;
+    @ParameterAnno("valueShort")
+    short valueShort;
+    @ParameterAnno("valueShortDefalut")
+    short valueShortDefalut = defaultValue;
+    @ParameterAnno("valueShortBox")
+    Short valueShortBox;
+    @ParameterAnno("valueShortBoxDefalut")
+    Short valueShortBoxDefalut = defaultValue;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,35 +52,144 @@ public class TestInjectParameterAct1 extends BaseAct {
 
     @Override
     protected void returnData() {
-        boolean isSuccess = true;
-
-        String realName = getIntent().getStringExtra("name");
-        if (realName == null) {
-
+        if (check()) {
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            finish();
+        }else {
+            Intent intent = new Intent();
+            setResult(RESULT_ERROR, intent);
+            finish();
         }
-        if (realName == null && name != null) {
-            isSuccess = false;
+    }
+
+    private boolean check() {
+
+        Bundle bundle = getIntent().getExtras();
+
+        // 检查 String 参数的 =============================================
+
+        if (bundle.containsKey("valueString")) {
+            if (!valueString.equals(bundle.getString("valueString"))) {
+                return false;
+            }
+        } else {
+            if (valueString != null) {
+                return false;
+            }
         }
-        // 如果 realName 有值得话就必须相等,否则就是错误的
-        if (realName != null && !realName.equals(name)) {
-            isSuccess = false;
+        if (bundle.containsKey("valueStringDefault")) {
+            if (!valueStringDefault.equals(bundle.getString("valueStringDefault"))) {
+                return false;
+            }
+        } else {
+            if (!"hello".equals(valueStringDefault)) {
+                return false;
+            }
         }
 
-        String realDefaultName = getIntent().getStringExtra("defaultName");
-        // 如果realName为空那么name也必须为空,name不为空就是错误的行为
-        if (realDefaultName == null && !"默认string".equals(nameDefault)) {
-            isSuccess = false;
-        }
-        // 如果 realName 有值得话就必须相等,否则就是错误的
-        if (realDefaultName != null && !realDefaultName.equals(nameDefault)) {
-            isSuccess = false;
+        // 检查 Byte 参数的 ======================================================
+        // 如果存在
+        if (bundle.containsKey("valueByte")) {
+            if (valueByte != bundle.getByte("valueByte")) {
+                return false;
+            }
+        } else {
+            if (valueByte != 0) {
+                return false;
+            }
         }
 
-        int realAge = getIntent().getIntExtra("age", 0);
+        if (bundle.containsKey("valueByteDefalut")) {
+            if (valueByteDefalut != bundle.getByte("valueByteDefalut")) {
+                return false;
+            }
+        } else {
+            if (valueByteDefalut != defaultValue) {
+                return false;
+            }
+        }
 
-        Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
-        finish();
+        if (bundle.containsKey("valueByteBox")) {
+            if (valueByteBox == null) {
+                return false;
+            } else {
+                if (!valueByteBox.equals(bundle.getByte("valueByteBox"))) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueByteBox != null) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueByteBoxDefalut")) {
+            if (valueByteBoxDefalut == null || valueByteBoxDefalut == defaultValue) {
+                return false;
+            } else {
+                if (valueByteBoxDefalut != bundle.getByte("valueByteBoxDefalut")) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueByteBoxDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        // 检查 Short 参数的 ======================================================
+        // 如果存在
+        if (bundle.containsKey("valueShort")) {
+            if (valueShort != bundle.getShort("valueShort")) {
+                return false;
+            }
+        } else {
+            if (valueShort != 0) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueShortDefalut")) {
+            if (valueShortDefalut != bundle.getShort("valueShortDefalut")) {
+                return false;
+            }
+        } else {
+            if (valueShortDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueShortBox")) {
+            if (valueShortBox == null) {
+                return false;
+            } else {
+                if (!valueShortBox.equals(bundle.getShort("valueShortBox"))) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueShortBox != null) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueShortBoxDefalut")) {
+            if (valueShortBoxDefalut == null || valueShortBoxDefalut == defaultValue) {
+                return false;
+            } else {
+                if (valueShortBoxDefalut != bundle.getShort("valueShortBoxDefalut")) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueShortBoxDefalut != valueShortBoxDefalut) {
+                return false;
+            }
+        }
+
+        return true;
+
     }
 
 }
