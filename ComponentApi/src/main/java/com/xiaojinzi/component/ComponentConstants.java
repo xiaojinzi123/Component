@@ -43,4 +43,9 @@ public class ComponentConstants {
 
     public static final String SEPARATOR = "/";
 
+    /**
+     * 默认的目标字段注入的class后缀
+     */
+    public static final String INJECT_SUFFIX = "_inject";
+
 }

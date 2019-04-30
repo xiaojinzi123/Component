@@ -96,7 +96,6 @@ public class ServiceProcessor extends BaseHostProcessor {
         String claName = ComponentUtil.genHostServiceClassName(componentHost);
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf('.'));
-
         //simpleName
         String cn = claName.substring(claName.lastIndexOf('.') + 1);
         // superClassName

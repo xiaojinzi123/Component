@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.bean.User;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.anno.StringDefaultAnno;
 import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.component1.R;
 
@@ -21,7 +21,10 @@ public class TestInjectParameterAct2 extends BaseAct {
     String testName;
 
     @ParameterAnno("testAge")
-    String testAge;
+    int testAge;
+
+    @ParameterAnno("testUser")
+    User testUser;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

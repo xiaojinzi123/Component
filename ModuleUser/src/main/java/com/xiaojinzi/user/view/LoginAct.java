@@ -33,7 +33,7 @@ public class LoginAct extends BaseAct {
     protected void returnData() {
         UserServiceImpl.isLogin = true;
         Intent intent = new Intent();
-        intent.putExtra("data", new User());
+        intent.getExtras().putSerializable("data", new User());
         setResult(RESULT_OK,intent);
         finish();
     }

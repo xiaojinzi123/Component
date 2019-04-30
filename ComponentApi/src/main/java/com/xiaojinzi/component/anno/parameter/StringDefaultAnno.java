@@ -1,4 +1,4 @@
-package com.xiaojinzi.component.anno;
+package com.xiaojinzi.component.anno.parameter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * 使用这个注解给参数或者字段添加上一个默认值
  */
-@Target({ElementType.PARAMETER, ElementType.FIELD})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.CLASS)
 public @interface StringDefaultAnno {
 

@@ -3,6 +3,7 @@ package com.xiaojinzi.componentdemo;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -11,10 +12,12 @@ import android.text.TextUtils;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.bean.User;
 import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
 import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAnno;
+import com.xiaojinzi.component.anno.parameter.ByteDefaultAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 
 import java.lang.reflect.InvocationHandler;
@@ -94,17 +97,6 @@ public class CustomerRouterImpl {
                 act.startActivityForResult(intent, request.requestCode);
             }
         }
-    }
-
-    @RouterAnno(
-            host = ModuleConfig.System.NAME,
-            path = ModuleConfig.System.TEST_PARAMETER
-    )
-    public static void testParameter(@NonNull RouterRequest request,
-                                     @ParameterAnno("name") String name,
-                                     @ParameterAnno("pass") String pass,
-                                     @ParameterAnno("age") int age) {
-
     }
 
     @ServiceAnno(AnnoMethodService.class)
