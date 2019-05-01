@@ -47,13 +47,20 @@
 
     </com.xiaojinzi.componentdemo.view.XFlowLayout>
 
-    <TextView
-        android:id="@+id/view_result_color"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#00FF00"
-        android:gravity="center"
-        android:text="这里显示结果"
-        android:textColor="#0000FF" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/view_result_color"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FF0000"
+            android:gravity="center"
+            android:text="这里显示结果"
+            android:textSize="20dp"
+            android:textColor="#0000FF" />
+
+    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>

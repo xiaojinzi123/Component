@@ -96,16 +96,6 @@ public class CustomerRouterImpl {
         }
     }
 
-    @RouterAnno(
-            host = ModuleConfig.System.NAME,
-            path = ModuleConfig.System.TEST_PARAMETER
-    )
-    public static void testParameter(@NonNull RouterRequest request,
-                                     @ParameterAnno("name") String name,
-                                     @ParameterAnno("age") int age) {
-
-    }
-
     @ServiceAnno(AnnoMethodService.class)
     public static AnnoMethodService getTestService() {
         return (AnnoMethodService) Proxy.newProxyInstance(AnnoMethodService.class.getClassLoader(), new Class[]{AnnoMethodService.class}, new InvocationHandler() {

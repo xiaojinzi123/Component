@@ -363,50 +363,12 @@ public class RouterProcessor extends BaseHostProcessor {
                 // 如果要的是 request 对象
                 if (variableElement.asType().equals(routerRequestTypeMirror)) {
                     parameterSB.append(NAME_OF_REQUEST);
-                } else if (parameterTypeName.equals(mClassNameString)) { // 如果是一个 String
-                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-                    jumpMethodBuilder.addStatement("String $N = $T.getString(request.bundle,$S)", parameterName, parameterSupportTypeMirror, parameterAnno.value());
-                    parameterSB.append(parameterName);
-                } else if (parameterTypeName.equals(ClassName.BYTE) || parameterTypeName.equals(ClassName.BYTE.box())) { // 如果是一个byte or Byte
-                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-                    jumpMethodBuilder.addStatement("byte $N = $T.getByte(request.bundle,$S,(byte)$L)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.byteDefault());
-                    parameterSB.append(parameterName);
-                } else if (parameterTypeName.equals(ClassName.SHORT) || parameterTypeName.equals(ClassName.SHORT.box())) { // 如果是一个short or Short
-                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-                    jumpMethodBuilder.addStatement("short $N = $T.getShort(request.bundle,$S,(short)$L)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.shortDefault());
-                    parameterSB.append(parameterName);
-                } else if (parameterTypeName.equals(ClassName.INT) || parameterTypeName.equals(ClassName.INT.box())) { // 如果是一个int or Integer
-                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-                    jumpMethodBuilder.addStatement("int $N = $T.getInt(request.bundle,$S,$L)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.intDefault());
-                    parameterSB.append(parameterName);
-                } else if (parameterTypeName.equals(ClassName.LONG) || parameterTypeName.equals(ClassName.LONG.box())) { // 如果是一个long or Long
-                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-                    jumpMethodBuilder.addStatement("long $N = $T.getLong(request.bundle,$S,$Ll)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.longDefault());
-                    parameterSB.append(parameterName);
-                } else if (parameterTypeName.equals(ClassName.FLOAT) || parameterTypeName.equals(ClassName.FLOAT.box())) { // 如果是一个float or Float
-                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-                    jumpMethodBuilder.addStatement("float $N = $T.getFloat(request.bundle,$S,$Lf)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.floatDefault());
-                    parameterSB.append(parameterName);
-                } else if (parameterTypeName.equals(ClassName.DOUBLE) || parameterTypeName.equals(ClassName.DOUBLE.box())) { // 如果是一个double or Double
-                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-                    jumpMethodBuilder.addStatement("double $N = $T.getDouble(request.bundle,$S,$Ld)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.doubleDefault());
-                    parameterSB.append(parameterName);
-                } else if (parameterTypeName.equals(ClassName.BOOLEAN) || parameterTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是一个boolean or Boolean
-                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-                    jumpMethodBuilder.addStatement("boolean $N = $T.getBoolean(request.bundle,$S,$L)", parameterName, parameterSupportTypeMirror, parameterAnno.value(), parameterAnno.booleanDefault());
-                    parameterSB.append(parameterName);
                 } else { // 其他类型的情况,是实现序列化的对象,这种时候我们直接要从 bundle 中获取
-                    ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-                    jumpMethodBuilder.addStatement("$T $N = null", variableElement.asType(), parameterName);
-                    // 优先获取 parcelable
-                    if (mTypes.isSubtype(variableElement.asType(), parcelableTypeMirror)) {
-                        jumpMethodBuilder.addStatement("$N = ($T) request.bundle.getParcelable($S)", parameterName, variableElement.asType(), parameterAnno.value());
-                    }
-                    jumpMethodBuilder.beginControlFlow("if ($N == null) ", parameterName);
-                    if (mTypes.isSubtype(variableElement.asType(), serializableTypeMirror)) {
-                        jumpMethodBuilder.addStatement("$N = ($T) request.bundle.getSerializable($S)", parameterName, variableElement.asType(), parameterAnno.value());
-                    }
-                    jumpMethodBuilder.endControlFlow();
+                    Utils.generateParameterCodeForRouter(
+                            mTypes, variableElement, jumpMethodBuilder,
+                            parameterSupportTypeMirror, parameterName,"request.bundle",
+                            mClassNameString, serializableTypeMirror, parcelableTypeMirror
+                    );
                     parameterSB.append(parameterName);
                 }
             }

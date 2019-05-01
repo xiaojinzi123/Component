@@ -8,3 +8,6 @@
 7.当Fragment销毁路由请求是否自动取消
 8.RxRouter 的错误默认忽略是否全部正常
 9.RxRouter 获取 Intent 是否正常
+
+开发的库哪些地方如果有改动需要注意的：
+1.ParameterAnno注解没有stringDefault属性是因为这个属性的默认值不能是 null
