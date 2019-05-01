@@ -7,14 +7,14 @@ import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.bean.User;
 import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.anno.parameter.BooleanDefaultAnno;
-import com.xiaojinzi.component.anno.parameter.ByteDefaultAnno;
-import com.xiaojinzi.component.anno.parameter.DoubleDefaultAnno;
-import com.xiaojinzi.component.anno.parameter.FloatDefaultAnno;
-import com.xiaojinzi.component.anno.parameter.IntDefaultAnno;
-import com.xiaojinzi.component.anno.parameter.LongDefaultAnno;
-import com.xiaojinzi.component.anno.parameter.ShortDefaultAnno;
-import com.xiaojinzi.component.anno.parameter.StringDefaultAnno;
+import com.xiaojinzi.component.anno.defvalue.BooleanDefaultAnno;
+import com.xiaojinzi.component.anno.defvalue.ByteDefaultAnno;
+import com.xiaojinzi.component.anno.defvalue.DoubleDefaultAnno;
+import com.xiaojinzi.component.anno.defvalue.FloatDefaultAnno;
+import com.xiaojinzi.component.anno.defvalue.IntDefaultAnno;
+import com.xiaojinzi.component.anno.defvalue.LongDefaultAnno;
+import com.xiaojinzi.component.anno.defvalue.ShortDefaultAnno;
+import com.xiaojinzi.component.anno.defvalue.StringDefaultAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 
 public class RouterParameterTest {

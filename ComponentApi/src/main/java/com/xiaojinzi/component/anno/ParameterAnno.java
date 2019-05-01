@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.anno;
 
-import com.xiaojinzi.component.anno.parameter.StringDefaultAnno;
+import com.xiaojinzi.component.anno.defvalue.StringDefaultAnno;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
