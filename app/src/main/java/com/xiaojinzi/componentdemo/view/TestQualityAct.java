@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -92,7 +93,9 @@ public class TestQualityAct extends BaseAct {
     }
 
     private void addTaskPassMsg(String taskName) {
-        resultColor.setText(resultColor.getText().toString() + "\n" + taskName + " 任务测试通过");
+
+        resultColor.setText(taskName + " 任务测试通过" + "\n" + resultColor.getText().toString());
+
     }
 
     private Completable wrapTask(Completable completable) {
@@ -137,7 +140,16 @@ public class TestQualityAct extends BaseAct {
                 wrapTask(testNormalJumpUseFragment()).doOnComplete(() -> addTaskPassMsg("testNormalJumpUseFragment")),
                 wrapTask(testOpenurl()).doOnComplete(() -> addTaskPassMsg("testOpenurl")),
                 wrapTask(testPassQuery()).doOnComplete(() -> addTaskPassMsg("testPassQuery")),
-                wrapTask(testModifyByInterceptor()).doOnComplete(() -> addTaskPassMsg("testModifyByInterceptor"))
+                wrapTask(testModifyByInterceptor()).doOnComplete(() -> addTaskPassMsg("testModifyByInterceptor")),
+                wrapTask(testParameterByte()).doOnComplete(() -> addTaskPassMsg("testParameterByte")),
+                wrapTask(testParameterShort()).doOnComplete(() -> addTaskPassMsg("testParameterShort")),
+                wrapTask(testParameterInt()).doOnComplete(() -> addTaskPassMsg("testParameterInt")),
+                wrapTask(testParameterLong()).doOnComplete(() -> addTaskPassMsg("testParameterLong")),
+                wrapTask(testParameterFloat()).doOnComplete(() -> addTaskPassMsg("testParameterFloat")),
+                wrapTask(testParameterDouble()).doOnComplete(() -> addTaskPassMsg("testParameterDouble")),
+                wrapTask(testParameterBoolean()).doOnComplete(() -> addTaskPassMsg("testParameterBoolean")),
+                wrapTask(testParameterString()).doOnComplete(() -> addTaskPassMsg("testParameterString")),
+                wrapTask(testFieldInject()).doOnComplete(() -> addTaskPassMsg("testFieldInject"))
         );
     }
 
@@ -194,11 +206,9 @@ public class TestQualityAct extends BaseAct {
     public void testAllSuccess(View v) {
 
         compositeDisposable.clear();
-
         Completable observable = Completable.concatArray(
                 wrapTask(allSuccess()).doOnComplete(() -> addTaskPassMsg("allSuccess"))
         );
-
         compositeDisposable.add(observable
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
@@ -224,7 +234,6 @@ public class TestQualityAct extends BaseAct {
                 wrapTask(allCancel()).doOnComplete(() -> addTaskPassMsg("allCancel")),
                 wrapTask(allFailure()).doOnComplete(() -> addTaskPassMsg("allFailure")),
                 wrapTask(allSuccess()).doOnComplete(() -> addTaskPassMsg("allSuccess"))
-
         );
 
         observable
@@ -1198,68 +1207,312 @@ public class TestQualityAct extends BaseAct {
     }
 
     private Completable testModifyByInterceptor() {
-        return Completable.create(emitter -> {
-            if (emitter.isDisposed()) {
-                return;
-            }
-            RxRouter
-                    .with(mContext)
-                    .host(ModuleConfig.Module1.NAME)
-                    .path(ModuleConfig.Module1.TEST_QUERY)
-                    .query("name", "testName")
-                    .query("pass", "testPass")
-                    .query("expectName", "我是被拦截器修改的 testName")
-                    .query("isReturnAuto", true)
-                    .interceptors(new RouterInterceptor() {
-                        @Override
-                        public void intercept(RouterInterceptor.Chain chain) throws Exception {
+        return RxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_QUERY)
+                .query("name", "testName")
+                .query("pass", "testPass")
+                .query("expectName", "我是被拦截器修改的 testName")
+                .query("isReturnAuto", true)
+                .interceptors(new RouterInterceptor() {
+                    @Override
+                    public void intercept(RouterInterceptor.Chain chain) throws Exception {
 
-                            android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(chain.request().getRawActivity())
-                                    .setMessage("如果您点击确定,传递过去的名称 'testName' 会被修改为 '我是被拦截器修改的 testName'")
-                                    .setPositiveButton("确定", (dialog12, which) -> {
-                                    })
-                                    .setNegativeButton("取消", (dialog1, which) -> {
-                                    })
-                                    .create();
-                            dialog.show();
+                        android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(chain.request().getRawActivity())
+                                .setMessage("如果您点击确定,传递过去的名称 'testName' 会被修改为 '我是被拦截器修改的 testName'")
+                                .setPositiveButton("确定", (dialog12, which) -> {
+                                })
+                                .setNegativeButton("取消", (dialog1, which) -> {
+                                })
+                                .create();
+                        dialog.show();
 
-                            Completable.complete()
-                                    .observeOn(Schedulers.io())
-                                    .delay(2, TimeUnit.SECONDS)
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action() {
-                                        @Override
-                                        public void run() throws Exception {
-                                            dialog.dismiss();
-                                            chain.proceed(chain.request().toBuilder().query("name", "我是被拦截器修改的 testName").build());
-                                        }
-                                    });
+                        Completable.complete()
+                                .observeOn(Schedulers.io())
+                                .delay(2, TimeUnit.SECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action() {
+                                    @Override
+                                    public void run() throws Exception {
+                                        dialog.dismiss();
+                                        chain.proceed(chain.request().toBuilder().query("name", "我是被拦截器修改的 testName").build());
+                                    }
+                                });
 
-                        }
-                    })
-                    .requestCodeRandom()
-                    .resultCodeMatchCall(RESULT_OK)
-                    .subscribe(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            if (emitter.isDisposed()) {
-                                return;
-                            }
-                            emitter.onComplete();
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            if (emitter.isDisposed()) {
-                                return;
-                            }
-                            emitter.onError(throwable);
-                        }
-                    });
-
-        });
+                    }
+                })
+                .requestCodeRandom()
+                .resultCodeMatchCall(RESULT_OK);
     }
 
+    private Completable testParameterByte() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BYTE)
+                .putByte("value", (byte) 1)
+                .putByte("valueDefault", (byte) 1)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BYTE)
+                .call();
+
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BYTE_BOX)
+                .putByte("value", (byte) 1)
+                .putByte("valueDefault", (byte) 1)
+                .call();
+
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BYTE_BOX)
+                .call();
+
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+
+    }
+
+    private Completable testParameterShort() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_SHORT)
+                .putShort("value", (short) 1)
+                .putShort("valueDefault", (short) 1)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_SHORT)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_SHORT_BOX)
+                .putShort("value", (short) 1)
+                .putShort("valueDefault", (short) 1)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_SHORT_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterInt() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_INT)
+                .putInt("value", 1)
+                .putInt("valueDefault", 1)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_INT)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_INT_BOX)
+                .putInt("value", 1)
+                .putInt("valueDefault", 1)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_INT_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterLong() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_LONG)
+                .putLong("value", 1)
+                .putLong("valueDefault", 1)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_LONG)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_LONG_BOX)
+                .putLong("value", 1)
+                .putLong("valueDefault", 1)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_LONG_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterFloat() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_FLOAT)
+                .putFloat("value", 1f)
+                .putFloat("valueDefault", 1f)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_FLOAT)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_FLOAT_BOX)
+                .putFloat("value", 1f)
+                .putFloat("valueDefault", 1f)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_FLOAT_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterDouble() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_DOUBLE)
+                .putDouble("value", 1)
+                .putDouble("valueDefault", 1)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_DOUBLE)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_DOUBLE_BOX)
+                .putDouble("value", 1)
+                .putDouble("valueDefault", 1)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_DOUBLE_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterBoolean() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BOOLEAN)
+                .putBoolean("value", true)
+                .putBoolean("valueDefault", false)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BOOLEAN)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BOOLEAN_BOX)
+                .putBoolean("value", true)
+                .putBoolean("valueDefault", false)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BOOLEAN_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterString() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_STRING)
+                .putString("value", "testString")
+                .putString("valueDefault", "testString")
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_STRING)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_STRING)
+                .putString("value", null)
+                .putString("valueDefault", null)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3));
+    }
+
+    private Completable testFieldInject() {
+
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_INJECT1)
+                .requestCodeRandom()
+                .putBoolean("isReturnAuto", true)
+                .putString("valueString", "valueString")
+                .putString("valueStringDefault", "valueStringDefault")
+                .putByte("valueByte", (byte) 1)
+                .putByte("valueByteDefalut", (byte) 1)
+                .putByte("valueByteBox", (byte) 1)
+                .putByte("valueByteBoxDefalut", (byte) 1)
+                .putShort("valueShort", (short) 1)
+                .putShort("valueShortDefalut", (short) 1)
+                .putShort("valueShortBox", (short) 1)
+                .putShort("valueShortBoxDefalut", (short) 1)
+                .putInt("valueInt", 1)
+                .putInt("valueIntDefalut", 1)
+                .putInt("valueIntBox", 1)
+                .putInt("valueIntBoxDefalut", 1)
+                .putLong("valueLong", 1)
+                .putLong("valueLongDefalut", 1)
+                .putLong("valueLongBox", 1)
+                .putLong("valueLongBoxDefalut", 1)
+                .putBoolean("valueBoolean", true)
+                .putBoolean("valueBooleanDefalut", false)
+                .putBoolean("valueBooleanBox", true)
+                .putBoolean("valueBooleanBoxDefalut", false)
+                .resultCodeMatchCall(RESULT_OK);
+
+        // 测试不传的时候的默认值是否能正常工作
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_INJECT1)
+                .requestCodeRandom()
+                .putBoolean("isReturnAuto", true)
+                .resultCodeMatchCall(RESULT_OK);
+
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2));
+
+    }
 
     // -------------------------------------------------------- 成功的例子 -------------------------------end
 

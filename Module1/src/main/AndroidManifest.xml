@@ -3,12 +3,14 @@
     package="com.xiaojinzi.component1">
 
     <application>
-        <activity android:name="com.xiaojinzi.component1.view.Component1TestDialogAct"></activity>
-        <activity android:name="com.xiaojinzi.component1.view.Component1TestLoginAct" />
+        <activity android:name=".view.TestInjectParameterAct1" />
+        <activity android:name=".view.TestInjectParameterAct2" />
+        <activity android:name=".view.Component1TestDialogAct" />
+        <activity android:name=".view.Component1TestLoginAct" />
         <activity
-            android:name="com.xiaojinzi.component1.view.Component1TestQueryAct"
+            android:name=".view.Component1TestQueryAct"
             android:launchMode="singleTop" />
-        <activity android:name="com.xiaojinzi.component1.view.Component1TestAct" />
+        <activity android:name=".view.Component1TestAct" />
     </application>
 
 </manifest>

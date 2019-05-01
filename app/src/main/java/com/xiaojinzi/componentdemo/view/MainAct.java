@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RxRouter;
