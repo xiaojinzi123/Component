@@ -174,13 +174,13 @@ class Utils {
             methodBuilder.addStatement("$N = $T.getInt($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
         } else if (parameterTypeName.equals(ClassName.LONG) || parameterTypeName.equals(ClassName.LONG.box())) { // 如果是一个long or Long
             ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-            methodBuilder.addStatement("$N = $T.getLong($N,$S,$Ll)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
+            methodBuilder.addStatement("$N = $T.getLong($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
         } else if (parameterTypeName.equals(ClassName.FLOAT) || parameterTypeName.equals(ClassName.FLOAT.box())) { // 如果是一个float or Float
             ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-            methodBuilder.addStatement("$N = $T.getFloat($N,$S,$Lf)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
+            methodBuilder.addStatement("$N = $T.getFloat($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
         } else if (parameterTypeName.equals(ClassName.DOUBLE) || parameterTypeName.equals(ClassName.DOUBLE.box())) { // 如果是一个double or Double
             ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
-            methodBuilder.addStatement("$N = $T.getDouble($N,$S,$Ld)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
+            methodBuilder.addStatement("$N = $T.getDouble($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);
         } else if (parameterTypeName.equals(ClassName.BOOLEAN) || parameterTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是一个boolean or Boolean
             ParameterAnno parameterAnno = variableElement.getAnnotation(ParameterAnno.class);
             methodBuilder.addStatement("$N = $T.getBoolean($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, parameterAnno.value(), parameterName);

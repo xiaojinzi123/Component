@@ -43,6 +43,51 @@ public class TestInjectParameterAct1 extends BaseAct {
     @ParameterAnno("valueShortBoxDefalut")
     Short valueShortBoxDefalut = defaultValue;
 
+    @ParameterAnno("valueInt")
+    int valueInt;
+    @ParameterAnno("valueIntDefalut")
+    int valueIntDefalut = defaultValue;
+    @ParameterAnno("valueIntBox")
+    Integer valueIntBox;
+    @ParameterAnno("valueIntBoxDefalut")
+    Integer valueIntBoxDefalut = defaultValue;
+
+    @ParameterAnno("valueLong")
+    long valueLong;
+    @ParameterAnno("valueLongDefalut")
+    long valueLongDefalut = defaultValue;
+    @ParameterAnno("valueLongBox")
+    Long valueLongBox;
+    @ParameterAnno("valueLongBoxDefalut")
+    Long valueLongBoxDefalut = Long.valueOf(defaultValue);
+
+    @ParameterAnno("valueFloat")
+    float valueFloat;
+    @ParameterAnno("valueFloatDefalut")
+    float valueFloatDefalut = defaultValue;
+    @ParameterAnno("valueFloatBox")
+    Float valueFloatBox;
+    @ParameterAnno("valueFloatBoxDefalut")
+    Float valueFloatBoxDefalut = Float.valueOf(defaultValue);
+
+    @ParameterAnno("valueDouble")
+    double valueDouble;
+    @ParameterAnno("valueDoubleDefalut")
+    double valueDoubleDefalut = defaultValue;
+    @ParameterAnno("valueDoubleBox")
+    Double valueDoubleBox;
+    @ParameterAnno("valueDoubleBoxDefalut")
+    Double valueDoubleBoxDefalut = Double.valueOf(defaultValue);
+
+    @ParameterAnno("valueBoolean")
+    boolean valueBoolean;
+    @ParameterAnno("valueBooleanDefalut")
+    boolean valueBooleanDefalut = true;
+    @ParameterAnno("valueBooleanBox")
+    Boolean valueBooleanBox;
+    @ParameterAnno("valueBooleanBoxDefalut")
+    Boolean valueBooleanBoxDefalut = true;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,7 +228,257 @@ public class TestInjectParameterAct1 extends BaseAct {
                 }
             }
         } else {
-            if (valueShortBoxDefalut != valueShortBoxDefalut) {
+            if (valueShortBoxDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        // 检查 Int 参数的 ======================================================
+        // 如果存在
+        if (bundle.containsKey("valueInt")) {
+            if (valueInt != bundle.getInt("valueInt")) {
+                return false;
+            }
+        } else {
+            if (valueInt != 0) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueIntDefalut")) {
+            if (valueIntDefalut != bundle.getInt("valueIntDefalut")) {
+                return false;
+            }
+        } else {
+            if (valueIntDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueIntBox")) {
+            if (valueIntBox == null) {
+                return false;
+            } else {
+                if (!valueIntBox.equals(bundle.getInt("valueIntBox"))) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueIntBox != null) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueIntBoxDefalut")) {
+            if (valueIntBoxDefalut == null || valueIntBoxDefalut == defaultValue) {
+                return false;
+            } else {
+                if (valueIntBoxDefalut != bundle.getInt("valueIntBoxDefalut")) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueIntBoxDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        // 检查 Long 参数的 ======================================================
+        // 如果存在
+        if (bundle.containsKey("valueLong")) {
+            if (valueLong != bundle.getLong("valueLong")) {
+                return false;
+            }
+        } else {
+            if (valueLong != 0) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueLongDefalut")) {
+            if (valueLongDefalut != bundle.getLong("valueLongDefalut")) {
+                return false;
+            }
+        } else {
+            if (valueLongDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueLongBox")) {
+            if (valueLongBox == null) {
+                return false;
+            } else {
+                if (!valueLongBox.equals(bundle.getLong("valueLongBox"))) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueLongBox != null) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueLongBoxDefalut")) {
+            if (valueLongBoxDefalut == null || valueLongBoxDefalut == defaultValue) {
+                return false;
+            } else {
+                if (valueLongBoxDefalut != bundle.getLong("valueLongBoxDefalut")) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueLongBoxDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        // 检查 Float 参数的 ======================================================
+        // 如果存在
+        if (bundle.containsKey("valueFloat")) {
+            if (valueFloat != bundle.getFloat("valueFloat")) {
+                return false;
+            }
+        } else {
+            if (valueFloat != 0) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueFloatDefalut")) {
+            if (valueFloatDefalut != bundle.getFloat("valueFloatDefalut")) {
+                return false;
+            }
+        } else {
+            if (valueFloatDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueFloatBox")) {
+            if (valueFloatBox == null) {
+                return false;
+            } else {
+                if (!valueFloatBox.equals(bundle.getFloat("valueFloatBox"))) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueFloatBox != null) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueFloatBoxDefalut")) {
+            if (valueFloatBoxDefalut == null || valueFloatBoxDefalut == defaultValue) {
+                return false;
+            } else {
+                if (valueFloatBoxDefalut != bundle.getFloat("valueFloatBoxDefalut")) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueFloatBoxDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        // 检查 Double 参数的 ======================================================
+        // 如果存在
+        if (bundle.containsKey("valueDouble")) {
+            if (valueDouble != bundle.getDouble("valueDouble")) {
+                return false;
+            }
+        } else {
+            if (valueDouble != 0) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueDoubleDefalut")) {
+            if (valueDoubleDefalut != bundle.getDouble("valueDoubleDefalut")) {
+                return false;
+            }
+        } else {
+            if (valueDoubleDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueDoubleBox")) {
+            if (valueDoubleBox == null) {
+                return false;
+            } else {
+                if (!valueDoubleBox.equals(bundle.getDouble("valueDoubleBox"))) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueDoubleBox != null) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueDoubleBoxDefalut")) {
+            if (valueDoubleBoxDefalut == null || valueDoubleBoxDefalut == defaultValue) {
+                return false;
+            } else {
+                if (valueDoubleBoxDefalut != bundle.getDouble("valueDoubleBoxDefalut")) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueDoubleBoxDefalut != defaultValue) {
+                return false;
+            }
+        }
+
+        // 检查 Boolean 参数的 ======================================================
+        // 如果存在
+        if (bundle.containsKey("valueBoolean")) {
+            if (valueBoolean != bundle.getBoolean("valueBoolean")) {
+                return false;
+            }
+        } else {
+            if (valueBoolean != false) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueBooleanDefalut")) {
+            if (valueBooleanDefalut != bundle.getBoolean("valueBooleanDefalut")) {
+                return false;
+            }
+        } else {
+            if (valueBooleanDefalut != true) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueBooleanBox")) {
+            if (valueBooleanBox == null) {
+                return false;
+            } else {
+                if (!valueBooleanBox.equals(bundle.getBoolean("valueBooleanBox"))) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueBooleanBox != null) {
+                return false;
+            }
+        }
+
+        if (bundle.containsKey("valueBooleanBoxDefalut")) {
+            if (valueBooleanBoxDefalut == null || valueBooleanBoxDefalut == true) {
+                return false;
+            } else {
+                if (valueBooleanBoxDefalut != bundle.getBoolean("valueBooleanBoxDefalut")) {
+                    return false;
+                }
+            }
+        } else {
+            if (valueBooleanBoxDefalut != true) {
                 return false;
             }
         }
