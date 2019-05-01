@@ -3,11 +3,15 @@ Component
 
 **直接拿到 onActivityResult 的酸爽**
 
-<img src="imgs/rxGetData.png" width="630px" height="360px"/>
+<img src="imgs/rxGetData.png" width="640px" height="360px"/>
 
 **网页无缝调用的酸爽**
 
 <img src="imgs/componentDesc.gif" width="250px" height="400px"/>
+
+**属性自动注入的酸爽**
+
+<img src="imgs/fieldInject.png" width="600px" height="360px"/>
 
 这个组件化方案参考了 ARouter,WMRouter,ActivityRouter,CC,DDComponent等开源的组件化框架
 结合了其中的一些优点并且扩展了几个很好用的特性：
