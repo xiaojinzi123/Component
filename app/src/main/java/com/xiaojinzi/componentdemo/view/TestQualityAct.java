@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -92,7 +93,9 @@ public class TestQualityAct extends BaseAct {
     }
 
     private void addTaskPassMsg(String taskName) {
-        resultColor.setText(resultColor.getText().toString() + "\n" + taskName + " 任务测试通过");
+
+        resultColor.setText(taskName + " 任务测试通过" + "\n" + resultColor.getText().toString());
+
     }
 
     private Completable wrapTask(Completable completable) {
@@ -124,7 +127,7 @@ public class TestQualityAct extends BaseAct {
     }
 
     private Completable allSuccess() {
-        /*return Completable.concatArray(
+        return Completable.concatArray(
                 wrapTask(runOnChildThread()).doOnComplete(() -> addTaskPassMsg("runOnChildThread")),
                 wrapTask(runOnChildThread1()).doOnComplete(() -> addTaskPassMsg("runOnChildThread1")),
                 wrapTask(rxGetIntent()).doOnComplete(() -> addTaskPassMsg("rxGetIntent")),
@@ -145,10 +148,7 @@ public class TestQualityAct extends BaseAct {
                 wrapTask(testParameterFloat()).doOnComplete(() -> addTaskPassMsg("testParameterFloat")),
                 wrapTask(testParameterDouble()).doOnComplete(() -> addTaskPassMsg("testParameterDouble")),
                 wrapTask(testParameterBoolean()).doOnComplete(() -> addTaskPassMsg("testParameterBoolean")),
-                wrapTask(testParameterString()).doOnComplete(() -> addTaskPassMsg("testParameterString"))
-
-        );*/
-        return Completable.concatArray(
+                wrapTask(testParameterString()).doOnComplete(() -> addTaskPassMsg("testParameterString")),
                 wrapTask(testFieldInject()).doOnComplete(() -> addTaskPassMsg("testFieldInject"))
         );
     }
@@ -1487,8 +1487,21 @@ public class TestQualityAct extends BaseAct {
                 .putShort("valueShortDefalut", (short) 1)
                 .putShort("valueShortBox", (short) 1)
                 .putShort("valueShortBoxDefalut", (short) 1)
+                .putInt("valueInt", 1)
+                .putInt("valueIntDefalut", 1)
+                .putInt("valueIntBox", 1)
+                .putInt("valueIntBoxDefalut", 1)
+                .putLong("valueLong", 1)
+                .putLong("valueLongDefalut", 1)
+                .putLong("valueLongBox", 1)
+                .putLong("valueLongBoxDefalut", 1)
+                .putBoolean("valueBoolean", true)
+                .putBoolean("valueBooleanDefalut", false)
+                .putBoolean("valueBooleanBox", true)
+                .putBoolean("valueBooleanBoxDefalut", false)
                 .resultCodeMatchCall(RESULT_OK);
 
+        // 测试不传的时候的默认值是否能正常工作
         Completable completable2 = RxRouter
                 .with(mContext)
                 .host(ModuleConfig.Module1.NAME)

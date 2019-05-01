@@ -4,7 +4,7 @@ apply from: "dependencies.gradle"
 
 ext {
     component_group_id = "com.xiaojinzi"
-    isDependMavenOnline = "flase"
+    isDependMavenOnline = "false"
     mavenServerUrl = "http://xiaojinzi.tpddns.cn:18081/repository/maven-releases/"
 }
 
