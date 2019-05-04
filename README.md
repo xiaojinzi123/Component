@@ -36,6 +36,12 @@ RouterGoPlugin
 
 [wiki](https://github.com/xiaojinzi123/Component/wiki/)
 
+为了更好的能交流,这里新建了一个QQ群：870981195
+或者扫描二维码来进群
+
+![](imgs/qq_group1.JPG)
+![](imgs/qq_group2.JPG)
+
 License
 -------
 
