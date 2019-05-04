@@ -127,6 +127,9 @@ public class TestQualityAct extends BaseAct {
     }
 
     private Completable allSuccess() {
+        if (true) {
+            return testPutQueryWithUrl();
+        }
         return Completable.concatArray(
                 wrapTask(runOnChildThread()).doOnComplete(() -> addTaskPassMsg("runOnChildThread")),
                 wrapTask(runOnChildThread1()).doOnComplete(() -> addTaskPassMsg("runOnChildThread1")),
@@ -149,7 +152,8 @@ public class TestQualityAct extends BaseAct {
                 wrapTask(testParameterDouble()).doOnComplete(() -> addTaskPassMsg("testParameterDouble")),
                 wrapTask(testParameterBoolean()).doOnComplete(() -> addTaskPassMsg("testParameterBoolean")),
                 wrapTask(testParameterString()).doOnComplete(() -> addTaskPassMsg("testParameterString")),
-                wrapTask(testFieldInject()).doOnComplete(() -> addTaskPassMsg("testFieldInject"))
+                wrapTask(testFieldInject()).doOnComplete(() -> addTaskPassMsg("testFieldInject")),
+                wrapTask(testPutQueryWithUrl()).doOnComplete(() -> addTaskPassMsg("testPutQueryWithUrl"))
         );
     }
 
@@ -1512,6 +1516,14 @@ public class TestQualityAct extends BaseAct {
 
         return Completable.concatArray(wrapTask(completable1), wrapTask(completable2));
 
+    }
+
+    private Completable testPutQueryWithUrl() {
+        return RxRouter.with(mContext)
+                .url("router://component1/testPutQueryWithUrl?nameFromUrl=hhasjfjdsf")
+                .query("nameFromPutQuery", "ewrfgrdsrdff")
+                .requestCodeRandom()
+                .resultCodeMatchCall(RESULT_OK);
     }
 
     // -------------------------------------------------------- 成功的例子 -------------------------------end

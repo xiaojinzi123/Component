@@ -573,6 +573,13 @@ public class RouterRequest {
                 result = uriBuilder.build();
             } else {
                 result = Uri.parse(builder.url);
+                if (builder.queryMap.size() > 0) {
+                    Uri.Builder uriBuilder = result.buildUpon();
+                    for (Map.Entry<String, String> entry : builder.queryMap.entrySet()) {
+                        uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
+                    }
+                    result = uriBuilder.build();
+                }
             }
             return result;
         }
