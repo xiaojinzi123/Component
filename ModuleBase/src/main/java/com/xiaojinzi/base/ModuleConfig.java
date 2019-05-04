@@ -78,6 +78,7 @@ public class ModuleConfig {
         public static final String TEST_IN_OTHER_MODULE = "testInOtherModule";
         public static final String TEST_INJECT1 = "testInject1";
         public static final String TEST_INJECT2 = "testInject2";
+        public static final String TEST_PUT_QUERY_WITH_URL = "testPutQueryWithUrl";
 
     }
 
