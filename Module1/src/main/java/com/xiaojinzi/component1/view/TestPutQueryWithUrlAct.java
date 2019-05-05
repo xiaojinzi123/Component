@@ -20,7 +20,7 @@ import com.xiaojinzi.component1.R;
         host = ModuleConfig.Module1.NAME,
         path = ModuleConfig.Module1.TEST_PUT_QUERY_WITH_URL
 )
-public class TestPutQueryWithUrl extends BaseAct {
+public class TestPutQueryWithUrlAct extends BaseAct {
 
     @ParameterAnno("nameFromUrl")
     String nameFromUrl;
