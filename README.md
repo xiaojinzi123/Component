@@ -47,8 +47,10 @@ RouterGoPlugin
 为了更好的能交流,这里新建了一个QQ群：870981195
 或者扫描二维码来进群
 
-![](imgs/qq_group1.JPG)
-![](imgs/qq_group2.JPG)
+<div>
+<img src="imgs/qq_group1.JPG" width="260px" height="360px" />
+<img src="imgs/qq_group2.JPG" width="260px" height="360px" />
+</div>
 
 License
 -------
