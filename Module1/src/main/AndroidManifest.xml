@@ -3,7 +3,7 @@
     package="com.xiaojinzi.component1">
 
     <application>
-        <activity android:name=".view.TestPutQueryWithUrl"></activity>
+        <activity android:name=".view.TestPutQueryWithUrlAct"></activity>
         <activity android:name=".view.TestInjectParameterAct1" />
         <activity android:name=".view.TestInjectParameterAct2" />
         <activity android:name=".view.Component1TestDialogAct" />
