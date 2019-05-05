@@ -127,9 +127,9 @@ public class TestQualityAct extends BaseAct {
     }
 
     private Completable allSuccess() {
-        if (true) {
+        /*if (true) {
             return testPutQueryWithUrl();
-        }
+        }*/
         return Completable.concatArray(
                 wrapTask(runOnChildThread()).doOnComplete(() -> addTaskPassMsg("runOnChildThread")),
                 wrapTask(runOnChildThread1()).doOnComplete(() -> addTaskPassMsg("runOnChildThread1")),
