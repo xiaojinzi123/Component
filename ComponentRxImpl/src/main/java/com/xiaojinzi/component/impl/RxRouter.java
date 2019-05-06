@@ -60,7 +60,7 @@ public class RxRouter extends Router {
     public static final String TAG = "RxRouter";
 
     /**
-     * 这个方法父类也有一个静态的,但是父类返回的是 {@link Router.Builder} 而这个返回的是
+     * 这个方法父类也有一个静态的,但是父类返回的是 {@link Navigator} 而这个返回的是
      * {@link RxRouter.Builder}
      *
      * @param context
@@ -71,7 +71,7 @@ public class RxRouter extends Router {
     }
 
     /**
-     * 这个方法父类也有一个静态的,但是父类返回的是 {@link Router.Builder} 而这个返回的是
+     * 这个方法父类也有一个静态的,但是父类返回的是 {@link Navigator} 而这个返回的是
      * {@link RxRouter.Builder}
      *
      * @param fragment
@@ -81,7 +81,7 @@ public class RxRouter extends Router {
         return new Builder(fragment);
     }
 
-    public static class Builder extends Router.Builder {
+    public static class Builder extends Navigator {
 
         private Builder(@NonNull Context context) {
             super(context);
@@ -486,7 +486,7 @@ public class RxRouter extends Router {
                     public void onSuccess(@NonNull final RouterResult routerResult) {
                         super.onSuccess(routerResult);
                         // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
-                        rxFragment.setSingleEmitter(routerResult.getOriginalRequest(), new com.xiaojinzi.component.support.Consumer<ActivityResult>() {
+                        rxFragment.setActivityResultConsumer(routerResult.getOriginalRequest(), new com.xiaojinzi.component.support.Consumer<ActivityResult>() {
                             @Override
                             public void accept(@NonNull ActivityResult result) throws Exception {
                                 Help.removeRequestCode(routerResult.getOriginalRequest());
@@ -509,7 +509,7 @@ public class RxRouter extends Router {
                     @MainThread
                     public void onCancel(@NonNull RouterRequest originalRequest) {
                         super.onCancel(originalRequest);
-                        rxFragment.cancal(originalRequest);
+                        rxFragment.removeActivityResultConsumer(originalRequest);
                         Help.removeRequestCode(originalRequest);
                     }
 

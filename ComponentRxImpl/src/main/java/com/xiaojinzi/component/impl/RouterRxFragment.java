@@ -65,17 +65,13 @@ public final class RouterRxFragment extends Fragment {
 
     }
 
-    public boolean isContainsSingleEmitter(@NonNull RouterRequest request) {
-        return singleEmitterMap.containsKey(request);
-    }
-
-    public void setSingleEmitter(@NonNull RouterRequest request,
-                                 @NonNull Consumer<ActivityResult> consumer) {
+    public void setActivityResultConsumer(@NonNull RouterRequest request,
+                                          @NonNull Consumer<ActivityResult> consumer) {
         // 检测是否重复的在这个方法调用之前被检查掉了
         singleEmitterMap.put(request, consumer);
     }
 
-    public void cancal(@NonNull RouterRequest request) {
+    public void removeActivityResultConsumer(@NonNull RouterRequest request) {
         singleEmitterMap.remove(request);
     }
 
