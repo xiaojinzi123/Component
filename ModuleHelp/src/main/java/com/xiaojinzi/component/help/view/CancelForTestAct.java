@@ -9,6 +9,7 @@ import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.help.R;
 import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.Navigator;
 import com.xiaojinzi.component.support.ParameterSupport;
 
 import java.util.concurrent.TimeUnit;
@@ -50,7 +51,7 @@ public class CancelForTestAct extends AppCompatActivity {
     }
 
     private void start() {
-        Router.Builder builder;
+        Navigator builder;
         Boolean isUseFragment = ParameterSupport.getBoolean(getIntent(), "isUseFragment", false);
         if (isUseFragment) {
             Fragment fragment = new Fragment();
