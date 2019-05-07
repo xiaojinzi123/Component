@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.impl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,14 +10,22 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
+import com.xiaojinzi.component.Call;
+import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.RouterRxFragment;
+import com.xiaojinzi.component.bean.ActivityResult;
+import com.xiaojinzi.component.error.ignore.ActivityResultException;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.impl.interceptor.OpenOnceInterceptor;
 import com.xiaojinzi.component.impl.interceptor.RouterInterceptorCache;
 import com.xiaojinzi.component.support.Action;
+import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.Utils;
@@ -24,13 +33,22 @@ import com.xiaojinzi.component.support.Utils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * 这个类一部分功能应该是 {@link Router} 的构建者对象的功能,但是这里面更多的为导航的功能
  * 写了很多代码,所以名字就不叫 Builder 了
  */
-class Navigator extends RouterRequest.Builder {
+public class Navigator extends RouterRequest.Builder {
+
+    /**
+     * requestCode 如果等于这个值,就表示是随机生成的
+     * 从 1-256 中随机生成一个,如果生成的正好是目前正在用的,会重新生成一个
+     */
+    static final Integer RANDOM_REQUSET_CODE = Integer.MIN_VALUE;
 
     /**
      * 自定义的拦截器列表,为了保证顺序才用一个集合的
@@ -325,7 +343,7 @@ class Navigator extends RouterRequest.Builder {
      *
      * @throws Exception
      */
-    protected void onCheck() {
+    private void onCheck() {
         // 一个 Builder 不能被使用多次
         if (isFinish) {
             throw new NavigationFailException("Builder can't be used multiple times");
@@ -334,6 +352,266 @@ class Navigator extends RouterRequest.Builder {
         if (context == null && fragment == null) {
             throw new NullPointerException("the parameter 'context' or 'fragment' both are null");
         }
+    }
+
+    /**
+     * 检查参数,这个方法和 {@link #onCheck()} 很多项目都一样的,但是没办法
+     * 这里的检查是需要提前检查的
+     * 父类的检查是调用 {@link #navigate(Callback)}方法的时候调用 {@link #onCheck()} 检查的
+     * 这个类是调用 {@link #navigate(Callback)} 方法之前检查的,而且检查的项目虽然基本一样,但是有所差别
+     *
+     * @throws RuntimeException
+     */
+    private void onCheckForResult(boolean isForResult) {
+        if (context == null && fragment == null) {
+            throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router"));
+        }
+        // 如果是使用 Context 的,那么就必须是 FragmentActivity
+        // 这里的 context != null 判断条件不能去掉,不然使用 Fragment 跳转的就过不去了
+        if (context != null && !(Utils.getActivityFromContext(context) instanceof FragmentActivity)) {
+            throw new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity"));
+        }
+        if (isForResult && requestCode == null) {
+            throw new NavigationFailException(new NullPointerException("requestCode must not be null for router"));
+        }
+    }
+
+
+    /**
+     * 拿到 {@link Call} 对象可以延迟路由
+     *
+     * @return {@link Call}
+     */
+    public Call newCall() {
+        return new Call() {
+            @Override
+            public NavigationDisposable execute(@NonNull Callback callBack) {
+                return navigate(callBack);
+            }
+        };
+    }
+
+    /**
+     * 为了拿到 {@link ActivityResult#resultCode}
+     *
+     * @param callback 回调方法
+     * @return
+     */
+    @NonNull
+    public NavigationDisposable navigateForResultCode(@NonNull final BiCallback<Integer> callback) {
+        return navigateForResult(new BiCallback<ActivityResult>() {
+            @Override
+            public void onSuccess(@NonNull RouterResult result, @NonNull ActivityResult activityResult) {
+                callback.onSuccess(result, activityResult.resultCode);
+            }
+
+            @Override
+            public void onError(@NonNull RouterErrorResult errorResult) {
+                callback.onError(errorResult);
+            }
+
+            @Override
+            public void onCancel(@NonNull RouterRequest originalRequest) {
+                callback.onCancel(originalRequest);
+            }
+        });
+    }
+
+    /**
+     * 为了拿到 {@link ActivityResult#resultCode}
+     *
+     * @param callback 回调方法
+     * @return
+     */
+    @NonNull
+    public NavigationDisposable navigateForResultCodeMatch(@NonNull final Callback callback,
+                                                           final int expectedResultCode) {
+        return navigateForResult(new BiCallback<ActivityResult>() {
+            @Override
+            public void onSuccess(@NonNull RouterResult result, @NonNull ActivityResult activityResult) {
+                if (expectedResultCode == activityResult.resultCode) {
+                    callback.onSuccess(result);
+                } else {
+                    callback.onError(new RouterErrorResult(result.getOriginalRequest(), new ActivityResultException("the resultCode is not matching " + expectedResultCode)));
+                }
+            }
+
+            @Override
+            public void onError(@NonNull RouterErrorResult errorResult) {
+                callback.onError(errorResult);
+            }
+
+            @Override
+            public void onCancel(@NonNull RouterRequest originalRequest) {
+                callback.onCancel(originalRequest);
+            }
+        });
+    }
+
+    /**
+     * 为了拿到 {@link Intent}
+     *
+     * @param callback 回调方法
+     * @return
+     */
+    @NonNull
+    public NavigationDisposable navigateForIntentAndResultCodeMatch(@NonNull final BiCallback<Intent> callback,
+                                                                    final int expectedResultCode) {
+        return navigateForResult(new BiCallback<ActivityResult>() {
+            @Override
+            public void onSuccess(@NonNull RouterResult result, @NonNull ActivityResult activityResult) {
+                if (activityResult.data == null) {
+                    callback.onError(new RouterErrorResult(result.getOriginalRequest(), new ActivityResultException("the intent result data is null")));
+                } else if (expectedResultCode != activityResult.resultCode) {
+                    callback.onError(new RouterErrorResult(result.getOriginalRequest(), new ActivityResultException("the resultCode is not matching " + expectedResultCode)));
+                } else {
+                    callback.onSuccess(result, activityResult.data);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull RouterErrorResult errorResult) {
+                callback.onError(errorResult);
+            }
+
+            @Override
+            public void onCancel(@NonNull RouterRequest originalRequest) {
+                callback.onCancel(originalRequest);
+            }
+        });
+    }
+
+
+    /**
+     * 为了拿到 {@link Intent}
+     *
+     * @param callback 回调方法
+     * @return
+     */
+    @NonNull
+    public NavigationDisposable navigateForIntent(@NonNull final BiCallback<Intent> callback) {
+        return navigateForResult(new BiCallback<ActivityResult>() {
+            @Override
+            public void onSuccess(@NonNull RouterResult result, @NonNull ActivityResult activityResult) {
+                if (activityResult.data == null) {
+                    callback.onError(new RouterErrorResult(result.getOriginalRequest(), new ActivityResultException("the intent result data is null")));
+                } else {
+                    callback.onSuccess(result, activityResult.data);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull RouterErrorResult errorResult) {
+                callback.onError(errorResult);
+            }
+
+            @Override
+            public void onCancel(@NonNull RouterRequest originalRequest) {
+                callback.onCancel(originalRequest);
+            }
+        });
+    }
+
+
+    /**
+     * 为了拿 {@link ActivityResult}
+     *
+     * @param callback
+     * @return
+     */
+    @NonNull
+    public NavigationDisposable navigateForResult(@NonNull final BiCallback<ActivityResult> callback) {
+
+        final NavigationDisposable.ProxyNavigationDisposableImpl proxyDisposable =
+                new NavigationDisposable.ProxyNavigationDisposableImpl();
+
+        // 主线程执行
+        Utils.postActionToMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (proxyDisposable.isCanceled()) {
+                    return;
+                }
+                final NavigationDisposable realDisposable = doNavigateForResult(callback);
+                proxyDisposable.setProxy(realDisposable);
+
+            }
+        });
+
+        return proxyDisposable;
+    }
+
+    @NonNull
+    @MainThread
+    public NavigationDisposable doNavigateForResult(@NonNull final BiCallback<ActivityResult> biCallback) {
+        Utils.checkNullPointer(biCallback, "callback");
+        // 声明fragment
+        FragmentManager fm = null;
+        if (context == null) {
+            fm = fragment.getChildFragmentManager();
+        } else {
+            fm = ((FragmentActivity) Utils.getActivityFromContext(context)).getSupportFragmentManager();
+        }
+        // 寻找是否添加过 Fragment
+        RouterRxFragment findRxFragment = (RouterRxFragment) fm.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+        if (findRxFragment == null) {
+            findRxFragment = new RouterRxFragment();
+            fm.beginTransaction()
+                    .add(findRxFragment, ComponentUtil.FRAGMENT_TAG)
+                    .commitAllowingStateLoss();
+        }
+        final RouterRxFragment rxFragment = findRxFragment;
+        // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
+        // 导航拿到 NavigationDisposable 对象
+        // 可能是一个 空实现
+        final NavigationDisposable navigationDisposable = navigate(new CallbackAdapter() {
+            @Override
+            @MainThread
+            public void onSuccess(@NonNull final RouterResult routerResult) {
+                super.onSuccess(routerResult);
+                // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
+                rxFragment.setActivityResultConsumer(routerResult.getOriginalRequest(), new com.xiaojinzi.component.support.Consumer<ActivityResult>() {
+                    @Override
+                    public void accept(@NonNull ActivityResult result) throws Exception {
+                        Help.removeRequestCode(routerResult.getOriginalRequest());
+                        /*if (emitter != null && !emitter.isDisposed()) {
+                            emitter.onSuccess(result);
+                        }*/
+                        biCallback.onSuccess(routerResult, result);
+                    }
+                });
+            }
+
+            @Override
+            @MainThread
+            public void onError(@NonNull RouterErrorResult errorResult) {
+                super.onError(errorResult);
+                Help.removeRequestCode(errorResult.getOriginalRequest());
+                biCallback.onError(errorResult);
+            }
+
+            @Override
+            @MainThread
+            public void onCancel(@NonNull RouterRequest originalRequest) {
+                super.onCancel(originalRequest);
+                rxFragment.removeActivityResultConsumer(originalRequest);
+                Help.removeRequestCode(originalRequest);
+            }
+
+        });
+        // 现在可以检测 requestCode 是否重复,除了 RxRouter 之外的地方使用同一个 requestCode 是可以的
+        // 因为 RxRouter 的 requestCode 是直接配合 RouterRxFragment 使用的
+        // 其他地方是用不到 RouterRxFragment,所以可以重复
+        boolean isExist = Help.isExist(navigationDisposable.originalRequest());
+        if (isExist) { // 如果存在直接取消这个路由任务,然后直接返回错误
+            navigationDisposable.cancel();
+            throw new NavigationFailException("request&result code is " +
+                    navigationDisposable.originalRequest().requestCode + " is exist and " +
+                    "uri is " + navigationDisposable.originalRequest().uri.toString());
+        } else {
+            Help.addRequestCode(navigationDisposable.originalRequest());
+        }
+        return navigationDisposable;
     }
 
     /**
@@ -483,7 +761,7 @@ class Navigator extends RouterRequest.Builder {
     /**
      * 这个拦截器的 Callback 是所有拦截器执行过程中会使用的一个 Callback,这是唯一的一个,每个拦截器对象拿到的此对象都是一样的
      */
-    private static class InterceptorCallback implements RouterInterceptor.Callback, NavigationDisposable {
+    private static class InterceptorCallback implements NavigationDisposable, RouterInterceptor.Callback {
 
         /**
          * 用户的回调
@@ -720,6 +998,108 @@ class Navigator extends RouterRequest.Builder {
                 }
             });
         }
+    }
+
+    /**
+     * 一些帮助方法
+     */
+    private static class Help {
+
+        /**
+         * 和{@link RouterRxFragment} 配套使用
+         */
+        private static Set<String> mRequestCodeSet = new HashSet<>();
+
+        private static Random r = new Random();
+
+        /**
+         * 随机生成一个 requestCode,调用这个方法的 requestCode 是 {@link Navigator#RANDOM_REQUSET_CODE}
+         *
+         * @return [1, 256]
+         */
+        @NonNull
+        public static RouterRequest randomlyGenerateRequestCode(@NonNull RouterRequest request) {
+            Utils.checkNullPointer(request, "request");
+            // 如果不是想要随机生成,就直接返回
+            if (!Navigator.RANDOM_REQUSET_CODE.equals(request.requestCode)) {
+                return request;
+            }
+            // 转化为构建对象
+            RouterRequest.Builder requestBuilder = request.toBuilder();
+            int generateRequestCode = r.nextInt(256) + 1;
+            // 如果生成的这个 requestCode 存在,就重新生成
+            while (isExist(Utils.getActivityFromContext(requestBuilder.context), requestBuilder.fragment, generateRequestCode)) {
+                generateRequestCode = r.nextInt(256) + 1;
+            }
+            return requestBuilder.requestCode(generateRequestCode).build();
+        }
+
+        /**
+         * 检测同一个 Fragment 或者 Activity 发起的多个路由 request 中的 requestCode 是否存在了
+         *
+         * @param request 路由请求对象
+         * @return
+         */
+        public static boolean isExist(@Nullable RouterRequest request) {
+            if (request == null || request.requestCode == null) {
+                return false;
+            }
+            // 这个 Context 关联的 Activity,用requestCode 去拿数据的情况下
+            // Context 必须是一个 Activity 或者 内部的 baseContext 是 Activity
+            Activity act = Utils.getActivityFromContext(request.context);
+            // 这个requestCode不会为空, 用这个方法的地方是必须填写 requestCode 的
+            return isExist(act, request.fragment, request.requestCode);
+        }
+
+        public static boolean isExist(@Nullable Activity act, @Nullable Fragment fragment, @NonNull Integer requestCode) {
+            if (act != null) {
+                return mRequestCodeSet.contains(act.getClass().getName() + requestCode);
+            } else if (fragment != null) {
+                return mRequestCodeSet.contains(fragment.getClass().getName() + requestCode);
+            }
+            return false;
+        }
+
+        /**
+         * 添加一个路由请求的 requestCode
+         *
+         * @param request 路由请求对象
+         */
+        public static void addRequestCode(@Nullable RouterRequest request) {
+            if (request == null || request.requestCode == null) {
+                return;
+            }
+            Integer requestCode = request.requestCode;
+            // 这个 Context 关联的 Activity,用requestCode 去拿数据的情况下
+            // Context 必须是一个 Activity 或者 内部的 baseContext 是 Activity
+            Activity act = Utils.getActivityFromContext(request.context);
+            if (act != null) {
+                mRequestCodeSet.add(act.getClass().getName() + requestCode);
+            } else if (request.fragment != null) {
+                mRequestCodeSet.add(request.fragment.getClass().getName() + requestCode);
+            }
+        }
+
+        /**
+         * 移除一个路由请求的 requestCode
+         *
+         * @param request 路由请求对象
+         */
+        public static void removeRequestCode(@Nullable RouterRequest request) {
+            if (request == null || request.requestCode == null) {
+                return;
+            }
+            Integer requestCode = request.requestCode;
+            // 这个 Context 关联的 Activity,用requestCode 去拿数据的情况下
+            // Context 必须是一个 Activity 或者 内部的 baseContext 是 Activity
+            Activity act = Utils.getActivityFromContext(request.context);
+            if (act != null) {
+                mRequestCodeSet.remove(act.getClass().getName() + requestCode);
+            } else if (request.fragment != null) {
+                mRequestCodeSet.remove(request.fragment.getClass().getName() + requestCode);
+            }
+        }
+
     }
 
 
