@@ -1,13 +1,17 @@
 package com.xiaojinzi.component.support;
 
 import android.support.annotation.AnyThread;
+import android.support.annotation.CallSuper;
+import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.impl.Navigator;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterRequest;
 
 /**
- * 调用 {@link Router.Builder#navigate()}之后拿到的对象,可以在其中拿到请求对象 {@link RouterRequest}
+ * 调用 {@link Navigator#navigate()}之后拿到的对象,可以在其中拿到请求对象 {@link RouterRequest}
  * 和 取消这个路由请求
  * note: 如果发起路由的时候由于参数不合格导致 {@link RouterRequest} 对象构建失败,
  * 这时候会返回一个空实现 {@link Router#emptyNavigationDisposable} 对象,
@@ -34,5 +38,56 @@ public interface NavigationDisposable {
      */
     @AnyThread
     void cancel();
+
+    /**
+     * 是否已经取消
+     *
+     * @return
+     */
+    @AnyThread
+    boolean isCanceled();
+
+    interface Cancellable {
+        void cancel();
+    }
+
+    final class ProxyNavigationDisposableImpl implements NavigationDisposable {
+
+        @Nullable
+        private NavigationDisposable proxyNavigationDisposable;
+
+        private boolean isDisposabled = false;
+
+        @Nullable
+        @Override
+        public RouterRequest originalRequest() {
+            if (proxyNavigationDisposable != null) {
+                return proxyNavigationDisposable.originalRequest();
+            }
+            return null;
+        }
+
+        @CallSuper
+        @Override
+        public void cancel() {
+            if (proxyNavigationDisposable != null) {
+                proxyNavigationDisposable.cancel();
+            }
+            isDisposabled = true;
+        }
+
+        public synchronized void setProxy(@NonNull NavigationDisposable navigationDisposable) {
+            proxyNavigationDisposable = navigationDisposable;
+        }
+
+        @Override
+        public synchronized final boolean isCanceled() {
+            if (proxyNavigationDisposable != null) {
+                return proxyNavigationDisposable.isCanceled();
+            }
+            return isDisposabled;
+        }
+
+    }
 
 }

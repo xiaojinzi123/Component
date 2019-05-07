@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.RouterRxFragment;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.error.ActivityResultException;
 import com.xiaojinzi.component.error.UnknowException;

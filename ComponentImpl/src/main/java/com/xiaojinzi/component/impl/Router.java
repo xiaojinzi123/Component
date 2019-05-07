@@ -46,6 +46,7 @@ public class Router {
      * 这里为什么会有这个类是因为在调用 {@link Navigator#navigate()} 的时候,会返回一个
      */
     public static final NavigationDisposable emptyNavigationDisposable = new NavigationDisposable() {
+
         @Nullable
         @Override
         public RouterRequest originalRequest() {
@@ -56,6 +57,12 @@ public class Router {
         public void cancel() {
             // ignore
         }
+
+        @Override
+        public boolean isCanceled() {
+            return true;
+        }
+
     };
 
     /**
