@@ -1,6 +1,8 @@
 package com.xiaojinzi.component.help.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -10,6 +12,10 @@ import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.help.R;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.Navigator;
+import com.xiaojinzi.component.impl.RouterErrorResult;
+import com.xiaojinzi.component.impl.RouterRequest;
+import com.xiaojinzi.component.impl.RouterResult;
+import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.ParameterSupport;
 
 import java.util.concurrent.TimeUnit;
@@ -51,16 +57,16 @@ public class CancelForTestAct extends AppCompatActivity {
     }
 
     private void start() {
-        Navigator builder;
+        Navigator navigator;
         Boolean isUseFragment = ParameterSupport.getBoolean(getIntent(), "isUseFragment", false);
         if (isUseFragment) {
             Fragment fragment = new Fragment();
             getSupportFragmentManager().beginTransaction().add(fragment, "testFragment").commitNowAllowingStateLoss();
-            builder = Router.with(fragment);
+            navigator = Router.with(fragment);
         } else {
-            builder = Router.with(this);
+            navigator = Router.with(this);
         }
-        builder
+        navigator
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.SHOULD_NOT_APPEAR)
                 .navigate();
