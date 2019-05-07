@@ -30,7 +30,7 @@ import java.util.List;
  * 这个类一部分功能应该是 {@link Router} 的构建者对象的功能,但是这里面更多的为导航的功能
  * 写了很多代码,所以名字就不叫 Builder 了
  */
-public class Navigator extends RouterRequest.Builder {
+class Navigator extends RouterRequest.Builder {
 
     /**
      * 自定义的拦截器列表,为了保证顺序才用一个集合的
