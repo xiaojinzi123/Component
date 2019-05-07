@@ -133,6 +133,15 @@ public class Navigator extends RouterRequest.Builder {
         return (Navigator) super.requestCode(requestCode);
     }
 
+    /**
+     * requestCode 会随机的生成
+     *
+     * @return
+     */
+    public Navigator requestCodeRandom() {
+        return requestCode(RANDOM_REQUSET_CODE);
+    }
+
     @Override
     public Navigator url(@NonNull String url) {
         return (Navigator) super.url(url);
@@ -338,6 +347,11 @@ public class Navigator extends RouterRequest.Builder {
         return (Navigator) super.query(queryName, queryValue);
     }
 
+    @Override
+    public RouterRequest build() {
+        return Help.randomlyGenerateRequestCode(super.build());
+    }
+
     /**
      * 路由前的检查
      *
@@ -529,7 +543,9 @@ public class Navigator extends RouterRequest.Builder {
         Utils.postActionToMainThread(new Runnable() {
             @Override
             public void run() {
+                // 这里这个情况属于没开始就被取消了
                 if (proxyDisposable.isCanceled()) {
+                    RouterUtil.cancelCallback(null, callback);
                     return;
                 }
                 final NavigationDisposable realDisposable = doNavigateForResult(callback);
@@ -596,6 +612,7 @@ public class Navigator extends RouterRequest.Builder {
                 super.onCancel(originalRequest);
                 rxFragment.removeActivityResultConsumer(originalRequest);
                 Help.removeRequestCode(originalRequest);
+                biCallback.onCancel(originalRequest);
             }
 
         });

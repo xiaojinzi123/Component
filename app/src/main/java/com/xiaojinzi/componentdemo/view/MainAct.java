@@ -87,49 +87,12 @@ public class MainAct extends AppCompatActivity {
 
     public void testRouter(View view) {
 
-        /*RxRouter
+        RxRouter
                 .with(this)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_ROUTER)
                 .call()
-                .subscribe();*/
-
-        /*Router
-                .with(this)
-                .host(ModuleConfig.Module1.NAME)
-                .path(ModuleConfig.Module1.TEST)
-                .putString("data", "rxJumpGetData")
-                .requestCode(456)
-                .navigateForIntent(new BiCallback<Intent>() {
-                    @Override
-                    public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
-                        System.out.println("123123");
-                    }
-
-                    @Override
-                    public void onError(@NonNull RouterErrorResult errorResult) {
-                        System.out.println("123123");
-                    }
-
-                    @Override
-                    public void onCancel(@NonNull RouterRequest originalRequest) {
-                        System.out.println("123123");
-                    }
-                });*/
-
-        Router
-                .with(this)
-                .host(ModuleConfig.Module1.NAME)
-                .path(ModuleConfig.Module1.TEST)
-                .putString("data", "rxJumpGetData")
-                .requestCode(456)
-                .newCall()
-                .execute(new CallbackAdapter() {
-                    @Override
-                    public void onEvent(@Nullable RouterResult successResult, @Nullable RouterErrorResult errorResult) {
-                        super.onEvent(successResult, errorResult);
-                    }
-                });
+                .subscribe();
 
     }
 

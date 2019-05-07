@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,6 +17,7 @@ import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
+import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.impl.RouterInterceptor;
@@ -106,9 +106,12 @@ public class TestQualityAct extends BaseAct {
     }
 
     private Completable allCancel() {
+        if (true) {
+            return wrapTask(cancelFromActivityWhenActivityFinish()).doOnComplete(() -> addTaskPassMsg("cancelFromActivityWhenActivityFinish"));
+        }
         return Completable.concatArray(
                 wrapTask(cancelImmediately()).doOnComplete(() -> addTaskPassMsg("cancelImmediately")),
-                wrapTask(cancelImmediatelyWithGetRx()).doOnComplete(() -> addTaskPassMsg("cancelImmediatelyWithGetRx")),
+                wrapTask(cancelImmediately2()).doOnComplete(() -> addTaskPassMsg("cancelImmediately2")),
                 wrapTask(cancelImmediatelyWithGetIntent()).doOnComplete(() -> addTaskPassMsg("cancelImmediatelyWithGetIntent")),
                 wrapTask(cancelFromActivityWhenActivityFinish()).doOnComplete(() -> addTaskPassMsg("cancelFromActivityWhenActivityFinish")),
                 wrapTask(cancelFromFragmentWhenActivityFinish()).doOnComplete(() -> addTaskPassMsg("cancelFromFragmentWhenActivityFinish"))
@@ -301,7 +304,7 @@ public class TestQualityAct extends BaseAct {
         });
     }
 
-    public Completable cancelImmediatelyWithGetRx() {
+    public Completable cancelImmediately2() {
 
         return Completable.create(new CompletableOnSubscribe() {
             @Override
@@ -310,40 +313,46 @@ public class TestQualityAct extends BaseAct {
                     return;
                 }
 
-                RxRouter
+                Router
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "cancelImmediately")
-                        .call()
-                        .doOnDispose(new Action() {
+                        .newCall()
+                        .execute(new CallbackAdapter() {
+
                             @Override
-                            public void run() throws Exception {
-                                if (emitter.isDisposed()) {
-                                    return;
-                                }
-                                emitter.onComplete();
-                            }
-                        })
-                        .doOnSubscribe(disposable -> disposable.dispose())
-                        .subscribe(new Action() {
-                            @Override
-                            public void run() throws Exception {
+                            public void onSuccess(@NonNull RouterResult result) {
+                                super.onSuccess(result);
                                 if (emitter.isDisposed()) {
                                     return;
                                 }
                                 emitter.onError(new NavigationFailException("request should be cancelde"));
                             }
-                        }, new Consumer<Throwable>() {
+
                             @Override
-                            public void accept(Throwable throwable) throws Exception {
+                            public void onError(RouterErrorResult errorResult) {
+                                super.onError(errorResult);
                                 if (emitter.isDisposed()) {
                                     return;
                                 }
-                                emitter.onError(new NavigationFailException("request should be cancelde", throwable));
+                                emitter.onError(new NavigationFailException("request should be cancelde", errorResult.getError()));
+
                             }
-                        });
+
+                            @Override
+                            public void onCancel(@NonNull RouterRequest originalRequest) {
+                                super.onCancel(originalRequest);
+                                if (emitter.isDisposed()) {
+                                    return;
+                                }
+                                emitter.onComplete();
+                            }
+
+                        })
+                        // 立马取消
+                        .cancel();
 
             }
         });
@@ -359,38 +368,35 @@ public class TestQualityAct extends BaseAct {
                     return;
                 }
 
-                Disposable disposable = RxRouter
+                Router
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "cancelImmediately")
-                        .intentCall()
-                        .doOnDispose(new Action() {
+                        .navigateForIntent(new BiCallback<Intent>() {
                             @Override
-                            public void run() throws Exception {
+                            public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
+                                if (!emitter.isDisposed()) {
+                                    emitter.onError(new NavigationFailException("request should be canceled"));
+                                }
+                            }
+
+                            @Override
+                            public void onError(@NonNull RouterErrorResult errorResult) {
+                                if (!emitter.isDisposed()) {
+                                    emitter.onError(new NavigationFailException("request should be canceled", errorResult.getError()));
+                                }
+                            }
+
+                            @Override
+                            public void onCancel(@NonNull RouterRequest originalRequest) {
                                 if (!emitter.isDisposed()) {
                                     emitter.onComplete();
                                 }
                             }
                         })
-                        .subscribe(new Consumer<Intent>() {
-                            @Override
-                            public void accept(Intent intent) throws Exception {
-                                if (!emitter.isDisposed()) {
-                                    emitter.onError(new NavigationFailException("request should be canceled"));
-                                }
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!emitter.isDisposed()) {
-                                    emitter.onError(new NavigationFailException("request should be canceled", throwable));
-                                }
-                            }
-                        });
-                disposable.dispose();
-
+                        .cancel();
             }
         });
 
@@ -405,26 +411,27 @@ public class TestQualityAct extends BaseAct {
                     return;
                 }
 
-                RxRouter.with(mContext)
+                Router.with(mContext)
                         .host(ModuleConfig.Help.NAME)
                         .path(ModuleConfig.Help.CANCEL_FOR_TEST)
                         .requestCodeRandom()
-                        .resultCodeMatchCall(RESULT_OK)
-                        .subscribe(new Action() {
+                        .navigateForResultCodeMatch(new CallbackAdapter() {
                             @Override
-                            public void run() throws Exception {
+                            public void onSuccess(@NonNull RouterResult result) {
+                                super.onSuccess(result);
                                 if (!emitter.isDisposed()) {
                                     emitter.onComplete();
                                 }
                             }
-                        }, new Consumer<Throwable>() {
+
                             @Override
-                            public void accept(Throwable throwable) throws Exception {
+                            public void onError(RouterErrorResult errorResult) {
+                                super.onError(errorResult);
                                 if (!emitter.isDisposed()) {
-                                    emitter.onError(throwable);
+                                    emitter.onError(errorResult.getError());
                                 }
                             }
-                        });
+                        }, RESULT_OK);
 
             }
         });
@@ -439,28 +446,28 @@ public class TestQualityAct extends BaseAct {
                 if (emitter.isDisposed()) {
                     return;
                 }
-
-                RxRouter.with(mContext)
+                Router.with(mContext)
                         .host(ModuleConfig.Help.NAME)
                         .path(ModuleConfig.Help.CANCEL_FOR_TEST)
                         .requestCodeRandom()
                         .putBoolean("isUseFragment", true)
-                        .resultCodeMatchCall(RESULT_OK)
-                        .subscribe(new Action() {
+                        .navigateForResultCodeMatch(new CallbackAdapter() {
                             @Override
-                            public void run() throws Exception {
+                            public void onSuccess(@NonNull RouterResult result) {
+                                super.onSuccess(result);
                                 if (!emitter.isDisposed()) {
                                     emitter.onComplete();
                                 }
                             }
-                        }, new Consumer<Throwable>() {
+
                             @Override
-                            public void accept(Throwable throwable) throws Exception {
+                            public void onError(RouterErrorResult errorResult) {
+                                super.onError(errorResult);
                                 if (!emitter.isDisposed()) {
-                                    emitter.onError(throwable);
+                                    emitter.onError(errorResult.getError());
                                 }
                             }
-                        });
+                        }, RESULT_OK);
 
             }
         });
