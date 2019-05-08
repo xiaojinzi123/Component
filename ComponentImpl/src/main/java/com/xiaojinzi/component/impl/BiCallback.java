@@ -67,17 +67,14 @@ public interface BiCallback<T> extends OnRouterCancel, OnRouterError {
      */
     class BiCallbackAdapter<T> implements BiCallback<T> {
 
-        @CallSuper
         @Override
         public void onSuccess(@NonNull RouterResult result, @NonNull T t) {
         }
 
-        @CallSuper
         @Override
         public void onError(@NonNull RouterErrorResult errorResult) {
         }
 
-        @CallSuper
         @Override
         public void onCancel(@NonNull RouterRequest originalRequest) {
         }
