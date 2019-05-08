@@ -28,7 +28,7 @@ class RouterUtil {
      *
      * @param callback
      */
-    public static void cancelCallback(@Nullable final RouterRequest request, @Nullable final OnCancel callback) {
+    public static void cancelCallback(@Nullable final RouterRequest request, @Nullable final OnRouterCancel callback) {
         if (Utils.isMainThread()) {
             cancelCallbackOnMainThread(request, callback);
         } else {
@@ -46,7 +46,7 @@ class RouterUtil {
      * @param callback
      */
     private static void cancelCallbackOnMainThread(@Nullable RouterRequest request,
-                                                   @Nullable final OnCancel callback) {
+                                                   @Nullable final OnRouterCancel callback) {
         LogUtil.log(Router.TAG, "路由取消：" + request.uri.toString());
         if (callback == null) {
             return;

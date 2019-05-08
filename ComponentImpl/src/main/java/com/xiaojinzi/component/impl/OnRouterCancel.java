@@ -9,7 +9,7 @@ import com.xiaojinzi.component.support.NavigationDisposable;
 /**
  * 被取消了回调接口
  */
-public interface OnCancel {
+public interface OnRouterCancel {
 
     /**
      * 当取消{@link NavigationDisposable#cancel()}的时候调用这个方法

@@ -1,6 +1,5 @@
 package com.xiaojinzi.component.impl;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,15 +8,11 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
-import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.RouterRxFragment;
 import com.xiaojinzi.component.bean.ActivityResult;
-import com.xiaojinzi.component.error.ActivityResultException;
 import com.xiaojinzi.component.error.UnknowException;
+import com.xiaojinzi.component.error.ignore.ActivityResultException;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
@@ -29,9 +24,6 @@ import com.xiaojinzi.component.support.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -349,18 +341,10 @@ public class RxRouter extends Router {
          */
         public Single<Intent> intentCall() {
             return activityResultCall()
-                    .doOnSuccess(new Consumer<ActivityResult>() {
-                        @Override
-                        public void accept(ActivityResult activityResult) throws Exception {
-                            if (activityResult.data == null) {
-                                throw new ActivityResultException("the intent result data is null");
-                            }
-                        }
-                    })
                     .map(new Function<ActivityResult, Intent>() {
                         @Override
                         public Intent apply(ActivityResult activityResult) throws Exception {
-                            return activityResult.data;
+                            return activityResult.intentCheckAndGet();
                         }
                     });
         }
@@ -411,21 +395,10 @@ public class RxRouter extends Router {
          */
         public Single<Intent> intentResultCodeMatchCall(final int expectedResultCode) {
             return activityResultCall()
-                    .doOnSuccess(new Consumer<ActivityResult>() {
-                        @Override
-                        public void accept(ActivityResult activityResult) throws Exception {
-                            if (activityResult.resultCode != expectedResultCode) {
-                                throw new ActivityResultException("the resultCode is not matching " + expectedResultCode);
-                            }
-                            if (activityResult.data == null) {
-                                throw new ActivityResultException("the intent result data is null");
-                            }
-                        }
-                    })
                     .map(new Function<ActivityResult, Intent>() {
                         @Override
                         public Intent apply(ActivityResult activityResult) throws Exception {
-                            return activityResult.data;
+                            return activityResult.intentWithResultCodeCheckAndGet(expectedResultCode);
                         }
                     });
         }
@@ -439,117 +412,41 @@ public class RxRouter extends Router {
             return Single.create(new SingleOnSubscribe<ActivityResult>() {
                 @Override
                 public void subscribe(final SingleEmitter<ActivityResult> emitter) throws Exception {
-                    // 这里要运行在主线程的原因是因为这里要操作 Fragment,必须在主线程
-                    Utils.postActionToMainThread(new Runnable() {
+                    if (emitter.isDisposed()) {
+                        return;
+                    }
+                    final NavigationDisposable navigationDisposable = navigateForResult(new BiCallback.BiCallbackAdapter<ActivityResult>() {
                         @Override
-                        public void run() {
-                            doActivityResultCall(emitter);
+                        public void onSuccess(@NonNull RouterResult result, @NonNull ActivityResult activityResult) {
+                            super.onSuccess(result, activityResult);
+                            if (emitter.isDisposed()) {
+                                return;
+                            }
+                            emitter.onSuccess(activityResult);
+                        }
+
+                        @Override
+                        public void onError(@NonNull RouterErrorResult errorResult) {
+                            super.onError(errorResult);
+                            if (emitter.isDisposed()) {
+                                return;
+                            }
+                            RxHelp.onErrorSolve(emitter, errorResult.getError());
+                        }
+
+                        @Override
+                        public void onCancel(@NonNull RouterRequest originalRequest) {
+                            super.onCancel(originalRequest);
+                        }
+                    });
+                    emitter.setCancellable(new Cancellable() {
+                        @Override
+                        public void cancel() throws Exception {
+                            navigationDisposable.cancel();
                         }
                     });
                 }
             });
-        }
-
-        /**
-         * 拆分出的方法,降低方法复杂度
-         *
-         * @param emitter
-         */
-        private void doActivityResultCall(@NonNull final SingleEmitter<ActivityResult> emitter) {
-            try {
-                if (emitter.isDisposed()) {
-                    return;
-                }
-                // 检查操作
-                onCheck(true);
-                // 声明fragment
-                FragmentManager fm = null;
-                if (context == null) {
-                    fm = fragment.getChildFragmentManager();
-                } else {
-                    fm = ((FragmentActivity) Utils.getActivityFromContext(context)).getSupportFragmentManager();
-                }
-                // 寻找是否添加过 Fragment
-                RouterRxFragment findRxFragment = (RouterRxFragment) fm.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
-                if (findRxFragment == null) {
-                    findRxFragment = new RouterRxFragment();
-                    fm.beginTransaction()
-                            .add(findRxFragment, ComponentUtil.FRAGMENT_TAG)
-                            .commitAllowingStateLoss();
-                }
-                final RouterRxFragment rxFragment = findRxFragment;
-                // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
-                // 导航拿到 NavigationDisposable 对象
-                // 可能是一个 空实现
-                final NavigationDisposable navigationDisposable = navigate(new CallbackAdapter() {
-                    @Override
-                    @MainThread
-                    public void onSuccess(@NonNull final RouterResult routerResult) {
-                        super.onSuccess(routerResult);
-                        // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
-                        rxFragment.setActivityResultConsumer(routerResult.getOriginalRequest(), new com.xiaojinzi.component.support.Consumer<ActivityResult>() {
-                            @Override
-                            public void accept(@NonNull ActivityResult result) throws Exception {
-                                Help.removeRequestCode(routerResult.getOriginalRequest());
-                                if (emitter != null && !emitter.isDisposed()) {
-                                    emitter.onSuccess(result);
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    @MainThread
-                    public void onError(@NonNull RouterErrorResult errorResult) {
-                        super.onError(errorResult);
-                        Help.removeRequestCode(errorResult.getOriginalRequest());
-                        Help.onErrorSolve(emitter, errorResult.getError());
-                    }
-
-                    @Override
-                    @MainThread
-                    public void onCancel(@NonNull RouterRequest originalRequest) {
-                        super.onCancel(originalRequest);
-                        rxFragment.removeActivityResultConsumer(originalRequest);
-                        Help.removeRequestCode(originalRequest);
-                    }
-
-                });
-                // 设置取消
-                emitter.setCancellable(new Cancellable() {
-                    @Override
-                    public void cancel() throws Exception {
-                        navigationDisposable.cancel();
-                    }
-                });
-                // 现在可以检测 requestCode 是否重复,除了 RxRouter 之外的地方使用同一个 requestCode 是可以的
-                // 因为 RxRouter 的 requestCode 是直接配合 RouterRxFragment 使用的
-                // 其他地方是用不到 RouterRxFragment,所以可以重复
-                boolean isExist = Help.isExist(navigationDisposable.originalRequest());
-                if (isExist) { // 如果存在直接取消这个路由任务,然后直接返回错误
-                    navigationDisposable.cancel();
-                    throw new NavigationFailException("request&result code is " +
-                            navigationDisposable.originalRequest().requestCode + " is exist and " +
-                            "uri is " + navigationDisposable.originalRequest().uri.toString());
-                } else {
-                    Help.addRequestCode(navigationDisposable.originalRequest());
-                }
-
-            } catch (Exception e) {
-                LogUtil.log(TAG, "路由失败：" + Utils.getRealMessage(e));
-                Help.onErrorSolve(emitter, e);
-            }
-        }
-
-        /**
-         * 生成路由请求对象
-         * 如果有不满足生成的条件就会抛出异常
-         *
-         * @return
-         */
-        @Override
-        public RouterRequest build() {
-            return Help.randomlyGenerateRequestCode(super.build());
         }
 
         /**
@@ -561,67 +458,37 @@ public class RxRouter extends Router {
             return Completable.create(new CompletableOnSubscribe() {
                 @Override
                 public void subscribe(final CompletableEmitter emitter) throws Exception {
-                    try {
-                        if (emitter.isDisposed()) {
-                            return;
-                        }
-                        // 参数检查
-                        onCheck(false);
-                        // 导航拿到 NavigationDisposable 对象
-                        // 可能是一个 空实现,这些个回调都是回调在主线程的
-                        final NavigationDisposable navigationDisposable = navigate(new CallbackAdapter() {
-                            @Override
-                            @MainThread
-                            public void onSuccess(@NonNull RouterResult routerResult) {
-                                super.onSuccess(routerResult);
-                                if (emitter != null && !emitter.isDisposed()) {
-                                    emitter.onComplete();
-                                }
-                            }
-
-                            @Override
-                            @MainThread
-                            public void onError(@NonNull RouterErrorResult errorResult) {
-                                super.onError(errorResult);
-                                Help.onErrorSolve(emitter, errorResult.getError());
-                            }
-                        });
-                        // 设置取消
-                        emitter.setCancellable(new Cancellable() {
-                            @Override
-                            public void cancel() throws Exception {
-                                navigationDisposable.cancel();
-                            }
-                        });
-
-                    } catch (Exception e) {
-                        LogUtil.log(TAG, "路由失败：" + Utils.getRealMessage(e));
-                        Help.onErrorSolve(emitter, e);
+                    if (emitter.isDisposed()) {
+                        return;
                     }
+                    // 导航拿到 NavigationDisposable 对象
+                    // 可能是一个 空实现,这些个回调都是回调在主线程的
+                    final NavigationDisposable navigationDisposable = navigate(new CallbackAdapter() {
+                        @Override
+                        @MainThread
+                        public void onSuccess(@NonNull RouterResult routerResult) {
+                            super.onSuccess(routerResult);
+                            if (emitter != null && !emitter.isDisposed()) {
+                                emitter.onComplete();
+                            }
+                        }
+
+                        @Override
+                        @MainThread
+                        public void onError(@NonNull RouterErrorResult errorResult) {
+                            super.onError(errorResult);
+                            RxHelp.onErrorSolve(emitter, errorResult.getError());
+                        }
+                    });
+                    // 设置取消
+                    emitter.setCancellable(new Cancellable() {
+                        @Override
+                        public void cancel() throws Exception {
+                            navigationDisposable.cancel();
+                        }
+                    });
                 }
             });
-        }
-
-        /**
-         * 检查参数,这个方法和父类的 {@link #onCheck()} 很多项目都一样的,但是没办法
-         * 这里的检查是需要提前检查的
-         * 父类的检查是调用 {@link #navigate(Callback)}方法的时候调用 {@link #onCheck()} 检查的
-         * 这个类是调用 {@link #navigate(Callback)} 方法之前检查的,而且检查的项目虽然基本一样,但是有所差别
-         *
-         * @throws RuntimeException
-         */
-        private void onCheck(boolean isForResult) {
-            if (context == null && fragment == null) {
-                throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router"));
-            }
-            // 如果是使用 Context 的,那么就必须是 FragmentActivity
-            // 这里的 context != null 判断条件不能去掉,不然使用 Fragment 跳转的就过不去了
-            if (context != null && !(Utils.getActivityFromContext(context) instanceof FragmentActivity)) {
-                throw new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity"));
-            }
-            if (isForResult && requestCode == null) {
-                throw new NavigationFailException(new NullPointerException("requestCode must not be null for router"));
-            }
         }
 
     }
@@ -629,102 +496,7 @@ public class RxRouter extends Router {
     /**
      * 一些帮助方法
      */
-    private static class Help {
-
-        /**
-         * 和{@link RouterRxFragment} 配套使用
-         */
-        private static Set<String> mRequestCodeSet = new HashSet<>();
-
-        private static Random r = new Random();
-
-        /**
-         * 随机生成一个 requestCode,调用这个方法的 requestCode 是 {@link RxRouter#RANDOM_REQUSET_CODE}
-         *
-         * @return [1, 256]
-         */
-        @NonNull
-        public static RouterRequest randomlyGenerateRequestCode(@NonNull RouterRequest request) {
-            Utils.checkNullPointer(request, "request");
-            // 如果不是想要随机生成,就直接返回
-            if (!RxRouter.RANDOM_REQUSET_CODE.equals(request.requestCode)) {
-                return request;
-            }
-            // 转化为构建对象
-            RouterRequest.Builder requestBuilder = request.toBuilder();
-            int generateRequestCode = r.nextInt(256) + 1;
-            // 如果生成的这个 requestCode 存在,就重新生成
-            while (isExist(Utils.getActivityFromContext(requestBuilder.context), requestBuilder.fragment, generateRequestCode)) {
-                generateRequestCode = r.nextInt(256) + 1;
-            }
-            return requestBuilder.requestCode(generateRequestCode).build();
-        }
-
-        /**
-         * 检测同一个 Fragment 或者 Activity 发起的多个路由 request 中的 requestCode 是否存在了
-         *
-         * @param request 路由请求对象
-         * @return
-         */
-        public static boolean isExist(@Nullable RouterRequest request) {
-            if (request == null || request.requestCode == null) {
-                return false;
-            }
-            // 这个 Context 关联的 Activity,用requestCode 去拿数据的情况下
-            // Context 必须是一个 Activity 或者 内部的 baseContext 是 Activity
-            Activity act = Utils.getActivityFromContext(request.context);
-            // 这个requestCode不会为空, 用这个方法的地方是必须填写 requestCode 的
-            return isExist(act, request.fragment, request.requestCode);
-        }
-
-        public static boolean isExist(@Nullable Activity act, @Nullable Fragment fragment, @NonNull Integer requestCode) {
-            if (act != null) {
-                return mRequestCodeSet.contains(act.getClass().getName() + requestCode);
-            } else if (fragment != null) {
-                return mRequestCodeSet.contains(fragment.getClass().getName() + requestCode);
-            }
-            return false;
-        }
-
-        /**
-         * 添加一个路由请求的 requestCode
-         *
-         * @param request 路由请求对象
-         */
-        public static void addRequestCode(@Nullable RouterRequest request) {
-            if (request == null || request.requestCode == null) {
-                return;
-            }
-            Integer requestCode = request.requestCode;
-            // 这个 Context 关联的 Activity,用requestCode 去拿数据的情况下
-            // Context 必须是一个 Activity 或者 内部的 baseContext 是 Activity
-            Activity act = Utils.getActivityFromContext(request.context);
-            if (act != null) {
-                mRequestCodeSet.add(act.getClass().getName() + requestCode);
-            } else if (request.fragment != null) {
-                mRequestCodeSet.add(request.fragment.getClass().getName() + requestCode);
-            }
-        }
-
-        /**
-         * 移除一个路由请求的 requestCode
-         *
-         * @param request 路由请求对象
-         */
-        public static void removeRequestCode(@Nullable RouterRequest request) {
-            if (request == null || request.requestCode == null) {
-                return;
-            }
-            Integer requestCode = request.requestCode;
-            // 这个 Context 关联的 Activity,用requestCode 去拿数据的情况下
-            // Context 必须是一个 Activity 或者 内部的 baseContext 是 Activity
-            Activity act = Utils.getActivityFromContext(request.context);
-            if (act != null) {
-                mRequestCodeSet.remove(act.getClass().getName() + requestCode);
-            } else if (request.fragment != null) {
-                mRequestCodeSet.remove(request.fragment.getClass().getName() + requestCode);
-            }
-        }
+    private static class RxHelp {
 
         /**
          * 错误处理

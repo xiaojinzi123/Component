@@ -119,6 +119,9 @@ public class TestQualityAct extends BaseAct {
     }
 
     private Completable allFailure() {
+        if (true) {
+            return wrapTask(useSameRequestCode()).doOnComplete(() -> addTaskPassMsg("useSameRequestCode"));
+        }
         return Completable.concatArray(
                 wrapTask(withoutHostOrPath1()).doOnComplete(() -> addTaskPassMsg("withoutHostOrPath1")),
                 wrapTask(withoutHostOrPath2()).doOnComplete(() -> addTaskPassMsg("withoutHostOrPath2")),
@@ -319,8 +322,7 @@ public class TestQualityAct extends BaseAct {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "cancelImmediately")
-                        .newCall()
-                        .execute(new CallbackAdapter() {
+                        .navigate(new CallbackAdapter() {
 
                             @Override
                             public void onSuccess(@NonNull RouterResult result) {
@@ -594,7 +596,6 @@ public class TestQualityAct extends BaseAct {
                                                 chain.callback().onError(new Exception(throwable));
                                             }
                                         });
-
                             }
                         })
                         .query("data", "useSameRequestCode")
@@ -619,6 +620,7 @@ public class TestQualityAct extends BaseAct {
 
             }
         });
+
     }
 
     public Completable getIntentWithoutRequestCode() {
