@@ -136,10 +136,19 @@ public class TestQualityAct extends BaseAct {
         if (true) {
             return Completable.concatArray(
                     wrapTask(testNavigate()).doOnComplete(() -> addTaskPassMsg("testNavigate")),
+                    wrapTask(testNavigatex()).doOnComplete(() -> addTaskPassMsg("testNavigatex")),
+                    wrapTask(testNavigatexx()).doOnComplete(() -> addTaskPassMsg("testNavigatexx")),
+                    wrapTask(testNavigatexxx()).doOnComplete(() -> addTaskPassMsg("testNavigatexxx")),
+                    wrapTask(testGetActivityResult()).doOnComplete(() -> addTaskPassMsg("testGetActivityResult")),
+                    wrapTask(testGetActivityResultx()).doOnComplete(() -> addTaskPassMsg("testGetActivityResultx")),
+                    wrapTask(testGetActivityResultxx()).doOnComplete(() -> addTaskPassMsg("testGetActivityResultxx")),
                     wrapTask(testGetIntent()).doOnComplete(() -> addTaskPassMsg("testGetIntent")),
                     wrapTask(testGetIntentx()).doOnComplete(() -> addTaskPassMsg("testGetIntentx")),
                     wrapTask(testGetIntent1()).doOnComplete(() -> addTaskPassMsg("testGetIntent1")),
-                    wrapTask(testGetIntent1x()).doOnComplete(() -> addTaskPassMsg("testGetIntent1x"))
+                    wrapTask(testGetIntent1x()).doOnComplete(() -> addTaskPassMsg("testGetIntent1x")),
+                    wrapTask(testGetResultCode()).doOnComplete(() -> addTaskPassMsg("testGetResultCode")),
+                    wrapTask(testResultCodeMatch()).doOnComplete(() -> addTaskPassMsg("testResultCodeMatch")),
+                    wrapTask(testResultCodeMatchx()).doOnComplete(() -> addTaskPassMsg("testResultCodeMatchx"))
             );
         }
         return Completable.concatArray(
@@ -696,8 +705,8 @@ public class TestQualityAct extends BaseAct {
 
     // 成功要测试的功能点如下
     // 所有成功的都需要在主线程和子线程跑
-    // 1.
-    //
+    // 1.Router中的各个跳转方式都测一遍,失败成功都要
+    // 2.Router中的拦截器测试一遍
 
     // -------------------------------------------------------- 成功的例子 -------------------------------start
 
@@ -775,6 +784,11 @@ public class TestQualityAct extends BaseAct {
 
     }
 
+    /**
+     * 基本跳转
+     *
+     * @return
+     */
     public Completable testNavigate() {
         return testWrap(new TestBack() {
             @Override
@@ -782,14 +796,132 @@ public class TestQualityAct extends BaseAct {
                 Router.with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
-                        .requestCode(123)
-                        .putString("data", "rxGetIntent")
+                        .putString("data", "testNavigate")
                         .navigate(new CallbackSuccessIsSuccessful(emitter));
             }
         });
 
     }
 
+    /**
+     * 使用 Fragment 跳转
+     *
+     * @return
+     */
+    public Completable testNavigatex() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(innerFragment)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .putString("data", "testNavigatex")
+                        .navigate(new CallbackSuccessIsSuccessful(emitter));
+            }
+        });
+
+    }
+
+    /**
+     * 在子线程跑
+     *
+     * @return
+     */
+    public Completable testNavigatexx() {
+        return testWrapWithChildThread(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .putString("data", "testNavigatexx")
+                        .navigate(new CallbackSuccessIsSuccessful(emitter));
+            }
+        });
+
+    }
+
+    /**
+     * 在子线程用Fragment跑
+     *
+     * @return
+     */
+    public Completable testNavigatexxx() {
+        return testWrapWithChildThread(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(innerFragment)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .putString("data", "testNavigatexx")
+                        .navigate(new CallbackSuccessIsSuccessful(emitter));
+            }
+        });
+
+    }
+
+    /**
+     * 测试拿 Activity Result
+     *
+     * @return
+     */
+    public Completable testGetActivityResult() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "testGetIntent")
+                        .navigateForResult(new BiCallbackSuccessIsSuccessful(emitter));
+            }
+        });
+    }
+
+    /**
+     * 子线程中拿 Activity Result
+     *
+     * @return
+     */
+    public Completable testGetActivityResultx() {
+        return testWrapWithChildThread(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "testGetIntentx")
+                        .navigateForResult(new BiCallbackSuccessIsSuccessful(emitter));
+            }
+        });
+    }
+
+    /**
+     * 子线程中用fragment拿 Activity Result
+     *
+     * @return
+     */
+    public Completable testGetActivityResultxx() {
+        return testWrapWithChildThread(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(innerFragment)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "testGetIntentxx")
+                        .navigateForResult(new BiCallbackSuccessIsSuccessful(emitter));
+            }
+        });
+    }
+
+    /**
+     * 测试拿 Intent
+     *
+     * @return
+     */
     public Completable testGetIntent() {
         return testWrap(new TestBack() {
             @Override
@@ -798,12 +930,17 @@ public class TestQualityAct extends BaseAct {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
-                        .putString("data", "rxGetIntent")
+                        .putString("data", "testGetIntent")
                         .navigateForIntent(new BiCallbackSuccessIsSuccessful(emitter));
             }
         });
     }
 
+    /**
+     * 测试拿不到 Intent
+     *
+     * @return
+     */
     public Completable testGetIntentx() {
         return testWrap(new TestBack() {
             @Override
@@ -812,14 +949,18 @@ public class TestQualityAct extends BaseAct {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
-                        .putString("data", "rxGetIntent")
+                        .putString("data", "testGetIntentx")
                         .putBoolean("isReturnIntent", false)
-                        .putBoolean("isReturnError", true)
                         .navigateForIntent(new BiCallbackErrorIsSuccessful(emitter));
             }
         });
     }
 
+    /**
+     * 测试拿 Intent 并且匹配 resultCode
+     *
+     * @return
+     */
     public Completable testGetIntent1() {
         return testWrap(new TestBack() {
             @Override
@@ -834,6 +975,11 @@ public class TestQualityAct extends BaseAct {
         });
     }
 
+    /**
+     * 测试拿 Intent 并且匹配 resultCode 不成功
+     *
+     * @return
+     */
     public Completable testGetIntent1x() {
         return testWrap(new TestBack() {
             @Override
@@ -845,6 +991,49 @@ public class TestQualityAct extends BaseAct {
                         .putBoolean("isReturnError", true)
                         .putString("data", "rxGetIntent")
                         .navigateForIntentAndResultCodeMatch(new BiCallbackErrorIsSuccessful(emitter), RESULT_OK);
+            }
+        });
+    }
+
+    public Completable testGetResultCode() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "rxGetIntent")
+                        .navigateForResultCode(new BiCallbackSuccessIsSuccessful(emitter));
+            }
+        });
+    }
+
+    public Completable testResultCodeMatch() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "rxGetIntent")
+                        .navigateForResultCodeMatch(new CallbackSuccessIsSuccessful(emitter), RESULT_OK);
+            }
+        });
+    }
+
+    public Completable testResultCodeMatchx() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putBoolean("isReturnError", true)
+                        .putString("data", "rxGetIntent")
+                        .navigateForResultCodeMatch(new CallbackErrorIsSuccessful(emitter), RESULT_OK);
             }
         });
     }
@@ -1659,6 +1848,41 @@ public class TestQualityAct extends BaseAct {
 
     }
 
+    private class CallbackErrorIsSuccessful extends CallbackAdapter {
+
+        @NonNull
+        private CompletableEmitter emitter;
+
+        public CallbackErrorIsSuccessful(CompletableEmitter emitter) {
+            this.emitter = emitter;
+        }
+
+        @Override
+        public void onSuccess(@NonNull RouterResult result) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(new NavigationFailException("request should be error"));
+        }
+
+        @Override
+        public void onError(@NonNull RouterErrorResult errorResult) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onComplete();
+        }
+
+        @Override
+        public void onCancel(@NonNull RouterRequest request) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(new NavigationFailException("request should be error"));
+        }
+
+    }
+
     private class BiCallbackSuccessIsSuccessful<T> extends BiCallback.BiCallbackAdapter<T> {
 
         @NonNull
@@ -1752,7 +1976,6 @@ public class TestQualityAct extends BaseAct {
                 return;
             }
             emitter.onComplete();
-
         }
 
         @Override
@@ -1760,7 +1983,7 @@ public class TestQualityAct extends BaseAct {
             if (emitter.isDisposed()) {
                 return;
             }
-            emitter.onError(new NavigationFailException("request should be onCancel"));
+            emitter.onError(new NavigationFailException("request should be error"));
         }
 
     }
