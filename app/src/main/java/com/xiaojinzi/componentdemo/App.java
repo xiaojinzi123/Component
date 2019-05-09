@@ -8,6 +8,9 @@ import com.xiaojinzi.component.ComponentConfig;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
+import io.reactivex.Single;
+import io.reactivex.functions.Function;
+
 public class App extends Application {
 
     @NonNull

@@ -36,15 +36,28 @@ public class BaseAct extends AppCompatActivity {
         }
     };
 
+    private boolean isReturnError;
+    private boolean isReturnIntent;
+
     @Override
     @CallSuper
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        isReturnIntent = isReturnIntent();
+        isReturnError = isReturnError();
         Boolean isReturnAuto = isReturn();
         if (isReturnAuto) {
             h.sendEmptyMessageDelayed(0, 1000);
         }
+    }
+
+    protected boolean isReturnIntent() {
+        return ParameterSupport.getBoolean(getIntent(), "isReturnIntent", true);
+    }
+
+    protected boolean isReturnError() {
+        return ParameterSupport.getBoolean(getIntent(), "isReturnError", false);
     }
 
     protected boolean isReturn() {
@@ -54,7 +67,14 @@ public class BaseAct extends AppCompatActivity {
     protected void returnData() {
         Intent intent = new Intent();
         intent.putExtra("data", "this is the return data，requestData");
-        setResult(RESULT_OK, intent);
+        if (!isReturnIntent) {
+            intent = null;
+        }
+        if (isReturnError) {
+            setResult(RESULT_ERROR, intent);
+        }else {
+            setResult(RESULT_OK, intent);
+        }
         finish();
     }
 

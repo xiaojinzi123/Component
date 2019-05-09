@@ -2,7 +2,7 @@ package com.xiaojinzi.component.support;
 
 import android.support.annotation.NonNull;
 
-import com.xiaojinzi.component.error.ActivityResultException;
+import com.xiaojinzi.component.error.ignore.ActivityResultException;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.error.RxJavaException;

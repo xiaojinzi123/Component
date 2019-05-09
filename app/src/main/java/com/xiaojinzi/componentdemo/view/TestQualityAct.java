@@ -17,6 +17,8 @@ import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
+import com.xiaojinzi.component.impl.BiCallback;
+import com.xiaojinzi.component.impl.Callback;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.impl.RouterInterceptor;
@@ -92,7 +94,9 @@ public class TestQualityAct extends BaseAct {
     }
 
     private void addTaskPassMsg(String taskName) {
-        resultColor.setText(resultColor.getText().toString() + "\n" + taskName + " 任务测试通过");
+
+        resultColor.setText(taskName + " 任务测试通过" + "\n" + resultColor.getText().toString());
+
     }
 
     private Completable wrapTask(Completable completable) {
@@ -103,16 +107,21 @@ public class TestQualityAct extends BaseAct {
     }
 
     private Completable allCancel() {
+        if (true) {
+            return wrapTask(cancelFromActivityWhenActivityFinish()).doOnComplete(() -> addTaskPassMsg("cancelFromActivityWhenActivityFinish"));
+        }
         return Completable.concatArray(
                 wrapTask(cancelImmediately()).doOnComplete(() -> addTaskPassMsg("cancelImmediately")),
-                wrapTask(cancelImmediatelyWithGetRx()).doOnComplete(() -> addTaskPassMsg("cancelImmediatelyWithGetRx")),
-                wrapTask(cancelImmediatelyWithGetIntent()).doOnComplete(() -> addTaskPassMsg("cancelImmediatelyWithGetIntent")),
+                wrapTask(cancelImmediately2()).doOnComplete(() -> addTaskPassMsg("cancelImmediately2")),
                 wrapTask(cancelFromActivityWhenActivityFinish()).doOnComplete(() -> addTaskPassMsg("cancelFromActivityWhenActivityFinish")),
                 wrapTask(cancelFromFragmentWhenActivityFinish()).doOnComplete(() -> addTaskPassMsg("cancelFromFragmentWhenActivityFinish"))
         );
     }
 
     private Completable allFailure() {
+        if (true) {
+            return wrapTask(useSameRequestCode()).doOnComplete(() -> addTaskPassMsg("useSameRequestCode"));
+        }
         return Completable.concatArray(
                 wrapTask(withoutHostOrPath1()).doOnComplete(() -> addTaskPassMsg("withoutHostOrPath1")),
                 wrapTask(withoutHostOrPath2()).doOnComplete(() -> addTaskPassMsg("withoutHostOrPath2")),
@@ -124,6 +133,24 @@ public class TestQualityAct extends BaseAct {
     }
 
     private Completable allSuccess() {
+        if (true) {
+            return Completable.concatArray(
+                    wrapTask(testNavigate()).doOnComplete(() -> addTaskPassMsg("testNavigate")),
+                    wrapTask(testNavigatex()).doOnComplete(() -> addTaskPassMsg("testNavigatex")),
+                    wrapTask(testNavigatexx()).doOnComplete(() -> addTaskPassMsg("testNavigatexx")),
+                    wrapTask(testNavigatexxx()).doOnComplete(() -> addTaskPassMsg("testNavigatexxx")),
+                    wrapTask(testGetActivityResult()).doOnComplete(() -> addTaskPassMsg("testGetActivityResult")),
+                    wrapTask(testGetActivityResultx()).doOnComplete(() -> addTaskPassMsg("testGetActivityResultx")),
+                    wrapTask(testGetActivityResultxx()).doOnComplete(() -> addTaskPassMsg("testGetActivityResultxx")),
+                    wrapTask(testGetIntent()).doOnComplete(() -> addTaskPassMsg("testGetIntent")),
+                    wrapTask(testGetIntentx()).doOnComplete(() -> addTaskPassMsg("testGetIntentx")),
+                    wrapTask(testGetIntent1()).doOnComplete(() -> addTaskPassMsg("testGetIntent1")),
+                    wrapTask(testGetIntent1x()).doOnComplete(() -> addTaskPassMsg("testGetIntent1x")),
+                    wrapTask(testGetResultCode()).doOnComplete(() -> addTaskPassMsg("testGetResultCode")),
+                    wrapTask(testResultCodeMatch()).doOnComplete(() -> addTaskPassMsg("testResultCodeMatch")),
+                    wrapTask(testResultCodeMatchx()).doOnComplete(() -> addTaskPassMsg("testResultCodeMatchx"))
+            );
+        }
         return Completable.concatArray(
                 wrapTask(runOnChildThread()).doOnComplete(() -> addTaskPassMsg("runOnChildThread")),
                 wrapTask(runOnChildThread1()).doOnComplete(() -> addTaskPassMsg("runOnChildThread1")),
@@ -137,7 +164,17 @@ public class TestQualityAct extends BaseAct {
                 wrapTask(testNormalJumpUseFragment()).doOnComplete(() -> addTaskPassMsg("testNormalJumpUseFragment")),
                 wrapTask(testOpenurl()).doOnComplete(() -> addTaskPassMsg("testOpenurl")),
                 wrapTask(testPassQuery()).doOnComplete(() -> addTaskPassMsg("testPassQuery")),
-                wrapTask(testModifyByInterceptor()).doOnComplete(() -> addTaskPassMsg("testModifyByInterceptor"))
+                wrapTask(testModifyByInterceptor()).doOnComplete(() -> addTaskPassMsg("testModifyByInterceptor")),
+                wrapTask(testParameterByte()).doOnComplete(() -> addTaskPassMsg("testParameterByte")),
+                wrapTask(testParameterShort()).doOnComplete(() -> addTaskPassMsg("testParameterShort")),
+                wrapTask(testParameterInt()).doOnComplete(() -> addTaskPassMsg("testParameterInt")),
+                wrapTask(testParameterLong()).doOnComplete(() -> addTaskPassMsg("testParameterLong")),
+                wrapTask(testParameterFloat()).doOnComplete(() -> addTaskPassMsg("testParameterFloat")),
+                wrapTask(testParameterDouble()).doOnComplete(() -> addTaskPassMsg("testParameterDouble")),
+                wrapTask(testParameterBoolean()).doOnComplete(() -> addTaskPassMsg("testParameterBoolean")),
+                wrapTask(testParameterString()).doOnComplete(() -> addTaskPassMsg("testParameterString")),
+                wrapTask(testFieldInject()).doOnComplete(() -> addTaskPassMsg("testFieldInject")),
+                wrapTask(testPutQueryWithUrl()).doOnComplete(() -> addTaskPassMsg("testPutQueryWithUrl"))
         );
     }
 
@@ -194,11 +231,9 @@ public class TestQualityAct extends BaseAct {
     public void testAllSuccess(View v) {
 
         compositeDisposable.clear();
-
         Completable observable = Completable.concatArray(
                 wrapTask(allSuccess()).doOnComplete(() -> addTaskPassMsg("allSuccess"))
         );
-
         compositeDisposable.add(observable
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
@@ -224,7 +259,6 @@ public class TestQualityAct extends BaseAct {
                 wrapTask(allCancel()).doOnComplete(() -> addTaskPassMsg("allCancel")),
                 wrapTask(allFailure()).doOnComplete(() -> addTaskPassMsg("allFailure")),
                 wrapTask(allSuccess()).doOnComplete(() -> addTaskPassMsg("allSuccess"))
-
         );
 
         observable
@@ -247,140 +281,93 @@ public class TestQualityAct extends BaseAct {
     // -------------------------------------------------------- 失败的例子 -------------------------------start
 
     public Completable cancelImmediately() {
-        return Completable.create(new CompletableOnSubscribe() {
+        return testWrap(new TestBack() {
             @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                if (emitter.isDisposed()) {
-                    return;
-                }
-                NavigationDisposable navigationDisposable = Router
+            public void run(CompletableEmitter emitter) {
+                Router
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
-                        .query("data", "cancelImmediately")
-                        .navigate(new CallbackAdapter() {
-                            @Override
-                            public void onSuccess(@NonNull RouterResult result) {
-                                if (emitter.isDisposed()) {
-                                    return;
-                                }
-                                emitter.onError(new NavigationFailException("request should be canceled"));
-                            }
-
-                            @Override
-                            public void onError(@NonNull RouterErrorResult errorResult) {
-                                if (emitter.isDisposed()) {
-                                    return;
-                                }
-                                emitter.onError(errorResult.getError());
-                            }
-
-                            @Override
-                            public void onCancel(@NonNull RouterRequest request) {
-                                if (emitter.isDisposed()) {
-                                    return;
-                                }
-                                emitter.onComplete();
-                            }
-                        });
-                navigationDisposable.cancel();
+                        .putString("data", "cancelImmediately")
+                        .navigate(new CallbackCancelIsSuccessful(emitter))
+                        .cancel();
             }
         });
     }
 
-    public Completable cancelImmediatelyWithGetRx() {
-
-        return Completable.create(new CompletableOnSubscribe() {
+    public Completable cancelImmediately1() {
+        return testWrap(new TestBack() {
             @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                if (emitter.isDisposed()) {
-                    return;
-                }
-
-                RxRouter
+            public void run(CompletableEmitter emitter) {
+                Router
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
-                        .requestCode(123)
-                        .putString("data", "cancelImmediately")
-                        .call()
-                        .doOnDispose(new Action() {
-                            @Override
-                            public void run() throws Exception {
-                                if (emitter.isDisposed()) {
-                                    return;
-                                }
-                                emitter.onComplete();
-                            }
-                        })
-                        .doOnSubscribe(disposable -> disposable.dispose())
-                        .subscribe(new Action() {
-                            @Override
-                            public void run() throws Exception {
-                                if (emitter.isDisposed()) {
-                                    return;
-                                }
-                                emitter.onError(new NavigationFailException("request should be cancelde"));
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (emitter.isDisposed()) {
-                                    return;
-                                }
-                                emitter.onError(new NavigationFailException("request should be cancelde", throwable));
-                            }
-                        });
-
+                        .putString("data", "cancelImmediately1")
+                        .navigateForResult(new BiCallbackCancelIsSuccessful(emitter))
+                        .cancel();
             }
         });
-
     }
 
-    public Completable cancelImmediatelyWithGetIntent() {
-
-        return Completable.create(new CompletableOnSubscribe() {
+    public Completable cancelImmediately2() {
+        return testWrap(new TestBack() {
             @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                if (emitter.isDisposed()) {
-                    return;
-                }
-
-                Disposable disposable = RxRouter
+            public void run(CompletableEmitter emitter) {
+                Router
                         .with(mContext)
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
-                        .requestCode(123)
-                        .putString("data", "cancelImmediately")
-                        .intentCall()
-                        .doOnDispose(new Action() {
-                            @Override
-                            public void run() throws Exception {
-                                if (!emitter.isDisposed()) {
-                                    emitter.onComplete();
-                                }
-                            }
-                        })
-                        .subscribe(new Consumer<Intent>() {
-                            @Override
-                            public void accept(Intent intent) throws Exception {
-                                if (!emitter.isDisposed()) {
-                                    emitter.onError(new NavigationFailException("request should be canceled"));
-                                }
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!emitter.isDisposed()) {
-                                    emitter.onError(new NavigationFailException("request should be canceled", throwable));
-                                }
-                            }
-                        });
-                disposable.dispose();
-
+                        .putString("data", "cancelImmediately1")
+                        .navigateForResultCode(new BiCallbackCancelIsSuccessful(emitter))
+                        .cancel();
             }
         });
+    }
 
+    public Completable cancelImmediately3() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router
+                        .with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .putString("data", "cancelImmediately1")
+                        .navigateForIntent(new BiCallbackCancelIsSuccessful(emitter))
+                        .cancel();
+            }
+        });
+    }
+
+    public Completable cancelImmediately4() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router
+                        .with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .putString("data", "cancelImmediately1")
+                        .navigateForIntentAndResultCodeMatch(new BiCallbackCancelIsSuccessful(emitter), RESULT_OK)
+                        .cancel();
+            }
+        });
+    }
+
+    public Completable cancelImmediately5() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router
+                        .with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .putString("data", "cancelImmediately1")
+                        .navigateForResultCodeMatch(new CallbackCancelIsSuccessful(emitter), RESULT_OK)
+                        .cancel();
+            }
+        });
     }
 
     public Completable cancelFromActivityWhenActivityFinish() {
@@ -392,26 +379,27 @@ public class TestQualityAct extends BaseAct {
                     return;
                 }
 
-                RxRouter.with(mContext)
+                Router.with(mContext)
                         .host(ModuleConfig.Help.NAME)
                         .path(ModuleConfig.Help.CANCEL_FOR_TEST)
                         .requestCodeRandom()
-                        .resultCodeMatchCall(RESULT_OK)
-                        .subscribe(new Action() {
+                        .navigateForResultCodeMatch(new CallbackAdapter() {
                             @Override
-                            public void run() throws Exception {
+                            public void onSuccess(@NonNull RouterResult result) {
+                                super.onSuccess(result);
                                 if (!emitter.isDisposed()) {
                                     emitter.onComplete();
                                 }
                             }
-                        }, new Consumer<Throwable>() {
+
                             @Override
-                            public void accept(Throwable throwable) throws Exception {
+                            public void onError(RouterErrorResult errorResult) {
+                                super.onError(errorResult);
                                 if (!emitter.isDisposed()) {
-                                    emitter.onError(throwable);
+                                    emitter.onError(errorResult.getError());
                                 }
                             }
-                        });
+                        }, RESULT_OK);
 
             }
         });
@@ -426,28 +414,28 @@ public class TestQualityAct extends BaseAct {
                 if (emitter.isDisposed()) {
                     return;
                 }
-
-                RxRouter.with(mContext)
+                Router.with(mContext)
                         .host(ModuleConfig.Help.NAME)
                         .path(ModuleConfig.Help.CANCEL_FOR_TEST)
                         .requestCodeRandom()
                         .putBoolean("isUseFragment", true)
-                        .resultCodeMatchCall(RESULT_OK)
-                        .subscribe(new Action() {
+                        .navigateForResultCodeMatch(new CallbackAdapter() {
                             @Override
-                            public void run() throws Exception {
+                            public void onSuccess(@NonNull RouterResult result) {
+                                super.onSuccess(result);
                                 if (!emitter.isDisposed()) {
                                     emitter.onComplete();
                                 }
                             }
-                        }, new Consumer<Throwable>() {
+
                             @Override
-                            public void accept(Throwable throwable) throws Exception {
+                            public void onError(RouterErrorResult errorResult) {
+                                super.onError(errorResult);
                                 if (!emitter.isDisposed()) {
-                                    emitter.onError(throwable);
+                                    emitter.onError(errorResult.getError());
                                 }
                             }
-                        });
+                        }, RESULT_OK);
 
             }
         });
@@ -574,7 +562,6 @@ public class TestQualityAct extends BaseAct {
                                                 chain.callback().onError(new Exception(throwable));
                                             }
                                         });
-
                             }
                         })
                         .query("data", "useSameRequestCode")
@@ -599,6 +586,7 @@ public class TestQualityAct extends BaseAct {
 
             }
         });
+
     }
 
     public Completable getIntentWithoutRequestCode() {
@@ -715,58 +703,46 @@ public class TestQualityAct extends BaseAct {
 
     // -------------------------------------------------------- 失败的例子 -------------------------------end
 
+    // 成功要测试的功能点如下
+    // 所有成功的都需要在主线程和子线程跑
+    // 1.Router中的各个跳转方式都测一遍,失败成功都要
+    // 2.Router中的拦截器测试一遍
+
     // -------------------------------------------------------- 成功的例子 -------------------------------start
 
     public Completable runOnChildThread() {
 
-        return Completable.create(new CompletableOnSubscribe() {
+        return testWrapWithChildThread(new TestBack() {
             @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                if (emitter.isDisposed()) {
-                    return;
-                }
-
-                new Thread("child thread") {
-                    @Override
-                    public void run() {
-                        super.run();
-                        Router
-                                .with(mContext)
-                                .host(ModuleConfig.Module1.NAME)
-                                .path(ModuleConfig.Module1.TEST_AUTORETURN1)
-                                .putString("data", "runOnChildThread")
-                                .navigate(new CallbackAdapter() {
-                                    @Override
-                                    public void onSuccess(@NonNull RouterResult result) {
-                                        if (!emitter.isDisposed()) {
-                                            emitter.onComplete();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onError(@NonNull RouterErrorResult errorResult) {
-                                        if (!emitter.isDisposed()) {
-                                            emitter.onError(errorResult.getError());
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancel(@NonNull RouterRequest request) {
-                                        if (!emitter.isDisposed()) {
-                                            emitter.onError(new NavigationFailException("request be canceled"));
-                                        }
-                                    }
-                                });
-                    }
-                }.start();
-
+            public void run(CompletableEmitter emitter) {
+                Router
+                        .with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN1)
+                        .putString("data", "runOnChildThread")
+                        .navigate(new CallbackSuccessIsSuccessful(emitter));
             }
         });
-
 
     }
 
     public Completable runOnChildThread1() {
+
+        return testWrapWithChildThread(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router
+                        .with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN1)
+                        .putString("data", "runOnChildThread")
+                        .navigateForResult(new BiCallbackSuccessIsSuccessful(emitter));
+            }
+        });
+
+    }
+
+    public Completable runOnChildThread11() {
 
         return Completable.create(new CompletableOnSubscribe() {
             @Override
@@ -806,6 +782,260 @@ public class TestQualityAct extends BaseAct {
         });
 
 
+    }
+
+    /**
+     * 基本跳转
+     *
+     * @return
+     */
+    public Completable testNavigate() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .putString("data", "testNavigate")
+                        .navigate(new CallbackSuccessIsSuccessful(emitter));
+            }
+        });
+
+    }
+
+    /**
+     * 使用 Fragment 跳转
+     *
+     * @return
+     */
+    public Completable testNavigatex() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(innerFragment)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .putString("data", "testNavigatex")
+                        .navigate(new CallbackSuccessIsSuccessful(emitter));
+            }
+        });
+
+    }
+
+    /**
+     * 在子线程跑
+     *
+     * @return
+     */
+    public Completable testNavigatexx() {
+        return testWrapWithChildThread(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .putString("data", "testNavigatexx")
+                        .navigate(new CallbackSuccessIsSuccessful(emitter));
+            }
+        });
+
+    }
+
+    /**
+     * 在子线程用Fragment跑
+     *
+     * @return
+     */
+    public Completable testNavigatexxx() {
+        return testWrapWithChildThread(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(innerFragment)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .putString("data", "testNavigatexx")
+                        .navigate(new CallbackSuccessIsSuccessful(emitter));
+            }
+        });
+
+    }
+
+    /**
+     * 测试拿 Activity Result
+     *
+     * @return
+     */
+    public Completable testGetActivityResult() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "testGetIntent")
+                        .navigateForResult(new BiCallbackSuccessIsSuccessful(emitter));
+            }
+        });
+    }
+
+    /**
+     * 子线程中拿 Activity Result
+     *
+     * @return
+     */
+    public Completable testGetActivityResultx() {
+        return testWrapWithChildThread(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "testGetIntentx")
+                        .navigateForResult(new BiCallbackSuccessIsSuccessful(emitter));
+            }
+        });
+    }
+
+    /**
+     * 子线程中用fragment拿 Activity Result
+     *
+     * @return
+     */
+    public Completable testGetActivityResultxx() {
+        return testWrapWithChildThread(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(innerFragment)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "testGetIntentxx")
+                        .navigateForResult(new BiCallbackSuccessIsSuccessful(emitter));
+            }
+        });
+    }
+
+    /**
+     * 测试拿 Intent
+     *
+     * @return
+     */
+    public Completable testGetIntent() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "testGetIntent")
+                        .navigateForIntent(new BiCallbackSuccessIsSuccessful(emitter));
+            }
+        });
+    }
+
+    /**
+     * 测试拿不到 Intent
+     *
+     * @return
+     */
+    public Completable testGetIntentx() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "testGetIntentx")
+                        .putBoolean("isReturnIntent", false)
+                        .navigateForIntent(new BiCallbackErrorIsSuccessful(emitter));
+            }
+        });
+    }
+
+    /**
+     * 测试拿 Intent 并且匹配 resultCode
+     *
+     * @return
+     */
+    public Completable testGetIntent1() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "rxGetIntent")
+                        .navigateForIntentAndResultCodeMatch(new BiCallbackSuccessIsSuccessful(emitter), RESULT_OK);
+            }
+        });
+    }
+
+    /**
+     * 测试拿 Intent 并且匹配 resultCode 不成功
+     *
+     * @return
+     */
+    public Completable testGetIntent1x() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putBoolean("isReturnError", true)
+                        .putString("data", "rxGetIntent")
+                        .navigateForIntentAndResultCodeMatch(new BiCallbackErrorIsSuccessful(emitter), RESULT_OK);
+            }
+        });
+    }
+
+    public Completable testGetResultCode() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "rxGetIntent")
+                        .navigateForResultCode(new BiCallbackSuccessIsSuccessful(emitter));
+            }
+        });
+    }
+
+    public Completable testResultCodeMatch() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putString("data", "rxGetIntent")
+                        .navigateForResultCodeMatch(new CallbackSuccessIsSuccessful(emitter), RESULT_OK);
+            }
+        });
+    }
+
+    public Completable testResultCodeMatchx() {
+        return testWrap(new TestBack() {
+            @Override
+            public void run(CompletableEmitter emitter) {
+                Router.with(mContext)
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCode(123)
+                        .putBoolean("isReturnError", true)
+                        .putString("data", "rxGetIntent")
+                        .navigateForResultCodeMatch(new CallbackErrorIsSuccessful(emitter), RESULT_OK);
+            }
+        });
     }
 
     public Completable rxGetIntent() {
@@ -1198,69 +1428,564 @@ public class TestQualityAct extends BaseAct {
     }
 
     private Completable testModifyByInterceptor() {
-        return Completable.create(emitter -> {
-            if (emitter.isDisposed()) {
-                return;
+        return RxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_QUERY)
+                .query("name", "testName")
+                .query("pass", "testPass")
+                .query("expectName", "我是被拦截器修改的 testName")
+                .query("isReturnAuto", true)
+                .interceptors(new RouterInterceptor() {
+                    @Override
+                    public void intercept(RouterInterceptor.Chain chain) throws Exception {
+
+                        android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(chain.request().getRawActivity())
+                                .setMessage("如果您点击确定,传递过去的名称 'testName' 会被修改为 '我是被拦截器修改的 testName'")
+                                .setPositiveButton("确定", (dialog12, which) -> {
+                                })
+                                .setNegativeButton("取消", (dialog1, which) -> {
+                                })
+                                .create();
+                        dialog.show();
+
+                        Completable.complete()
+                                .observeOn(Schedulers.io())
+                                .delay(2, TimeUnit.SECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action() {
+                                    @Override
+                                    public void run() throws Exception {
+                                        dialog.dismiss();
+                                        chain.proceed(chain.request().toBuilder().query("name", "我是被拦截器修改的 testName").build());
+                                    }
+                                });
+
+                    }
+                })
+                .requestCodeRandom()
+                .resultCodeMatchCall(RESULT_OK);
+    }
+
+    private Completable testParameterByte() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BYTE)
+                .putByte("value", (byte) 1)
+                .putByte("valueDefault", (byte) 1)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BYTE)
+                .call();
+
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BYTE_BOX)
+                .putByte("value", (byte) 1)
+                .putByte("valueDefault", (byte) 1)
+                .call();
+
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BYTE_BOX)
+                .call();
+
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+
+    }
+
+    private Completable testParameterShort() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_SHORT)
+                .putShort("value", (short) 1)
+                .putShort("valueDefault", (short) 1)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_SHORT)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_SHORT_BOX)
+                .putShort("value", (short) 1)
+                .putShort("valueDefault", (short) 1)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_SHORT_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterInt() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_INT)
+                .putInt("value", 1)
+                .putInt("valueDefault", 1)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_INT)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_INT_BOX)
+                .putInt("value", 1)
+                .putInt("valueDefault", 1)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_INT_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterLong() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_LONG)
+                .putLong("value", 1)
+                .putLong("valueDefault", 1)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_LONG)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_LONG_BOX)
+                .putLong("value", 1)
+                .putLong("valueDefault", 1)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_LONG_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterFloat() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_FLOAT)
+                .putFloat("value", 1f)
+                .putFloat("valueDefault", 1f)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_FLOAT)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_FLOAT_BOX)
+                .putFloat("value", 1f)
+                .putFloat("valueDefault", 1f)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_FLOAT_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterDouble() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_DOUBLE)
+                .putDouble("value", 1)
+                .putDouble("valueDefault", 1)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_DOUBLE)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_DOUBLE_BOX)
+                .putDouble("value", 1)
+                .putDouble("valueDefault", 1)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_DOUBLE_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterBoolean() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BOOLEAN)
+                .putBoolean("value", true)
+                .putBoolean("valueDefault", false)
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BOOLEAN)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BOOLEAN_BOX)
+                .putBoolean("value", true)
+                .putBoolean("valueDefault", false)
+                .call();
+        Completable completable4 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_BOOLEAN_BOX)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3), wrapTask(completable4));
+    }
+
+    private Completable testParameterString() {
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_STRING)
+                .putString("value", "testString")
+                .putString("valueDefault", "testString")
+                .call();
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_STRING)
+                .call();
+        Completable completable3 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.System.NAME)
+                .path(ModuleConfig.System.TEST_PARAMETER_STRING)
+                .putString("value", null)
+                .putString("valueDefault", null)
+                .call();
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2), wrapTask(completable3));
+    }
+
+    private Completable testFieldInject() {
+
+        Completable completable1 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_INJECT1)
+                .requestCodeRandom()
+                .putBoolean("isReturnAuto", true)
+                .putString("valueString", "valueString")
+                .putString("valueStringDefault", "valueStringDefault")
+                .putByte("valueByte", (byte) 1)
+                .putByte("valueByteDefalut", (byte) 1)
+                .putByte("valueByteBox", (byte) 1)
+                .putByte("valueByteBoxDefalut", (byte) 1)
+                .putShort("valueShort", (short) 1)
+                .putShort("valueShortDefalut", (short) 1)
+                .putShort("valueShortBox", (short) 1)
+                .putShort("valueShortBoxDefalut", (short) 1)
+                .putInt("valueInt", 1)
+                .putInt("valueIntDefalut", 1)
+                .putInt("valueIntBox", 1)
+                .putInt("valueIntBoxDefalut", 1)
+                .putLong("valueLong", 1)
+                .putLong("valueLongDefalut", 1)
+                .putLong("valueLongBox", 1)
+                .putLong("valueLongBoxDefalut", 1)
+                .putBoolean("valueBoolean", true)
+                .putBoolean("valueBooleanDefalut", false)
+                .putBoolean("valueBooleanBox", true)
+                .putBoolean("valueBooleanBoxDefalut", false)
+                .resultCodeMatchCall(RESULT_OK);
+
+        // 测试不传的时候的默认值是否能正常工作
+        Completable completable2 = RxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_INJECT1)
+                .requestCodeRandom()
+                .putBoolean("isReturnAuto", true)
+                .resultCodeMatchCall(RESULT_OK);
+
+        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2));
+
+    }
+
+    private Completable testPutQueryWithUrl() {
+        return RxRouter.with(mContext)
+                .url("router://component1/testPutQueryWithUrl?nameFromUrl=hhasjfjdsf")
+                .query("nameFromPutQuery", "ewrfgrdsrdff")
+                .requestCodeRandom()
+                .resultCodeMatchCall(RESULT_OK);
+    }
+
+    // -------------------------------------------------------- 成功的例子 -------------------------------end
+
+    private Completable testWrap(TestBack testBack) {
+        return Completable.create(new CompletableOnSubscribe() {
+            @Override
+            public void subscribe(CompletableEmitter emitter) throws Exception {
+                if (emitter.isDisposed()) {
+                    return;
+                }
+                testBack.run(emitter);
             }
-            RxRouter
-                    .with(mContext)
-                    .host(ModuleConfig.Module1.NAME)
-                    .path(ModuleConfig.Module1.TEST_QUERY)
-                    .query("name", "testName")
-                    .query("pass", "testPass")
-                    .query("expectName", "我是被拦截器修改的 testName")
-                    .query("isReturnAuto", true)
-                    .interceptors(new RouterInterceptor() {
-                        @Override
-                        public void intercept(RouterInterceptor.Chain chain) throws Exception {
-
-                            android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(chain.request().getRawActivity())
-                                    .setMessage("如果您点击确定,传递过去的名称 'testName' 会被修改为 '我是被拦截器修改的 testName'")
-                                    .setPositiveButton("确定", (dialog12, which) -> {
-                                    })
-                                    .setNegativeButton("取消", (dialog1, which) -> {
-                                    })
-                                    .create();
-                            dialog.show();
-
-                            Completable.complete()
-                                    .observeOn(Schedulers.io())
-                                    .delay(2, TimeUnit.SECONDS)
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action() {
-                                        @Override
-                                        public void run() throws Exception {
-                                            dialog.dismiss();
-                                            chain.proceed(chain.request().toBuilder().query("name", "我是被拦截器修改的 testName").build());
-                                        }
-                                    });
-
-                        }
-                    })
-                    .requestCodeRandom()
-                    .resultCodeMatchCall(RESULT_OK)
-                    .subscribe(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            if (emitter.isDisposed()) {
-                                return;
-                            }
-                            emitter.onComplete();
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            if (emitter.isDisposed()) {
-                                return;
-                            }
-                            emitter.onError(throwable);
-                        }
-                    });
-
         });
     }
 
+    private Completable testWrapWithChildThread(TestBack testBack) {
+        return Completable.create(new CompletableOnSubscribe() {
+            @Override
+            public void subscribe(CompletableEmitter emitter) throws Exception {
+                if (emitter.isDisposed()) {
+                    return;
+                }
+                new Thread("child thread") {
+                    @Override
+                    public void run() {
+                        testBack.run(emitter);
+                    }
+                }.start();
+            }
+        });
+    }
 
-    // -------------------------------------------------------- 成功的例子 -------------------------------end
+    private interface TestBack {
+        void run(CompletableEmitter emitter);
+    }
+
+    private class CallbackSuccessIsSuccessful extends CallbackAdapter {
+
+        @NonNull
+        private CompletableEmitter emitter;
+
+        public CallbackSuccessIsSuccessful(CompletableEmitter emitter) {
+            this.emitter = emitter;
+        }
+
+        @Override
+        public void onSuccess(@NonNull RouterResult result) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onComplete();
+        }
+
+        @Override
+        public void onError(@NonNull RouterErrorResult errorResult) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(errorResult.getError());
+        }
+
+        @Override
+        public void onCancel(@NonNull RouterRequest request) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(new NavigationFailException("request should be success"));
+        }
+
+    }
+
+    private class CallbackCancelIsSuccessful extends CallbackAdapter {
+
+        @NonNull
+        private CompletableEmitter emitter;
+
+        public CallbackCancelIsSuccessful(CompletableEmitter emitter) {
+            this.emitter = emitter;
+        }
+
+        @Override
+        public void onSuccess(@NonNull RouterResult result) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(new NavigationFailException("request should be cancel"));
+        }
+
+        @Override
+        public void onError(@NonNull RouterErrorResult errorResult) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(errorResult.getError());
+        }
+
+        @Override
+        public void onCancel(@NonNull RouterRequest request) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onComplete();
+        }
+
+    }
+
+    private class CallbackErrorIsSuccessful extends CallbackAdapter {
+
+        @NonNull
+        private CompletableEmitter emitter;
+
+        public CallbackErrorIsSuccessful(CompletableEmitter emitter) {
+            this.emitter = emitter;
+        }
+
+        @Override
+        public void onSuccess(@NonNull RouterResult result) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(new NavigationFailException("request should be error"));
+        }
+
+        @Override
+        public void onError(@NonNull RouterErrorResult errorResult) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onComplete();
+        }
+
+        @Override
+        public void onCancel(@NonNull RouterRequest request) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(new NavigationFailException("request should be error"));
+        }
+
+    }
+
+    private class BiCallbackSuccessIsSuccessful<T> extends BiCallback.BiCallbackAdapter<T> {
+
+        @NonNull
+        private CompletableEmitter emitter;
+
+        public BiCallbackSuccessIsSuccessful(CompletableEmitter emitter) {
+            this.emitter = emitter;
+        }
+
+        @Override
+        public void onSuccess(@NonNull RouterResult result, @NonNull T t) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onComplete();
+        }
+
+        @Override
+        public void onError(@NonNull RouterErrorResult errorResult) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(errorResult.getError());
+        }
+
+        @Override
+        public void onCancel(@NonNull RouterRequest request) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(new NavigationFailException("request should be success"));
+        }
+
+    }
+
+    private class BiCallbackCancelIsSuccessful<T> extends BiCallback.BiCallbackAdapter<T> {
+
+        @NonNull
+        private CompletableEmitter emitter;
+
+        public BiCallbackCancelIsSuccessful(CompletableEmitter emitter) {
+            this.emitter = emitter;
+        }
+
+        @Override
+        public void onSuccess(@NonNull RouterResult result, @NonNull T t) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(new NavigationFailException("request should be cancel"));
+        }
+
+        @Override
+        public void onError(@NonNull RouterErrorResult errorResult) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(errorResult.getError());
+        }
+
+        @Override
+        public void onCancel(@NonNull RouterRequest request) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onComplete();
+        }
+
+    }
+
+    private class BiCallbackErrorIsSuccessful<T> extends BiCallback.BiCallbackAdapter<T> {
+
+        @NonNull
+        private CompletableEmitter emitter;
+
+        public BiCallbackErrorIsSuccessful(CompletableEmitter emitter) {
+            this.emitter = emitter;
+        }
+
+        @Override
+        public void onSuccess(@NonNull RouterResult result, @NonNull T t) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(new NavigationFailException("request should be error"));
+        }
+
+        @Override
+        public void onError(@NonNull RouterErrorResult errorResult) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onComplete();
+        }
+
+        @Override
+        public void onCancel(@NonNull RouterRequest request) {
+            if (emitter.isDisposed()) {
+                return;
+            }
+            emitter.onError(new NavigationFailException("request should be error"));
+        }
+
+    }
 
 }
