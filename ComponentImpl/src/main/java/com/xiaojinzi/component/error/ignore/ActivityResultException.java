@@ -1,4 +1,4 @@
-package com.xiaojinzi.component.error;
+package com.xiaojinzi.component.error.ignore;
 
 /**
  * 表示 Activity result 异常

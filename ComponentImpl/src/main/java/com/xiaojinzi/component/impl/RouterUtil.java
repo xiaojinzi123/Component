@@ -3,6 +3,7 @@ package com.xiaojinzi.component.impl;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,7 +28,7 @@ class RouterUtil {
      *
      * @param callback
      */
-    public static void cancelCallback(@NonNull final RouterRequest request, @Nullable final Callback callback) {
+    public static void cancelCallback(@Nullable final RouterRequest request, @Nullable final OnRouterCancel callback) {
         if (Utils.isMainThread()) {
             cancelCallbackOnMainThread(request, callback);
         } else {
@@ -44,8 +45,8 @@ class RouterUtil {
     /**
      * @param callback
      */
-    private static void cancelCallbackOnMainThread(@NonNull RouterRequest request,
-                                                   @Nullable final Callback callback) {
+    private static void cancelCallbackOnMainThread(@Nullable RouterRequest request,
+                                                   @Nullable final OnRouterCancel callback) {
         LogUtil.log(Router.TAG, "路由取消：" + request.uri.toString());
         if (callback == null) {
             return;
@@ -127,6 +128,7 @@ class RouterUtil {
         callback.onEvent(result, null);
     }
 
+    @AnyThread
     public static void deliveryListener(@Nullable final RouterResult successResult,
                                         @Nullable final RouterErrorResult errorResult,
                                         @Nullable final RouterRequest cancelRequest) {

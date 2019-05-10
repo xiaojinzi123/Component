@@ -36,11 +36,21 @@ public class RouterErrorResult {
         this.mError = error;
     }
 
+    /**
+     * 当构建 {@link RouterRequest} 的时候失败,就会为 null
+     *
+     * @return 当构建 {@link RouterRequest} 的时候失败,就会为 null
+     */
     @Nullable
     public RouterRequest getOriginalRequest() {
         return mOriginalRequest;
     }
 
+    /**
+     * 获取错误对象
+     *
+     * @return 发生错误的异常
+     */
     @NonNull
     public Throwable getError() {
         return mError;
