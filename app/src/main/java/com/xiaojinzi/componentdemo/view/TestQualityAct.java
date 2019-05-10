@@ -223,9 +223,9 @@ public class TestQualityAct extends BaseAct implements TestContext {
         compositeDisposable.clear();
 
         Completable observable = Completable.concatArray(
+                wrapTask(allSuccess()).doOnComplete(() -> addTaskPassMsg("allSuccess")),
                 wrapTask(allCancel()).doOnComplete(() -> addTaskPassMsg("allCancel")),
-                wrapTask(allFailure()).doOnComplete(() -> addTaskPassMsg("allFailure")),
-                wrapTask(allSuccess()).doOnComplete(() -> addTaskPassMsg("allSuccess"))
+                wrapTask(allFailure()).doOnComplete(() -> addTaskPassMsg("allFailure"))
         );
 
         observable
