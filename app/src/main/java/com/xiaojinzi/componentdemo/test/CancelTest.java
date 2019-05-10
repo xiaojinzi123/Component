@@ -54,6 +54,7 @@ public class CancelTest implements TestExecutor {
                         .with(mTestContext.context())
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                        .requestCodeRandom()
                         .putString("data", "cancelImmediately1")
                         .navigateForResult(new TestContext.BiCallbackCancelIsSuccessful(emitter))
                         .cancel();
