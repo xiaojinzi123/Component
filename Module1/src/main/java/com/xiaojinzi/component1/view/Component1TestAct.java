@@ -63,7 +63,14 @@ public class Component1TestAct extends BaseAct {
     protected void returnData() {
         Intent intent = new Intent();
         intent.putExtra("data", "this is the return data，requestData is " + ParameterSupport.getString(getIntent(), "data"));
-        setResult(RESULT_OK, intent);
+        if (!isReturnIntent()) {
+            intent = null;
+        }
+        if (isReturnError()) {
+            setResult(RESULT_ERROR, intent);
+        }else {
+            setResult(RESULT_OK, intent);
+        }
         finish();
     }
 

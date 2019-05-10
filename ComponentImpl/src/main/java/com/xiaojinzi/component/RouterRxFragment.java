@@ -1,10 +1,11 @@
-package com.xiaojinzi.component.impl;
+package com.xiaojinzi.component;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.component.bean.ActivityResult;
+import com.xiaojinzi.component.impl.RouterRequest;
 import com.xiaojinzi.component.support.Consumer;
 
 import java.util.HashMap;
@@ -65,17 +66,13 @@ public final class RouterRxFragment extends Fragment {
 
     }
 
-    public boolean isContainsSingleEmitter(@NonNull RouterRequest request) {
-        return singleEmitterMap.containsKey(request);
-    }
-
-    public void setSingleEmitter(@NonNull RouterRequest request,
-                                 @NonNull Consumer<ActivityResult> consumer) {
+    public void setActivityResultConsumer(@NonNull RouterRequest request,
+                                          @NonNull Consumer<ActivityResult> consumer) {
         // 检测是否重复的在这个方法调用之前被检查掉了
         singleEmitterMap.put(request, consumer);
     }
 
-    public void cancal(@NonNull RouterRequest request) {
+    public void removeActivityResultConsumer(@NonNull RouterRequest request) {
         singleEmitterMap.remove(request);
     }
 
