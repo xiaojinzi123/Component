@@ -267,6 +267,11 @@ public class RouterRequest {
         }
 
         @Override
+        public Builder hostAndPath(@NonNull String hostAndPath) {
+            return (Builder) super.hostAndPath(hostAndPath);
+        }
+
+        @Override
         public Builder host(@NonNull String host) {
             return (Builder) super.host(host);
         }
@@ -503,6 +508,24 @@ public class RouterRequest {
         public URIBuilder scheme(@NonNull String scheme) {
             Utils.checkStringNullPointer(scheme, "scheme");
             this.scheme = scheme;
+            return this;
+        }
+
+        /**
+         * xxx/xxx
+         *
+         * @param hostAndPath
+         * @return
+         */
+        public URIBuilder hostAndPath(@NonNull String hostAndPath) {
+            Utils.checkNullPointer(hostAndPath, "hostAndPath");
+            int index = hostAndPath.indexOf("/");
+            if (index > 0) {
+                host(hostAndPath.substring(0, index));
+                path(hostAndPath.substring(index + 1));
+            }else {
+                Utils.throwException(new IllegalArgumentException(hostAndPath + " is invalid"));
+            }
             return this;
         }
 

@@ -152,6 +152,11 @@ public class Navigator extends RouterRequest.Builder {
     }
 
     @Override
+    public Navigator hostAndPath(@NonNull String hostAndPath) {
+        return (Navigator) super.hostAndPath(hostAndPath);
+    }
+
+    @Override
     public Navigator host(@NonNull String host) {
         return (Navigator) super.host(host);
     }
