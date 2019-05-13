@@ -177,4 +177,10 @@ public class Utils {
         return realActivity;
     }
 
+    public static void throwException(@NonNull RuntimeException e) {
+        if (ComponentConfig.isDebug()) {
+            throw e;
+        }
+    }
+
 }
