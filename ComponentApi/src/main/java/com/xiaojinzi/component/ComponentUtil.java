@@ -33,6 +33,11 @@ public class ComponentUtil {
     public static final String UIROUTER = "RouterGenerated";
 
     /**
+     * 生成的路由接口的实现类的后缀
+     */
+    public static final String UIROUTERAPI = "RouterApiGenerated";
+
+    /**
      * 生成的文件名称的后缀
      */
     public static final String MODULE_APPLCATION = "ModuleApplicationGenerated";

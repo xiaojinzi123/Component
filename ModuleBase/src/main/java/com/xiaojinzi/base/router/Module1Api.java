@@ -15,4 +15,5 @@ public interface Module1Api {
 
     @PathAnno(ModuleConfig.Module1.TEST)
     void test(@ParameterAnno("data") String data);
+
 }
