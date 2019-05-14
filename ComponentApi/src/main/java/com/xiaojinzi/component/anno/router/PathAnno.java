@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * @see HostAnno
  * @see HostAndPathAnno
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)
 public @interface PathAnno {
 
