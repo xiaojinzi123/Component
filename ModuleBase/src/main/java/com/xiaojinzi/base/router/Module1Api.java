@@ -3,6 +3,7 @@ package com.xiaojinzi.base.router;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.base.ModuleConfig;
@@ -21,6 +22,8 @@ import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Call;
 import com.xiaojinzi.component.impl.Callback;
 import com.xiaojinzi.component.support.NavigationDisposable;
+
+import java.util.ArrayList;
 
 /**
  * App 模块的路由跳转接口
@@ -133,6 +136,61 @@ public interface Module1Api {
     @PathAnno(ModuleConfig.Module1.TEST)
     void test19(@WithAnno Context context,
                 @ParameterAnno("data1") UserWithSerializable data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test20(@WithAnno Context context,
+                @ParameterAnno("data1") String[] data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test21(@WithAnno Context context,
+                @ParameterAnno("data1") byte[] data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test22(@WithAnno Context context,
+                @ParameterAnno("data1") char[] data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test23(@WithAnno Context context,
+                @ParameterAnno("data1") short[] data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test24(@WithAnno Context context,
+                @ParameterAnno("data1") int[] data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test25(@WithAnno Context context,
+                @ParameterAnno("data1") long[] data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test26(@WithAnno Context context,
+                @ParameterAnno("data1") float[] data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test27(@WithAnno Context context,
+                @ParameterAnno("data1") double[] data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test27(@WithAnno Context context,
+                @ParameterAnno("data1") boolean[] data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test27(@WithAnno Context context,
+                @ParameterAnno("data1") Parcelable[] data, Callback callback);
+
+    @Navigate
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void test28(@WithAnno Context context,
+                @ParameterAnno("data1") ArrayList<String> dataArrayList, Callback callback);
 
 
 }

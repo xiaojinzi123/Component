@@ -7,6 +7,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.WildcardTypeName;
 import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
@@ -18,6 +19,8 @@ import com.xiaojinzi.component.anno.router.WithAnno;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +39,7 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
@@ -197,6 +201,9 @@ public class RouterApiProcessor extends BaseProcessor {
         for (VariableElement parameter : parameters) {
             // 参数的类型
             TypeMirror parameterTypeMirror = parameter.asType();
+            List<? extends TypeMirror> typeMirrors = mTypes.directSupertypes(parameterTypeMirror);
+            mMessager.printMessage(Diagnostic.Kind.NOTE, "typeMirrors = " + typeMirrors.getClass().getName());
+            mMessager.printMessage(Diagnostic.Kind.NOTE, "parameter = " + parameter.getSimpleName() + ":" + parameterTypeMirror.getClass().getName());
             if (parameter.getAnnotation(WithAnno.class) != null) {
                 withParameter = parameter;
             } else if (parameterTypeMirror.equals(callBackTypeMirror)) { // 如果是 CallBack
@@ -213,6 +220,8 @@ public class RouterApiProcessor extends BaseProcessor {
                     parameterStatement.append("\n.putString($S,$N)");
                 } else if (parameterTypeName.equals(ClassName.BYTE) || parameterTypeName.equals(ClassName.BYTE.box())) { // 如果是 byte
                     parameterStatement.append("\n.putByte($S,$N)");
+                } else if (parameterTypeName.equals(ClassName.CHAR) || parameterTypeName.equals(ClassName.CHAR.box())) { // 如果是 char
+                    parameterStatement.append("\n.putChar($S,$N)");
                 } else if (parameterTypeName.equals(ClassName.SHORT) || parameterTypeName.equals(ClassName.SHORT.box())) { // 如果是 short
                     parameterStatement.append("\n.putShort($S,$N)");
                 } else if (parameterTypeName.equals(ClassName.INT) || parameterTypeName.equals(ClassName.INT.box())) { // 如果是 int
@@ -225,6 +234,35 @@ public class RouterApiProcessor extends BaseProcessor {
                     parameterStatement.append("\n.putDouble($S,$N)");
                 } else if (parameterTypeName.equals(ClassName.BOOLEAN) || parameterTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是 boolean
                     parameterStatement.append("\n.putBoolean($S,$N)");
+                } else if (parameterTypeMirror instanceof ArrayType) {
+                    ArrayType parameterArrayType = (ArrayType) parameterTypeMirror;
+                    TypeName parameterComponentTypeName = ClassName.get(parameterArrayType.getComponentType());
+                    // 如果是一个 String[]
+                    if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
+                        parameterStatement.append("\n.putStringArray($S,$N)");
+                    } else if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
+                        parameterStatement.append("\n.putStringArray($S,$N)");
+                    } else if (parameterComponentTypeName.equals(ClassName.BYTE) || parameterComponentTypeName.equals(ClassName.BYTE.box())) { // 如果是 byte
+                        parameterStatement.append("\n.putByteArray($S,$N)");
+                    } else if (parameterComponentTypeName.equals(ClassName.CHAR) || parameterComponentTypeName.equals(ClassName.CHAR.box())) { // 如果是 char
+                        parameterStatement.append("\n.putCharArray($S,$N)");
+                    } else if (parameterComponentTypeName.equals(ClassName.SHORT) || parameterComponentTypeName.equals(ClassName.SHORT.box())) { // 如果是 short
+                        parameterStatement.append("\n.putShortArray($S,$N)");
+                    } else if (parameterComponentTypeName.equals(ClassName.INT) || parameterComponentTypeName.equals(ClassName.INT.box())) { // 如果是 int
+                        parameterStatement.append("\n.putIntArray($S,$N)");
+                    } else if (parameterComponentTypeName.equals(ClassName.LONG) || parameterComponentTypeName.equals(ClassName.LONG.box())) { // 如果是 long
+                        parameterStatement.append("\n.putLongArray($S,$N)");
+                    } else if (parameterComponentTypeName.equals(ClassName.FLOAT) || parameterComponentTypeName.equals(ClassName.FLOAT.box())) { // 如果是 float
+                        parameterStatement.append("\n.putFloatArray($S,$N)");
+                    } else if (parameterComponentTypeName.equals(ClassName.DOUBLE) || parameterComponentTypeName.equals(ClassName.DOUBLE.box())) { // 如果是 double
+                        parameterStatement.append("\n.putDoubleArray($S,$N)");
+                    } else if (parameterComponentTypeName.equals(ClassName.BOOLEAN) || parameterComponentTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是 boolean
+                        parameterStatement.append("\n.putBooleanArray($S,$N)");
+                    } else if (mTypes.isSubtype(parameterArrayType.getComponentType(), parcelableTypeMirror)) {  // 如果是 Parcelable
+                        parameterStatement.append("\n.putParcelableArray($S,$N)");
+                    } else {
+                        throw new ProcessException("can't to resolve unknow type parameter(" + methodPath + "#" + parameter.getSimpleName().toString() + ")");
+                    }
                 } else if (mTypes.isSubtype(parameterTypeMirror, parcelableTypeMirror)) {  // 如果是 Parcelable
                     parameterStatement.append("\n.putParcelable($S,$N)");
                 } else if (mTypes.isSubtype(parameterTypeMirror, serializableTypeMirror)) {  // 如果是 Serializable
