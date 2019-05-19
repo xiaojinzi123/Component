@@ -24,6 +24,11 @@ public class ComponentConstants {
     public static final String CENTERSERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.ServiceCenter";
     public static final String PARAMETERSUPPORT_CLASS_NAME = "com.xiaojinzi.component.support.ParameterSupport";
     public static final String PARAMETERINJECT_CLASS_NAME = "com.xiaojinzi.component.support.ParameterInject";
+    public static final String NAVIGATIONDISPOSABLE_CLASS_NAME = "com.xiaojinzi.component.support.NavigationDisposable";
+    public static final String CALLBACK_CLASS_NAME = "com.xiaojinzi.component.impl.Callback";
+    public static final String BICALLBACK_CLASS_NAME = "com.xiaojinzi.component.impl.BiCallback";
+    public static final String CALL_CLASS_NAME = "com.xiaojinzi.component.impl.Call";
+    public static final String ROUTER_REQUEST_CLASS_NAME = "com.xiaojinzi.component.impl.RouterRequest";
 
     public static final String ANDROID_PARCELABLE = "android.os.Parcelable";
     public static final String ANDROID_APPLICATION = "android.app.Application";

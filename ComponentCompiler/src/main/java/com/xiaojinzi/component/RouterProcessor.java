@@ -46,7 +46,6 @@ public class RouterProcessor extends BaseHostProcessor {
     private static final String ROUTER_BEAN_NAME = "com.xiaojinzi.component.bean.RouterBean";
     private static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.xiaojinzi.component.bean.CustomerIntentCall";
     private static final String CUSTOMER_JUMP_CLASS_NAME = "com.xiaojinzi.component.bean.CustomerJump";
-    private static final String ROUTER_REQUEST_CLASS_NAME = "com.xiaojinzi.component.impl.RouterRequest";
 
     private static final String NAME_OF_REQUEST = "request";
 
@@ -77,7 +76,7 @@ public class RouterProcessor extends BaseHostProcessor {
         final TypeElement customerJumpTypeElement = mElements.getTypeElement(CUSTOMER_JUMP_CLASS_NAME);
         intentTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.ANDROID_INTENT);
         intentTypeMirror = intentTypeElement.asType();
-        final TypeElement routerRequestTypeElement = mElements.getTypeElement(ROUTER_REQUEST_CLASS_NAME);
+        final TypeElement routerRequestTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_REQUEST_CLASS_NAME);
         routerRequestTypeMirror = routerRequestTypeElement.asType();
         customerIntentCallClassName = ClassName.get(customerIntentCallTypeElement);
         customerJumpClassName = ClassName.get(customerJumpTypeElement);
