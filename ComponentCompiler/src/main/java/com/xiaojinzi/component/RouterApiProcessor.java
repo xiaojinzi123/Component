@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
@@ -52,6 +53,10 @@ import javax.tools.Diagnostic;
 @SupportedAnnotationTypes({ComponentUtil.ROUTERAPIANNO_CLASS_NAME})
 public class RouterApiProcessor extends BaseProcessor {
 
+    private TypeElement charsequenceTypeElement;
+    private TypeMirror charsequenceTypeMirror;
+    private ClassName charsequenceClassName;
+    private TypeName charsequenceTypeName;
     private TypeElement routerTypeElement;
     private TypeElement navigationDisposableTypeElement;
     private TypeMirror navigationDisposableTypeMirror;
@@ -62,10 +67,17 @@ public class RouterApiProcessor extends BaseProcessor {
     private TypeMirror callTypeMirror;
     private TypeMirror serializableTypeMirror;
     private TypeMirror parcelableTypeMirror;
+    private ParameterizedTypeName stringArrayListParameterizedTypeName;
+    private ParameterizedTypeName integerArrayListParameterizedTypeName;
+    private ParameterizedTypeName parcelableArrayListParameterizedTypeName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
+        charsequenceTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_CHARSEQUENCE);
+        charsequenceTypeMirror = charsequenceTypeElement.asType();
+        charsequenceClassName = ClassName.get(charsequenceTypeElement);
+        charsequenceTypeName = TypeName.get(charsequenceTypeMirror);
         routerTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_CLASS_NAME);
         navigationDisposableTypeElement = mElements.getTypeElement(ComponentConstants.NAVIGATIONDISPOSABLE_CLASS_NAME);
         navigationDisposableTypeMirror = navigationDisposableTypeElement.asType();
@@ -78,6 +90,9 @@ public class RouterApiProcessor extends BaseProcessor {
         serializableTypeMirror = serializableTypeElement.asType();
         final TypeElement parcelableTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.ANDROID_PARCELABLE);
         parcelableTypeMirror = parcelableTypeElement.asType();
+        stringArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, mClassNameString);
+        integerArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, ClassName.INT.box());
+        parcelableArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(parcelableTypeMirror));
     }
 
     @Override
@@ -215,10 +230,12 @@ public class RouterApiProcessor extends BaseProcessor {
                 if (parameterParameterAnno == null) {
                     throw new ProcessException("do you forget to add @ParameterAnno to you parameter(" + methodPath + "#" + parameter.getSimpleName().toString() + ")?");
                 }
-                TypeName parameterTypeName = ClassName.get(parameterTypeMirror);
-                if (parameterTypeName.equals(mClassNameString)) {
+                TypeName parameterTypeName = TypeName.get(parameterTypeMirror);
+                if (parameterTypeName.equals(mTypeNameString)) {
                     parameterStatement.append("\n.putString($S,$N)");
-                } else if (parameterTypeName.equals(ClassName.BYTE) || parameterTypeName.equals(ClassName.BYTE.box())) { // 如果是 byte
+                } else if(parameterTypeName.equals(charsequenceTypeName)) {
+                    parameterStatement.append("\n.putCharSequence($S,$N)");
+                }else if (parameterTypeName.equals(ClassName.BYTE) || parameterTypeName.equals(ClassName.BYTE.box())) { // 如果是 byte
                     parameterStatement.append("\n.putByte($S,$N)");
                 } else if (parameterTypeName.equals(ClassName.CHAR) || parameterTypeName.equals(ClassName.CHAR.box())) { // 如果是 char
                     parameterStatement.append("\n.putChar($S,$N)");
@@ -234,13 +251,21 @@ public class RouterApiProcessor extends BaseProcessor {
                     parameterStatement.append("\n.putDouble($S,$N)");
                 } else if (parameterTypeName.equals(ClassName.BOOLEAN) || parameterTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是 boolean
                     parameterStatement.append("\n.putBoolean($S,$N)");
+                } else if (stringArrayListParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) {
+                    parameterStatement.append("\n.putStringArrayList($S,$N)");
+                } else if (integerArrayListParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) {
+                    parameterStatement.append("\n.putIntegerArrayList($S,$N)");
+                } else if (parcelableArrayListParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) {
+                    parameterStatement.append("\n.putParcelableArrayList($S,$N)");
                 } else if (parameterTypeMirror instanceof ArrayType) {
                     ArrayType parameterArrayType = (ArrayType) parameterTypeMirror;
                     TypeName parameterComponentTypeName = ClassName.get(parameterArrayType.getComponentType());
                     // 如果是一个 String[]
                     if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
                         parameterStatement.append("\n.putStringArray($S,$N)");
-                    } else if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
+                    }else if (parameterArrayType.getComponentType().equals(charsequenceTypeElement.asType())) {
+                        parameterStatement.append("\n.putCharSequenceArray($S,$N)");
+                    }  else if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
                         parameterStatement.append("\n.putStringArray($S,$N)");
                     } else if (parameterComponentTypeName.equals(ClassName.BYTE) || parameterComponentTypeName.equals(ClassName.BYTE.box())) { // 如果是 byte
                         parameterStatement.append("\n.putByteArray($S,$N)");

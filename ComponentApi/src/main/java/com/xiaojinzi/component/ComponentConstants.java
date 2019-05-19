@@ -45,6 +45,7 @@ public class ComponentConstants {
     public static final String JAVA_COLLECTIONS = "java.util.Collections";
     public static final String JAVA_ARRAYLIST = "java.util.ArrayList";
     public static final String JAVA_SERIALIZABLE = "java.io.Serializable";
+    public static final String JAVA_CHARSEQUENCE = "java.lang.CharSequence";
 
     public static final String SEPARATOR = "/";
 
