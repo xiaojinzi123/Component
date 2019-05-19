@@ -70,7 +70,7 @@ public class RouterProcessor extends BaseHostProcessor {
 
         interceptorTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.INTERCEPTOR_INTERFACE_CLASS_NAME);
         routerBeanTypeElement = mElements.getTypeElement(ROUTER_BEAN_NAME);
-        final TypeElement exceptionTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_EXCEPTION);
+        final TypeElement exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
         exceptionClassName = ClassName.get(exceptionTypeElement);
         final TypeElement customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
         final TypeElement customerJumpTypeElement = mElements.getTypeElement(CUSTOMER_JUMP_CLASS_NAME);

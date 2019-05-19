@@ -189,8 +189,13 @@ public interface Module1Api {
 
     @Navigate
     @PathAnno(ModuleConfig.Module1.TEST)
-    void test28(@WithAnno Context context,
-                @ParameterAnno("data1") ArrayList<String> dataArrayList, Callback callback);
+    NavigationDisposable test28(@WithAnno Context context,
+                                @ParameterAnno("data1") ArrayList<String> stringArrayList,
+                                @ParameterAnno("data2") ArrayList<Integer> integerArrayList,
+                                @ParameterAnno("data3") ArrayList<Parcelable> parcelableArrayList,
+                                @ParameterAnno("data4") CharSequence charSequence,
+                                @ParameterAnno("data5") CharSequence[] charSequences,
+                                Callback callback);
 
 
 }
