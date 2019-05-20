@@ -8,22 +8,18 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.WildcardTypeName;
 import com.xiaojinzi.component.anno.ParameterAnno;
-import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
-import com.xiaojinzi.component.anno.router.Navigate;
+import com.xiaojinzi.component.anno.router.NavigateAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
+import com.xiaojinzi.component.anno.router.RequestCodeAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
 import com.xiaojinzi.component.anno.router.UseInteceptorAnno;
-import com.xiaojinzi.component.anno.router.WithAnno;
 
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +36,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.MirroredTypesException;
@@ -202,9 +197,11 @@ public class RouterApiProcessor extends BaseProcessor {
         PathAnno pathAnnotation = executableElement.getAnnotation(PathAnno.class);
         HostAndPathAnno hostAndPathAnnotation = executableElement.getAnnotation(HostAndPathAnno.class);
         // 普通跳转的注解
-        Navigate navigateAnnotation = executableElement.getAnnotation(Navigate.class);
+        NavigateAnno navigateAnnotation = executableElement.getAnnotation(NavigateAnno.class);
         // 使用的拦截器
         UseInteceptorAnno useInteceptorAnnotation = executableElement.getAnnotation(UseInteceptorAnno.class);
+        // 请求码的注解
+        RequestCodeAnno requestCodeAnnotation = executableElement.getAnnotation(RequestCodeAnno.class);
 
         String host = hostAnnotation == null ? defaultHost : hostAnnotation.value();
         String path = pathAnnotation == null ? null : pathAnnotation.value();
@@ -230,6 +227,7 @@ public class RouterApiProcessor extends BaseProcessor {
         VariableElement fragmentParameter = null;
         VariableElement callBackParameter = null;
         VariableElement biCallBackParameter = null;
+        VariableElement requestCodeParameter = null;
 
         StringBuffer parameterStatement = new StringBuffer();
         List<Object> parameterArgs = new ArrayList<>();
@@ -248,6 +246,8 @@ public class RouterApiProcessor extends BaseProcessor {
                 callBackParameter = parameter;
             } else if (parameterTypeMirror.toString().startsWith(ComponentConstants.BICALLBACK_CLASS_NAME)) { // 如果是 BiCallback
                 biCallBackParameter = parameter;
+            } else if (parameter.getAnnotation(RequestCodeAnno.class) != null) { // 表示这是一个 requestCode 的参数值
+                requestCodeParameter = parameter;
             } else if (parameterTypeMirror.equals(bundleTypeMirror)) { // 如果是 Bundle,这个参数可以选填 @ParameterAnno 注解
                 ParameterAnno parameterParameterAnno = parameter.getAnnotation(ParameterAnno.class);
                 if (parameterParameterAnno == null) {
@@ -372,6 +372,24 @@ public class RouterApiProcessor extends BaseProcessor {
 
         routerStatement.append(parameterStatement.toString());
         args.addAll(parameterArgs);
+
+        // requestCode 的读取,参数传入的优先
+        if (requestCodeParameter != null) {
+            TypeName requestCodeTypeName = TypeName.get(requestCodeParameter.asType());
+            if (requestCodeTypeName.equals(ClassName.INT) || requestCodeTypeName.equals(ClassName.INT.box())) {
+                routerStatement.append("\n.requestCode($N)");
+                args.add(requestCodeParameter.getSimpleName().toString());
+            } else {
+                throw new ProcessException("the class type of parameter(" + methodPath + "#" + requestCodeParameter.getSimpleName() + ") must be a int or Integer");
+            }
+        } else if (requestCodeAnnotation != null) {
+            if (requestCodeAnnotation.value() == Integer.MIN_VALUE) { // 如果用户没有写
+                routerStatement.append("\n.requestCodeRandom()");
+            }else {
+                routerStatement.append("\n.requestCode($L)");
+                args.add(requestCodeAnnotation.value());
+            }
+        }
 
         // 使用拦截器
         if (useInteceptorAnnotation != null) {

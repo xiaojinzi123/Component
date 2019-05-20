@@ -14,9 +14,12 @@ import android.widget.Toast;
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.interceptor.DialogShowInterceptor;
+import com.xiaojinzi.base.router.Module1Api;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.ComponentConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.bean.ActivityResult;
+import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.impl.RouterInterceptor;
@@ -194,7 +197,8 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void rxJumpGetData(View view) {
-        RxRouter
+
+        /*RxRouter
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
@@ -211,7 +215,22 @@ public class TestRouterAct extends BaseAct {
                     public void accept(Throwable throwable) throws Exception {
                         tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage());
                     }
+                });*/
+
+        Router.withApi(Module1Api.class)
+                .toTestView(this, "rxJumpGetDataWithApiMethod", new BiCallback.BiCallbackAdapter<Intent>() {
+                    @Override
+                    public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
+                        super.onSuccess(result, intent);
+                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据成功啦：Data = " + intent.getStringExtra("data"));
+                    }
+
+                    @Override
+                    public void onError(@NonNull RouterErrorResult errorResult) {
+                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + errorResult.getError().getClass().getSimpleName() + " ,errorMsg = " + errorResult.getError().getMessage());
+                    }
                 });
+
     }
 
     public void rxJumpGetDataAfterLogin(View view) {
