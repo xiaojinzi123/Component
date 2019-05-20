@@ -27,6 +27,7 @@ import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Call;
 import com.xiaojinzi.component.impl.Callback;
+import com.xiaojinzi.component.impl.Navigator;
 import com.xiaojinzi.component.support.NavigationDisposable;
 
 import java.util.ArrayList;
@@ -38,20 +39,13 @@ import java.util.ArrayList;
 @HostAnno(ModuleConfig.Module1.NAME)
 public interface Module1Api {
 
-    @Navigate
     @PathAnno(ModuleConfig.Module1.TEST)
     // 使用一个拦截器
     @UseInteceptorAnno(
-            names = {
-                    InterceptorConfig.USER_LOGIN,
-                    InterceptorConfig.HELP_CALLPHOEPERMISION
-            },
-            classes = {
-                    DialogShowInterceptor.class,
-                    TimeConsumingInterceptor.class
-            }
+            names = {InterceptorConfig.USER_LOGIN, InterceptorConfig.HELP_CALLPHOEPERMISION},
+            classes = {DialogShowInterceptor.class, TimeConsumingInterceptor.class}
     )
-    void test(Context context, @ParameterAnno("data") String data, Callback callback);
+    Navigator test(Context context, @ParameterAnno("data") String data, Callback callback);
 
     @Navigate
     @HostAnno(ModuleConfig.Module2.NAME)
@@ -77,8 +71,8 @@ public interface Module1Api {
     @Navigate(forResult = true)
     @PathAnno(ModuleConfig.Module1.TEST)
     NavigationDisposable test5(Context context,
-                               @ParameterAnno("data") String data,
-                               BiCallback<ActivityResult> callback);
+                    @ParameterAnno("data") String data,
+                    BiCallback<ActivityResult> callback);
 
     @Navigate(forIntent = true)
     @PathAnno(ModuleConfig.Module1.TEST)
