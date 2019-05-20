@@ -9,6 +9,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.cache.Cache;
+import com.xiaojinzi.component.cache.CacheType;
+import com.xiaojinzi.component.cache.DefaultCacheFactory;
 import com.xiaojinzi.component.router.IComponentHostRouter;
 import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.Utils;
@@ -39,6 +42,12 @@ public class Router {
      * 类的标志
      */
     public static final String TAG = "Router";
+
+    /**
+     * 拦截器 Class --> RouterInterceptor 的缓存
+     */
+    private static final Cache<Class, Object> apiClassCache =
+            DefaultCacheFactory.INSTANCE.build(CacheType.ROUTER_INTERCEPTOR_CACHE);
 
     /**
      * 空实现,里头都是不能调用的方法
@@ -114,6 +123,27 @@ public class Router {
 
     public static Navigator with(@NonNull Fragment fragment) {
         return new Navigator(fragment);
+    }
+
+    /**
+     * 拿到一个接口的实现类
+     *
+     * @param apiClass
+     * @param <T>
+     * @return
+     */
+    public static <T> T withApi(@NonNull Class<T> apiClass) {
+        T t = (T) apiClassCache.get(apiClass);
+        if (t == null) {
+            String className = ComponentUtil.genRouterApiImplClassName(apiClass);
+            try {
+                t = (T) Class.forName(className).newInstance();
+                apiClassCache.put(apiClass, t);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return t;
     }
 
     public static boolean isMatchUri(@NonNull Uri uri) {

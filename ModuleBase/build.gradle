@@ -7,6 +7,11 @@ android {
         targetSdkVersion versions.android_target_sdk
         versionCode 1
         versionName "1.0"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["HOST": "base"]
+            }
+        }
     }
 
     buildTypes {
@@ -29,6 +34,12 @@ dependencies {
         api libs.component_impl_rx
     }else {
         api project(':ComponentRxImpl')
+    }
+
+    if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
+        annotationProcessor libs.component_compiler
+    }else {
+        annotationProcessor project(':ComponentCompiler')
     }
 
 }

@@ -33,6 +33,11 @@ public class ComponentUtil {
     public static final String UIROUTER = "RouterGenerated";
 
     /**
+     * 生成的路由接口的实现类的后缀
+     */
+    public static final String UIROUTERAPI = "RouterApiGenerated";
+
+    /**
      * 生成的文件名称的后缀
      */
     public static final String MODULE_APPLCATION = "ModuleApplicationGenerated";
@@ -53,6 +58,7 @@ public class ComponentUtil {
     public static final String MODULE_APP_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ModuleAppAnno";
     public static final String SERVICE_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ServiceAnno";
     public static final String PARAMETERANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ParameterAnno";
+    public static final String ROUTERAPIANNO_CLASS_NAME = "com.xiaojinzi.component.anno.router.RouterApiAnno";
 
     // 路由框架基础实现类的全类名
 
@@ -73,6 +79,10 @@ public class ComponentUtil {
             ch[0] = (char) (ch[0] - 32);
         }
         return new String(ch);
+    }
+
+    public static String genRouterApiImplClassName(Class apiClass) {
+        return apiClass.getName() + UIROUTERAPI;
     }
 
     public static String genHostModuleApplicationClassName(String host) {
