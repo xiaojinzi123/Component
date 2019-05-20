@@ -2,37 +2,23 @@ package com.xiaojinzi.componentdemo.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
-import com.xiaojinzi.component.anno.ParameterAnno;
+import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.impl.BiCallback;
-import com.xiaojinzi.component.impl.Callback;
 import com.xiaojinzi.component.impl.Router;
-import com.xiaojinzi.component.impl.RouterErrorResult;
-import com.xiaojinzi.component.impl.RouterRequest;
-import com.xiaojinzi.component.impl.RouterResult;
-import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.impl.application.ModuleManager;
-import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.componentdemo.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Maybe;
-import io.reactivex.MaybeObserver;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 @RouterAnno(path = ModuleConfig.App.NAME, desc = "主界面")
@@ -86,30 +72,16 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouter(View view) {
-
-        RxRouter
-                .with(this)
-                .host(ModuleConfig.App.NAME)
-                .path(ModuleConfig.App.TEST_ROUTER)
-                .call()
-                .subscribe();
-
+        Router.withApi(AppApi.class).goToTestRouter(this);
     }
 
     public void testWebRouter(View view) {
-        Router
-                .with(this)
-                .host(ModuleConfig.Help.NAME)
-                .path(ModuleConfig.Help.TEST_WEB_ROUTER)
-                .navigate();
+        Router.withApi(AppApi.class).goToTestWebRouter(this);
+
     }
 
     public void testQuality(View view) {
-        Router
-                .with(this)
-                .host(ModuleConfig.App.NAME)
-                .path(ModuleConfig.App.TEST_QUALITY)
-                .navigate();
+        Router.withApi(AppApi.class).goToTestQuality(this);
     }
 
     @Override

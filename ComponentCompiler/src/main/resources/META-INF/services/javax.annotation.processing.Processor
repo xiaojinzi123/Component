@@ -3,3 +3,4 @@ com.xiaojinzi.component.RouterProcessor
 com.xiaojinzi.component.InterceptorProcessor
 com.xiaojinzi.component.ServiceProcessor
 com.xiaojinzi.component.ParameterInjectProcessor
+com.xiaojinzi.component.RouterApiProcessor

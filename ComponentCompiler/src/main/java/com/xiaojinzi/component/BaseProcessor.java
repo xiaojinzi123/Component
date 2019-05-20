@@ -1,6 +1,7 @@
 package com.xiaojinzi.component;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import com.xiaojinzi.component.ComponentConstants;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -47,6 +48,8 @@ public abstract class BaseProcessor extends AbstractProcessor {
     protected ClassName mClassNameList;
     protected ClassName mClassNameArrayList;
 
+    protected TypeName mTypeNameString;
+
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
@@ -63,6 +66,8 @@ public abstract class BaseProcessor extends AbstractProcessor {
         mClassNameString = ClassName.get(mTypeElementString);
         mClassNameList = ClassName.get(mTypeElementList);
         mClassNameArrayList = ClassName.get(mTypeElementArrayList);
+
+        mTypeNameString = TypeName.get(mTypeElementString.asType());
 
     }
 

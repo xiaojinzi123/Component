@@ -125,6 +125,11 @@ public class RxRouter extends Router {
         }
 
         @Override
+        public Builder hostAndPath(@NonNull String hostAndPath) {
+            return (Builder) super.hostAndPath(hostAndPath);
+        }
+
+        @Override
         public Builder host(@NonNull String host) {
             return (Builder) super.host(host);
         }

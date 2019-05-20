@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
  *
  * @param <T>
  */
-public class BiCallbackWrap<T> implements BiCallback<T> {
+class BiCallbackWrap<T> implements BiCallback<T> {
 
     /**
      * 标记是否结束
