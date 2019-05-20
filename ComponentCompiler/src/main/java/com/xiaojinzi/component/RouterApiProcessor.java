@@ -68,6 +68,7 @@ public class RouterApiProcessor extends BaseProcessor {
     private TypeElement biCallBackTypeElement;
     private TypeMirror biCallBackTypeMirror;
     private TypeMirror callTypeMirror;
+    private TypeMirror navigatorTypeMirror;
     private TypeMirror contextTypeMirror;
     private TypeMirror fragmentTypeMirror;
     private TypeMirror activityTypeMirror;
@@ -94,6 +95,7 @@ public class RouterApiProcessor extends BaseProcessor {
         biCallBackTypeElement = mElements.getTypeElement(ComponentConstants.BICALLBACK_CLASS_NAME);
         biCallBackTypeMirror = biCallBackTypeElement.asType();
         callTypeMirror = mElements.getTypeElement(ComponentConstants.CALL_CLASS_NAME).asType();
+        navigatorTypeMirror = mElements.getTypeElement(ComponentConstants.NAVIGATOR_CLASS_NAME).asType();
         final TypeElement contextTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_CONTEXT);
         contextTypeMirror = contextTypeElement.asType();
         final TypeElement fragmentTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_V4_FRAGMENT);
@@ -214,7 +216,7 @@ public class RouterApiProcessor extends BaseProcessor {
         // 返回的返回对象
         TypeMirror returnType = executableElement.getReturnType();
         isReturnNavigationDisposable = navigationDisposableTypeMirror.equals(returnType);
-        isReturnCall = callTypeMirror.equals(returnType);
+        isReturnCall = callTypeMirror.equals(returnType) || navigatorTypeMirror.equals(returnType);
         // 方法名
         Name methodName = executableElement.getSimpleName();
         // 所有的方法的方法
