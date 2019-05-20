@@ -10,11 +10,13 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
 import com.xiaojinzi.component.anno.ParameterAnno;
+import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.Navigate;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
+import com.xiaojinzi.component.anno.router.UseInteceptorAnno;
 import com.xiaojinzi.component.anno.router.WithAnno;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -41,6 +43,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
@@ -65,11 +68,15 @@ public class RouterApiProcessor extends BaseProcessor {
     private TypeElement biCallBackTypeElement;
     private TypeMirror biCallBackTypeMirror;
     private TypeMirror callTypeMirror;
+    private TypeMirror contextTypeMirror;
+    private TypeMirror fragmentTypeMirror;
     private TypeMirror serializableTypeMirror;
     private TypeMirror parcelableTypeMirror;
+    private TypeMirror bundleTypeMirror;
     private ParameterizedTypeName stringArrayListParameterizedTypeName;
     private ParameterizedTypeName integerArrayListParameterizedTypeName;
     private ParameterizedTypeName parcelableArrayListParameterizedTypeName;
+    private ParameterizedTypeName charsequenceArrayListParameterizedTypeName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -86,13 +93,20 @@ public class RouterApiProcessor extends BaseProcessor {
         biCallBackTypeElement = mElements.getTypeElement(ComponentConstants.BICALLBACK_CLASS_NAME);
         biCallBackTypeMirror = biCallBackTypeElement.asType();
         callTypeMirror = mElements.getTypeElement(ComponentConstants.CALL_CLASS_NAME).asType();
-        final TypeElement serializableTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_SERIALIZABLE);
+        final TypeElement contextTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_CONTEXT);
+        contextTypeMirror = contextTypeElement.asType();
+        final TypeElement fragmentTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_V4_FRAGMENT);
+        fragmentTypeMirror = fragmentTypeElement.asType();
+        final TypeElement serializableTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_SERIALIZABLE);
         serializableTypeMirror = serializableTypeElement.asType();
-        final TypeElement parcelableTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.ANDROID_PARCELABLE);
+        final TypeElement parcelableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_PARCELABLE);
         parcelableTypeMirror = parcelableTypeElement.asType();
+        final TypeElement bundleTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_BUNDLE);
+        bundleTypeMirror = bundleTypeElement.asType();
         stringArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, mClassNameString);
         integerArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, ClassName.INT.box());
         parcelableArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(parcelableTypeMirror));
+        charsequenceArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(charsequenceTypeMirror));
     }
 
     @Override
@@ -184,6 +198,8 @@ public class RouterApiProcessor extends BaseProcessor {
         HostAndPathAnno hostAndPathAnnotation = executableElement.getAnnotation(HostAndPathAnno.class);
         // 普通跳转的注解
         Navigate navigateAnnotation = executableElement.getAnnotation(Navigate.class);
+        // 使用的拦截器
+        UseInteceptorAnno useInteceptorAnnotation = executableElement.getAnnotation(UseInteceptorAnno.class);
 
         String host = hostAnnotation == null ? defaultHost : hostAnnotation.value();
         String path = pathAnnotation == null ? null : pathAnnotation.value();
@@ -205,8 +221,8 @@ public class RouterApiProcessor extends BaseProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeName.get(returnType));
 
-        // 找用什么上下文
-        VariableElement withParameter = null;
+        VariableElement contextParameter = null;
+        VariableElement fragmentParameter = null;
         VariableElement callBackParameter = null;
         VariableElement biCallBackParameter = null;
 
@@ -219,12 +235,24 @@ public class RouterApiProcessor extends BaseProcessor {
             List<? extends TypeMirror> typeMirrors = mTypes.directSupertypes(parameterTypeMirror);
             mMessager.printMessage(Diagnostic.Kind.NOTE, "typeMirrors = " + typeMirrors.getClass().getName());
             mMessager.printMessage(Diagnostic.Kind.NOTE, "parameter = " + parameter.getSimpleName() + ":" + parameterTypeMirror.getClass().getName());
-            if (parameter.getAnnotation(WithAnno.class) != null) {
-                withParameter = parameter;
+            if (parameterTypeMirror.equals(contextTypeMirror)) {
+                contextParameter = parameter;
+            } else if (parameterTypeMirror.equals(fragmentTypeMirror)) {
+                fragmentParameter = parameter;
             } else if (parameterTypeMirror.equals(callBackTypeMirror)) { // 如果是 CallBack
                 callBackParameter = parameter;
             } else if (parameterTypeMirror.toString().startsWith(ComponentConstants.BICALLBACK_CLASS_NAME)) { // 如果是 BiCallback
                 biCallBackParameter = parameter;
+            } else if (parameterTypeMirror.equals(bundleTypeMirror)) { // 如果是 Bundle,这个参数可以选填 @ParameterAnno 注解
+                ParameterAnno parameterParameterAnno = parameter.getAnnotation(ParameterAnno.class);
+                if (parameterParameterAnno == null) {
+                    parameterStatement.append("\n.putAll($N)");
+                    parameterArgs.add(parameter.getSimpleName().toString());
+                } else {
+                    parameterStatement.append("\n.putBundle($S,$N)");
+                    parameterArgs.add(parameterParameterAnno.value());
+                    parameterArgs.add(parameter.getSimpleName().toString());
+                }
             } else { // 剩下的就都是参数的了
                 ParameterAnno parameterParameterAnno = parameter.getAnnotation(ParameterAnno.class);
                 if (parameterParameterAnno == null) {
@@ -233,9 +261,9 @@ public class RouterApiProcessor extends BaseProcessor {
                 TypeName parameterTypeName = TypeName.get(parameterTypeMirror);
                 if (parameterTypeName.equals(mTypeNameString)) {
                     parameterStatement.append("\n.putString($S,$N)");
-                } else if(parameterTypeName.equals(charsequenceTypeName)) {
+                } else if (parameterTypeName.equals(charsequenceTypeName)) {
                     parameterStatement.append("\n.putCharSequence($S,$N)");
-                }else if (parameterTypeName.equals(ClassName.BYTE) || parameterTypeName.equals(ClassName.BYTE.box())) { // 如果是 byte
+                } else if (parameterTypeName.equals(ClassName.BYTE) || parameterTypeName.equals(ClassName.BYTE.box())) { // 如果是 byte
                     parameterStatement.append("\n.putByte($S,$N)");
                 } else if (parameterTypeName.equals(ClassName.CHAR) || parameterTypeName.equals(ClassName.CHAR.box())) { // 如果是 char
                     parameterStatement.append("\n.putChar($S,$N)");
@@ -257,15 +285,17 @@ public class RouterApiProcessor extends BaseProcessor {
                     parameterStatement.append("\n.putIntegerArrayList($S,$N)");
                 } else if (parcelableArrayListParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) {
                     parameterStatement.append("\n.putParcelableArrayList($S,$N)");
+                } else if (charsequenceArrayListParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) {
+                    parameterStatement.append("\n.putCharSequenceArrayList($S,$N)");
                 } else if (parameterTypeMirror instanceof ArrayType) {
                     ArrayType parameterArrayType = (ArrayType) parameterTypeMirror;
                     TypeName parameterComponentTypeName = ClassName.get(parameterArrayType.getComponentType());
                     // 如果是一个 String[]
                     if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
                         parameterStatement.append("\n.putStringArray($S,$N)");
-                    }else if (parameterArrayType.getComponentType().equals(charsequenceTypeElement.asType())) {
+                    } else if (parameterArrayType.getComponentType().equals(charsequenceTypeElement.asType())) {
                         parameterStatement.append("\n.putCharSequenceArray($S,$N)");
-                    }  else if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
+                    } else if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
                         parameterStatement.append("\n.putStringArray($S,$N)");
                     } else if (parameterComponentTypeName.equals(ClassName.BYTE) || parameterComponentTypeName.equals(ClassName.BYTE.box())) { // 如果是 byte
                         parameterStatement.append("\n.putByteArray($S,$N)");
@@ -314,7 +344,13 @@ public class RouterApiProcessor extends BaseProcessor {
         // with 方法ok
         routerStatement.append("$T.with($N)");
         args.add(routerTypeElement);
-        args.add(withParameter.getSimpleName().toString());
+        if (contextParameter != null) {
+            args.add(contextParameter.getSimpleName().toString());
+        } else if (fragmentParameter != null) {
+            args.add(fragmentParameter.getSimpleName().toString());
+        } else {
+            throw new ProcessException("do you forget to add a 'Context' or 'android.support.v4.app.Fragment' parameter to method(" + methodPath + ") ?");
+        }
 
         // host 和 path
         if (hostAndPath == null) { // 采用 host 和 path 方法
@@ -331,6 +367,41 @@ public class RouterApiProcessor extends BaseProcessor {
 
         routerStatement.append(parameterStatement.toString());
         args.addAll(parameterArgs);
+
+        // 使用拦截器
+        if (useInteceptorAnnotation != null) {
+            StringBuffer interceptorStatement = new StringBuffer();
+            List<Object> interceptorArgs = new ArrayList<>();
+            if (useInteceptorAnnotation.names().length > 0) {
+                for (int i = 0; i < useInteceptorAnnotation.names().length; i++) {
+                    String interceptorName = useInteceptorAnnotation.names()[i];
+                    if (i == 0) {
+                        interceptorStatement.append("$S");
+                    } else {
+                        interceptorStatement.append(",").append("$S");
+                    }
+                    interceptorArgs.add(interceptorName);
+                }
+                routerStatement.append("\n.interceptorNames(" + interceptorStatement.toString() + ")");
+                args.addAll(interceptorArgs);
+            }
+            interceptorStatement.delete(0, interceptorStatement.length());
+            interceptorArgs.clear();
+                List<String> implClassName = getImplClassName(useInteceptorAnnotation);
+                if (implClassName.size() > 0) {
+                    for (int i = 0; i < implClassName.size(); i++) {
+                        // initMapMethodSpecBuilder.addStatement("$N.add($T.class)", interceptorListName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
+                        if (i == 0) {
+                            interceptorStatement.append("$T.class");
+                        } else {
+                            interceptorStatement.append(",").append("$T.class");
+                        }
+                        interceptorArgs.add(ClassName.get(mElements.getTypeElement(implClassName.get(i))));
+                    }
+                    routerStatement.append("\n.interceptors(" + interceptorStatement.toString() + ")");
+                    args.addAll(interceptorArgs);
+                }
+        }
 
         // 根据跳转类型生成 navigate 方法
         if (navigateAnnotation == null) {
@@ -394,5 +465,26 @@ public class RouterApiProcessor extends BaseProcessor {
         typeSpecBuilder.addMethod(methodBuilder.build());
 
     }
+
+    private List<String> getImplClassName(UseInteceptorAnno anno) {
+        List<String> implClassNames = new ArrayList<>();
+        try {
+            implClassNames.clear();
+            //这里会报错，此时在catch中获取到拦截器的全类名
+            final Class[] interceptors = anno.classes();
+            // 这个循环其实不会走,我就随便写的,不过最好也不要删除
+            for (Class interceptor : interceptors) {
+                implClassNames.add(interceptor.getName());
+            }
+        } catch (MirroredTypesException e) {
+            implClassNames.clear();
+            final List<? extends TypeMirror> typeMirrors = e.getTypeMirrors();
+            for (TypeMirror typeMirror : typeMirrors) {
+                implClassNames.add(typeMirror.toString());
+            }
+        }
+        return implClassNames;
+    }
+
 
 }
