@@ -9,6 +9,7 @@ import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.NavigateAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
+import com.xiaojinzi.component.impl.Navigator;
 import com.xiaojinzi.component.support.NavigationDisposable;
 
 @RouterApiAnno()
@@ -24,6 +25,6 @@ public interface AppApi {
     @NavigateAnno
     @HostAnno(ModuleConfig.Help.NAME)
     @PathAnno((ModuleConfig.Help.TEST_WEB_ROUTER))
-    NavigationDisposable goToTestWebRouter(Context context);
+    Navigator goToTestWebRouter(Context context);
 
 }
