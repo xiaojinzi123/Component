@@ -1,30 +1,35 @@
 Component
 -------
 
-**直接拿到 onActivityResult 的酸爽**
-
-<img src="imgs/rxGetData.png" width="640px" height="360px"/>
-
-**网页无缝调用的酸爽**
-
-<img src="imgs/componentDesc.gif" width="250px" height="400px"/>
-
-**属性自动注入的酸爽**
-
-<img src="imgs/fieldInject.png" width="600px" height="360px"/>
-
-这个组件化方案参考了 ARouter,WMRouter,ActivityRouter,CC,DDComponent等开源的组件化框架
+这个组件化方案的设计尽可能的贴近系统原生,不会扩展出系统不支持的技术<br/>
+参考了 ARouter,WMRouter,ActivityRouter,CC,DDComponent等开源的组件化框架
 结合了其中的一些优点并且扩展了几个很好用的特性：
 
-- 路由可手动取消
-- 路由自动取消,当发起Fragment或者Activity销毁
-- 零配置实现任何地方拿到目标界面返回的需要在onActivityResult拿的Intent
-- 用户自定义的拦截器的实现方法和Callback回调方法都是在主线程,并且以Callback机制,让你可以在拦截器中做任何事情
-- 把服务发现和Router跳转分开,Arouter,WMRouter等都是一起的,我个人认为分开更好
-- 采取了WMRouter等框架设计的页面拦截器(具体怎么回事看wiki)
+- 对 `Activity` 和目标 `Activity` **0** 配置实现 `ActivityResult` 的获取
+    - 支持 `Dialog` `Context`, 因为 `dialog` 实际上是附着在 `Activity` 上的
+    - 不支持系统 `Service` `Context`, 因为 `Android` 原生就不支持
+    - 不支持 `Application` `Context`, 因为 `Android` 原生就不支持
+- 路由取消
+    - 可以手动用代码取消
+    - 路由自动取消,当发起路由的 `Fragment` 或者 `Activity` 销毁的时候会取消
+- 路由拦截器
+    - 主线程中执行,允许你进行 `UI` 操作
+    - Callback机制,可以做任何事情
+    - 提供了三种拦截器(具体看wiki)
+        - 自定义拦截器
+        - 页面拦截器
+        - 全局拦截器
+- 服务发现和路由分开设计
+    - 其实这两块本来就是两个方面,我不清楚为什么很多方案中都柔和在一块
 - Rx扩展库扩展完美结合了 RxJava2
 
 **更多功能等你来发现**
+
+<img src="imgs/rxGetData.png" width="640px" height="360px"/>
+
+<img src="imgs/componentDesc.gif" width="250px" height="400px"/>
+
+<img src="imgs/fieldInject.png" width="600px" height="360px"/>
 
 RouterGoPlugin
 -------
