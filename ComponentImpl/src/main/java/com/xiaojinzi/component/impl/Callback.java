@@ -16,9 +16,15 @@ import android.support.annotation.Nullable;
 public interface Callback extends OnRouterError, OnRouterCancel {
 
     /**
-     * 当路由成功的时候,回调
+     * 当路由成功(这里泛指两点：)的时候,回调
+     * 这里的路由成功不等同于跳转成功.指的是下面两点：
+     * 1. 普通跳转的跳转成功
+     * 2. 为了匹配 {@link com.xiaojinzi.component.bean.ActivityResult#resultCode} 匹配成功
      *
      * @param result 路由成功的对象
+     * @see Navigator#navigate()
+     * @see Navigator#navigate(Callback)
+     * @see Navigator#navigateForResultCodeMatch(Callback, int)
      */
     @MainThread
     void onSuccess(@NonNull RouterResult result);

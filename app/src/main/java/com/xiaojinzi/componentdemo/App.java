@@ -8,8 +8,10 @@ import com.xiaojinzi.component.ComponentConfig;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
+import io.reactivex.subjects.Subject;
 
 public class App extends Application {
 
@@ -42,6 +44,8 @@ public class App extends Application {
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();
         }
+
+
 
     }
 

@@ -24,13 +24,22 @@ public class ComponentConstants {
     public static final String CENTERSERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.ServiceCenter";
     public static final String PARAMETERSUPPORT_CLASS_NAME = "com.xiaojinzi.component.support.ParameterSupport";
     public static final String PARAMETERINJECT_CLASS_NAME = "com.xiaojinzi.component.support.ParameterInject";
+    public static final String NAVIGATIONDISPOSABLE_CLASS_NAME = "com.xiaojinzi.component.support.NavigationDisposable";
+    public static final String CALLBACK_CLASS_NAME = "com.xiaojinzi.component.impl.Callback";
+    public static final String BICALLBACK_CLASS_NAME = "com.xiaojinzi.component.impl.BiCallback";
+    public static final String CALL_CLASS_NAME = "com.xiaojinzi.component.impl.Call";
+    public static final String NAVIGATOR_CLASS_NAME = "com.xiaojinzi.component.impl.Navigator";
+    public static final String ROUTER_REQUEST_CLASS_NAME = "com.xiaojinzi.component.impl.RouterRequest";
 
     public static final String ANDROID_PARCELABLE = "android.os.Parcelable";
     public static final String ANDROID_APPLICATION = "android.app.Application";
     public static final String ANDROID_CONTEXT = "android.content.Context";
+    public static final String ANDROID_V4_FRAGMENT = "android.support.v4.app.Fragment";
+    public static final String ANDROID_ACTIVITY = "android.app.Activity";
     public static final String ANDROID_INTENT = "android.content.Intent";
     public static final String ANDROID_ANNOTATION_NULLABLE = "android.support.annotation.Nullable";
     public static final String ANDROID_ANNOTATION_NONNULL = "android.support.annotation.NonNull";
+    public static final String ANDROID_BUNDLE = "android.os.Bundle";
 
     public static final String JAVA_CLASS = "java.lang.Class";
     public static final String JAVA_EXCEPTION = "java.lang.Exception";
@@ -40,6 +49,7 @@ public class ComponentConstants {
     public static final String JAVA_COLLECTIONS = "java.util.Collections";
     public static final String JAVA_ARRAYLIST = "java.util.ArrayList";
     public static final String JAVA_SERIALIZABLE = "java.io.Serializable";
+    public static final String JAVA_CHARSEQUENCE = "java.lang.CharSequence";
 
     public static final String SEPARATOR = "/";
 

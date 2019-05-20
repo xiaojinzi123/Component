@@ -41,7 +41,7 @@ import java.util.Set;
  * 这个类一部分功能应该是 {@link Router} 的构建者对象的功能,但是这里面更多的为导航的功能
  * 写了很多代码,所以名字就不叫 Builder 了
  */
-public class Navigator extends RouterRequest.Builder {
+public class Navigator extends RouterRequest.Builder implements Call {
 
     /**
      * requestCode 如果等于这个值,就表示是随机生成的
@@ -149,6 +149,11 @@ public class Navigator extends RouterRequest.Builder {
     @Override
     public Navigator scheme(@NonNull String scheme) {
         return (Navigator) super.scheme(scheme);
+    }
+
+    @Override
+    public Navigator hostAndPath(@NonNull String hostAndPath) {
+        return (Navigator) super.hostAndPath(hostAndPath);
     }
 
     @Override
@@ -476,7 +481,7 @@ public class Navigator extends RouterRequest.Builder {
     /**
      * 为了拿 {@link ActivityResult}
      *
-     * @param callback
+     * @param callback 这里是为了拿返回的东西是不可以为空的
      * @return
      */
     @NonNull
