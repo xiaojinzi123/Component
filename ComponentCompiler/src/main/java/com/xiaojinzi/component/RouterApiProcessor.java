@@ -155,7 +155,7 @@ public class RouterApiProcessor extends BaseProcessor {
         // superClassName
         final ClassName superClass = ClassName.get(typeElement);
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(cn)
-                //.addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
                 .addSuperinterface(superClass);
 
@@ -405,10 +405,14 @@ public class RouterApiProcessor extends BaseProcessor {
 
         // 根据跳转类型生成 navigate 方法
         if (navigateAnnotation == null) {
-            if (!isReturnCall) {
-                // 这里应该要报错
-                //routerStatement.append("\n.你应该使用 @Navigate* 之类的注解标记这个方法的跳转类型");
-                mMessager.printMessage(Diagnostic.Kind.ERROR, "you should use @Navigate* anno to flag Method: " + methodPath);
+            if (isReturnCall) {
+            }else {
+                if (callBackParameter == null) {
+                    routerStatement.append("\n.navigate()");
+                } else {
+                    routerStatement.append("\n.navigate($N)");
+                    args.add(callBackParameter.getSimpleName().toString());
+                }
             }
         } else {
             if (navigateAnnotation.forResult()) {
