@@ -81,6 +81,10 @@ public class ComponentUtil {
         return new String(ch);
     }
 
+    public static String genRouterApiImplClassName(Class apiClass) {
+        return apiClass.getName() + UIROUTERAPI;
+    }
+
     public static String genHostModuleApplicationClassName(String host) {
         return IMPL_OUTPUT_PKG + DOT + "application" + DOT + firstCharUpperCase(host) + MODULE_APPLCATION;
     }
