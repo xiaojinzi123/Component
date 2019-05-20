@@ -1,5 +1,6 @@
 package com.xiaojinzi.base.router;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.xiaojinzi.base.ModuleConfig;
@@ -12,7 +13,7 @@ import com.xiaojinzi.component.anno.router.RouterApiAnno;
 public interface AppApi {
 
     @PathAnno(ModuleConfig.App.TEST_ROUTER)
-    void goToTestRouter(Context context);
+    void goToTestRouter(Activity context);
 
     @PathAnno(ModuleConfig.App.TEST_QUALITY)
     void goToTestQuality(Context context);

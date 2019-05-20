@@ -70,6 +70,7 @@ public class RouterApiProcessor extends BaseProcessor {
     private TypeMirror callTypeMirror;
     private TypeMirror contextTypeMirror;
     private TypeMirror fragmentTypeMirror;
+    private TypeMirror activityTypeMirror;
     private TypeMirror serializableTypeMirror;
     private TypeMirror parcelableTypeMirror;
     private TypeMirror bundleTypeMirror;
@@ -97,6 +98,8 @@ public class RouterApiProcessor extends BaseProcessor {
         contextTypeMirror = contextTypeElement.asType();
         final TypeElement fragmentTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_V4_FRAGMENT);
         fragmentTypeMirror = fragmentTypeElement.asType();
+        final TypeElement activityTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ACTIVITY);
+        activityTypeMirror = activityTypeElement.asType();
         final TypeElement serializableTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_SERIALIZABLE);
         serializableTypeMirror = serializableTypeElement.asType();
         final TypeElement parcelableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_PARCELABLE);
@@ -235,9 +238,9 @@ public class RouterApiProcessor extends BaseProcessor {
             List<? extends TypeMirror> typeMirrors = mTypes.directSupertypes(parameterTypeMirror);
             mMessager.printMessage(Diagnostic.Kind.NOTE, "typeMirrors = " + typeMirrors.getClass().getName());
             mMessager.printMessage(Diagnostic.Kind.NOTE, "parameter = " + parameter.getSimpleName() + ":" + parameterTypeMirror.getClass().getName());
-            if (parameterTypeMirror.equals(contextTypeMirror)) {
+            if (mTypes.isSubtype(parameterTypeMirror, contextTypeMirror)) { // mTypes.isSubtype(parameterTypeMirror, fragmentTypeMirror)
                 contextParameter = parameter;
-            } else if (parameterTypeMirror.equals(fragmentTypeMirror)) {
+            } else if (mTypes.isSubtype(parameterTypeMirror, fragmentTypeMirror)) {
                 fragmentParameter = parameter;
             } else if (parameterTypeMirror.equals(callBackTypeMirror)) { // 如果是 CallBack
                 callBackParameter = parameter;
@@ -349,7 +352,7 @@ public class RouterApiProcessor extends BaseProcessor {
         } else if (fragmentParameter != null) {
             args.add(fragmentParameter.getSimpleName().toString());
         } else {
-            throw new ProcessException("do you forget to add a 'Context' or 'android.support.v4.app.Fragment' parameter to method(" + methodPath + ") ?");
+            throw new ProcessException("do you forget to add a 'Context' or 'Activity' or 'android.support.v4.app.Fragment' parameter to method(" + methodPath + ") ?");
         }
 
         // host 和 path
@@ -387,26 +390,26 @@ public class RouterApiProcessor extends BaseProcessor {
             }
             interceptorStatement.delete(0, interceptorStatement.length());
             interceptorArgs.clear();
-                List<String> implClassName = getImplClassName(useInteceptorAnnotation);
-                if (implClassName.size() > 0) {
-                    for (int i = 0; i < implClassName.size(); i++) {
-                        // initMapMethodSpecBuilder.addStatement("$N.add($T.class)", interceptorListName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
-                        if (i == 0) {
-                            interceptorStatement.append("$T.class");
-                        } else {
-                            interceptorStatement.append(",").append("$T.class");
-                        }
-                        interceptorArgs.add(ClassName.get(mElements.getTypeElement(implClassName.get(i))));
+            List<String> implClassName = getImplClassName(useInteceptorAnnotation);
+            if (implClassName.size() > 0) {
+                for (int i = 0; i < implClassName.size(); i++) {
+                    // initMapMethodSpecBuilder.addStatement("$N.add($T.class)", interceptorListName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
+                    if (i == 0) {
+                        interceptorStatement.append("$T.class");
+                    } else {
+                        interceptorStatement.append(",").append("$T.class");
                     }
-                    routerStatement.append("\n.interceptors(" + interceptorStatement.toString() + ")");
-                    args.addAll(interceptorArgs);
+                    interceptorArgs.add(ClassName.get(mElements.getTypeElement(implClassName.get(i))));
                 }
+                routerStatement.append("\n.interceptors(" + interceptorStatement.toString() + ")");
+                args.addAll(interceptorArgs);
+            }
         }
 
         // 根据跳转类型生成 navigate 方法
         if (navigateAnnotation == null) {
             if (isReturnCall) {
-            }else {
+            } else {
                 if (callBackParameter == null) {
                     routerStatement.append("\n.navigate()");
                 } else {
