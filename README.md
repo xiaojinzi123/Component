@@ -31,6 +31,42 @@ Component
 
 **了解更多请看 [wiki](https://github.com/xiaojinzi123/Component/wiki/) 更多功能等你来发现**
 
+```
+@RouterApiAnno()  // 标记这个接口,注解处理器会生成实现类
+@HostAnno("user") // 所有接口的默认 host 为 'user'
+public interface Api {
+    
+    @HostAnno("user") // 你可以重新为该方法定义 host
+    @PathAnno("login")
+    // @HostAndPathAnno("user/login") // 你也可以使用 @HostAndPathAnno 去代替 @HostAnno 和 @PathAnno
+    // @HostAndPathAnno 和 (@HostAnno & @PathAnno) 不能同时存在
+    void toLoginView(Context context);
+    
+    // Callback 允许你接受到本次路由完成(成功、取消、出错)的回调
+    @UseInterceptorAnno(names={"user.login"}) // 使用了一个登录的拦截器,跳转会自动完成登录整个过程
+    @PathAnno("personCenter")
+    void toPersonCenterView(Context context,Callback callback); // 去个人中心
+    
+    // 当你路由有回调的返回值的时候,需要用 BiCallback 并且泛型中填写需要的参数类型
+    // 返回值你可以写 void 不关心返回值的类型,你也可以写 NavigationDisposable 拿到一个可取消的对象
+    // forResult = true --> BiCallback<ActivityResult>
+    // forResult = true,resultCodeMatch = <需要匹配的resultCode> --> BiCallback<ActivityResult>
+    // forIntent = true --> BiCallback<Intent>
+    // forResultCode = true --> BiCallback<Integer>
+    // resultCodeMatch = <需要匹配的resultCode> --> Callback
+    @NavigateAnno(forIntent = true)
+    @PathAnno("address")
+    @RequestCodeAnno() // value 不写表示系统自动生成一个可用的
+    NavigationDisposable toAddressView(Context context, BiCallback<Intent> callback); // 去地址选择界面
+    
+    // 你可以不使用 NavigateAnno 注解而返回一个 Call 对象,这样子你可以拿到 Call 对象决定任何时候去路由以及路由的方式
+    // @NavigateAnno 注解和 Call 返回值是冲突的,不可以同时存在!
+    @PathAnno("userInfo")
+    Call toUserInfoView(Context context)
+    
+}
+```
+
 <img src="imgs/rxGetData.png" width="640px" height="360px"/>
 
 <img src="imgs/componentDesc.gif" width="250px" height="400px"/>

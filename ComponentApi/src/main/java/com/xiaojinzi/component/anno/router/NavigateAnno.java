@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)
-public @interface Navigate {
+public @interface NavigateAnno {
 
     /**
      * 为了拿 ActivityResult
