@@ -2,9 +2,15 @@ Component
 -------
 
 这个组件化方案的设计尽可能的贴近系统原生,不会扩展出系统不支持的技术<br/>
-参考了 ARouter,WMRouter,ActivityRouter,CC,DDComponent等开源的组件化框架
+参考了 `ARouter`,`WMRouter`,`ActivityRouter`,`CC`,`DDComponent`等开源的组件化框架
 结合了其中的一些优点并且扩展了几个很好用的特性：
 
+- 跳转
+    - 自定义跳转(这样子就支持了第三方和系统的界面)
+    - 自定义 `Intent`
+- 目标界面的参数注入
+- 无缝对接 `H5`
+- 配套的 `Idea Plugin` 方便快速浏览
 - 对 `Activity` 和目标 `Activity` **0** 配置实现 `ActivityResult` 的获取
     - 支持 `Dialog` `Context`, 因为 `dialog` 实际上是附着在 `Activity` 上的
     - 不支持系统 `Service` `Context`, 因为 `Android` 原生就不支持
@@ -23,7 +29,7 @@ Component
     - 其实这两块本来就是两个方面,我不清楚为什么很多方案中都柔和在一块
 - Rx扩展库扩展完美结合了 RxJava2
 
-**更多功能等你来发现**
+**了解更多请看 [wiki](https://github.com/xiaojinzi123/Component/wiki/) 更多功能等你来发现**
 
 <img src="imgs/rxGetData.png" width="640px" height="360px"/>
 
