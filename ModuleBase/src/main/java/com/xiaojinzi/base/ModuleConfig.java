@@ -28,23 +28,6 @@ public class ModuleConfig {
         // 测试跳转到 APP 详情界面
         public static final String SYSTEM_APP_DETAIL = "appDetail";
 
-        public static final String TEST_PARAMETER = "testParameter";
-        public static final String TEST_PARAMETER_BYTE = "testParameterByte";
-        public static final String TEST_PARAMETER_BYTE_BOX = "testParameterByteBox";
-        public static final String TEST_PARAMETER_SHORT = "testParameterShort";
-        public static final String TEST_PARAMETER_SHORT_BOX = "testParameterShortBox";
-        public static final String TEST_PARAMETER_INT = "testParameterInt";
-        public static final String TEST_PARAMETER_INT_BOX = "testParameterIntBox";
-        public static final String TEST_PARAMETER_LONG = "testParameterLong";
-        public static final String TEST_PARAMETER_LONG_BOX = "testParameterLongBox";
-        public static final String TEST_PARAMETER_FLOAT = "testParameterFloat";
-        public static final String TEST_PARAMETER_FLOAT_BOX = "testParameterFloatBox";
-        public static final String TEST_PARAMETER_DOUBLE = "testParameterDouble";
-        public static final String TEST_PARAMETER_DOUBLE_BOX = "testParameterDoubleBox";
-        public static final String TEST_PARAMETER_BOOLEAN = "testParameterBoolean";
-        public static final String TEST_PARAMETER_BOOLEAN_BOX = "testParameterBooleanBox";
-        public static final String TEST_PARAMETER_STRING = "testParameterString";
-
     }
 
     public static class App {

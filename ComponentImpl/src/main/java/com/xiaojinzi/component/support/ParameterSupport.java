@@ -3,12 +3,14 @@ package com.xiaojinzi.component.support;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.xiaojinzi.component.ComponentConstants;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -315,6 +317,46 @@ public class ParameterSupport {
         }
     }
 
+    @Nullable
+    public static Character getQueryChar(@NonNull Intent intent, @NonNull String key) {
+        return getQueryChar(intent, key, null);
+    }
+
+    @Nullable
+    public static Character getQueryChar(@NonNull Intent intent, @NonNull String key, Character defaultValue) {
+        return getQueryChar(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static Character getQueryChar(@Nullable Bundle bundle, @NonNull String key) {
+        return getQueryChar(bundle, key, null);
+    }
+
+    @Nullable
+    public static Character getQueryChar(@Nullable Bundle bundle, @NonNull String key, Character defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
+        if (routerParameterBundle == null) {
+            return defaultValue;
+        }
+        // may be null
+        String value = routerParameterBundle.getString(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        try {
+            if (value.length() == 1) {
+                return value.charAt(0);
+            } else {
+                return defaultValue;
+            }
+        } catch (Exception ignore) {
+            return defaultValue;
+        }
+    }
+
     /**
      * @param bundle
      * @param uri
@@ -331,6 +373,8 @@ public class ParameterSupport {
         }
         bundle.putBundle(KEY_BUNDLE, routerParameterBundle);
     }
+
+    // ==========================================上面都是查询 query 的方法 ==============================
 
     @Nullable
     public static String getString(@NonNull Intent intent, @NonNull String key) {
@@ -366,6 +410,35 @@ public class ParameterSupport {
     }
 
     @Nullable
+    public static ArrayList<String> getStringArrayList(@NonNull Intent intent, @NonNull String key) {
+        return getStringArrayList(intent, key, null);
+    }
+
+    @Nullable
+    public static ArrayList<String> getStringArrayList(@NonNull Intent intent, @NonNull String key, ArrayList<String> defaultValue) {
+        return getStringArrayList(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static ArrayList<String> getStringArrayList(@Nullable Bundle bundle, @NonNull String key) {
+        return getStringArrayList(bundle, key, null);
+    }
+
+    @Nullable
+    public static ArrayList<String> getStringArrayList(@Nullable Bundle bundle, @NonNull String key, @Nullable ArrayList<String> defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        ArrayList<String> value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getStringArrayList(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
     public static Integer getInt(@NonNull Intent intent, @NonNull String key) {
         return getInt(intent, key, null);
     }
@@ -393,6 +466,35 @@ public class ParameterSupport {
             } else {
                 value = defaultValue;
             }
+        }
+        return value;
+    }
+
+    @Nullable
+    public static ArrayList<Integer> getIntegerArrayList(@NonNull Intent intent, @NonNull String key) {
+        return getIntegerArrayList(intent, key, null);
+    }
+
+    @Nullable
+    public static ArrayList<Integer> getIntegerArrayList(@NonNull Intent intent, @NonNull String key, ArrayList<Integer> defaultValue) {
+        return getIntegerArrayList(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static ArrayList<Integer> getIntegerArrayList(@Nullable Bundle bundle, @NonNull String key) {
+        return getIntegerArrayList(bundle, key, null);
+    }
+
+    @Nullable
+    public static ArrayList<Integer> getIntegerArrayList(@Nullable Bundle bundle, @NonNull String key, @Nullable ArrayList<Integer> defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        ArrayList<Integer> value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getIntegerArrayList(key);
+        } else {
+            value = defaultValue;
         }
         return value;
     }
@@ -464,6 +566,35 @@ public class ParameterSupport {
     }
 
     @Nullable
+    public static CharSequence getCharSequence(@NonNull Intent intent, @NonNull String key) {
+        return getCharSequence(intent, key, null);
+    }
+
+    @Nullable
+    public static CharSequence getCharSequence(@NonNull Intent intent, @NonNull String key, CharSequence defaultValue) {
+        return getCharSequence(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static CharSequence getCharSequence(@Nullable Bundle bundle, @NonNull String key) {
+        return getCharSequence(bundle, key, null);
+    }
+
+    @Nullable
+    public static CharSequence getCharSequence(@Nullable Bundle bundle, @NonNull String key, CharSequence defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        CharSequence value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getCharSequence(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
     public static Byte getByte(@NonNull Intent intent, @NonNull String key) {
         return getByte(intent, key, null);
     }
@@ -489,6 +620,39 @@ public class ParameterSupport {
         if (value == null) {
             if (bundle.containsKey(key)) {
                 value = bundle.getByte(key);
+            } else {
+                value = defaultValue;
+            }
+        }
+        return value;
+    }
+
+    @Nullable
+    public static Character getChar(@NonNull Intent intent, @NonNull String key) {
+        return getChar(intent, key, null);
+    }
+
+    @Nullable
+    public static Character getChar(@NonNull Intent intent, @NonNull String key, Character defaultValue) {
+        return getChar(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static Character getChar(@Nullable Bundle bundle, @NonNull String key) {
+        return getChar(bundle, key, null);
+    }
+
+    @Nullable
+    public static Character getChar(@Nullable Bundle bundle, @NonNull String key, Character defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        Character value = null;
+        // 获取 query 中的
+        value = getQueryChar(bundle, key, null);
+        if (value == null) {
+            if (bundle.containsKey(key)) {
+                value = bundle.getChar(key);
             } else {
                 value = defaultValue;
             }
@@ -595,6 +759,385 @@ public class ParameterSupport {
         return value;
     }
 
+    // ======================================== Array 实现 ========================================
+
+    @Nullable
+    public static String[] getStringArray(@NonNull Intent intent, @NonNull String key) {
+        return getStringArray(intent, key, null);
+    }
+
+    @Nullable
+    public static String[] getStringArray(@NonNull Intent intent, @NonNull String key, String[] defaultValue) {
+        return getStringArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static String[] getStringArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getStringArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static String[] getStringArray(@Nullable Bundle bundle, @NonNull String key, String[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        String[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getStringArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static CharSequence[] getCharSequenceArray(@NonNull Intent intent, @NonNull String key) {
+        return getCharSequenceArray(intent, key, null);
+    }
+
+    @Nullable
+    public static CharSequence[] getCharSequenceArray(@NonNull Intent intent, @NonNull String key, CharSequence[] defaultValue) {
+        return getCharSequenceArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static CharSequence[] getCharSequenceArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getCharSequenceArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static CharSequence[] getCharSequenceArray(@Nullable Bundle bundle, @NonNull String key, CharSequence[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        CharSequence[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getCharSequenceArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static boolean[] getBooleanArray(@NonNull Intent intent, @NonNull String key) {
+        return getBooleanArray(intent, key, null);
+    }
+
+    @Nullable
+    public static boolean[] getBooleanArray(@NonNull Intent intent, @NonNull String key, boolean[] defaultValue) {
+        return getBooleanArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static boolean[] getBooleanArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getBooleanArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static boolean[] getBooleanArray(@Nullable Bundle bundle, @NonNull String key, boolean[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        boolean[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getBooleanArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static byte[] getByteArray(@NonNull Intent intent, @NonNull String key) {
+        return getByteArray(intent, key, null);
+    }
+
+    @Nullable
+    public static byte[] getByteArray(@NonNull Intent intent, @NonNull String key, byte[] defaultValue) {
+        return getByteArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static byte[] getByteArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getByteArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static byte[] getByteArray(@Nullable Bundle bundle, @NonNull String key, byte[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        byte[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getByteArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static char[] getCharArray(@NonNull Intent intent, @NonNull String key) {
+        return getCharArray(intent, key, null);
+    }
+
+    @Nullable
+    public static char[] getCharArray(@NonNull Intent intent, @NonNull String key, char[] defaultValue) {
+        return getCharArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static char[] getCharArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getCharArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static char[] getCharArray(@Nullable Bundle bundle, @NonNull String key, @Nullable char[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        char[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getCharArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static short[] getShortArray(@NonNull Intent intent, @NonNull String key) {
+        return getShortArray(intent, key, null);
+    }
+
+    @Nullable
+    public static short[] getShortArray(@NonNull Intent intent, @NonNull String key, short[] defaultValue) {
+        return getShortArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static short[] getShortArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getShortArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static short[] getShortArray(@Nullable Bundle bundle, @NonNull String key, @Nullable short[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        short[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getShortArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static int[] getIntArray(@NonNull Intent intent, @NonNull String key) {
+        return getIntArray(intent, key, null);
+    }
+
+    @Nullable
+    public static int[] getIntArray(@NonNull Intent intent, @NonNull String key, int[] defaultValue) {
+        return getIntArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static int[] getIntArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getIntArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static int[] getIntArray(@Nullable Bundle bundle, @NonNull String key, @Nullable int[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        int[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getIntArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static long[] getLongArray(@NonNull Intent intent, @NonNull String key) {
+        return getLongArray(intent, key, null);
+    }
+
+    @Nullable
+    public static long[] getLongArray(@NonNull Intent intent, @NonNull String key, long[] defaultValue) {
+        return getLongArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static long[] getLongArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getLongArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static long[] getLongArray(@Nullable Bundle bundle, @NonNull String key, @Nullable long[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        long[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getLongArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static float[] getFloatArray(@NonNull Intent intent, @NonNull String key) {
+        return getFloatArray(intent, key, null);
+    }
+
+    @Nullable
+    public static float[] getFloatArray(@NonNull Intent intent, @NonNull String key, float[] defaultValue) {
+        return getFloatArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static float[] getFloatArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getFloatArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static float[] getFloatArray(@Nullable Bundle bundle, @NonNull String key, @Nullable float[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        float[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getFloatArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static double[] getDoubleArray(@NonNull Intent intent, @NonNull String key) {
+        return getDoubleArray(intent, key, null);
+    }
+
+    @Nullable
+    public static double[] getDoubleArray(@NonNull Intent intent, @NonNull String key, double[] defaultValue) {
+        return getDoubleArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static double[] getDoubleArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getDoubleArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static double[] getDoubleArray(@Nullable Bundle bundle, @NonNull String key, @Nullable double[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        double[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getDoubleArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static Parcelable[] getParcelableArray(@NonNull Intent intent, @NonNull String key) {
+        return getParcelableArray(intent, key, null);
+    }
+
+    @Nullable
+    public static Parcelable[] getParcelableArray(@NonNull Intent intent, @NonNull String key, Parcelable[] defaultValue) {
+        return getParcelableArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static Parcelable[] getParcelableArray(@Nullable Bundle bundle, @NonNull String key) {
+        return getParcelableArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static Parcelable[] getParcelableArray(@Nullable Bundle bundle, @NonNull String key, @Nullable Parcelable[] defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        Parcelable[] value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getParcelableArray(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static ArrayList<Parcelable> getParcelableArrayList(@NonNull Intent intent, @NonNull String key) {
+        return getParcelableArrayList(intent, key, null);
+    }
+
+    @Nullable
+    public static ArrayList<Parcelable> getParcelableArrayList(@NonNull Intent intent, @NonNull String key, ArrayList<Parcelable> defaultValue) {
+        return getParcelableArrayList(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static ArrayList<Parcelable> getParcelableArrayList(@Nullable Bundle bundle, @NonNull String key) {
+        return getParcelableArrayList(bundle, key, null);
+    }
+
+    @Nullable
+    public static ArrayList<Parcelable> getParcelableArrayList(@Nullable Bundle bundle, @NonNull String key, @Nullable ArrayList<Parcelable> defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        ArrayList<Parcelable> value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getParcelableArrayList(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static ArrayList<CharSequence> getCharSequenceArrayList(@NonNull Intent intent, @NonNull String key) {
+        return getCharSequenceArrayList(intent, key, null);
+    }
+
+    @Nullable
+    public static ArrayList<CharSequence> getCharSequenceArrayList(@NonNull Intent intent, @NonNull String key, ArrayList<CharSequence> defaultValue) {
+        return getCharSequenceArrayList(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static ArrayList<CharSequence> getCharSequenceArrayList(@Nullable Bundle bundle, @NonNull String key) {
+        return getCharSequenceArrayList(bundle, key, null);
+    }
+
+    @Nullable
+    public static ArrayList<CharSequence> getCharSequenceArrayList(@Nullable Bundle bundle, @NonNull String key, @Nullable ArrayList<CharSequence> defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        ArrayList<CharSequence> value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getCharSequenceArrayList(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
     public static void inject(@NonNull Object target) {
         Utils.checkNullPointer(target, "target");
         String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;
@@ -603,7 +1146,7 @@ public class ParameterSupport {
             ParameterInject inject = (ParameterInject) targetInjectClass.newInstance();
             inject.inject(target);
         } catch (Exception ignore) {
-            LogUtil.log(target.getClass().getName(),"field inject fail");
+            LogUtil.log(target.getClass().getName(), "field inject fail");
         }
     }
 

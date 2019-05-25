@@ -11,6 +11,9 @@ import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.component1.R;
 
+/**
+ * 测试属性注入功能的界面
+ */
 @RouterAnno(
         host = ModuleConfig.Module1.NAME,
         path = ModuleConfig.Module1.TEST_INJECT1
@@ -101,7 +104,7 @@ public class TestInjectParameterAct1 extends BaseAct {
             Intent intent = new Intent();
             setResult(RESULT_OK, intent);
             finish();
-        }else {
+        } else {
             Intent intent = new Intent();
             setResult(RESULT_ERROR, intent);
             finish();

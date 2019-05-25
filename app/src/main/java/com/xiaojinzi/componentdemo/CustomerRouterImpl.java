@@ -7,6 +7,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.xiaojinzi.base.InterceptorConfig;
@@ -16,6 +17,7 @@ import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
+import com.xiaojinzi.component.support.ParameterSupport;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -38,8 +40,8 @@ public class CustomerRouterImpl {
             path = ModuleConfig.System.CALL_PHONE,
             interceptorNames = InterceptorConfig.HELP_CALLPHOEPERMISION
     )
-    public static Intent callPhoneIntent(@NonNull RouterRequest request,
-                                         @ParameterAnno("tel") String tel) {
+    public static Intent callPhoneIntent(@NonNull RouterRequest request) {
+        String tel = ParameterSupport.getString(request.bundle, "tel");
         if (TextUtils.isEmpty(tel)) {
             throw new NullPointerException("the tel is empty");
         }
