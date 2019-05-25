@@ -471,12 +471,6 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module2.NAME)
                 .path(ModuleConfig.Module2.MAIN)
-                .intentConsumer(new com.xiaojinzi.component.support.Consumer<Intent>() {
-                    @Override
-                    public void accept(@NonNull Intent intent) throws Exception {
-                        Toast.makeText(TestRouterAct.this, intent.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
                 .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {

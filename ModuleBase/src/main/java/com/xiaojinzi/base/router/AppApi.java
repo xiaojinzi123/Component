@@ -22,9 +22,8 @@ public interface AppApi {
     @PathAnno(ModuleConfig.App.TEST_QUALITY)
     void goToTestQuality(Context context);
 
-    @NavigateAnno
     @HostAnno(ModuleConfig.Help.NAME)
     @PathAnno((ModuleConfig.Help.TEST_WEB_ROUTER))
-    Navigator goToTestWebRouter(Context context);
+    void goToTestWebRouter(Context context);
 
 }

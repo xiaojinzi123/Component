@@ -363,12 +363,13 @@ public class RouterProcessor extends BaseHostProcessor {
                 if (variableElement.asType().equals(routerRequestTypeMirror)) {
                     parameterSB.append(NAME_OF_REQUEST);
                 } else { // 其他类型的情况,是实现序列化的对象,这种时候我们直接要从 bundle 中获取
-                    Utils.generateParameterCodeForRouter(
+                    /*Utils.generateParameterCodeForRouter(
                             mTypes, variableElement, jumpMethodBuilder,
                             parameterSupportTypeMirror, parameterName,"request.bundle",
                             mClassNameString, serializableTypeMirror, parcelableTypeMirror
                     );
-                    parameterSB.append(parameterName);
+                    parameterSB.append(parameterName);*/
+                    throw new ProcessException("can relsove parameter " + variableElement.getSimpleName() + " in " + variableElement.getEnclosingElement().getEnclosingElement().getSimpleName() + "." + variableElement.getEnclosingElement().getSimpleName() + " method");
                 }
             }
         }

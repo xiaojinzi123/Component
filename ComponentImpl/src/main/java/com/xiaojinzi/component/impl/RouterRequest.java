@@ -229,10 +229,13 @@ public class RouterRequest {
 
         /**
          * 当不是自定义跳转的时候, Intent 由框架生成,所以可以回调这个接口
-         * 当自定义跳转,这个回调不会回调的
+         * 当自定义跳转,这个回调不会回调的,这是需要注意的点
+         * <p>
+         * 其实目标界面可以完全的自定义路由,这个功能实际上没有存在的必要,因为你可以为同一个界面添加上多个 {@link com.xiaojinzi.component.anno.RouterAnno}
+         * 然后每一个 {@link com.xiaojinzi.component.anno.RouterAnno} 都可以有不同的行为.是可以完全的代替 {@link RouterRequest#intentConsumer} 方法的
          *
-         * @param intentConsumer 这个参数是框架自动构建的,里面有跳转需要的所有参数和数据,这里就是给用户一个
-         *                       更改的机会,但是最好别改参数之类的信息,这里提供出来其实是可以让你调用Intent
+         * @param intentConsumer Intent 是框架自动构建完成的,里面有跳转需要的所有参数和数据,这里就是给用户一个
+         *                       更改的机会,最好别更改内部的参数等的信息,这里提供出来其实主要是可以让你调用Intent
          *                       的 {@link Intent#addFlags(int)} 等方法,并不是给你修改内部的 bundle 的
          * @return
          */
@@ -523,7 +526,7 @@ public class RouterRequest {
             if (index > 0) {
                 host(hostAndPath.substring(0, index));
                 path(hostAndPath.substring(index + 1));
-            }else {
+            } else {
                 Utils.throwException(new IllegalArgumentException(hostAndPath + " is invalid"));
             }
             return this;
