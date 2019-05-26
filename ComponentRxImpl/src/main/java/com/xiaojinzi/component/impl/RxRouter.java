@@ -18,7 +18,6 @@ import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.CallbackAdapter;
-import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.Utils;
 
@@ -100,6 +99,16 @@ public class RxRouter extends Router {
         }
 
         @Override
+        public Builder addIntentFlags(@Nullable Integer... flags) {
+            return (Builder) super.addIntentFlags(flags);
+        }
+
+        @Override
+        public Builder addIntentCategories(@Nullable String... categories) {
+            return (Builder) super.addIntentCategories(categories);
+        }
+
+        @Override
         public Builder interceptors(@NonNull RouterInterceptor... interceptors) {
             return (Builder) super.interceptors(interceptors);
         }
@@ -142,6 +151,11 @@ public class RxRouter extends Router {
         @Override
         public Builder requestCode(@Nullable Integer requestCode) {
             return (Builder) super.requestCode(requestCode);
+        }
+
+        @Override
+        public Builder activityOptions(@Nullable Bundle options) {
+            return (Builder) super.activityOptions(options);
         }
 
         /**

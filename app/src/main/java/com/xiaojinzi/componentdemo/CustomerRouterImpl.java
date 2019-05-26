@@ -1,19 +1,16 @@
 package com.xiaojinzi.componentdemo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
-import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
@@ -79,23 +76,10 @@ public class CustomerRouterImpl {
             host = ModuleConfig.System.NAME,
             path = ModuleConfig.System.SYSTEM_APP_DETAIL
     )
-    public static void appDetail(@NonNull RouterRequest request) {
-        Activity act = request.getActivity();
+    public static Intent appDetail(@NonNull RouterRequest request) {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + request.getRawContext().getPackageName()));
-        if (request.requestCode == null) {
-            if (act == null) {
-                request.fragment.startActivity(intent);
-            } else {
-                act.startActivity(intent);
-            }
-        } else {
-            if (act == null) {
-                request.fragment.startActivityForResult(intent, request.requestCode);
-            } else {
-                act.startActivityForResult(intent, request.requestCode);
-            }
-        }
+        return intent;
     }
 
     @ServiceAnno(AnnoMethodService.class)

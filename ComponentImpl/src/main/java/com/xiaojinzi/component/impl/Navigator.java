@@ -118,6 +118,16 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
+    public Navigator addIntentFlags(@Nullable Integer... flags) {
+        return (Navigator) super.addIntentFlags(flags);
+    }
+
+    @Override
+    public Navigator addIntentCategories(@Nullable String... categories) {
+        return (Navigator) super.addIntentCategories(categories);
+    }
+
+    @Override
     public Navigator beforJumpAction(@Nullable Action action) {
         return (Navigator) super.beforJumpAction(action);
     }
@@ -130,6 +140,11 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @Override
     public Navigator requestCode(@Nullable Integer requestCode) {
         return (Navigator) super.requestCode(requestCode);
+    }
+
+    @Override
+    public Navigator activityOptions(@Nullable Bundle options) {
+        return (Navigator) super.activityOptions(options);
     }
 
     /**

@@ -1,14 +1,13 @@
 package com.xiaojinzi.component;
 
-import com.xiaojinzi.component.anno.ParameterAnno;
-import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.bean.RouterAnnoBean;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.bean.RouterAnnoBean;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -306,7 +305,6 @@ public class RouterProcessor extends BaseHostProcessor {
         methodSpecBuilder.addStatement("$N.setDesc($S)", routerBeanName, routerBean.getDesc());
         // 如果是自定义 Intent
         if (intentTypeMirror.equals(customerReturnType)) {
-
             MethodSpec.Builder jumpMethodBuilder = MethodSpec.methodBuilder("get")
                     .addParameter(TypeName.get(routerRequestTypeMirror), NAME_OF_REQUEST, Modifier.FINAL)
                     .addAnnotation(Override.class)
@@ -324,22 +322,7 @@ public class RouterProcessor extends BaseHostProcessor {
             // 添加一个匿名内部类
             methodSpecBuilder.addStatement("$N.setCustomerIntentCall($L)", routerBeanName, intentCallTypeSpec);
         } else { // 自定义跳转的
-
-            MethodSpec.Builder jumpMethodBuilder = MethodSpec.methodBuilder("jump")
-                    .addParameter(TypeName.get(routerRequestTypeMirror), NAME_OF_REQUEST, Modifier.FINAL)
-                    .addAnnotation(Override.class)
-                    .addException(exceptionClassName)
-                    .addModifiers(Modifier.PUBLIC);
-
-            generateActualMethodCall(jumpMethodBuilder, executableElement, customerIntentOrJumpPath, false);
-
-            TypeSpec customerJumpTypeSpec = TypeSpec.anonymousClassBuilder("")
-                    .addSuperinterface(customerJumpClassName)
-                    .addMethod(
-                            jumpMethodBuilder.build()
-                    )
-                    .build();
-            methodSpecBuilder.addStatement("$N.setCustomerJump($L)", routerBeanName, customerJumpTypeSpec);
+            throw new ProcessException("the return type of method(" + customerIntentOrJumpPath + ") must be 'Intent' ");
         }
     }
 
