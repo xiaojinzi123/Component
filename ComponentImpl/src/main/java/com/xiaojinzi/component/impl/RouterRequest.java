@@ -20,7 +20,10 @@ import com.xiaojinzi.component.support.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,8 +52,29 @@ public class RouterRequest {
     @NonNull
     public final Uri uri;
 
+    /**
+     * requestCode
+     */
     @Nullable
     public final Integer requestCode;
+
+    /**
+     * 跳转的时候 options 参数
+     */
+    @Nullable
+    public final Bundle options;
+
+    /**
+     * Intent 的 flag
+     */
+    @NonNull
+    public final List<Integer> intentFlags;
+
+    /**
+     * Intent 的 类别
+     */
+    @NonNull
+    public final List<String> intentCategories;
 
     @NonNull
     public final Bundle bundle = new Bundle();
@@ -168,6 +192,10 @@ public class RouterRequest {
 
         builder.bundle = bundle;
         builder.requestCode = requestCode;
+        builder.options = options;
+        // 这里需要新创建一个是因为不可修改的集合不可以给别人
+        builder.intentCategories = new ArrayList<>(intentCategories);
+        builder.intentFlags = new ArrayList<>(intentFlags);
 
         builder.intentConsumer = intentConsumer;
         builder.beforJumpAction = beforJumpAction;
@@ -181,6 +209,10 @@ public class RouterRequest {
         context = builder.context;
         fragment = builder.fragment;
         requestCode = builder.requestCode;
+        options = builder.options;
+        // 这两个集合是不可以更改的
+        intentCategories = Collections.unmodifiableList(builder.intentCategories);
+        intentFlags = Collections.unmodifiableList(builder.intentFlags);
         if (builder.bundle != null) {
             this.bundle.putAll(builder.bundle);
         }
@@ -204,6 +236,21 @@ public class RouterRequest {
 
         @Nullable
         protected Integer requestCode;
+
+        @Nullable
+        protected Bundle options;
+
+        /**
+         * Intent 的 flag,允许修改的
+         */
+        @NonNull
+        protected List<Integer> intentFlags = new ArrayList<>(2);
+
+        /**
+         * Intent 的 类别,允许修改的
+         */
+        @NonNull
+        protected List<String> intentCategories = new ArrayList<>(2);
 
         @NonNull
         protected Bundle bundle = new Bundle();
@@ -244,6 +291,20 @@ public class RouterRequest {
             return this;
         }
 
+        public Builder addIntentFlags(@Nullable Integer... flags) {
+            if (flags != null) {
+                this.intentFlags.addAll(Arrays.asList(flags));
+            }
+            return this;
+        }
+
+        public Builder addIntentCategories(@Nullable String... categories) {
+            if (categories != null) {
+                this.intentCategories.addAll(Arrays.asList(categories));
+            }
+            return this;
+        }
+
         public Builder beforJumpAction(@Nullable Action action) {
             this.beforJumpAction = action;
             return this;
@@ -256,6 +317,11 @@ public class RouterRequest {
 
         public Builder requestCode(@Nullable Integer requestCode) {
             this.requestCode = requestCode;
+            return this;
+        }
+
+        public Builder activityOptions(@Nullable Bundle options) {
+            this.options = options;
             return this;
         }
 

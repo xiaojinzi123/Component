@@ -18,7 +18,6 @@ import com.xiaojinzi.base.router.Module1Api;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.ComponentConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
@@ -47,9 +46,9 @@ public class TestRouterAct extends BaseAct {
             path = ModuleConfig.App.TEST_ROUTER,
             desc = "测试跳转的界面"
     )
-    public static void startActivity(@NonNull RouterRequest request) {
+    public static Intent startActivity(@NonNull RouterRequest request) {
         Intent intent = new Intent(request.getRawContext(), TestRouterAct.class);
-        request.getRawContext().startActivity(intent);
+        return intent;
     }
 
     private TextView tv_detail;

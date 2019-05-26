@@ -61,13 +61,6 @@ public class RouterBean {
     @Nullable
     private CustomerIntentCall customerIntentCall;
 
-    /**
-     * 用户自定义的 跳转
-     * 当标记在静态方法上并且返回值是 void 的时候会有值
-     */
-    @Nullable
-    private CustomerJump customerJump;
-
     @Nullable
     public String getDesc() {
         return desc;
@@ -127,15 +120,6 @@ public class RouterBean {
 
     public void setCustomerIntentCall(@Nullable CustomerIntentCall customerIntentCall) {
         this.customerIntentCall = customerIntentCall;
-    }
-
-    public void setCustomerJump(@Nullable CustomerJump customerJump) {
-        this.customerJump = customerJump;
-    }
-
-    @Nullable
-    public CustomerJump getCustomerJump() {
-        return customerJump;
     }
 
 }

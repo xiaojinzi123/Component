@@ -79,104 +79,96 @@ public class RouterCenter implements IComponentCenterRouter {
     /**
      * content 参数和 fragment 参数必须有一个有值的
      *
-     * @param routerRequest
+     * @param request
      * @return
      */
     @MainThread
-    private void doOpenUri(@NonNull final RouterRequest routerRequest) throws Exception {
+    private void doOpenUri(@NonNull final RouterRequest request) throws Exception {
         if (!Utils.isMainThread()) {
             throw new NavigationFailException("Router must run on main thread");
         }
-        if (routerRequest.uri == null) {
+        if (request.uri == null) {
             throw new NavigationFailException("target Uri is null");
         }
         // 参数检测完毕
-        RouterBean target = getTarget(routerRequest.uri);
+        RouterBean target = getTarget(request.uri);
         // router://component1/test?data=xxxx
-        String uriString = routerRequest.uri.toString();
+        String uriString = request.uri.toString();
         // 没有找到目标界面
         if (target == null) {
             throw new TargetActivityNotFoundException(uriString);
         }
-        if (routerRequest.context == null && routerRequest.fragment == null) {
+        if (request.context == null && request.fragment == null) {
             throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nRouter.with(Context) or Router.with(Fragment)");
         }
         // do startActivity
-        Context context = routerRequest.getRawContext();
+        Context context = request.getRawContext();
         // 如果 Context 和 Fragment 中的 Context 都是 null
         if (context == null) {
             throw new NavigationFailException("is your fragment or Activity is Destoried?");
         }
         // 转化 query 到 bundle,这句话不能随便放,因为这句话之前是因为拦截器可以修改 routerRequest 对象中的参数或者整个对象
         // 所以直接当所有拦截器都执行完毕的时候,在确定要跳转了,这个 query 参数可以往 bundle 里面存了
-        ParameterSupport.putQueryBundleToBundle(routerRequest.bundle, routerRequest.uri);
-        if (target.getCustomerJump() != null) {
-            // 用于支持拿到 result 的 Fragment,如果不为空,传这个过去给自定义的地方让写代码的程序员跳转
-            // 这个如果不为空,一定要替换原有的传给用户,不然就拿不到 Result 了
-            Fragment rxFragment = findFragment(routerRequest);
-            if (rxFragment == null) {
-                target.getCustomerJump().jump(routerRequest);
-            } else {
-                target.getCustomerJump().jump(routerRequest
-                        .toBuilder()
-                        .context(null)
-                        .fragment(rxFragment)
-                        .build()
-                );
-            }
-            return;
-        }
+        ParameterSupport.putQueryBundleToBundle(request.bundle, request.uri);
         Intent intent = null;
         if (target.getTargetClass() != null) {
             intent = new Intent(context, target.getTargetClass());
         } else if (target.getCustomerIntentCall() != null) {
-            intent = target.getCustomerIntentCall().get(routerRequest);
+            intent = target.getCustomerIntentCall().get(request);
         }
         if (intent == null) {
             throw new TargetActivityNotFoundException(uriString);
         }
-        intent.putExtras(routerRequest.bundle);
-
-        if (routerRequest.intentConsumer != null) {
-            routerRequest.intentConsumer.accept(intent);
+        // 所有的参数存到 Intent 中
+        intent.putExtras(request.bundle);
+        // 把用户的 flags 和 categories 都设置进来
+        for (String intentCategory : request.intentCategories) {
+            intent.addCategory(intentCategory);
         }
-        jump(routerRequest, intent);
+        for (Integer intentFlag : request.intentFlags) {
+            intent.addFlags(intentFlag);
+        }
+        if (request.intentConsumer != null) {
+            request.intentConsumer.accept(intent);
+        }
+        jump(request, intent);
     }
 
     /**
      * 拿到 Intent 之后真正的跳转
      *
-     * @param routerRequest
+     * @param request
      * @param intent
      */
-    private void jump(@NonNull RouterRequest routerRequest, Intent intent) {
-        if (routerRequest.requestCode == null) { // 如果是 startActivity
-            if (routerRequest.context != null) {
-                routerRequest.context.startActivity(intent);
-            } else if (routerRequest.fragment != null) {
-                routerRequest.fragment.startActivity(intent);
+    private void jump(@NonNull RouterRequest request, Intent intent) {
+        // 如果是普通的启动界面
+        if (request.requestCode == null) { // 如果是 startActivity
+            if (request.context != null) {
+                request.context.startActivity(intent, request.options);
+            } else if (request.fragment != null) {
+                request.fragment.startActivity(intent, request.options);
             } else {
                 throw new NavigationFailException("the context or fragment both are null");
             }
             return;
         }
         // 使用 context 跳转 startActivityForResult
-        if (routerRequest.context != null) {
-            Fragment rxFragment = findFragment(routerRequest.context);
+        if (request.context != null) {
+            Fragment rxFragment = findFragment(request.context);
             Activity rawAct = null;
             if (rxFragment != null) {
-                rxFragment.startActivityForResult(intent, routerRequest.requestCode);
-            } else if ((rawAct = Utils.getActivityFromContext(routerRequest.context)) != null) {
-                rawAct.startActivityForResult(intent, routerRequest.requestCode);
+                rxFragment.startActivityForResult(intent, request.requestCode, request.options);
+            } else if ((rawAct = Utils.getActivityFromContext(request.context)) != null) {
+                rawAct.startActivityForResult(intent, request.requestCode, request.options);
             } else {
                 throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
             }
-        } else if (routerRequest.fragment != null) { // 使用 Fragment 跳转
-            Fragment rxFragment = findFragment(routerRequest.fragment);
+        } else if (request.fragment != null) { // 使用 Fragment 跳转
+            Fragment rxFragment = findFragment(request.fragment);
             if (rxFragment != null) {
-                rxFragment.startActivityForResult(intent, routerRequest.requestCode);
+                rxFragment.startActivityForResult(intent, request.requestCode, request.options);
             } else {
-                routerRequest.fragment.startActivityForResult(intent, routerRequest.requestCode);
+                request.fragment.startActivityForResult(intent, request.requestCode, request.options);
             }
         } else {
             throw new NavigationFailException("the context or fragment both are null");
