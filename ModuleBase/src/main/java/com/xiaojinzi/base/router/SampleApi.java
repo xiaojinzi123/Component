@@ -69,8 +69,8 @@ public interface SampleApi {
     @NavigateAnno(forResult = true)
     @PathAnno(ModuleConfig.Module1.TEST)
     NavigationDisposable test5(Context context,
-                    @ParameterAnno("data") String data,
-                    BiCallback<ActivityResult> callback);
+                               @ParameterAnno("data") String data,
+                               BiCallback<ActivityResult> callback);
 
     @NavigateAnno(forIntent = true)
     @PathAnno(ModuleConfig.Module1.TEST)
