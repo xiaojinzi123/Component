@@ -9,6 +9,8 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.xiaojinzi.component.anno.ParameterAnno;
+import com.xiaojinzi.component.anno.router.CategoryAnno;
+import com.xiaojinzi.component.anno.router.FlagAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.NavigateAnno;
@@ -40,7 +42,6 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
-import javax.tools.Diagnostic;
 
 /**
  * 负责把像 Retrofit 那样的接口生成对应的实现类
@@ -202,6 +203,10 @@ public class RouterApiProcessor extends BaseProcessor {
         UseInteceptorAnno useInteceptorAnnotation = executableElement.getAnnotation(UseInteceptorAnno.class);
         // 请求码的注解
         RequestCodeAnno requestCodeAnnotation = executableElement.getAnnotation(RequestCodeAnno.class);
+        // intent flag 的注解
+        FlagAnno flagAnnotation = executableElement.getAnnotation(FlagAnno.class);
+        // intent category
+        CategoryAnno categoryAnnotation = executableElement.getAnnotation(CategoryAnno.class);
 
         String host = hostAnnotation == null ? defaultHost : hostAnnotation.value();
         String path = pathAnnotation == null ? null : pathAnnotation.value();
@@ -236,8 +241,6 @@ public class RouterApiProcessor extends BaseProcessor {
             // 参数的类型
             TypeMirror parameterTypeMirror = parameter.asType();
             List<? extends TypeMirror> typeMirrors = mTypes.directSupertypes(parameterTypeMirror);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "typeMirrors = " + typeMirrors.getClass().getName());
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "parameter = " + parameter.getSimpleName() + ":" + parameterTypeMirror.getClass().getName());
             if (mTypes.isSubtype(parameterTypeMirror, contextTypeMirror)) { // mTypes.isSubtype(parameterTypeMirror, fragmentTypeMirror)
                 contextParameter = parameter;
             } else if (mTypes.isSubtype(parameterTypeMirror, fragmentTypeMirror)) {
@@ -385,7 +388,7 @@ public class RouterApiProcessor extends BaseProcessor {
         } else if (requestCodeAnnotation != null) {
             if (requestCodeAnnotation.value() == Integer.MIN_VALUE) { // 如果用户没有写
                 routerStatement.append("\n.requestCodeRandom()");
-            }else {
+            } else {
                 routerStatement.append("\n.requestCode($L)");
                 args.add(requestCodeAnnotation.value());
             }
@@ -423,6 +426,26 @@ public class RouterApiProcessor extends BaseProcessor {
                 }
                 routerStatement.append("\n.interceptors(" + interceptorStatement.toString() + ")");
                 args.addAll(interceptorArgs);
+            }
+        }
+
+        // 给路由添加 flags
+
+        if (flagAnnotation != null) {
+            int[] flags = flagAnnotation.value();
+            for (int flag : flags) {
+                routerStatement.append("\n.addIntentFlags($L)");
+                args.add(flag);
+            }
+        }
+
+        // 给路由添加 categories
+
+        if (categoryAnnotation != null) {
+            String[] categories = categoryAnnotation.value();
+            for (String category : categories) {
+                routerStatement.append("\n.addIntentCategories($S)");
+                args.add(category);
             }
         }
 
