@@ -5,7 +5,10 @@
 ## 一个功能强大的组件化框架
 
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=Release)](https://github.com/xiaojinzi123/Component/releases)
+[![](https://img.shields.io/github/tag/xiaojinzi123/Component.svg?label=Tag)](https://github.com/xiaojinzi123/Component/releases)
 ![](https://img.shields.io/github/last-commit/xiaojinzi123/Component/develop.svg?label=Last%20Commit)
+![](https://img.shields.io/github/repo-size/xiaojinzi123/Component.svg)
+![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
 
 Component 的优势
 --------
