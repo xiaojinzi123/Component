@@ -154,8 +154,8 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public Builder activityOptions(@Nullable Bundle options) {
-            return (Builder) super.activityOptions(options);
+        public Builder options(@Nullable Bundle options) {
+            return (Builder) super.options(options);
         }
 
         /**

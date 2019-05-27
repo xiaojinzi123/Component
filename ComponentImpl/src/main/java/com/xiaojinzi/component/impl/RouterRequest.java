@@ -320,7 +320,13 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder activityOptions(@Nullable Bundle options) {
+        /**
+         * 用于 API >= 16 的时候,调用 {@link Activity#startActivity(Intent, Bundle)}
+         *
+         * @param options
+         * @return
+         */
+        public Builder options(@Nullable Bundle options) {
             this.options = options;
             return this;
         }
