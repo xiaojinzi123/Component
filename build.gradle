@@ -1,6 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 apply from: "dependencies.gradle"
+apply from: "dependencies_androidx.gradle"
 
 ext {
     component_group_id = "com.xiaojinzi"

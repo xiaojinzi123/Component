@@ -1,7 +1,7 @@
 package com.xiaojinzi.base.service.inter.component1;
 
-import android.support.annotation.MainThread;
-import android.support.v4.app.Fragment;
+import androidx.annotation.MainThread;
+import androidx.fragment.app.Fragment;
 
 import io.reactivex.Single;
 

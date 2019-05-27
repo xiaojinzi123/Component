@@ -41,9 +41,6 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation libs.appcompat_v7
-    implementation libs.support_annotations
-    implementation libs.constraintLayout
 
     api project(':ModuleBase')
     api project(':Module1')

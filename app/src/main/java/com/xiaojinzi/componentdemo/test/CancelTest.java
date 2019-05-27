@@ -1,7 +1,8 @@
 package com.xiaojinzi.componentdemo.test;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.impl.Router;
@@ -11,7 +12,6 @@ import com.xiaojinzi.component.support.CallbackAdapter;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableOnSubscribe;
 
 /**
  * 取消的测试

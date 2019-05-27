@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.cache;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;

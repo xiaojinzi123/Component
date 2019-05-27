@@ -2,7 +2,9 @@ package com.xiaojinzi.componentdemo.test;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
@@ -19,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableOnSubscribe;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
@@ -495,7 +495,7 @@ public class SuccessTest implements TestExecutor {
                     @Override
                     public void intercept(RouterInterceptor.Chain chain) throws Exception {
 
-                        android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(chain.request().getRawActivity())
+                        AlertDialog dialog = new AlertDialog.Builder(chain.request().getRawActivity())
                                 .setMessage("如果您点击确定,传递过去的名称 'testName' 会被修改为 '我是被拦截器修改的 testName'")
                                 .setPositiveButton("确定", (dialog12, which) -> {
                                 })

@@ -3,39 +3,24 @@ package com.xiaojinzi.componentdemo.view;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.xiaojinzi.base.ModuleConfig;
-import com.xiaojinzi.base.bean.User;
-import com.xiaojinzi.base.interceptor.DialogShowInterceptor;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.bean.ActivityResult;
-import com.xiaojinzi.component.error.ignore.NavigationFailException;
-import com.xiaojinzi.component.impl.BiCallback;
-import com.xiaojinzi.component.impl.Callback;
-import com.xiaojinzi.component.impl.Router;
-import com.xiaojinzi.component.impl.RouterErrorResult;
-import com.xiaojinzi.component.impl.RouterInterceptor;
-import com.xiaojinzi.component.impl.RouterRequest;
-import com.xiaojinzi.component.impl.RouterResult;
-import com.xiaojinzi.component.impl.RxRouter;
-import com.xiaojinzi.component.support.CallbackAdapter;
-import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.Utils;
 import com.xiaojinzi.componentdemo.R;
 import com.xiaojinzi.componentdemo.test.CancelTest;
 import com.xiaojinzi.componentdemo.test.FailureTest;
 import com.xiaojinzi.componentdemo.test.SuccessTest;
 import com.xiaojinzi.componentdemo.test.TestContext;
-import com.xiaojinzi.componentdemo.util.ToastUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -44,10 +29,7 @@ import io.reactivex.CompletableEmitter;
 import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**

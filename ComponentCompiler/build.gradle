@@ -34,7 +34,7 @@ uploadArchives {
                 authentication(userName: "admin", password: "admin123")
             }
             pom.groupId = "${component_group_id}"
-            pom.artifactId = 'component-annotation-compiler'
+            pom.artifactId = 'component-androidx-annotation-compiler'
             pom.version = "${versions.component_version}"
             pom.project {
                 licenses {

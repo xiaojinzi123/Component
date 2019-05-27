@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * 表示一个接受一个参数的接口

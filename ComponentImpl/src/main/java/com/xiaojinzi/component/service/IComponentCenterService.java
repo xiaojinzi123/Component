@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.service;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * 模块的UI服务接口

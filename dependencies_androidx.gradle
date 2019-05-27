@@ -1,0 +1,8 @@
+ext.androidxVersions = [
+        constraintLayout   : "2.0.0-beta1"
+]
+
+ext.androidxLibs = [
+        appcompat                : 'androidx.appcompat:appcompat:1.0.2',
+        constraintLayout         : "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}",
+]

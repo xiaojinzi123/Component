@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.impl;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * 这个类表示一次成功路由的返回结果对象

@@ -1,10 +1,9 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.AnyThread;
-import android.support.annotation.CallSuper;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.AnyThread;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.impl.Navigator;
 import com.xiaojinzi.component.impl.Router;

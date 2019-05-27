@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.router;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * 模块的UI路由的接口

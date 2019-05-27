@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.MainThread;
+import androidx.annotation.MainThread;
 
 /**
  * time   : 2019/01/07

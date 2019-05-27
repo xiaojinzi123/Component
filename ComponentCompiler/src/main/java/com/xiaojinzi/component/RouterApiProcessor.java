@@ -365,7 +365,7 @@ public class RouterApiProcessor extends BaseProcessor {
         } else if (fragmentParameter != null) {
             args.add(fragmentParameter.getSimpleName().toString());
         } else {
-            throw new ProcessException("do you forget to add a 'Context' or 'Activity' or 'android.support.v4.app.Fragment' parameter to method(" + methodPath + ") ?");
+            throw new ProcessException("do you forget to add a 'Context' or 'Activity' or 'androidx.fragment.app.Fragment' parameter to method(" + methodPath + ") ?");
         }
 
         // host 和 path

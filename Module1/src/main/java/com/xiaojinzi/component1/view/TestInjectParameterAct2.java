@@ -2,7 +2,7 @@ package com.xiaojinzi.component1.view;
 
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.bean.User;

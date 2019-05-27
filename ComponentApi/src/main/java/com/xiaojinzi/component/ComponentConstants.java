@@ -35,11 +35,11 @@ public class ComponentConstants {
     public static final String ANDROID_PARCELABLE = "android.os.Parcelable";
     public static final String ANDROID_APPLICATION = "android.app.Application";
     public static final String ANDROID_CONTEXT = "android.content.Context";
-    public static final String ANDROID_V4_FRAGMENT = "android.support.v4.app.Fragment";
+    public static final String ANDROID_V4_FRAGMENT = "androidx.fragment.app.Fragment";
     public static final String ANDROID_ACTIVITY = "android.app.Activity";
     public static final String ANDROID_INTENT = "android.content.Intent";
-    public static final String ANDROID_ANNOTATION_NULLABLE = "android.support.annotation.Nullable";
-    public static final String ANDROID_ANNOTATION_NONNULL = "android.support.annotation.NonNull";
+    public static final String ANDROID_ANNOTATION_NULLABLE = "androidx.annotation.Nullable";
+    public static final String ANDROID_ANNOTATION_NONNULL = "androidx.annotation.NonNull";
     public static final String ANDROID_BUNDLE = "android.os.Bundle";
 
     public static final String JAVA_CLASS = "java.lang.Class";

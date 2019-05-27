@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.impl;
 
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 
 /**
  * 路由监听器,目前就只有三种情况,其实还有 RxJava 支持的 RxRouter 成功的和失败的

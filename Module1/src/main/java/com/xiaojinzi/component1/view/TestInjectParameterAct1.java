@@ -2,7 +2,7 @@ package com.xiaojinzi.component1.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.view.BaseAct;

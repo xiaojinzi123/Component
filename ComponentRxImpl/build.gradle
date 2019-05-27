@@ -22,7 +22,7 @@ android {
 }
 
 dependencies {
-    compileOnly libs.appcompat_v7
+    compileOnly androidxLibs.appcompat
     compileOnly libs.rxjava
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         api libs.component_impl
@@ -48,7 +48,7 @@ uploadArchives {
                 authentication(userName: "admin", password: "admin123")
             }
             pom.groupId = "${component_group_id}"
-            pom.artifactId = 'component-impl-rx'
+            pom.artifactId = 'component-androidx-impl-rx'
             pom.version = "${versions.component_version}"
             pom.project {
                 licenses {
