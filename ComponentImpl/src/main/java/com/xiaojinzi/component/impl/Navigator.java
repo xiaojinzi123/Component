@@ -143,8 +143,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator activityOptions(@Nullable Bundle options) {
-        return (Navigator) super.activityOptions(options);
+    public Navigator options(@Nullable Bundle options) {
+        return (Navigator) super.options(options);
     }
 
     /**
