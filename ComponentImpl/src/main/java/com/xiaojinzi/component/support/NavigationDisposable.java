@@ -2,7 +2,6 @@ package com.xiaojinzi.component.support;
 
 import android.support.annotation.AnyThread;
 import android.support.annotation.CallSuper;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -25,9 +24,11 @@ public interface NavigationDisposable {
 
     /**
      * 拿到这个路由的请求对象,这个对象是最原始的那个,不会经过拦截器的修改而变化
-     * 使用这个方法需要注意的就是这个方法可能会返回一个 null 的对象
+     * 使用这个方法需要注意的就是这个方法可能会返回一个 null 的对象,为 null 的时候由两种情况：
+     * 1.还没来得及构建 {@link RouterRequest} 就调用此方法
+     * 2.构建 {@link RouterRequest} 失败,那么这个方法也会返回 null 的
      *
-     * @return 当导航的参数构建阶段发生异常, 那么这个就会返回 null,因为这个时候根本连{@link RouterRequest} 都没有构建出来
+     * @return {@link RouterRequest}
      */
     @Nullable
     @AnyThread
@@ -60,7 +61,7 @@ public interface NavigationDisposable {
 
         @Nullable
         @Override
-        public RouterRequest originalRequest() {
+        public synchronized RouterRequest originalRequest() {
             if (proxyNavigationDisposable != null) {
                 return proxyNavigationDisposable.originalRequest();
             }
@@ -69,7 +70,7 @@ public interface NavigationDisposable {
 
         @CallSuper
         @Override
-        public void cancel() {
+        public synchronized void cancel() {
             if (proxyNavigationDisposable != null) {
                 proxyNavigationDisposable.cancel();
             }

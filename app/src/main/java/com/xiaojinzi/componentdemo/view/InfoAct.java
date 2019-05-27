@@ -1,13 +1,11 @@
 package com.xiaojinzi.componentdemo.view;
 
-import android.app.ActivityOptions;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
