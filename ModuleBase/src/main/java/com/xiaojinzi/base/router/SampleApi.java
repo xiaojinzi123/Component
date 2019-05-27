@@ -19,6 +19,7 @@ import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.NavigateAnno;
+import com.xiaojinzi.component.anno.router.OptionsAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
 import com.xiaojinzi.component.anno.router.UseInteceptorAnno;
@@ -46,6 +47,7 @@ public interface SampleApi {
             classes = {DialogShowInterceptor.class, TimeConsumingInterceptor.class}
     )
     Navigator test(Context context, @ParameterAnno("data") String data, Callback callback,
+                   @NonNull @OptionsAnno Bundle options,
                    @NonNull Consumer<Intent> intentConsumer);
 
     @NavigateAnno

@@ -12,7 +12,6 @@ import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.application.ModuleManager;
-import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.componentdemo.R;
 
 import java.util.ArrayList;
@@ -74,12 +73,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouter(View view) {
-        Router.withApi(AppApi.class).goToTestRouter(this, new Consumer<Intent>() {
-            @Override
-            public void accept(@NonNull Intent intent) throws Exception {
-                System.out.println("123123");
-            }
-        });
+        Router.withApi(AppApi.class).goToTestRouter(this);
     }
 
     public void testWebRouter(View view) {
