@@ -14,6 +14,7 @@ import com.xiaojinzi.component.anno.router.FlagAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.NavigateAnno;
+import com.xiaojinzi.component.anno.router.OptionsAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RequestCodeAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
@@ -238,6 +239,7 @@ public class RouterApiProcessor extends BaseProcessor {
         VariableElement callBackParameter = null;
         VariableElement biCallBackParameter = null;
         VariableElement requestCodeParameter = null;
+        VariableElement activityBundleOptionsParameter = null;
         VariableElement intentConsumerParameter = null;
 
         StringBuffer parameterStatement = new StringBuffer();
@@ -256,6 +258,8 @@ public class RouterApiProcessor extends BaseProcessor {
                 biCallBackParameter = parameter;
             } else if (parameter.getAnnotation(RequestCodeAnno.class) != null) { // 表示这是一个 requestCode 的参数值
                 requestCodeParameter = parameter;
+            } else if (parameter.getAnnotation(OptionsAnno.class) != null) { // 如果是 ActivityOptions 的Bundle
+                activityBundleOptionsParameter = parameter;
             } else if (intentComsumerParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) { // 如果是 Consumer<Intent>
                 intentConsumerParameter = parameter;
             } else if (parameterTypeMirror.equals(bundleTypeMirror)) { // 如果是 Bundle,这个参数可以选填 @ParameterAnno 注解
@@ -455,6 +459,13 @@ public class RouterApiProcessor extends BaseProcessor {
                 routerStatement.append("\n.addIntentCategories($S)");
                 args.add(category);
             }
+        }
+
+        // 添加 activity options
+
+        if (activityBundleOptionsParameter != null) {
+            routerStatement.append("\n.options($N)");
+            args.add(activityBundleOptionsParameter.getSimpleName().toString());
         }
 
         // Consumer<Intent>
