@@ -32,8 +32,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation libs.appcompat_v7
-    implementation libs.constraintLayout
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api project(':ModuleBase')
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
