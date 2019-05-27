@@ -1,8 +1,9 @@
 package com.xiaojinzi.component1.runalone;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
