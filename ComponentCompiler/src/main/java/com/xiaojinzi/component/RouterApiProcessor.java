@@ -75,6 +75,7 @@ public class RouterApiProcessor extends BaseProcessor {
     private ParameterizedTypeName integerArrayListParameterizedTypeName;
     private ParameterizedTypeName parcelableArrayListParameterizedTypeName;
     private ParameterizedTypeName charsequenceArrayListParameterizedTypeName;
+    private ParameterizedTypeName intentComsumerParameterizedTypeName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -108,6 +109,10 @@ public class RouterApiProcessor extends BaseProcessor {
         integerArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, ClassName.INT.box());
         parcelableArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(parcelableTypeMirror));
         charsequenceArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(charsequenceTypeMirror));
+        intentComsumerParameterizedTypeName = ParameterizedTypeName.get(
+                ClassName.get(mElements.getTypeElement(ComponentConstants.CONSUMER_CLASS_NAME)),
+                TypeName.get(mElements.getTypeElement(ComponentConstants.ANDROID_INTENT).asType())
+        );
     }
 
     @Override
@@ -233,6 +238,7 @@ public class RouterApiProcessor extends BaseProcessor {
         VariableElement callBackParameter = null;
         VariableElement biCallBackParameter = null;
         VariableElement requestCodeParameter = null;
+        VariableElement intentConsumerParameter = null;
 
         StringBuffer parameterStatement = new StringBuffer();
         List<Object> parameterArgs = new ArrayList<>();
@@ -240,7 +246,6 @@ public class RouterApiProcessor extends BaseProcessor {
         for (VariableElement parameter : parameters) {
             // 参数的类型
             TypeMirror parameterTypeMirror = parameter.asType();
-            List<? extends TypeMirror> typeMirrors = mTypes.directSupertypes(parameterTypeMirror);
             if (mTypes.isSubtype(parameterTypeMirror, contextTypeMirror)) { // mTypes.isSubtype(parameterTypeMirror, fragmentTypeMirror)
                 contextParameter = parameter;
             } else if (mTypes.isSubtype(parameterTypeMirror, fragmentTypeMirror)) {
@@ -251,8 +256,11 @@ public class RouterApiProcessor extends BaseProcessor {
                 biCallBackParameter = parameter;
             } else if (parameter.getAnnotation(RequestCodeAnno.class) != null) { // 表示这是一个 requestCode 的参数值
                 requestCodeParameter = parameter;
+            } else if (intentComsumerParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) { // 如果是 Consumer<Intent>
+                intentConsumerParameter = parameter;
             } else if (parameterTypeMirror.equals(bundleTypeMirror)) { // 如果是 Bundle,这个参数可以选填 @ParameterAnno 注解
                 ParameterAnno parameterParameterAnno = parameter.getAnnotation(ParameterAnno.class);
+                // 不填写的话就是 putAll 否则就是 putBundle
                 if (parameterParameterAnno == null) {
                     parameterStatement.append("\n.putAll($N)");
                     parameterArgs.add(parameter.getSimpleName().toString());
@@ -447,6 +455,13 @@ public class RouterApiProcessor extends BaseProcessor {
                 routerStatement.append("\n.addIntentCategories($S)");
                 args.add(category);
             }
+        }
+
+        // Consumer<Intent>
+
+        if (intentConsumerParameter != null) {
+            routerStatement.append("\n.intentConsumer($N)");
+            args.add(intentConsumerParameter.getSimpleName().toString());
         }
 
         // 根据跳转类型生成 navigate 方法

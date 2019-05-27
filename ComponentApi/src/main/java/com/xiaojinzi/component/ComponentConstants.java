@@ -30,6 +30,7 @@ public class ComponentConstants {
     public static final String CALL_CLASS_NAME = "com.xiaojinzi.component.impl.Call";
     public static final String NAVIGATOR_CLASS_NAME = "com.xiaojinzi.component.impl.Navigator";
     public static final String ROUTER_REQUEST_CLASS_NAME = "com.xiaojinzi.component.impl.RouterRequest";
+    public static final String CONSUMER_CLASS_NAME = "com.xiaojinzi.component.support.Consumer";
 
     public static final String ANDROID_PARCELABLE = "android.os.Parcelable";
     public static final String ANDROID_APPLICATION = "android.app.Application";
