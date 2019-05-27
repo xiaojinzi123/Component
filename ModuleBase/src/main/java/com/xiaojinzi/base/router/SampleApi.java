@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.base.InterceptorConfig;
@@ -26,6 +27,7 @@ import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Call;
 import com.xiaojinzi.component.impl.Callback;
 import com.xiaojinzi.component.impl.Navigator;
+import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.NavigationDisposable;
 
 import java.util.ArrayList;
@@ -43,7 +45,8 @@ public interface SampleApi {
             names = {InterceptorConfig.USER_LOGIN, InterceptorConfig.HELP_CALLPHOEPERMISION},
             classes = {DialogShowInterceptor.class, TimeConsumingInterceptor.class}
     )
-    Navigator test(Context context, @ParameterAnno("data") String data, Callback callback);
+    Navigator test(Context context, @ParameterAnno("data") String data, Callback callback,
+                   @NonNull Consumer<Intent> intentConsumer);
 
     @NavigateAnno
     @HostAnno(ModuleConfig.Module2.NAME)
