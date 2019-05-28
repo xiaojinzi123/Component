@@ -1,7 +1,10 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
+// apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
 
-archivesBaseName = "annotation"
+group = 'com.github.xiaojinzi123'
+
+archivesBaseName = "component-annotation"
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -14,7 +17,7 @@ repositories {
     mavenCentral()
 }
 
-uploadArchives {
+/*uploadArchives {
     repositories {
         mavenDeployer {
             repository(url: "${mavenServerUrl}") {
@@ -39,4 +42,4 @@ uploadArchives {
 
 artifacts {
     archives jar
-}
+}*/

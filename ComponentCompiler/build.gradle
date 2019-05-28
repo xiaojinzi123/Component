@@ -1,7 +1,10 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
+// apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
 
-archivesBaseName = "compiler"
+group = 'com.github.xiaojinzi123'
+
+archivesBaseName = "component-compiler"
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -26,6 +29,7 @@ repositories {
     mavenCentral()
 }
 
+/*
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -52,4 +56,4 @@ uploadArchives {
 
 artifacts {
     archives jar
-}
+}*/
