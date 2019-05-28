@@ -15,30 +15,3 @@ targetCompatibility = "7"
 repositories {
     mavenCentral()
 }
-
-/*uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "${mavenServerUrl}") {
-                authentication(userName: "admin", password: "admin123")
-            }
-            pom.groupId = "${component_group_id}"
-            pom.artifactId = 'component-annotation'
-            pom.version = "${versions.component_version}"
-            pom.project {
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-            }
-
-        }
-    }
-}
-
-
-artifacts {
-    archives jar
-}*/
