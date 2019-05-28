@@ -1,7 +1,9 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
 
-archivesBaseName = "impl"
+group = 'com.github.xiaojinzi123'
+
+archivesBaseName = "component-impl"
 
 android {
     compileSdkVersion versions.android_compile_sdk
@@ -38,27 +40,4 @@ task androidSourcesJar(type: Jar) {
 
 artifacts {
     archives androidSourcesJar
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-
-            repository(url: "${mavenServerUrl}") {
-                authentication(userName: "admin", password: "admin123")
-            }
-            pom.groupId = "${component_group_id}"
-            pom.artifactId = 'component-androidx-impl'
-            pom.version = "${versions.component_version}"
-            pom.project {
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-            }
-
-        }
-    }
 }

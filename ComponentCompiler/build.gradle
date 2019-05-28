@@ -1,7 +1,9 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
 
-archivesBaseName = "compiler"
+group = 'com.github.xiaojinzi123'
+
+archivesBaseName = "component-compiler"
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -24,32 +26,4 @@ dependencies {
 
 repositories {
     mavenCentral()
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-
-            repository(url: "${mavenServerUrl}") {
-                authentication(userName: "admin", password: "admin123")
-            }
-            pom.groupId = "${component_group_id}"
-            pom.artifactId = 'component-androidx-annotation-compiler'
-            pom.version = "${versions.component_version}"
-            pom.project {
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-            }
-
-        }
-    }
-}
-
-
-artifacts {
-    archives jar
 }
