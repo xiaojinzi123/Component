@@ -1,6 +1,5 @@
 package com.xiaojinzi.componentdemo.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +9,6 @@ import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
-import com.xiaojinzi.component.impl.RouterRequest;
 import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.componentdemo.R;
@@ -19,8 +17,7 @@ import com.xiaojinzi.componentdemo.R;
  * 测试错误的情况用
  */
 @RouterAnno(
-        host = ModuleConfig.App.NAME,
-        path = ModuleConfig.App.TEST_ERROR
+        hostAndPath = ModuleConfig.App.NAME + "/" + ModuleConfig.App.TEST_ERROR
 )
 public class TestErrorAct extends AppCompatActivity {
 

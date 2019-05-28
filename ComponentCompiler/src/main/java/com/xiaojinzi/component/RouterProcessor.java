@@ -34,7 +34,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
-import javax.tools.Diagnostic;
 
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
@@ -110,20 +109,20 @@ public class RouterProcessor extends BaseHostProcessor {
         for (Element element : routeElements) {
             // 如果是一个Activity 才会走到这里
             final RouterAnno router = element.getAnnotation(RouterAnno.class);
-            if (router == null || router.path() == null || router.path().isEmpty()) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：RouterAnno'path can;t be null or empty string");
+            if (router == null) {
+                // 理论上不是不可能成立的
                 continue;
             }
             // 如果有host那就必须满足规范
             if (router.host() != null && !router.host().isEmpty() && router.host().contains("/")) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, "the host path '" + router.host() + "' can't contains '/'");
+                throw new ProcessException(element + "the host path '" + router.host() + "' can't contains '/'");
             }
-            if (routerMap.containsKey(getHostAndPath(router.host(), router.path()))) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + "：RouterAnno'path is alreay exist");
+            // 一定是 xxx/xxx 形式的字符串
+            String hostAndPathStr = getHostAndPathFromAnno(router);
+            if (routerMap.containsKey(hostAndPathStr)) {
+                throw new ProcessException(element + "：RouterAnno'path is alreay exist");
             }
             final RouterAnnoBean routerBean = new RouterAnnoBean();
-            routerBean.setHost(router.host());
-            routerBean.setPath(router.path());
             routerBean.setDesc(router.desc());
             routerBean.setRawType(element);
             routerBean.getInterceptors().clear();
@@ -134,7 +133,7 @@ public class RouterProcessor extends BaseHostProcessor {
                     routerBean.getInterceptorNames().add(interceptorName);
                 }
             }
-            routerMap.put(getHostAndPath(router.host(), router.path()), routerBean);
+            routerMap.put(hostAndPathStr, routerBean);
         }
     }
 
@@ -222,10 +221,31 @@ public class RouterProcessor extends BaseHostProcessor {
 
     }
 
-    private String getHostAndPath(String host, String path) {
+    /**
+     * 如果 host 为空会使用默认值
+     *
+     * @param anno 为空的话默认使用默认的host
+     * @return
+     */
+    private String getHostAndPathFromAnno(RouterAnno anno) {
+        String host = anno.host();
+        String path = anno.path();
+        String hostAndPath = anno.hostAndPath();
+        if (!"".equals(hostAndPath)) { // 如果用户填写了
+            int index = hostAndPath.indexOf('/');
+            if (index < 0) {
+                throw new ProcessException("the hostAndPath(" + hostAndPath + ") must have '/',such as \"app/test\"");
+            }
+            if (index == 0 || index == hostAndPath.length() - 1) {
+                throw new ProcessException("the hostAndPath(" + hostAndPath + ") can't start with '/' and end with '/'");
+            }
+            host = hostAndPath.substring(0, index);
+            path = hostAndPath.substring(index + 1);
+        }
         if (host == null || host.isEmpty()) {
             host = componentHost;
         }
+        // 如果 path 没有 / 开头,会自动加一个
         if (path != null && path.length() > 0 && path.charAt(0) != '/') {
             path = ComponentConstants.SEPARATOR + path;
         }
@@ -268,8 +288,8 @@ public class RouterProcessor extends BaseHostProcessor {
         methodSpecBuilder.addComment(NORMALLINE + commentStr + NORMALLINE);
         methodSpecBuilder.addCode("\n");
         methodSpecBuilder.addStatement("$T $N = new $T()", routerBeanTypeElement, routerBeanName, routerBeanTypeElement);
-        methodSpecBuilder.addStatement("$N.setHost($S)", routerBeanName, routerBean.getHost());
-        methodSpecBuilder.addStatement("$N.setPath($S)", routerBeanName, routerBean.getPath());
+        //methodSpecBuilder.addStatement("$N.setHost($S)", routerBeanName, routerBean.getHost());
+        //methodSpecBuilder.addStatement("$N.setPath($S)", routerBeanName, routerBean.getPath());
         methodSpecBuilder.addStatement("$N.setDesc($S)", routerBeanName, routerBean.getDesc());
         methodSpecBuilder.addStatement("$N.setTargetClass($T.class)", routerBeanName, targetActivityClassName);
     }
@@ -300,8 +320,8 @@ public class RouterProcessor extends BaseHostProcessor {
         methodSpecBuilder.addComment("---------------------------" + commentStr + "---------------------------");
         methodSpecBuilder.addCode("\n");
         methodSpecBuilder.addStatement("$T $N = new $T()", routerBeanTypeElement, routerBeanName, routerBeanTypeElement);
-        methodSpecBuilder.addStatement("$N.setHost($S)", routerBeanName, routerBean.getHost());
-        methodSpecBuilder.addStatement("$N.setPath($S)", routerBeanName, routerBean.getPath());
+        //methodSpecBuilder.addStatement("$N.setHost($S)", routerBeanName, routerBean.getHost());
+        //methodSpecBuilder.addStatement("$N.setPath($S)", routerBeanName, routerBean.getPath());
         methodSpecBuilder.addStatement("$N.setDesc($S)", routerBeanName, routerBean.getDesc());
         // 如果是自定义 Intent
         if (intentTypeMirror.equals(customerReturnType)) {
