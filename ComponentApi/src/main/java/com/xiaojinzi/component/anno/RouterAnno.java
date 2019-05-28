@@ -36,7 +36,15 @@ public @interface RouterAnno {
      *
      * @return
      */
-    String path();
+    String path() default "";
+
+    /**
+     * 当你使用了 {@link #hostAndPath()} 那么就会自动忽略 {@link #host()} 和 {@link #path()}
+     * 一次性指定 host 和 path,字符串内至少包含一个 /
+     *
+     * @return
+     */
+    String hostAndPath() default "";
 
     /**
      * 拦截器的地址
