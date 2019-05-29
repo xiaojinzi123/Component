@@ -48,16 +48,12 @@ public class RouterProcessor extends BaseHostProcessor {
     private static final String NAME_OF_REQUEST = "request";
 
     private ClassName customerIntentCallClassName;
-    private ClassName customerJumpClassName;
 
     private TypeElement routerBeanTypeElement;
     private ClassName exceptionClassName;
     private TypeElement intentTypeElement;
     private TypeMirror intentTypeMirror;
     private TypeMirror routerRequestTypeMirror;
-    private TypeMirror parameterSupportTypeMirror;
-    private TypeMirror serializableTypeMirror;
-    private TypeMirror parcelableTypeMirror;
     private TypeElement interceptorTypeElement;
 
     final AtomicInteger atomicInteger = new AtomicInteger();
@@ -71,19 +67,11 @@ public class RouterProcessor extends BaseHostProcessor {
         final TypeElement exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
         exceptionClassName = ClassName.get(exceptionTypeElement);
         final TypeElement customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
-        final TypeElement customerJumpTypeElement = mElements.getTypeElement(CUSTOMER_JUMP_CLASS_NAME);
         intentTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.ANDROID_INTENT);
         intentTypeMirror = intentTypeElement.asType();
         final TypeElement routerRequestTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_REQUEST_CLASS_NAME);
         routerRequestTypeMirror = routerRequestTypeElement.asType();
         customerIntentCallClassName = ClassName.get(customerIntentCallTypeElement);
-        customerJumpClassName = ClassName.get(customerJumpTypeElement);
-        final TypeElement parameterSupportTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.PARAMETERSUPPORT_CLASS_NAME);
-        parameterSupportTypeMirror = parameterSupportTypeElement.asType();
-        final TypeElement serializableTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_SERIALIZABLE);
-        serializableTypeMirror = serializableTypeElement.asType();
-        final TypeElement parcelableTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.ANDROID_PARCELABLE);
-        parcelableTypeMirror = parcelableTypeElement.asType();
 
     }
 
@@ -113,28 +101,64 @@ public class RouterProcessor extends BaseHostProcessor {
                 // 理论上不是不可能成立的
                 continue;
             }
-            // 如果有host那就必须满足规范
-            if (router.host() != null && !router.host().isEmpty() && router.host().contains("/")) {
-                throw new ProcessException(element + "the host path '" + router.host() + "' can't contains '/'");
+            final RouterAnnoBean routerBean = toRouterAnnoBean(element, router);
+            // 如果重复就抛出异常
+            if (routerMap.containsKey(routerBean.hostAndPath())) {
+                throw new ProcessException("the url value '" + routerBean.hostAndPath() + "' of " + element + " is alreay exist");
             }
-            // 一定是 xxx/xxx 形式的字符串
-            String hostAndPathStr = getHostAndPathFromAnno(router);
-            if (routerMap.containsKey(hostAndPathStr)) {
-                throw new ProcessException(element + "：RouterAnno'path is alreay exist");
-            }
-            final RouterAnnoBean routerBean = new RouterAnnoBean();
-            routerBean.setDesc(router.desc());
-            routerBean.setRawType(element);
-            routerBean.getInterceptors().clear();
-            routerBean.getInterceptors().addAll(getImplClassName(router));
-            if (router.interceptorNames() != null) {
-                routerBean.getInterceptorNames().clear();
-                for (String interceptorName : router.interceptorNames()) {
-                    routerBean.getInterceptorNames().add(interceptorName);
-                }
-            }
-            routerMap.put(hostAndPathStr, routerBean);
+            routerMap.put(routerBean.hostAndPath(), routerBean);
         }
+    }
+
+    private RouterAnnoBean toRouterAnnoBean(Element element, RouterAnno routerAnno) {
+
+        // 如果有host那就必须满足规范
+        if (routerAnno.host() != null && !routerAnno.host().isEmpty() && routerAnno.host().contains("/")) {
+            throw new ProcessException(element + "the host path '" + routerAnno.host() + "' can't contains '/'");
+        }
+
+        final RouterAnnoBean routerBean = new RouterAnnoBean();
+        String host = routerAnno.host();
+        String path = routerAnno.path();
+
+        String hostAndPath = routerAnno.hostAndPath();
+        if (!"".equals(hostAndPath)) { // 如果用户填写了 hostAndPath 就拆分出 host 和 path 覆盖之前的
+            int index = hostAndPath.indexOf('/');
+            if (index < 0) {
+                throw new ProcessException("the hostAndPath(" + hostAndPath + ") must have '/',such as \"app/test\"");
+            }
+            if (index == 0 || index == hostAndPath.length() - 1) {
+                throw new ProcessException("the hostAndPath(" + hostAndPath + ") can't start with '/' and end with '/'");
+            }
+            host = hostAndPath.substring(0, index);
+            path = hostAndPath.substring(index + 1);
+        }
+        // 如果用户 host 没填
+        if (host == null || host.isEmpty()) {
+            host = componentHost;
+        }
+        // 如果 path 没有 / 开头,会自动加一个
+        if (path != null && path.length() > 0 && path.charAt(0) != '/') {
+            path = ComponentConstants.SEPARATOR + path;
+        }
+
+        routerBean.setHost(host);
+        // 一定 '/' 开头的
+        routerBean.setPath(path);
+
+        routerBean.setDesc(routerAnno.desc());
+        routerBean.setRawType(element);
+        routerBean.getInterceptors().clear();
+        routerBean.getInterceptors().addAll(getImplClassName(routerAnno));
+        if (routerAnno.interceptorNames() != null) {
+            routerBean.getInterceptorNames().clear();
+            for (String interceptorName : routerAnno.interceptorNames()) {
+                routerBean.getInterceptorNames().add(interceptorName);
+            }
+        }
+
+        return routerBean;
+
     }
 
     /**
@@ -231,7 +255,7 @@ public class RouterProcessor extends BaseHostProcessor {
         String host = anno.host();
         String path = anno.path();
         String hostAndPath = anno.hostAndPath();
-        if (!"".equals(hostAndPath)) { // 如果用户填写了
+        if (!"".equals(hostAndPath)) { // 如果用户填写了 hostAndPath 就拆分出 host 和 path 覆盖之前的
             int index = hostAndPath.indexOf('/');
             if (index < 0) {
                 throw new ProcessException("the hostAndPath(" + hostAndPath + ") must have '/',such as \"app/test\"");
@@ -242,6 +266,7 @@ public class RouterProcessor extends BaseHostProcessor {
             host = hostAndPath.substring(0, index);
             path = hostAndPath.substring(index + 1);
         }
+        // 如果用户 host 没填
         if (host == null || host.isEmpty()) {
             host = componentHost;
         }
