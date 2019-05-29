@@ -147,16 +147,16 @@ class RouterUtil {
     public static void deliveryListenerOnMainThread(@Nullable final RouterResult successResult,
                                                     @Nullable final RouterErrorResult errorResult,
                                                     @Nullable final RouterRequest cancelRequest) {
-        for (RouterListener interceptor : Router.routerListeners) {
+        for (RouterListener listener : Router.routerListeners) {
             try {
                 if (successResult != null) {
-                    interceptor.onSuccess(successResult);
+                    listener.onSuccess(successResult);
                 }
                 if (errorResult != null) {
-                    interceptor.onError(errorResult);
+                    listener.onError(errorResult);
                 }
                 if (cancelRequest != null) {
-                    interceptor.onCancel(cancelRequest);
+                    listener.onCancel(cancelRequest);
                 }
             } catch (Exception ignore) {
                 // do nothing

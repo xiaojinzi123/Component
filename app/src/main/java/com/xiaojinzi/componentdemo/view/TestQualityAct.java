@@ -3,7 +3,6 @@ package com.xiaojinzi.componentdemo.view;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,14 +39,6 @@ import io.reactivex.schedulers.Schedulers;
         desc = "测试代码质量的界面"
 )
 public class TestQualityAct extends BaseAct implements TestContext {
-
-    @RouterAnno(
-            hostAndPath = ModuleConfig.App.NAME + "/" + ModuleConfig.App.TEST_QUALITY,
-            desc = "测试代码质量的界面"
-    )
-    public static Intent start() {
-        return null;
-    }
 
     private TextView resultColor;
 
