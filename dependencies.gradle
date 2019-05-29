@@ -13,7 +13,7 @@ ext.versions = [
         rxjava             : "2.2.8",
         rxandroid          : "2.1.1",
         rxbinding          : "2.2.0",
-        component_version  : "1.7.2"
+        component_version  : "1.7.2.2"
 ]
 
 ext.libs = [
