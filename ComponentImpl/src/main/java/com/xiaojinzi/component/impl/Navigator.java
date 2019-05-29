@@ -532,7 +532,10 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
-     * 必须在主线程中调用
+     * 必须在主线程中调用,就这里可能会出现一种特殊的情况：
+     * 用户收到的回调可能是 error,但是全局的监听可能是 cancel,其实这个问题也能解决,
+     * 就是路由调用之前提前通过方法 {@link Navigator#build()} 提前构建一个 {@link RouterRequest} 出来判断
+     * 但是没有那个必要去做这件事情了,等到有必要的时候再说,基本不会出现并且出现了也不是什么问题
      *
      * @param biCallback
      * @return
@@ -615,6 +618,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         } catch (Exception e) {
             callback.onError(new RouterErrorResult(e));
             if (finalNavigationDisposable != null) {
+                // 取消这个路由
                 finalNavigationDisposable.cancel();
                 finalNavigationDisposable = null;
             }

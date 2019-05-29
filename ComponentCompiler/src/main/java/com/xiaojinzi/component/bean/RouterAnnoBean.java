@@ -61,4 +61,9 @@ public class RouterAnnoBean {
     public List<String> getInterceptorNames() {
         return interceptorNames;
     }
+
+    public String hostAndPath() {
+        return host + path;
+    }
+
 }

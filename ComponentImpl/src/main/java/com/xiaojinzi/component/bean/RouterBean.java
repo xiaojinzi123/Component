@@ -26,12 +26,12 @@ public class RouterBean {
     /**
      * uri 的 host
      */
-    private String host;
+    //private String host;
 
     /**
      * uri 的 path
      */
-    private String path;
+    //private String path;
 
     /**
      * 这个目标 Activity Class,可能为空,因为可能标记在静态方法上
@@ -68,22 +68,6 @@ public class RouterBean {
 
     public void setDesc(@Nullable String desc) {
         this.desc = desc;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     @Nullable
