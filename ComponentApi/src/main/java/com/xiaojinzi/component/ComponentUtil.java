@@ -45,6 +45,11 @@ public class ComponentUtil {
     /**
      * 生成的文件名称的后缀
      */
+    public static final String MODULE_APPLCATION_DEFAULT = "ModuleApplicationGeneratedDefault";
+
+    /**
+     * 生成的文件名称的后缀
+     */
     public static final String SERVICE = "ServiceGenerated";
 
     /**
@@ -87,6 +92,10 @@ public class ComponentUtil {
 
     public static String genHostModuleApplicationClassName(String host) {
         return IMPL_OUTPUT_PKG + DOT + "application" + DOT + firstCharUpperCase(host) + MODULE_APPLCATION;
+    }
+
+    public static String genDefaultHostModuleApplicationClassName(String host) {
+        return IMPL_OUTPUT_PKG + DOT + "application" + DOT + firstCharUpperCase(host) + MODULE_APPLCATION_DEFAULT;
     }
 
     public static String genHostRouterClassName(String host) {
