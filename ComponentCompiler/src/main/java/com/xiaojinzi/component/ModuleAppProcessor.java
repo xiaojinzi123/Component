@@ -49,17 +49,15 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         centerInterceptorTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.CENTERINTERCEPTOR_CLASS_NAME);
         centerServiceTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.CENTERSERVICE_CLASS_NAME);
         routerTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.ROUTER_CLASS_NAME);
+        createImpl(true);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        if (componentHost == null || componentHost.isEmpty()) {
-            return false;
-        }
         if (CollectionUtils.isNotEmpty(set)) {
             Set<? extends Element> moduleAppElements = roundEnvironment.getElementsAnnotatedWith(ModuleAppAnno.class);
             parseAnnotation(moduleAppElements);
-            createImpl();
+            createImpl(false);
             return true;
         }
         return false;
@@ -73,12 +71,10 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         for (Element element : moduleAppElements) {
             TypeMirror tm = element.asType();
             if (!(element instanceof TypeElement)) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " is not a 'TypeElement' ");
-                continue;
+                throw new ProcessException(element + " is not a 'TypeElement' ");
             }
             if (!mTypes.isSubtype(tm, typeApplication)) {
-                mMessager.printMessage(Diagnostic.Kind.ERROR, element + " can't use 'ModuleAppAnno' annotation");
-                continue;
+                throw new ProcessException(element + " can't use 'ModuleAppAnno' annotation");
             }
             // 如果是一个 Application
             ModuleAppAnno moduleApp = element.getAnnotation(ModuleAppAnno.class);
@@ -89,8 +85,21 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         }
     }
 
-    private void createImpl() {
-        String claName = com.xiaojinzi.component.ComponentUtil.genHostModuleApplicationClassName(componentHost);
+    private void createImpl(boolean isDefault) {
+
+        String claName = isDefault ?
+                ComponentUtil.genDefaultHostModuleApplicationClassName(componentHost) :
+                ComponentUtil.genHostModuleApplicationClassName(componentHost);
+
+        String classJavaDoc = null;
+        if (isDefault) {
+            classJavaDoc = "当业务组件中没有用 {@link com.xiaojinzi.component.anno.ModuleAppAnno} 注解," +
+                    "\n本类就会默认被加载的生效\n";
+        } else {
+            classJavaDoc = "当业务组件中使用了 {@link com.xiaojinzi.component.anno.ModuleAppAnno} 注解," +
+                    "\n本类就会被加载生效,默认的 {@link " + claName + "} 会失效\n";
+        }
+
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf('.'));
         //simpleName
@@ -109,6 +118,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addMethod(initMapMethod)
                 .addMethod(onCreateMethod)
                 .addMethod(onDestoryMethod)
+                .addJavadoc(classJavaDoc)
                 .build();
         try {
             JavaFile
