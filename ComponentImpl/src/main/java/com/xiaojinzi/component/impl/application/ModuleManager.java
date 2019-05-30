@@ -90,14 +90,24 @@ public class ModuleManager implements IComponentModuleApplication {
 
     @Nullable
     public static IComponentHostApplication findModuleApplication(String host) {
-        String className = ComponentUtil.genHostModuleApplicationClassName(host);
+        IComponentHostApplication result = null;
         try {
-            Class<?> clazz = Class.forName(className);
-            return (IComponentHostApplication) clazz.newInstance();
+            // 先找正常的
+            Class<?> clazz = Class.forName(ComponentUtil.genHostModuleApplicationClassName(host));
+            result = (IComponentHostApplication) clazz.newInstance();
         } catch (Exception ignore) {
             // ignore
         }
-        return null;
+        if (result == null) {
+            try {
+                // 找默认的
+                Class<?> clazz = Class.forName(ComponentUtil.genDefaultHostModuleApplicationClassName(host));
+                result = (IComponentHostApplication) clazz.newInstance();
+            } catch (Exception ignore) {
+                // ignore
+            }
+        }
+        return result;
     }
 
     /**
