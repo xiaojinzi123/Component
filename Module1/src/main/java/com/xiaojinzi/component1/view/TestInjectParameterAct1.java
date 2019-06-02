@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.view.BaseAct;
-import com.xiaojinzi.component.anno.ParameterAnno;
+import com.xiaojinzi.component.anno.FiledAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component1.R;
 
@@ -21,73 +21,73 @@ public class TestInjectParameterAct1 extends BaseAct {
 
     public static final int defaultValue = -1;
 
-    @ParameterAnno("valueString")
+    @FiledAutowiredAnno("valueString")
     String valueString;
 
-    @ParameterAnno("valueStringDefault")
+    @FiledAutowiredAnno("valueStringDefault")
     String valueStringDefault = "hello";
 
-    @ParameterAnno("valueByte")
+    @FiledAutowiredAnno("valueByte")
     byte valueByte;
-    @ParameterAnno("valueByteDefalut")
+    @FiledAutowiredAnno("valueByteDefalut")
     byte valueByteDefalut = defaultValue;
-    @ParameterAnno("valueByteBox")
+    @FiledAutowiredAnno("valueByteBox")
     Byte valueByteBox;
-    @ParameterAnno("valueByteBoxDefalut")
+    @FiledAutowiredAnno("valueByteBoxDefalut")
     Byte valueByteBoxDefalut = defaultValue;
 
-    @ParameterAnno("valueShort")
+    @FiledAutowiredAnno("valueShort")
     short valueShort;
-    @ParameterAnno("valueShortDefalut")
+    @FiledAutowiredAnno("valueShortDefalut")
     short valueShortDefalut = defaultValue;
-    @ParameterAnno("valueShortBox")
+    @FiledAutowiredAnno("valueShortBox")
     Short valueShortBox;
-    @ParameterAnno("valueShortBoxDefalut")
+    @FiledAutowiredAnno("valueShortBoxDefalut")
     Short valueShortBoxDefalut = defaultValue;
 
-    @ParameterAnno("valueInt")
+    @FiledAutowiredAnno("valueInt")
     int valueInt;
-    @ParameterAnno("valueIntDefalut")
+    @FiledAutowiredAnno("valueIntDefalut")
     int valueIntDefalut = defaultValue;
-    @ParameterAnno("valueIntBox")
+    @FiledAutowiredAnno("valueIntBox")
     Integer valueIntBox;
-    @ParameterAnno("valueIntBoxDefalut")
+    @FiledAutowiredAnno("valueIntBoxDefalut")
     Integer valueIntBoxDefalut = defaultValue;
 
-    @ParameterAnno("valueLong")
+    @FiledAutowiredAnno("valueLong")
     long valueLong;
-    @ParameterAnno("valueLongDefalut")
+    @FiledAutowiredAnno("valueLongDefalut")
     long valueLongDefalut = defaultValue;
-    @ParameterAnno("valueLongBox")
+    @FiledAutowiredAnno("valueLongBox")
     Long valueLongBox;
-    @ParameterAnno("valueLongBoxDefalut")
+    @FiledAutowiredAnno("valueLongBoxDefalut")
     Long valueLongBoxDefalut = Long.valueOf(defaultValue);
 
-    @ParameterAnno("valueFloat")
+    @FiledAutowiredAnno("valueFloat")
     float valueFloat;
-    @ParameterAnno("valueFloatDefalut")
+    @FiledAutowiredAnno("valueFloatDefalut")
     float valueFloatDefalut = defaultValue;
-    @ParameterAnno("valueFloatBox")
+    @FiledAutowiredAnno("valueFloatBox")
     Float valueFloatBox;
-    @ParameterAnno("valueFloatBoxDefalut")
+    @FiledAutowiredAnno("valueFloatBoxDefalut")
     Float valueFloatBoxDefalut = Float.valueOf(defaultValue);
 
-    @ParameterAnno("valueDouble")
+    @FiledAutowiredAnno("valueDouble")
     double valueDouble;
-    @ParameterAnno("valueDoubleDefalut")
+    @FiledAutowiredAnno("valueDoubleDefalut")
     double valueDoubleDefalut = defaultValue;
-    @ParameterAnno("valueDoubleBox")
+    @FiledAutowiredAnno("valueDoubleBox")
     Double valueDoubleBox;
-    @ParameterAnno("valueDoubleBoxDefalut")
+    @FiledAutowiredAnno("valueDoubleBoxDefalut")
     Double valueDoubleBoxDefalut = Double.valueOf(defaultValue);
 
-    @ParameterAnno("valueBoolean")
+    @FiledAutowiredAnno("valueBoolean")
     boolean valueBoolean;
-    @ParameterAnno("valueBooleanDefalut")
+    @FiledAutowiredAnno("valueBooleanDefalut")
     boolean valueBooleanDefalut = true;
-    @ParameterAnno("valueBooleanBox")
+    @FiledAutowiredAnno("valueBooleanBox")
     Boolean valueBooleanBox;
-    @ParameterAnno("valueBooleanBoxDefalut")
+    @FiledAutowiredAnno("valueBooleanBoxDefalut")
     Boolean valueBooleanBoxDefalut = true;
 
     @Override
