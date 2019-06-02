@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.xiaojinzi.component.ComponentConstants;
 
@@ -1143,7 +1142,7 @@ public class ParameterSupport {
         String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;
         try {
             Class<?> targetInjectClass = Class.forName(injectClassName);
-            ParameterInject inject = (ParameterInject) targetInjectClass.newInstance();
+            Inject inject = (Inject) targetInjectClass.newInstance();
             inject.inject(target);
         } catch (Exception ignore) {
             LogUtil.log(target.getClass().getName(), "field inject fail");

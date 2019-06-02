@@ -1,13 +1,11 @@
 package com.xiaojinzi.component1.view;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.view.BaseAct;
-import com.xiaojinzi.component.anno.ParameterAnno;
+import com.xiaojinzi.component.anno.FiledAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.component1.R;
@@ -22,9 +20,9 @@ import com.xiaojinzi.component1.R;
 )
 public class TestPutQueryWithUrlAct extends BaseAct {
 
-    @ParameterAnno("nameFromUrl")
+    @FiledAutowiredAnno("nameFromUrl")
     String nameFromUrl;
-    @ParameterAnno("nameFromPutQuery")
+    @FiledAutowiredAnno("nameFromPutQuery")
     String nameFromPutQuery;
 
     @Override

@@ -2,5 +2,5 @@ com.xiaojinzi.component.ModuleAppProcessor
 com.xiaojinzi.component.RouterProcessor
 com.xiaojinzi.component.InterceptorProcessor
 com.xiaojinzi.component.ServiceProcessor
-com.xiaojinzi.component.ParameterInjectProcessor
+com.xiaojinzi.component.AutowireProcessor
 com.xiaojinzi.component.RouterApiProcessor
