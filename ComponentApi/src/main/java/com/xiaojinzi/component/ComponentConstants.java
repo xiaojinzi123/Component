@@ -23,7 +23,7 @@ public class ComponentConstants {
     public static final String SERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.Service";
     public static final String CENTERSERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.ServiceCenter";
     public static final String PARAMETERSUPPORT_CLASS_NAME = "com.xiaojinzi.component.support.ParameterSupport";
-    public static final String PARAMETERINJECT_CLASS_NAME = "com.xiaojinzi.component.support.ParameterInject";
+    public static final String INJECT_CLASS_NAME = "com.xiaojinzi.component.support.Inject";
     public static final String NAVIGATIONDISPOSABLE_CLASS_NAME = "com.xiaojinzi.component.support.NavigationDisposable";
     public static final String CALLBACK_CLASS_NAME = "com.xiaojinzi.component.impl.Callback";
     public static final String BICALLBACK_CLASS_NAME = "com.xiaojinzi.component.impl.BiCallback";

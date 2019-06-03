@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.Log;
-
-import com.xiaojinzi.component.ComponentConstants;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -1136,18 +1133,6 @@ public class ParameterSupport {
             value = defaultValue;
         }
         return value;
-    }
-
-    public static void inject(@NonNull Object target) {
-        Utils.checkNullPointer(target, "target");
-        String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;
-        try {
-            Class<?> targetInjectClass = Class.forName(injectClassName);
-            ParameterInject inject = (ParameterInject) targetInjectClass.newInstance();
-            inject.inject(target);
-        } catch (Exception ignore) {
-            LogUtil.log(target.getClass().getName(), "field inject fail");
-        }
     }
 
 }
