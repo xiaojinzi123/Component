@@ -12,6 +12,11 @@ import com.xiaojinzi.component.support.Utils;
  */
 public class Component {
 
+    /**
+     * 找到实现类,执行注入
+     *
+     * @param target
+     */
     public static void inject(@NonNull Object target) {
         Utils.checkNullPointer(target, "target");
         String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;

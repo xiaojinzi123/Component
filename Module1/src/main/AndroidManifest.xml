@@ -4,8 +4,8 @@
 
     <application>
         <activity android:name=".view.TestPutQueryWithUrlAct"></activity>
-        <activity android:name=".view.TestInjectParameterAct1" />
-        <activity android:name=".view.TestInjectParameterAct2" />
+        <activity android:name=".view.TestInjectAct1" />
+        <activity android:name=".view.TestInjectAct2" />
         <activity android:name=".view.Component1TestDialogAct" />
         <activity android:name=".view.Component1TestLoginAct" />
         <activity
