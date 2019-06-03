@@ -14,8 +14,6 @@ import com.xiaojinzi.component.anno.FiledAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
 import com.xiaojinzi.component.impl.Component;
-import com.xiaojinzi.component.impl.service.Service;
-import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.component1.R;
 
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ import java.util.ArrayList;
         host = ModuleConfig.Module1.NAME,
         path = ModuleConfig.Module1.TEST_INJECT2
 )
-public class TestInjectParameterAct2 extends BaseAct {
+public class TestInjectAct2 extends BaseAct {
 
     // 基本数据类型
     @FiledAutowiredAnno("data40")
