@@ -13,10 +13,10 @@
 ![](https://img.shields.io/github/repo-size/xiaojinzi123/Component.svg)
 ![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
 <a href="https://gitee.com/xiaojinziCoder/Component" >
-    <img width=20 src="https://gitee.com/logo-black.svg" />
+    <img height=20 src="https://gitee.com/logo-black.svg" />
 </a>
 <a href="https://github.com/xiaojinzi123/Component">
-    <img height=20 src="https://github.com/fluidicon.png" />
+    <img height=22 src="https://github.com/fluidicon.png" />
 </a>
 
 Component 的优势
