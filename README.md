@@ -11,6 +11,8 @@
 ![](https://img.shields.io/github/last-commit/xiaojinzi123/Component/develop.svg?label=Last%20Commit)
 ![](https://img.shields.io/github/repo-size/xiaojinzi123/Component.svg)
 ![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
+<br/>
+[![Fork me on Gitee](https://gitee.com/xiaojinziCoder/Component/widgets/widget_2.svg?color=01020d)](https://gitee.com/xiaojinziCoder/Component)
 
 Component 的优势
 --------
@@ -38,7 +40,7 @@ Component 的优势
 -  **0** 配置可以拿到目标界面返回的 `ActivityResult`,很多框架不支持或者需要入侵 `BaseActivity`
 - 服务发现和路由分开设计
     - 其实这两块本来就是两个方面,我不清楚为什么很多方案中都柔和在一块
-- Rx扩展库扩展完美结合了 RxJava2
+- `Rx` 扩展库扩展完美结合了 `RxJava2`
 
 如何使用
 --------------
