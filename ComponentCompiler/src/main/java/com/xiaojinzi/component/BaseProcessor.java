@@ -2,7 +2,6 @@ package com.xiaojinzi.component;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import com.xiaojinzi.component.ComponentConstants;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;

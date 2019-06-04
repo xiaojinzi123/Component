@@ -8,6 +8,7 @@ import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.anno.FiledAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.Component;
 import com.xiaojinzi.component1.R;
 
 /**
@@ -17,7 +18,7 @@ import com.xiaojinzi.component1.R;
         host = ModuleConfig.Module1.NAME,
         path = ModuleConfig.Module1.TEST_INJECT1
 )
-public class TestInjectParameterAct1 extends BaseAct {
+public class TestInjectAct1 extends BaseAct {
 
     public static final int defaultValue = -1;
 
@@ -94,6 +95,7 @@ public class TestInjectParameterAct1 extends BaseAct {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.component1_test_inject_parameter_act);
+        Component.inject(this);
     }
 
     @Override

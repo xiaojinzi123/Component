@@ -52,6 +52,8 @@ public class AutowireProcessor extends BaseProcessor {
     private TypeMirror parameterSupportTypeMirror;
     private TypeMirror serializableTypeMirror;
     private TypeMirror parcelableTypeMirror;
+    private TypeMirror activityTypeMirror;
+    private TypeMirror fragmentTypeMirror;
 
     private TypeElement serviceTypeElement;
     private ClassName serviceClassName;
@@ -87,6 +89,9 @@ public class AutowireProcessor extends BaseProcessor {
         integerArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, ClassName.INT.box());
         parcelableArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(parcelableTypeMirror));
         charsequenceArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(charsequenceTypeMirror));
+
+        activityTypeMirror = mElements.getTypeElement(ComponentConstants.ANDROID_ACTIVITY).asType();
+        fragmentTypeMirror = mElements.getTypeElement(ComponentConstants.ANDROID_V4_FRAGMENT).asType();
 
     }
 
@@ -179,11 +184,19 @@ public class AutowireProcessor extends BaseProcessor {
                                 .build()
                 )
                 .addModifiers(Modifier.PUBLIC);
-        methodBuilder.addStatement("android.os.Bundle bundle = target.getIntent().getExtras()");
+        boolean isAutowireParameter = true;
+        if (mTypes.isSubtype(targetClass.asType(), activityTypeMirror)) {
+            methodBuilder.addStatement("android.os.Bundle bundle = target.getIntent().getExtras()");
+        } else if (mTypes.isSubtype(targetClass.asType(), fragmentTypeMirror)) {
+            methodBuilder.addStatement("android.os.Bundle bundle = target.getArguments()");
+        } else {
+            isAutowireParameter = false;
+        }
         for (VariableElement variableElement : parameterFieldSet) {
             // 生成一个不重复的参数名字
             String parameterName = "target." + variableElement.getSimpleName();
             generateParameterCodeForInject(
+                    isAutowireParameter,
                     variableElement, methodBuilder,
                     parameterName, "bundle"
             );
@@ -191,7 +204,8 @@ public class AutowireProcessor extends BaseProcessor {
         return methodBuilder.build();
     }
 
-    public void generateParameterCodeForInject(VariableElement variableElement,
+    public void generateParameterCodeForInject(boolean isAutowireParameter,
+                                               VariableElement variableElement,
                                                MethodSpec.Builder methodBuilder,
                                                String parameterName,
                                                String bundleCallStr) {
@@ -201,7 +215,7 @@ public class AutowireProcessor extends BaseProcessor {
         TypeMirror variableTypeMirror = variableElement.asType();
         TypeName parameterTypeName = ClassName.get(variableTypeMirror);
 
-        if (filedAutowiredAnno != null) {
+        if (isAutowireParameter && filedAutowiredAnno != null) {
             if (parameterTypeName.equals(mClassNameString)) { // 如果是一个 String
                 methodBuilder.addStatement("$N = $T.getString($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, filedAutowiredAnno.value(), parameterName);
             } else if (parameterTypeName.equals(charsequenceTypeName)) { // 如果是一个 charsequence
