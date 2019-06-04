@@ -4,6 +4,9 @@
 
 ## 一个功能强大的组件化框架
 
+<a href="https://gitee.com/xiaojinziCoder/Component" >
+    <img width=60 src="https://gitee.com/logo-black.svg" />
+</a>
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=JitPack&color=%233fcd12)](https://jitpack.io/#xiaojinzi123/Component)
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=JitPack-AndroidX&color=%233fcd12)](https://jitpack.io/#xiaojinzi123/Component)
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=Release)](https://github.com/xiaojinzi123/Component/releases)
@@ -11,8 +14,7 @@
 ![](https://img.shields.io/github/last-commit/xiaojinzi123/Component/develop.svg?label=Last%20Commit)
 ![](https://img.shields.io/github/repo-size/xiaojinzi123/Component.svg)
 ![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
-<br/>
-[![Fork me on Gitee](_https://gitee.com/logo-black.svg)](https://gitee.com/xiaojinziCoder/Component)
+
 
 Component 的优势
 --------
