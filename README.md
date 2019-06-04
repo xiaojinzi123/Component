@@ -12,7 +12,7 @@
 ![](https://img.shields.io/github/repo-size/xiaojinzi123/Component.svg)
 ![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
 <br/>
-[![Fork me on Gitee](https://gitee.com/xiaojinziCoder/Component/widgets/widget_2.svg?color=01020d)](https://gitee.com/xiaojinziCoder/Component)
+[![Fork me on Gitee](_https://gitee.com/logo-black.svg)](https://gitee.com/xiaojinziCoder/Component)
 
 Component 的优势
 --------
