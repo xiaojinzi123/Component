@@ -23,7 +23,9 @@
 Demo体验(扫码或者点击图片即可下载)
 --------
 
-[![](./imgs/demoApk.png)](https://files.gitee.com/group1/M00/07/F6/PaAvDFz3FnGAcMLcADcIxREinEY078.apk?attname=app-debug.apk)
+<a href="https://files.gitee.com/group1/M00/07/F6/PaAvDFz3FnGAcMLcADcIxREinEY078.apk?attname=app-debug.apk">
+    <img height=180 src="./imgs/demoApk.png" />
+</a>
 
 Component 的优势
 --------
