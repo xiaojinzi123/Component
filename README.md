@@ -12,12 +12,18 @@
 ![](https://img.shields.io/github/last-commit/xiaojinzi123/Component/develop.svg?label=Last%20Commit)
 ![](https://img.shields.io/github/repo-size/xiaojinzi123/Component.svg)
 ![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
+![](https://img.shields.io/github/license/xiaojinzi123/Component.svg)
 <a href="https://gitee.com/xiaojinziCoder/Component" >
     <img height=20 src="https://gitee.com/logo-black.svg" />
 </a>
 <a href="https://github.com/xiaojinzi123/Component">
     <img height=22 src="https://github.com/fluidicon.png" />
 </a>
+
+Demo体验(扫码或者点击图片即可下载)
+--------
+
+[![](./imgs/demoApk.png)](https://files.gitee.com/group1/M00/07/F6/PaAvDFz3FnGAcMLcADcIxREinEY078.apk?attname=app-debug.apk)
 
 Component 的优势
 --------
