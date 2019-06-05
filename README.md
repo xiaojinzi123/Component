@@ -4,6 +4,7 @@
 
 ## 一个功能强大的组件化框架
 
+
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=JitPack&color=%233fcd12)](https://jitpack.io/#xiaojinzi123/Component)
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=JitPack-AndroidX&color=%233fcd12)](https://jitpack.io/#xiaojinzi123/Component)
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=Release)](https://github.com/xiaojinzi123/Component/releases)
@@ -11,6 +12,20 @@
 ![](https://img.shields.io/github/last-commit/xiaojinzi123/Component/develop.svg?label=Last%20Commit)
 ![](https://img.shields.io/github/repo-size/xiaojinzi123/Component.svg)
 ![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
+![](https://img.shields.io/github/license/xiaojinzi123/Component.svg)
+<a href="https://gitee.com/xiaojinziCoder/Component" >
+    <img height=20 src="https://gitee.com/logo-black.svg" />
+</a>
+<a href="https://github.com/xiaojinzi123/Component">
+    <img height=22 src="https://github.com/fluidicon.png" />
+</a>
+
+Demo体验(扫码或者点击图片即可下载)
+--------
+
+<a href="https://files.gitee.com/group1/M00/07/F6/PaAvDFz3FnGAcMLcADcIxREinEY078.apk?attname=app-debug.apk">
+    <img height=180 src="./imgs/demoApk.png" />
+</a>
 
 Component 的优势
 --------
@@ -38,7 +53,7 @@ Component 的优势
 -  **0** 配置可以拿到目标界面返回的 `ActivityResult`,很多框架不支持或者需要入侵 `BaseActivity`
 - 服务发现和路由分开设计
     - 其实这两块本来就是两个方面,我不清楚为什么很多方案中都柔和在一块
-- Rx扩展库扩展完美结合了 RxJava2
+- `Rx` 扩展库扩展完美结合了 `RxJava2`
 
 如何使用
 --------------

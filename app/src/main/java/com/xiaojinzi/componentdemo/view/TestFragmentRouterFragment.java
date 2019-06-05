@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.interceptor.DialogShowInterceptor;
 import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.anno.FiledAutowiredAnno;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.impl.RouterInterceptor;
@@ -33,6 +34,9 @@ import io.reactivex.functions.Consumer;
 public class TestFragmentRouterFragment extends Fragment implements View.OnClickListener {
 
     private TextView tv_detail;
+
+    @FiledAutowiredAnno("name")
+    String name;
 
     @Nullable
     @Override
