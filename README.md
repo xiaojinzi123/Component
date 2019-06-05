@@ -55,7 +55,12 @@ Component 的优势
     - 其实这两块本来就是两个方面,我不清楚为什么很多方案中都柔和在一块
 - `Rx` 扩展库扩展完美结合了 `RxJava2`
 
-如何使用
+第一个最简单的 hello world
+--------------
+
+[最简单的 hello world](https://github.com/xiaojinzi123/Component/wiki)
+
+更详细的使用
 --------------
 
 - [依赖和配置](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE)
