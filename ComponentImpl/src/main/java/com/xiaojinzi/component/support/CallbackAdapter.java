@@ -1,8 +1,8 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.impl.Callback;
 import com.xiaojinzi.component.impl.RouterErrorResult;

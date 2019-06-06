@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.impl;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * 为了实现 {@link BiCallback} 用户的这个 Callback 的各个方法最多只能执行一次

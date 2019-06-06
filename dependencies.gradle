@@ -36,9 +36,9 @@ ext.libs = [
         retrofit2_rxjava2_adapter: 'com.squareup.retrofit2:adapter-rxjava2:2.5.0',
         okhttp                   : 'com.squareup.okhttp3:okhttp:3.14.+',
 
-        component_annotation     : "com.xiaojinzi:component-annotation:${versions.component_version}",
-        component_compiler       : "com.xiaojinzi:component-annotation-compiler:${versions.component_version}",
-        component_impl           : "com.xiaojinzi:component-impl:${versions.component_version}",
-        component_impl_rx        : "com.xiaojinzi:component-impl-rx:${versions.component_version}"
+        component_annotation     : "com.xiaojinzi:component-androidx-annotation:${versions.component_version}",
+        component_compiler       : "com.xiaojinzi:component-androidx-annotation-compiler:${versions.component_version}",
+        component_impl           : "com.xiaojinzi:component-androidx-impl:${versions.component_version}",
+        component_impl_rx        : "com.xiaojinzi:component-androidx-impl-rx:${versions.component_version}"
 
 ]

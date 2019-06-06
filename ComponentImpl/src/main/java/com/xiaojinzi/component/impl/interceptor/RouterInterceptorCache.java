@@ -2,8 +2,8 @@ package com.xiaojinzi.component.impl.interceptor;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.ComponentConfig;
 import com.xiaojinzi.component.anno.RouterAnno;

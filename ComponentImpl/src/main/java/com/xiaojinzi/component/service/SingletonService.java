@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.service;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * 单例服务,这是注册服务默认的形式

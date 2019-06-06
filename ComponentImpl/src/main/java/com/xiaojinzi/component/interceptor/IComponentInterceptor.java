@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.interceptor;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.impl.RouterInterceptor;
 

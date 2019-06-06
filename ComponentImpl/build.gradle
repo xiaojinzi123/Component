@@ -24,7 +24,7 @@ android {
 }
 
 dependencies {
-    compileOnly libs.appcompat_v7
+    compileOnly androidxLibs.appcompat
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         api libs.component_annotation
     }else {

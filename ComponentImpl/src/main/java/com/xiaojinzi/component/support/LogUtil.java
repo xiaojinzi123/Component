@@ -1,7 +1,8 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.AnyThread;
-import android.support.annotation.NonNull;
+import androidx.annotation.AnyThread;
+
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.xiaojinzi.component.ComponentConfig;

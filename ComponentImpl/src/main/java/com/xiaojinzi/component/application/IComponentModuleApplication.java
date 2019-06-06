@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.application;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 
 public interface IComponentModuleApplication {

@@ -3,10 +3,10 @@ package com.xiaojinzi.component.impl;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.cache.Cache;

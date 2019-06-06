@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.service;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * 服务提供出去的懒加载设计

@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.cache;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.xiaojinzi.component.ComponentConfig;
 
 /**

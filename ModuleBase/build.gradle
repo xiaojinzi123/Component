@@ -27,8 +27,8 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    api libs.appcompat_v7
-    api libs.constraintLayout
+    api androidxLibs.appcompat
+    api androidxLibs.constraintLayout
     api libs.rxjava
     api libs.rxandroid
 

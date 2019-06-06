@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.application;
 
 import android.app.Application;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.ComponentConstants;
 

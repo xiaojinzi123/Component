@@ -1,8 +1,8 @@
 package com.xiaojinzi.component.router;
 
 import android.net.Uri;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.RouterRequest;
