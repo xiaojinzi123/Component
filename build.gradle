@@ -27,7 +27,7 @@ allprojects {
         // 公司私有的maven服务器
         google()
         jcenter()
-        maven { url "${mavenServerUrl}" }
+        maven { url 'https://jitpack.io' }
     }
 }
 

@@ -18,7 +18,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.4'
     implementation 'org.apache.commons:commons-collections4:4.1'
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        compile libs.component_annotation
+        compile androidxLibs.component_annotation
     }else {
         compile project(':ComponentApi')
     }

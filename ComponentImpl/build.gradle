@@ -26,7 +26,7 @@ android {
 dependencies {
     compileOnly androidxLibs.appcompat
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        api libs.component_annotation
+        api androidxLibs.component_annotation
     }else {
         api project(':ComponentApi')
     }

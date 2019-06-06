@@ -32,7 +32,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':ModuleBase')
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        annotationProcessor libs.component_compiler
+        annotationProcessor androidxLibs.component_compiler
     }else {
         annotationProcessor project(':ComponentCompiler')
     }
