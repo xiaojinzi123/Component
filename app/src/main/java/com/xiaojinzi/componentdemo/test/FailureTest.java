@@ -234,7 +234,7 @@ public class FailureTest implements TestExecutor {
                         .activityResultCall()
                         .subscribe(new Consumer<ActivityResult>() {
                             @Override
-                            public void accept(ActivityResult eHiActivityResult) throws Exception {
+                            public void accept(ActivityResult activityResult) throws Exception {
                                 emitter.onError(new NavigationFailException("request should be error"));
                             }
                         }, new Consumer<Throwable>() {
