@@ -5,7 +5,7 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import android.util.Log;
 
-import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.Component;
 
 /**
  * 用于打印日志
@@ -20,7 +20,7 @@ public class LogUtil {
 
     @AnyThread
     public static void log(@NonNull String tag, @NonNull String message) {
-        if (ComponentConfig.isDebug()) {
+        if (Component.isDebug()) {
             Log.d(tag, message);
         }
     }

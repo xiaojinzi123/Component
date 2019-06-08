@@ -3,7 +3,7 @@ package com.xiaojinzi.component.impl.application;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.application.IComponentHostApplication;
 import com.xiaojinzi.component.application.IComponentModuleApplication;
@@ -53,7 +53,7 @@ public class ModuleManager implements IComponentModuleApplication {
             return;
         }
         moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
-        moduleApp.onCreate(ComponentConfig.getApplication());
+        moduleApp.onCreate(Component.getApplication());
     }
 
     @Override

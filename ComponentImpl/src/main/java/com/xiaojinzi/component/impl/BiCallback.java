@@ -38,6 +38,7 @@ public interface BiCallback<T> extends OnRouterCancel, OnRouterError {
         private BiCallback targetBiCallback;
 
         public Map(@NonNull BiCallback targetBiCallback) {
+            Utils.checkNullPointer(targetBiCallback, "targetBiCallback");
             this.targetBiCallback = targetBiCallback;
         }
 

@@ -8,6 +8,9 @@ import com.xiaojinzi.base.util.PermissionsUtil;
 import com.xiaojinzi.component.anno.InterceptorAnno;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 
+/**
+ * 电话权限申请的拦截器
+ */
 @InterceptorAnno(InterceptorConfig.HELP_CALLPHOEPERMISION)
 public class CallPhoePermisionInterceptor implements RouterInterceptor {
 
@@ -24,7 +27,7 @@ public class CallPhoePermisionInterceptor implements RouterInterceptor {
                             } catch (Exception e) {
                                 chain.callback().onError(new Exception("fail to request call phone permision"));
                             }
-                        }else {
+                        } else {
                             chain.callback().onError(new Exception("fail to request call phone permision"));
                         }
                     }

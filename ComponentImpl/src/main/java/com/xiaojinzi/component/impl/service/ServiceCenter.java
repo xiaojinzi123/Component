@@ -3,7 +3,7 @@ package com.xiaojinzi.component.impl.service;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.service.IComponentCenterService;
 import com.xiaojinzi.component.service.IComponentHostService;
@@ -42,7 +42,7 @@ public class ServiceCenter implements IComponentCenterService {
             return;
         }
         moduleServiceMap.put(service.getHost(), service);
-        service.onCreate(ComponentConfig.getApplication());
+        service.onCreate(Component.getApplication());
     }
 
     @Override

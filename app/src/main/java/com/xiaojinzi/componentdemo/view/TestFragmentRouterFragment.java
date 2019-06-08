@@ -13,8 +13,7 @@ import android.widget.Toast;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.interceptor.DialogShowInterceptor;
-import com.xiaojinzi.component.ComponentConfig;
-import com.xiaojinzi.component.anno.FiledAutowiredAnno;
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.impl.RouterInterceptor;
@@ -34,9 +33,6 @@ import io.reactivex.functions.Consumer;
 public class TestFragmentRouterFragment extends Fragment implements View.OnClickListener {
 
     private TextView tv_detail;
-
-    @FiledAutowiredAnno("name")
-    String name;
 
     @Nullable
     @Override
@@ -140,7 +136,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                     @Override
                     public void onCancel(@NonNull RouterRequest request) {
                         super.onCancel(request);
-                        Toast.makeText(ComponentConfig.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Component.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -173,13 +169,13 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .navigate(new CallbackAdapter(){
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
-                        Toast.makeText(ComponentConfig.getApplication(), "onEvent", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Component.getApplication(), "onEvent", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onCancel(@NonNull RouterRequest request) {
                         super.onCancel(request);
-                        Toast.makeText(ComponentConfig.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Component.getApplication(), "被自动取消了", Toast.LENGTH_SHORT).show();
                     }
                 });
         getActivity().finish();

@@ -10,10 +10,10 @@ import com.xiaojinzi.base.bean.UserWithParcelable;
 import com.xiaojinzi.base.bean.UserWithSerializable;
 import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
 import com.xiaojinzi.base.view.BaseAct;
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.FiledAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
-import com.xiaojinzi.component.impl.Component;
 import com.xiaojinzi.component1.R;
 
 import java.util.ArrayList;

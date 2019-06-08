@@ -1,7 +1,8 @@
 package com.xiaojinzi.component.cache;
 
 import androidx.annotation.NonNull;
-import com.xiaojinzi.component.ComponentConfig;
+
+import com.xiaojinzi.component.Component;
 
 /**
  * <pre>
@@ -19,7 +20,7 @@ public class DefaultCacheFactory implements Cache.Factory{
     @NonNull
     @Override
     public Cache build(CacheType type) {
-        return new LruCache(type.calculateCacheSize(ComponentConfig.getApplication()));
+        return new LruCache(type.calculateCacheSize(Component.getApplication()));
     }
 
 }

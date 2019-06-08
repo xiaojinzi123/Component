@@ -8,6 +8,9 @@ import com.xiaojinzi.base.util.PermissionsUtil;
 import com.xiaojinzi.component.anno.InterceptorAnno;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 
+/**
+ * 拍照权限申请的拦截器
+ */
 @InterceptorAnno(InterceptorConfig.HELP_CAMERAPERMISION)
 public class TakePhonePermisionInterceptor implements RouterInterceptor {
     @Override

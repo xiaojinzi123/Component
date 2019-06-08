@@ -10,7 +10,7 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.Component;
 
 /**
  * 一个工具类
@@ -97,7 +97,7 @@ public class Utils {
      * @return
      */
     public static String checkStringNullPointer(@Nullable String value, @NonNull String parameterName) {
-        if (ComponentConfig.isDebug() && (value == null || value.isEmpty())) {
+        if (Component.isDebug() && (value == null || value.isEmpty())) {
             throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL);
         }
         return value;
@@ -112,7 +112,7 @@ public class Utils {
      * @return
      */
     public static String checkStringNullPointer(@Nullable String value, @NonNull String parameterName, @Nullable String desc) {
-        if (ComponentConfig.isDebug() && (value == null || value.isEmpty())) {
+        if (Component.isDebug() && (value == null || value.isEmpty())) {
             throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL + (desc == null ? "" : "," + desc));
         }
         return value;
@@ -127,7 +127,7 @@ public class Utils {
      * @return
      */
     public static <T> T checkNullPointer(@Nullable T value, @NonNull String parameterName) {
-        if (ComponentConfig.isDebug() && value == null) {
+        if (Component.isDebug() && value == null) {
             throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL);
         }
         return value;
@@ -178,7 +178,7 @@ public class Utils {
     }
 
     public static void throwException(@NonNull RuntimeException e) {
-        if (ComponentConfig.isDebug()) {
+        if (Component.isDebug()) {
             throw e;
         }
     }
