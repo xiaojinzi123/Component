@@ -1,4 +1,4 @@
-include ':app',
+include ':app', ':module1run',
         ':ModuleHelp',
         ':ComponentRxImpl',
         ':Module1',

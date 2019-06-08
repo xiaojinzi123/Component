@@ -5,7 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.cache.Cache;
 import com.xiaojinzi.component.cache.CacheType;
@@ -59,7 +59,7 @@ public class RouterInterceptorCache {
                 interceptorClassCache.put(tClass, t);
             }
         } catch (Exception e) {
-            if (ComponentConfig.isDebug()) {
+            if (Component.isDebug()) {
                 throw new CreateInterceptorException(e);
             }
         }
@@ -81,10 +81,10 @@ public class RouterInterceptorCache {
                 return (RouterInterceptor) constructor.newInstance();
             }
             if (parameterTypes.length == 1 && parameterTypes[0] == Application.class) {
-                return (RouterInterceptor) constructor.newInstance(ComponentConfig.getApplication());
+                return (RouterInterceptor) constructor.newInstance(Component.getApplication());
             }
             if (parameterTypes.length == 1 && parameterTypes[0] == Context.class) {
-                return (RouterInterceptor) constructor.newInstance(ComponentConfig.getApplication());
+                return (RouterInterceptor) constructor.newInstance(Component.getApplication());
             }
         }
         return null;

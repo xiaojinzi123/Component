@@ -19,6 +19,10 @@ import com.xiaojinzi.component.support.NavigationDisposable;
 @HostAnno(ModuleConfig.Module1.NAME)
 public interface Module1Api {
 
+    @PathAnno(ModuleConfig.Module1.TEST)
+    void toTestView(Context context,
+                    @ParameterAnno("data") String data);
+
     @NavigateAnno(forIntent = true)
     @PathAnno(ModuleConfig.Module1.TEST)
     @RequestCodeAnno()

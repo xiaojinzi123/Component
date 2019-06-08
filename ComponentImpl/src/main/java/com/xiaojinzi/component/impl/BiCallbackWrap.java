@@ -3,6 +3,8 @@ package com.xiaojinzi.component.impl;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.support.Utils;
+
 /**
  * 为了实现 {@link BiCallback} 用户的这个 Callback 的各个方法最多只能执行一次
  *
@@ -19,6 +21,7 @@ class BiCallbackWrap<T> implements BiCallback<T> {
     private BiCallback<T> targetBiCallback;
 
     public BiCallbackWrap(@NonNull BiCallback<T> targetBiCallback) {
+        Utils.checkNullPointer(targetBiCallback, "targetBiCallback");
         this.targetBiCallback = targetBiCallback;
     }
 

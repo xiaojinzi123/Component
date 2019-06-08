@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
-import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.Component;
 
 /**
  * time   : 2019/01/25
@@ -19,7 +19,7 @@ public class ToastUtil {
         h.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(ComponentConfig.getApplication(), message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(Component.getApplication(), message, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -28,7 +28,7 @@ public class ToastUtil {
         h.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(ComponentConfig.getApplication(), message, Toast.LENGTH_LONG).show();
+                Toast.makeText(Component.getApplication(), message, Toast.LENGTH_LONG).show();
             }
         });
     }

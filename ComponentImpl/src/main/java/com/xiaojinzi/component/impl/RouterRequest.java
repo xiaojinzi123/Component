@@ -13,7 +13,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.Utils;
@@ -660,7 +660,7 @@ public class RouterRequest {
             if (builder.url == null) {
                 Uri.Builder uriBuilder = new Uri.Builder();
                 uriBuilder
-                        .scheme(TextUtils.isEmpty(builder.scheme) ? ComponentConfig.getDefaultScheme() : builder.scheme)
+                        .scheme(TextUtils.isEmpty(builder.scheme) ? Component.getDefaultScheme() : builder.scheme)
                         .authority(Utils.checkStringNullPointer(builder.host, "host", "do you forget call host() to set host?"));
                 if (!TextUtils.isEmpty(builder.path)) {
                     uriBuilder.path(builder.path);

@@ -7,10 +7,10 @@ import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.bean.User;
 import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
 import com.xiaojinzi.base.view.BaseAct;
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.FiledAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
-import com.xiaojinzi.component.impl.Component;
 import com.xiaojinzi.component1.R;
 
 /**

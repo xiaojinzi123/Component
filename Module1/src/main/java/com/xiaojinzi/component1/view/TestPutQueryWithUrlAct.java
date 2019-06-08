@@ -5,9 +5,9 @@ import android.text.TextUtils;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.view.BaseAct;
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.FiledAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.impl.Component;
 import com.xiaojinzi.component1.R;
 
 /**

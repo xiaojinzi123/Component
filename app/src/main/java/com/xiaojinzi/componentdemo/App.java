@@ -4,7 +4,7 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 
 import com.xiaojinzi.base.ModuleConfig;
-import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
@@ -24,7 +24,7 @@ public class App extends Application {
         mApp = this;
 
         // 初始化组件化相关
-        ComponentConfig.init(this, BuildConfig.DEBUG);
+        Component.init(this, BuildConfig.DEBUG);
 
         // 忽略一些不想处理的错误
         RxErrorIgnoreUtil.ignoreError();
