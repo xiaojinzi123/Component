@@ -7,13 +7,13 @@ ext.versions = [
         version_name       : "1.0",
         support_lib        : "28.0.0",
         // 第三方控件的版本号
-        constraintLayout   : "2.0.0-alpha3",
+        constraintLayout   : '2.0.0-beta1',
         glide              : "4.9.0",
         gson               : "2.8.5",
-        rxjava             : "2.2.8",
+        rxjava             : '2.2.9',
         rxandroid          : "2.1.1",
         rxbinding          : "2.2.0",
-        component_version  : "1.7.3.0"
+        component_version  : "1.7.3.1"
 ]
 
 ext.libs = [
@@ -36,9 +36,9 @@ ext.libs = [
         retrofit2_rxjava2_adapter: 'com.squareup.retrofit2:adapter-rxjava2:2.5.0',
         okhttp                   : 'com.squareup.okhttp3:okhttp:3.14.+',
 
-        component_annotation     : "com.xiaojinzi:component-annotation:${versions.component_version}",
-        component_compiler       : "com.xiaojinzi:component-annotation-compiler:${versions.component_version}",
-        component_impl           : "com.xiaojinzi:component-impl:${versions.component_version}",
-        component_impl_rx        : "com.xiaojinzi:component-impl-rx:${versions.component_version}"
+        component_annotation     : "com.github.xiaojinzi123.Component:component-annotation:${versions.component_version}",
+        component_compiler       : "com.github.xiaojinzi123.Component:component-compiler:${versions.component_version}",
+        component_impl           : "com.github.xiaojinzi123.Component:component-impl:${versions.component_version}",
+        component_impl_rx        : "com.github.xiaojinzi123.Component:component-impl-rx:${versions.component_version}"
 
 ]
