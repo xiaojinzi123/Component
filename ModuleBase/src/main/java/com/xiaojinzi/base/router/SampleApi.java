@@ -33,6 +33,9 @@ import com.xiaojinzi.component.support.NavigationDisposable;
 
 import java.util.ArrayList;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
+
 /**
  * App 模块的路由跳转接口
  */
@@ -77,11 +80,21 @@ public interface SampleApi {
                                @ParameterAnno("data") String data,
                                BiCallback<ActivityResult> callback);
 
+    @NavigateAnno(forResult = true)
+    @PathAnno(ModuleConfig.Module1.TEST)
+    Single<ActivityResult> test5Rx(Context context,
+                                   @ParameterAnno("data") String data);
+
     @NavigateAnno(forIntent = true)
     @PathAnno(ModuleConfig.Module1.TEST)
     NavigationDisposable test6(Context context,
                                @ParameterAnno("data") String data,
                                BiCallback<Intent> callback);
+
+    @NavigateAnno(forIntent = true)
+    @PathAnno(ModuleConfig.Module1.TEST)
+    Single<Intent> test6Rx(Context context,
+                           @ParameterAnno("data") String data);
 
     @NavigateAnno(forResultCode = true)
     @PathAnno(ModuleConfig.Module1.TEST)
@@ -89,39 +102,56 @@ public interface SampleApi {
                                @ParameterAnno("data") String data,
                                BiCallback<Integer> callback);
 
+    @NavigateAnno(forResultCode = true)
+    @PathAnno(ModuleConfig.Module1.TEST)
+    Single<Integer> test7Rx(Context context,
+                            @ParameterAnno("data") String data);
+
     @NavigateAnno(forIntent = true, resultCodeMatch = Activity.RESULT_OK)
     @PathAnno(ModuleConfig.Module1.TEST)
     NavigationDisposable test8(Context context,
                                @ParameterAnno("data") String data,
                                BiCallback<Intent> callback);
 
+    @NavigateAnno(forIntent = true, resultCodeMatch = Activity.RESULT_OK)
+    @PathAnno(ModuleConfig.Module1.TEST)
+    Single<Intent> test8Rx(Context context,
+                           @ParameterAnno("data") String data);
+
+    @NavigateAnno(resultCodeMatch = Activity.RESULT_OK)
+    @PathAnno(ModuleConfig.Module1.TEST)
+    Completable test9(Context context);
+
+    @NavigateAnno(forIntent = true, resultCodeMatch = Activity.RESULT_OK)
+    @PathAnno(ModuleConfig.Module1.TEST)
+    Single<Intent> test10(Context context);
+
     /**
      * 测试基本类型的支持
      */
-    @NavigateAnno(resultCodeMatch = Activity.RESULT_OK)
     @PathAnno(ModuleConfig.Module1.TEST)
-    void test9(Context context,
-               @ParameterAnno("data1") String data1,
-               @ParameterAnno("data2") byte data2,
-               @ParameterAnno("data3") short data3,
-               @ParameterAnno("data4") int data4,
-               @ParameterAnno("data5") long data5,
-               @ParameterAnno("data6") float data6,
-               @ParameterAnno("data7") double data7,
-               @ParameterAnno("data8") User data8,
-               @ParameterAnno("data9") UserWithParcelable data9,
-               @ParameterAnno("data10") UserWithSerializable data10,
-               @ParameterAnno("data11") CharSequence data11,
-               @ParameterAnno("data12") Bundle data12,
-               Bundle data13,
-               Callback callback);
+    void test11(Context context,
+                @ParameterAnno("data1") String data1,
+                @ParameterAnno("data2") byte data2,
+                @ParameterAnno("data3") short data3,
+                @ParameterAnno("data4") int data4,
+                @ParameterAnno("data5") long data5,
+                @ParameterAnno("data6") float data6,
+                @ParameterAnno("data7") double data7,
+                @ParameterAnno("data8") User data8,
+                @ParameterAnno("data9") UserWithParcelable data9,
+                @ParameterAnno("data10") UserWithSerializable data10,
+                @ParameterAnno("data11") CharSequence data11,
+                @ParameterAnno("data12") Bundle data12,
+                Bundle data13,
+                Callback callback);
 
     /**
      * 测试数组
      */
     @NavigateAnno
     @PathAnno(ModuleConfig.Module1.TEST)
-    void test20(Context context,
+    void test12(Context context,
                 @ParameterAnno("data1") byte[] data1,
                 @ParameterAnno("data2") char[] data2,
                 @ParameterAnno("data3") String[] data3,
@@ -137,7 +167,7 @@ public interface SampleApi {
 
     @NavigateAnno
     @PathAnno(ModuleConfig.Module1.TEST)
-    NavigationDisposable test28(Context context,
+    NavigationDisposable test13(Context context,
                                 @ParameterAnno("data1") ArrayList<String> stringArrayList,
                                 @ParameterAnno("data2") ArrayList<Integer> integerArrayList,
                                 @ParameterAnno("data3") ArrayList<Parcelable> parcelableArrayList,

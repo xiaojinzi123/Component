@@ -10,6 +10,8 @@ import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
 
+import io.reactivex.Completable;
+
 @RouterApiAnno()
 @HostAnno(ModuleConfig.App.NAME)
 public interface AppApi {
@@ -19,7 +21,7 @@ public interface AppApi {
     void goToTestRouter(Activity context);
 
     @PathAnno(ModuleConfig.App.TEST_QUALITY)
-    void goToTestQuality(Context context);
+    Completable goToTestQuality(Context context);
 
     @HostAnno(ModuleConfig.Help.NAME)
     @PathAnno((ModuleConfig.Help.TEST_WEB_ROUTER))

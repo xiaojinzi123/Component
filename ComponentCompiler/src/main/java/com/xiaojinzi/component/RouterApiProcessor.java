@@ -46,6 +46,7 @@ import javax.lang.model.type.TypeMirror;
 
 /**
  * 负责把像 Retrofit 那样的接口生成对应的实现类
+ * 支持基本版本和 Rx 版本
  */
 @AutoService(Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
@@ -58,13 +59,21 @@ public class RouterApiProcessor extends BaseProcessor {
     private ClassName charsequenceClassName;
     private TypeName charsequenceTypeName;
     private TypeElement routerTypeElement;
+    private TypeElement routerRxTypeElement;
     private TypeElement navigationDisposableTypeElement;
     private TypeMirror navigationDisposableTypeMirror;
     private TypeElement callBackTypeElement;
     private TypeMirror callBackTypeMirror;
     private TypeElement biCallBackTypeElement;
     private TypeMirror biCallBackTypeMirror;
+    private TypeMirror biCallBackErasureTypeMirror;
     private TypeMirror callTypeMirror;
+
+    // 这两个可能为null吧,因为没有依赖 RxJava
+    private TypeMirror completableMirror;
+    private TypeMirror singleMirror;
+    private TypeMirror singleErasureMirror;
+
     private TypeMirror navigatorTypeMirror;
     private TypeMirror contextTypeMirror;
     private TypeMirror fragmentTypeMirror;
@@ -81,17 +90,27 @@ public class RouterApiProcessor extends BaseProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
+
+        TypeElement completableTypeElement = mElements.getTypeElement(ComponentConstants.RXJAVA_COMPLETABLE);
+        TypeElement singleTypeElement = mElements.getTypeElement(ComponentConstants.RXJAVA_SINGLE);
+
+        completableMirror = completableTypeElement == null ? null : completableTypeElement.asType();
+        singleMirror = singleTypeElement == null ? null : singleTypeElement.asType();
+        singleErasureMirror = singleMirror == null ? null : processingEnv.getTypeUtils().erasure(singleMirror);
+
         charsequenceTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_CHARSEQUENCE);
         charsequenceTypeMirror = charsequenceTypeElement.asType();
         charsequenceClassName = ClassName.get(charsequenceTypeElement);
         charsequenceTypeName = TypeName.get(charsequenceTypeMirror);
         routerTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_CLASS_NAME);
+        routerRxTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_RX_CLASS_NAME);
         navigationDisposableTypeElement = mElements.getTypeElement(ComponentConstants.NAVIGATIONDISPOSABLE_CLASS_NAME);
         navigationDisposableTypeMirror = navigationDisposableTypeElement.asType();
         callBackTypeElement = mElements.getTypeElement(ComponentConstants.CALLBACK_CLASS_NAME);
         callBackTypeMirror = callBackTypeElement.asType();
         biCallBackTypeElement = mElements.getTypeElement(ComponentConstants.BICALLBACK_CLASS_NAME);
         biCallBackTypeMirror = biCallBackTypeElement.asType();
+        biCallBackErasureTypeMirror = processingEnv.getTypeUtils().erasure(biCallBackTypeMirror);
         callTypeMirror = mElements.getTypeElement(ComponentConstants.CALL_CLASS_NAME).asType();
         navigatorTypeMirror = mElements.getTypeElement(ComponentConstants.NAVIGATOR_CLASS_NAME).asType();
         final TypeElement contextTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_CONTEXT);
@@ -114,6 +133,7 @@ public class RouterApiProcessor extends BaseProcessor {
                 ClassName.get(mElements.getTypeElement(ComponentConstants.CONSUMER_CLASS_NAME)),
                 TypeName.get(mElements.getTypeElement(ComponentConstants.ANDROID_INTENT).asType())
         );
+
     }
 
     @Override
@@ -218,13 +238,17 @@ public class RouterApiProcessor extends BaseProcessor {
         String path = pathAnnotation == null ? null : pathAnnotation.value();
         String hostAndPath = hostAndPathAnnotation == null ? null : hostAndPathAnnotation.value();
 
-        boolean isReturnNavigationDisposable = false;
-        boolean isReturnCall = false;
+        boolean isReturnNavigationDisposable = false, isReturnCall = false;
+        boolean isReturnObservable = false, isReturnCompletable = false, isReturnSingle = false;
 
         // 返回的返回对象
         TypeMirror returnType = executableElement.getReturnType();
         isReturnNavigationDisposable = navigationDisposableTypeMirror.equals(returnType);
         isReturnCall = callTypeMirror.equals(returnType) || navigatorTypeMirror.equals(returnType);
+        isReturnCompletable = returnType == null ? false : returnType.equals(completableMirror);
+        isReturnSingle = returnType == null ? false : processingEnv.getTypeUtils().erasure(returnType).equals(singleErasureMirror);
+        isReturnObservable = isReturnCompletable || isReturnSingle;
+
         // 方法名
         Name methodName = executableElement.getSimpleName();
         // 所有的方法的方法
@@ -254,7 +278,7 @@ public class RouterApiProcessor extends BaseProcessor {
                 fragmentParameter = parameter;
             } else if (parameterTypeMirror.equals(callBackTypeMirror)) { // 如果是 CallBack
                 callBackParameter = parameter;
-            } else if (parameterTypeMirror.toString().startsWith(ComponentConstants.BICALLBACK_CLASS_NAME)) { // 如果是 BiCallback
+            } else if ((processingEnv.getTypeUtils().erasure(parameterTypeMirror)).equals(biCallBackErasureTypeMirror)) { // 如果是 BiCallback
                 biCallBackParameter = parameter;
             } else if (parameter.getAnnotation(RequestCodeAnno.class) != null) { // 表示这是一个 requestCode 的参数值
                 requestCodeParameter = parameter;
@@ -361,9 +385,19 @@ public class RouterApiProcessor extends BaseProcessor {
         StringBuffer routerStatement = new StringBuffer();
         List<Object> args = new ArrayList<>();
 
+        // 根据返回值最终的结尾
+
+        if (isReturnNavigationDisposable || isReturnCall || isReturnObservable) {
+            routerStatement.append("return ");
+        }
+
         // with 方法ok
         routerStatement.append("$T.with($N)");
-        args.add(routerTypeElement);
+        if (isReturnObservable) {
+            args.add(routerRxTypeElement);
+        } else {
+            args.add(routerTypeElement);
+        }
         if (contextParameter != null) {
             args.add(contextParameter.getSimpleName().toString());
         } else if (fragmentParameter != null) {
@@ -477,8 +511,9 @@ public class RouterApiProcessor extends BaseProcessor {
 
         // 根据跳转类型生成 navigate 方法
         if (navigateAnnotation == null) {
-            if (isReturnCall) {
-            } else {
+            if (isReturnObservable) {
+                routerStatement.append("\n.call()");
+            } else if (!isReturnCall) {
                 if (callBackParameter == null) {
                     routerStatement.append("\n.navigate()");
                 } else {
@@ -487,53 +522,69 @@ public class RouterApiProcessor extends BaseProcessor {
                 }
             }
         } else {
-            if (navigateAnnotation.forResult()) {
-                if (biCallBackParameter == null) {
-                    throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
+            if (isReturnObservable) {
+                if (navigateAnnotation.forResult()) {
+                    routerStatement.append("\n.activityResultCall()");
+                } else if (navigateAnnotation.forIntent()) {
+                    if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) { // 表示用户没写
+                        routerStatement.append("\n.intentCall()");
+                    } else {
+                        routerStatement.append("\n.intentResultCodeMatchCall($L)");
+                        args.add(navigateAnnotation.resultCodeMatch());
+                    }
+                } else if (navigateAnnotation.forResultCode()) {
+                    routerStatement.append("\n.resultCodeCall()");
+                } else {
+                    if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) {
+                        routerStatement.append("\n.call()");
+                    } else {
+                        routerStatement.append("\n.resultCodeMatchCall($L)");
+                        args.add(navigateAnnotation.resultCodeMatch());
+                    }
                 }
-                routerStatement.append("\n.navigateForResult($N)");
-                args.add(biCallBackParameter.getSimpleName().toString());
-            } else if (navigateAnnotation.forIntent()) {
-                if (biCallBackParameter == null) {
-                    throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
-                }
-                if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) {
-                    routerStatement.append("\n.navigateForIntent($N)");
+            } else {
+                if (navigateAnnotation.forResult()) {
+                    if (biCallBackParameter == null) {
+                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<ActivityResult>) to you method(" + methodPath + ")?");
+                    }
+                    routerStatement.append("\n.navigateForResult($N)");
+                    args.add(biCallBackParameter.getSimpleName().toString());
+                } else if (navigateAnnotation.forIntent()) {
+                    if (biCallBackParameter == null) {
+                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Intent>) to you method(" + methodPath + ")?");
+                    }
+                    if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) { // 表示用户没写
+                        routerStatement.append("\n.navigateForIntent($N)");
+                        args.add(biCallBackParameter.getSimpleName().toString());
+                    } else {
+                        routerStatement.append("\n.navigateForIntentAndResultCodeMatch($N,$L)");
+                        args.add(biCallBackParameter.getSimpleName().toString());
+                        args.add(navigateAnnotation.resultCodeMatch());
+                    }
+                } else if (navigateAnnotation.forResultCode()) {
+                    if (biCallBackParameter == null) {
+                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Integer>) to you method(" + methodPath + ")?");
+                    }
+                    routerStatement.append("\n.navigateForResultCode($N)");
                     args.add(biCallBackParameter.getSimpleName().toString());
                 } else {
-                    routerStatement.append("\n.navigateForIntentAndResultCodeMatch($N,$L)");
-                    args.add(biCallBackParameter.getSimpleName().toString());
-                    args.add(navigateAnnotation.resultCodeMatch());
-                }
-            } else if (navigateAnnotation.forResultCode()) {
-                if (biCallBackParameter == null) {
-                    throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
-                }
-                routerStatement.append("\n.navigateForResultCode($N)");
-                args.add(biCallBackParameter.getSimpleName().toString());
-            } else {
-                if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) {
-                    if (callBackParameter == null) {
-                        routerStatement.append("\n.navigate()");
-                    } else {
-                        routerStatement.append("\n.navigate($N)");
+                    if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) {
+                        if (callBackParameter == null) {
+                            routerStatement.append("\n.navigate()");
+                        } else {
+                            routerStatement.append("\n.navigate($N)");
+                            args.add(callBackParameter.getSimpleName().toString());
+                        }
+                    } else { // 为了匹配 resultCode
+                        if (callBackParameter == null) {
+                            throw new ProcessException("do you forget to add parameter(" + ComponentConstants.CALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
+                        }
+                        routerStatement.append("\n.navigateForResultCodeMatch($N,$L)");
                         args.add(callBackParameter.getSimpleName().toString());
+                        args.add(navigateAnnotation.resultCodeMatch());
                     }
-                } else { // 为了匹配 resultCode
-                    if (callBackParameter == null) {
-                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.CALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
-                    }
-                    routerStatement.append("\n.navigateForResultCodeMatch($N,$L)");
-                    args.add(callBackParameter.getSimpleName().toString());
-                    args.add(navigateAnnotation.resultCodeMatch());
                 }
             }
-        }
-
-        // 根据返回值最终的结尾
-
-        if (isReturnNavigationDisposable || isReturnCall) {
-            routerStatement.insert(0, "return ");
         }
 
         methodBuilder.addStatement(routerStatement.toString(), args.toArray());
