@@ -126,11 +126,14 @@ public interface SampleApi {
     @PathAnno(ModuleConfig.Module1.TEST)
     Single<Intent> test10(Context context);
 
+    @PathAnno(ModuleConfig.Module1.TEST)
+    Completable test11(Context context);
+
     /**
      * 测试基本类型的支持
      */
     @PathAnno(ModuleConfig.Module1.TEST)
-    void test11(Context context,
+    void test111(Context context,
                 @ParameterAnno("data1") String data1,
                 @ParameterAnno("data2") byte data2,
                 @ParameterAnno("data3") short data3,
@@ -151,7 +154,7 @@ public interface SampleApi {
      */
     @NavigateAnno
     @PathAnno(ModuleConfig.Module1.TEST)
-    void test12(Context context,
+    void test112(Context context,
                 @ParameterAnno("data1") byte[] data1,
                 @ParameterAnno("data2") char[] data2,
                 @ParameterAnno("data3") String[] data3,
@@ -167,7 +170,7 @@ public interface SampleApi {
 
     @NavigateAnno
     @PathAnno(ModuleConfig.Module1.TEST)
-    NavigationDisposable test13(Context context,
+    NavigationDisposable test113(Context context,
                                 @ParameterAnno("data1") ArrayList<String> stringArrayList,
                                 @ParameterAnno("data2") ArrayList<Integer> integerArrayList,
                                 @ParameterAnno("data3") ArrayList<Parcelable> parcelableArrayList,
