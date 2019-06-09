@@ -81,7 +81,9 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testQuality(View view) {
-        Router.withApi(AppApi.class).goToTestQuality(this);
+        Router.withApi(AppApi.class)
+                .goToTestQuality(this)
+                .subscribe();
     }
 
     @Override
