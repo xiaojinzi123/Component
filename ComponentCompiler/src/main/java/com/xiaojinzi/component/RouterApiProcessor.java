@@ -382,6 +382,68 @@ public class RouterApiProcessor extends BaseProcessor {
             );
         }
 
+        // 这里对所有用户写错的情况做一个检查
+
+        if (isReturnObservable) {
+            if (biCallBackParameter != null) {
+                throw new ProcessException("the parameter " + biCallBackParameter.getSimpleName() +
+                        " of method " + methodPath + " is not allow when then returnType is " + ComponentConstants.RXJAVA_COMPLETABLE + " or " + ComponentConstants.RXJAVA_SINGLE);
+            }
+            if (callBackParameter != null) {
+                throw new ProcessException("the parameter " + callBackParameter.getSimpleName() +
+                        " of method " + methodPath + " is not allow when then returnType is " + ComponentConstants.RXJAVA_COMPLETABLE + " or " + ComponentConstants.RXJAVA_SINGLE);
+            }
+            if (navigateAnnotation == null) {
+                if (!isReturnCompletable) {
+                    throw new ProcessException("the returnType of method (" + methodPath + ") must be " + ComponentConstants.RXJAVA_COMPLETABLE);
+                }
+            } else {
+                if (navigateAnnotation.forResult()) {
+                    if (!isReturnSingle) {
+                        throw new ProcessException("the returnType of method (" + methodPath + ") must be " + ComponentConstants.RXJAVA_SINGLE + "<ActivityResult>");
+                    }
+                } else if (navigateAnnotation.forIntent()) {
+                    if (!isReturnSingle) {
+                        throw new ProcessException("the returnType of method (" + methodPath + ") must be " + ComponentConstants.RXJAVA_SINGLE + "<Intent>");
+                    }
+                } else if (navigateAnnotation.forResultCode()) {
+                    if (!isReturnSingle) {
+                        throw new ProcessException("the returnType of method (" + methodPath + ") must be " + ComponentConstants.RXJAVA_SINGLE + "<Integer>");
+                    }
+                }else {
+                    if (!isReturnCompletable) {
+                        throw new ProcessException("the returnType of method (" + methodPath + ") must be " + ComponentConstants.RXJAVA_COMPLETABLE);
+                    }
+                }
+            }
+        } else {
+            if (navigateAnnotation == null) {
+                if (biCallBackParameter != null) {
+                    throw new ProcessException("the parameter " + biCallBackParameter.getSimpleName() +
+                            " of method " + methodPath + " is not allow when then returnType is " + ComponentConstants.RXJAVA_COMPLETABLE + " or " + ComponentConstants.RXJAVA_SINGLE);
+                }
+            } else {
+                if (navigateAnnotation.forResult()) {
+                    if (biCallBackParameter == null) {
+                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<ActivityResult>) to you method(" + methodPath + ")?");
+                    }
+                } else if (navigateAnnotation.forIntent()) {
+                    if (biCallBackParameter == null) {
+                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Intent>) to you method(" + methodPath + ")?");
+                    }
+                } else if (navigateAnnotation.forResultCode()) {
+                    if (biCallBackParameter == null) {
+                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Integer>) to you method(" + methodPath + ")?");
+                    }
+                }else {
+                    // 说明是想匹配 resultCode
+                    if (navigateAnnotation.resultCodeMatch() != Integer.MIN_VALUE) {
+                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.CALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
+                    }
+                }
+            }
+        }
+
         StringBuffer routerStatement = new StringBuffer();
         List<Object> args = new ArrayList<>();
 
@@ -544,15 +606,9 @@ public class RouterApiProcessor extends BaseProcessor {
                 }
             } else {
                 if (navigateAnnotation.forResult()) {
-                    if (biCallBackParameter == null) {
-                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<ActivityResult>) to you method(" + methodPath + ")?");
-                    }
                     routerStatement.append("\n.navigateForResult($N)");
                     args.add(biCallBackParameter.getSimpleName().toString());
                 } else if (navigateAnnotation.forIntent()) {
-                    if (biCallBackParameter == null) {
-                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Intent>) to you method(" + methodPath + ")?");
-                    }
                     if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) { // 表示用户没写
                         routerStatement.append("\n.navigateForIntent($N)");
                         args.add(biCallBackParameter.getSimpleName().toString());
@@ -562,9 +618,6 @@ public class RouterApiProcessor extends BaseProcessor {
                         args.add(navigateAnnotation.resultCodeMatch());
                     }
                 } else if (navigateAnnotation.forResultCode()) {
-                    if (biCallBackParameter == null) {
-                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Integer>) to you method(" + methodPath + ")?");
-                    }
                     routerStatement.append("\n.navigateForResultCode($N)");
                     args.add(biCallBackParameter.getSimpleName().toString());
                 } else {
@@ -576,9 +629,6 @@ public class RouterApiProcessor extends BaseProcessor {
                             args.add(callBackParameter.getSimpleName().toString());
                         }
                     } else { // 为了匹配 resultCode
-                        if (callBackParameter == null) {
-                            throw new ProcessException("do you forget to add parameter(" + ComponentConstants.CALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
-                        }
                         routerStatement.append("\n.navigateForResultCodeMatch($N,$L)");
                         args.add(callBackParameter.getSimpleName().toString());
                         args.add(navigateAnnotation.resultCodeMatch());
