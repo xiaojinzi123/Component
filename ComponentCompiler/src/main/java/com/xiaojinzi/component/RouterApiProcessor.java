@@ -59,7 +59,8 @@ public class RouterApiProcessor extends BaseProcessor {
     private ClassName charsequenceClassName;
     private TypeName charsequenceTypeName;
     private TypeElement routerTypeElement;
-    private TypeElement routerRxTypeElement;
+
+
     private TypeElement navigationDisposableTypeElement;
     private TypeMirror navigationDisposableTypeMirror;
     private TypeElement callBackTypeElement;
@@ -69,6 +70,8 @@ public class RouterApiProcessor extends BaseProcessor {
     private TypeMirror biCallBackErasureTypeMirror;
     private TypeMirror callTypeMirror;
 
+    // 这个也可能为空的
+    private TypeElement routerRxTypeElement;
     // 这两个可能为null吧,因为没有依赖 RxJava
     private TypeMirror completableMirror;
     private TypeMirror singleMirror;
@@ -385,6 +388,10 @@ public class RouterApiProcessor extends BaseProcessor {
         // 这里对所有用户写错的情况做一个检查
 
         if (isReturnObservable) {
+            if (routerRxTypeElement == null) {
+                throw new ProcessException("you must use router-rx lib,such as \n 'com.github.xiaojinzi123.Component:component-impl-rx:<version>' \n " +
+                        "get more info please view \n https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE");
+            }
             if (biCallBackParameter != null) {
                 throw new ProcessException("the parameter " + biCallBackParameter.getSimpleName() +
                         " of method " + methodPath + " is not allow when then returnType is " + ComponentConstants.RXJAVA_COMPLETABLE + " or " + ComponentConstants.RXJAVA_SINGLE);
