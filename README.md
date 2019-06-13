@@ -30,8 +30,6 @@ Demo体验(扫码或者点击图片即可下载)
 Component 的优势
 --------
 
-- [x] 支持 `androidx`,几乎没有其他组件化框架支持 `androidx` 的
-
 组件化方案真的有很多,那么这个组件化方案优秀在哪里？相比于 `ARouter`,`WMRouter`,`ActivityRouter`,`CC`,`DDComponent`
 等开源的组件化框架,有哪些一样或者优秀的点
 
