@@ -30,30 +30,32 @@ Demo体验(扫码或者点击图片即可下载)
 Component 的优势
 --------
 
+- [x] 支持 `androidx`,几乎没有其他组件化框架支持 `androidx` 的
+
 组件化方案真的有很多,那么这个组件化方案优秀在哪里？相比于 `ARouter`,`WMRouter`,`ActivityRouter`,`CC`,`DDComponent`
 等开源的组件化框架,有哪些一样或者优秀的点
 
-- 支持 `androidx`,几乎没有其他组件化框架支持 `androidx` 的
-- 支持业务组件生命周期(被加载和被卸载)
-- 整个设计贴近原生,对原生的代码入侵极少,尽最大的可能保留原生的代码
-- 在一些路由拦截器的执行线程的设计上,考虑到用户平时书写的 `90%` 代码都是在主线程的,<br/>所以路由拦截器的执行线程也设计为主线程执行,可以让您放心的操作 `UI`、弹框等操作.<br/>同时提供 `Callback` 机制可以在拦截器中做任何耗时的任务<br/>这点绝对是压倒性的优势
-- 配套的 `Idea Plugin` 方便快速浏览,持续会更新此插件
-- 路由的取消,基本上没有路由框架支持路由的取消,这也是一个很大的优势
+- [x] 支持 `androidx`,几乎没有其他组件化框架支持 `androidx` 的
+- [x] 支持业务组件生命周期(被加载和被卸载)
+- [x] 整个设计贴近原生,对原生的代码入侵极少,尽最大的可能保留原生的代码
+- [x] 在一些路由拦截器的执行线程的设计上,考虑到用户平时书写的 `90%` 代码都是在主线程的,<br/>所以路由拦截器的执行线程也设计为主线程执行,可以让您放心的操作 `UI`、弹框等操作.<br/>同时提供 `Callback` 机制可以在拦截器中做任何耗时的任务<br/>这点绝对是压倒性的优势
+- [x] 配套的 `Idea Plugin` 方便快速浏览,持续会更新此插件
+- [x] 路由的取消,基本上没有路由框架支持路由的取消,这也是一个很大的优势
     - 可以手动用代码取消
     - 路由自动取消,当发起路由的 `Fragment` 或者 `Activity` 销毁的时候会取消
-- 拦截器的种类有三种,足矣满足所有业务情况(具体看wiki)
+- [x] 拦截器的种类有三种,足矣满足所有业务情况(具体看wiki)
     - 路由拦截器(针对某一次路由)
     - 页面拦截器(针对所有跳转到某一个界面的路由)
     - 全局拦截器(针对全部路由)
-- 目标界面的参数注入(目前仅支持基本数据类型,后续会支持Bundle中的所有类型)
-- 跳转
+- [x] 目标界面的参数注入(目前仅支持基本数据类型,后续会支持Bundle中的所有类型)
+- [x] 跳转
     - 自定义跳转(这样子就支持了第三方和系统的界面)
     - 自定义 `Intent`
-- 无缝对接 `H5`
--  **0** 配置可以拿到目标界面返回的 `ActivityResult`,很多框架不支持或者需要入侵 `BaseActivity`
-- 服务发现和路由分开设计
+- [x] 无缝对接 `H5`
+- [x] **0** 配置可以拿到目标界面返回的 `ActivityResult`,很多框架不支持或者需要入侵 `BaseActivity`
+- [x] 服务发现和路由分开设计
     - 其实这两块本来就是两个方面,我不清楚为什么很多方案中都柔和在一块
-- `Rx` 扩展库扩展完美结合了 `RxJava2`
+- [x] 完美支持 `RxJava2`,使用 `rx` 库
 
 第一个最简单的 hello world
 --------------
@@ -77,64 +79,6 @@ Component 的优势
 
 
 ```
-
-@RouterApiAnno()
-public interface AppApi {
-
-    @HostAnno(ModuleConfig.Help.NAME)
-    @PathAnno((ModuleConfig.Help.TEST_WEB_ROUTER))
-    void goToTestWebRouter(Context context);
-
-}
-
-// 声明式路由接口调用
-Router.withApi(AppApi.class).goToTestWebRouter(this);
-```
-
-**轻松拿到目标界面** `ActivityResult`
-
-```
-Router.with(mTestContext.fragment())
-        .host(ModuleConfig.Module1.NAME)
-        .path(ModuleConfig.Module1.TEST_AUTORETURN)
-        .requestCode(123)
-        .navigateForIntent(new BiCallback<Intent>() {
-            @Override
-            public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {      
-            }
-
-            @Override
-            public void onCancel(@Nullable RouterRequest originalRequest) {
-            }
-
-            @Override
-            public void onError(@NonNull RouterErrorResult errorResult) {
-            }
-        });
-```
-
-<img src="imgs/componentDesc.gif" width="250px" height="400px"/>
-
-**界面字段的注入**
-
-<img src="imgs/fieldInject.png" width="600px" height="360px"/>
-
-**配套的跳转向导**
-
-<a href="https://github.com/xiaojinzi123/RouterGoPlugin"> <img src="imgs/routerGoDesc.png" width="520px" height="360px"/></a>
-
-RouterGoPlugin
-----------
-
-[一个帮助您识别路由和拦截器的库,减少您查找的时间,配合组件化使用](https://github.com/xiaojinzi123/RouterGoPlugin)
-
-为了更好的能交流,这里新建了一个QQ群：870981195
-或者扫描二维码来进群
-
-<div>
-<img src="imgs/qq_group1.JPG" width="260px" height="360px" />
-<img src="imgs/qq_group2.JPG" width="260px" height="360px" />
-</div>
 
 License
 -------
