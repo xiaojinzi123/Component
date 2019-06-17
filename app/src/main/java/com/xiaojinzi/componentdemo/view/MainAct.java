@@ -97,18 +97,6 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testService(View view) {
-
-        List<String> list = new ArrayList<>();
-        list.add("123123");
-
-        Observable<String> observable = Single.just(list)
-                .flatMapObservable(new Function<List<String>, ObservableSource<String>>() {
-                    @Override
-                    public ObservableSource<String> apply(List<String> strings) throws Exception {
-                        return Observable.fromIterable(strings);
-                    }
-                });
-
         Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)
