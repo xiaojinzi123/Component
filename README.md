@@ -75,6 +75,11 @@ Component 的优势
 
 **了解更多请看 [wiki](https://github.com/xiaojinzi123/Component/wiki/) 更多功能等你来发现**
 
+有关的文章
+------------
+
+- [到底什么是组件化](https://blog.csdn.net/u011692041/article/details/92572758)
+
 
 ```
 

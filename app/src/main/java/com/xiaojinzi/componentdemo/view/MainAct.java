@@ -21,7 +21,9 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
-@RouterAnno(path = ModuleConfig.App.NAME, desc = "主界面")
+@RouterAnno(
+        path = "main"
+)
 public class MainAct extends AppCompatActivity {
 
     @Override

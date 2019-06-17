@@ -8,6 +8,9 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class App extends Application {
 
     @NonNull
@@ -21,6 +24,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         mApp = this;
 
         // 初始化组件化相关
