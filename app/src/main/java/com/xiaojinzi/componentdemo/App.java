@@ -8,8 +8,7 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.reactivex.Observable;
 
 public class App extends Application {
 
@@ -43,6 +42,8 @@ public class App extends Application {
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();
         }
+
+        Observable observable = Observable.just(1, 2, 3);
 
     }
 
