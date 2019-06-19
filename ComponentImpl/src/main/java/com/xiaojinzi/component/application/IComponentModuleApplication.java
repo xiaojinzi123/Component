@@ -10,7 +10,7 @@ public interface IComponentModuleApplication {
      *
      * @param moduleApp
      */
-    void register(IComponentHostApplication moduleApp);
+    void register(@NonNull IComponentHostApplication moduleApp);
 
     /**
      * 通过host注册
@@ -24,7 +24,7 @@ public interface IComponentModuleApplication {
      *
      * @param moduleApp
      */
-    void unregister(IComponentHostApplication moduleApp);
+    void unregister(@NonNull IComponentHostApplication moduleApp);
 
     /**
      * 通过 host 反注册

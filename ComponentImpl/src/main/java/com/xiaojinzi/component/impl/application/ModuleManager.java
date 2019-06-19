@@ -9,6 +9,7 @@ import com.xiaojinzi.component.application.IComponentHostApplication;
 import com.xiaojinzi.component.application.IComponentModuleApplication;
 import com.xiaojinzi.component.impl.RouterCenter;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
+import com.xiaojinzi.component.support.LogUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,44 +49,54 @@ public class ModuleManager implements IComponentModuleApplication {
     private static Map<String, IComponentHostApplication> moduleApplicationMap = new HashMap<>();
 
     @Override
-    public void register(IComponentHostApplication moduleApp) {
-        if (moduleApp == null) {
-            return;
-        }
+    public void register(@NonNull IComponentHostApplication moduleApp) {
         moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
         moduleApp.onCreate(Component.getApplication());
     }
 
     @Override
     public void register(@NonNull String host) {
+        if (host == null || "".equals(host)) {
+            throw new RuntimeException("the host can't be null or empty");
+        }
         if (moduleApplicationMap.containsKey(host)) {
+            LogUtil.log("the host '" + host + "' is already load");
             return;
         }
         IComponentHostApplication moduleApplication = findModuleApplication(host);
-        register(moduleApplication);
+        if (moduleApplication == null) {
+            LogUtil.log("模块 '" + host + "' 加载失败");
+        } else {
+            register(moduleApplication);
+        }
     }
 
     public void registerArr(@Nullable String... hosts) {
         if (hosts != null) {
             for (String host : hosts) {
                 IComponentHostApplication moduleApplication = findModuleApplication(host);
-                register(moduleApplication);
+                if (moduleApplication == null) {
+                    LogUtil.log("模块 '" + host + "' 加载失败");
+                } else {
+                    register(moduleApplication);
+                }
             }
         }
     }
 
     @Override
-    public void unregister(IComponentHostApplication moduleApp) {
-        if (moduleApp == null) {
-            return;
-        }
+    public void unregister(@NonNull IComponentHostApplication moduleApp) {
         moduleApp.onDestory();
     }
 
     @Override
     public void unregister(@NonNull String host) {
         IComponentHostApplication moduleApp = moduleApplicationMap.remove(host);
-        unregister(moduleApp);
+        if (moduleApp == null) {
+            LogUtil.log("模块 '" + host + "' 卸载失败");
+        } else {
+            unregister(moduleApp);
+        }
     }
 
     @Nullable
