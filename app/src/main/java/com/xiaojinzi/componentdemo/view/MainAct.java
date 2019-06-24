@@ -14,6 +14,7 @@ import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
 @RouterAnno(
+        host = "app",
         path = "main"
 )
 public class MainAct extends AppCompatActivity {

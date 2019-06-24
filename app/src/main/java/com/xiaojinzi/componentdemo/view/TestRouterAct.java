@@ -1,6 +1,5 @@
 package com.xiaojinzi.componentdemo.view;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,7 +18,6 @@ import com.xiaojinzi.base.router.Module1Api;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
@@ -32,7 +30,6 @@ import com.xiaojinzi.componentdemo.R;
 
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.SingleTransformer;
