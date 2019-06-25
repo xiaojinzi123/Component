@@ -4,7 +4,7 @@
 
     <application>
         <meta-data
-            android:name="HOST"
+            android:name="host_component2"
             android:value="component2" />
 
         <activity android:name="com.xiaojinzi.component2.view.Component2Act" />
