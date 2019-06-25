@@ -5,7 +5,6 @@ import com.xiaojinzi.base.ModuleConfig
 import com.xiaojinzi.base.view.BaseAct
 import com.xiaojinzi.component.anno.FiledAutowiredAnno
 import com.xiaojinzi.component.anno.RouterAnno
-import com.xiaojinzi.component.impl.Router
 import com.xiaojinzi.component.support.ParameterSupport
 import com.xiaojinzi.component2.R
 import kotlinx.android.synthetic.main.component2_act.*
@@ -25,12 +24,6 @@ class Component2Act : BaseAct() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.component2_act)
         tv_data.text = ParameterSupport.getString(intent, "data")
-
-        Router.with(this)
-                .host("component")
-                .path("main")
-                .navigate();
-
     }
 
 }

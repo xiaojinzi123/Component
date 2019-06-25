@@ -8,8 +8,6 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
-import io.reactivex.Observable;
-
 public class App extends Application {
 
     @NonNull
@@ -36,14 +34,12 @@ public class App extends Application {
         ModuleManager.getInstance().registerArr(
                 ModuleConfig.App.NAME, ModuleConfig.Module1.NAME,
                 ModuleConfig.Module2.NAME, ModuleConfig.User.NAME,
-                ModuleConfig.Help.NAME,"123123123"
+                ModuleConfig.Help.NAME, "123123123"
         );
 
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();
         }
-
-        Observable observable = Observable.just(1, 2, 3);
 
     }
 
