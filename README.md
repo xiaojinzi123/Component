@@ -16,8 +16,7 @@
     <img height=20 src="https://gitee.com/logo-black.svg" />
 </a>
 <a href="https://github.com/xiaojinzi123/Component">
-    <img height=22 src="https://github.com/fluidicon.png" />
-</a>
+    <img height=22 src="https://xiaojinzi.oss-cn-shanghai.aliyuncs.com/blogImages/fluidicon.png" /></a>
 
 ## Demo体验(扫码或者点击图片即可下载)
 
@@ -113,6 +112,13 @@
 配套的 `Idea Plugin`
 
 [RouterGo 帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
+
+## 扫码进群
+
+<div>
+<img src="imgs/qq_group1.JPG" width="260px" height="360px" />
+<img src="imgs/qq_group2.JPG" width="260px" height="360px" />
+</div>
 
 ## License
 

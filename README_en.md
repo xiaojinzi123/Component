@@ -92,6 +92,15 @@ There are many componentized framework for ` Android`, and what are advantages o
 
 [RouterGo can navigate to target `Activity`  and find all the use of target `Activity`, you're worth it!](https://github.com/xiaojinzi123/RouterGoPlugin)
 
+## Scan qrcode to join `QQ` group
+
+<div>
+<img src="imgs/qq_group1.JPG" width="260px" height="360px" />
+<img src="imgs/qq_group2.JPG" width="260px" height="360px" />
+</div>
+
+## 
+
 ## License
 
 ```
