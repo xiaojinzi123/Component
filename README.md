@@ -12,7 +12,7 @@
 [![](https://img.shields.io/github/tag/xiaojinzi123/Component.svg?label=Tag)](https://github.com/xiaojinzi123/Component/releases)
 ![](https://img.shields.io/github/last-commit/xiaojinzi123/Component/develop.svg?label=Last%20Commit)
 ![](https://img.shields.io/github/repo-size/xiaojinzi123/Component.svg)
-![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
+![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)gh
 ![](https://img.shields.io/github/license/xiaojinzi123/Component.svg)
 <a href="https://gitee.com/xiaojinziCoder/Component" >
     <img height=20 src="https://gitee.com/logo-black.svg" /></a>
@@ -56,7 +56,7 @@ There are many componentized framework for ` Android`, and what are advantages o
   - [x] `H5` can use `URL` jump to any `Activity` 
   - [x] Because of [page Interceptor](https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A#%E9%A1%B5%E9%9D%A2%E6%8B%A6%E6%88%AA%E5%99%A8), when you routering from `H5`,you don't need to care whether the target `Activity` is need login or other or not
   - [x] Not Support get target `Activity` result from `H5`, this situation you have to design `Type` to do as before.
-- [x] **You can get `ActivityResult` with no change of code, also don't need to change any code of `BaseActivity` **
+- [x] You can get `ActivityResult` with no change of code, also don't need to change any code of `BaseActivity` 
   - [x] As the behavior of system, when `Context` is  `Application` or `Service Context` or `ContentProvider Context`, will not support.
   - [x] In addition to the above points, other situations are all sopport, include `Dialog` and so on.
 - [x] The `Routering` and `Service` is divided
