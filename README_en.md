@@ -84,7 +84,7 @@ There are many componentized framework for ` Android`, and what are advantages o
 
 **if you want leran more you can see [wiki](https://github.com/xiaojinzi123/Component/wiki/) **
 
-## 有关的文章Some articles
+## Some articles
 
 - Waht is componentized
 
