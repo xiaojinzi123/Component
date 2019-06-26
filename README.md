@@ -22,7 +22,7 @@
 ## Demo Apk(scan qrcode or click the image to download)
 
 <a href="https://files.gitee.com/group1/M00/07/F6/PaAvDFz3FnGAcMLcADcIxREinEY078.apk?attname=app-debug.apk">
-    <img height=180 src="/Users/xiaojinzi/Documents/code/github/Component/imgs/demoApk.png" />
+    <img height=180 src="./imgs/demoApk.png" />
 </a>
 
 ## The advantage of `Component`
@@ -82,7 +82,7 @@ There are many componentized framework for ` Android`, and what are advantages o
 - [Noun explanation](https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A)
 - [Basic introduction](https://github.com/xiaojinzi123/Component/wiki/%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D%E5%92%8C%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D)
 
-**if you want leran more you can see [wiki](https://github.com/xiaojinzi123/Component/wiki/) **
+if you want leran more you can see [wiki](https://github.com/xiaojinzi123/Component/wiki/) 
 
 ## Some articles
 
