@@ -1,8 +1,10 @@
+[English Doc](https://github.com/xiaojinzi123/Component) | [中文文档](https://github.com/xiaojinzi123/Component/blob/develop/README_cn.md)
+
 # Component
 
-![](imgs/logo1.png)
+![](/Users/xiaojinzi/Documents/code/github/Component/imgs/logo1.png)
 
-**一个功能强大的组件化框架,极度注重用户体验,带给你使用上不一样的享受.欢迎大家使用,在使用的过程中发现任何问题,欢迎下方的 `QQ群` 里问或者提 `issue` 给我**
+**A powerful componentized framework,We pay attention to user experience,welcome to use.Please commit your issue when you have any problem. Also you can scan qrcode to join  `QQ` group and ask some questions.**
 
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=JitPack&color=%233fcd12)](https://jitpack.io/#xiaojinzi123/Component)
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=JitPack-AndroidX&color=%233fcd12)](https://jitpack.io/#xiaojinzi123/Component)
@@ -13,112 +15,91 @@
 ![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
 ![](https://img.shields.io/github/license/xiaojinzi123/Component.svg)
 <a href="https://gitee.com/xiaojinziCoder/Component" >
-    <img height=20 src="https://gitee.com/logo-black.svg" />
-</a>
+    <img height=20 src="https://gitee.com/logo-black.svg" /></a>
 <a href="https://github.com/xiaojinzi123/Component">
-    <img height=22 src="https://xiaojinzi.oss-cn-shanghai.aliyuncs.com/blogImages/fluidicon.png" /></a>
+    <img height=22 src="https://github.com/fluidicon.png" /></a>
 
-## Demo体验(扫码或者点击图片即可下载)
+## Demo Apk(scan qrcode or click the image to download)
 
 <a href="https://files.gitee.com/group1/M00/07/F6/PaAvDFz3FnGAcMLcADcIxREinEY078.apk?attname=app-debug.apk">
-    <img height=180 src="./imgs/demoApk.png" />
+    <img height=180 src="/Users/xiaojinzi/Documents/code/github/Component/imgs/demoApk.png" />
 </a>
 
-## Component 的优势
+## The advantage of `Component`
 
-组件化方案真的有很多,那么这个组件化方案优秀在哪里？相比于 `ARouter`、`WMRouter`、`ActivityRouter`、`CC`、`DDComponent`
-等开源的组件化框架,有哪些一样或者优秀的点
+There are many componentized framework for ` Android`, and what are advantages of `Component`?
 
-- [x] 支持标准 `URI` 的使用
-
-- [x] 支持 `androidx`,几乎没有其他组件化框架支持 `androidx` 的
-
-- [x] 支持业务组件生命周期(被加载和被卸载)
-
-- [x] 整个设计贴近原生,对原生的代码入侵极少,尽最大的可能保留原生的代码
-
-- [x] 支持目标界面的路由参数和服务的自动注入
-
-- [x] 路由拦截器执行线程是主线程
-
-  - 在路由拦截器的执行线程的设计上,考虑到用户平时书写的 `90%` 代码都是在主线程的,<br/>所以路由拦截器的执行线程也设计为主线程执行,可以让您放心的操作 `UI`、弹框等操作.<br/>同时提供 `Callback` 机制可以在拦截器中做任何耗时的任务<br/>这点绝对是压倒性的优势,不仅整体是 `异步` 的,而且拦截器中能像平常一样写实现的代码
-
-- [x] 配套的 `Idea Plugin` 方便快速浏览,持续会更新此 [插件](https://github.com/xiaojinzi123/RouterGoPlugin)
-
-- [x] 路由的取消,基本上没有路由框架支持路由的取消,这也是一个很大的优势
-
-  - [x] 手动用代码取消某次路由
-
-  - [x] 路由自动取消,当发起路由的 `Fragment` 或者 `Activity` 销毁的时候会取消
-
-- [x] 拦截器,足矣满足所有业务情况(具体看 [拦截器wiki]([https://github.com/xiaojinzi123/Component/wiki/%E6%8B%A6%E6%88%AA%E5%99%A8](https://github.com/xiaojinzi123/Component/wiki/拦截器)))
-
-  - [x] 全局拦截器(针对全部路由)
-  - [x] 局部路由拦截器
-    - [x] 页面拦截器(针对所有跳转到某一个界面的路由)
-    - [x] 拦截器别名,支持跨模块使用
-
-- [x] 跳转
-
-  - [x] 持标准 `URI`
-  - [x] 自定义 `Intent`
-  - [x] 支持类似 `Retrofit` 接口编程式跳转
-  - [x] `Idea Plugin` 强势支持跳转代码和目标界面的来回导航,也支持拦截器的代码使用和声明处的来回导航
-
-- [x] 无缝对接 `H5`
-
-  - [x] `H5` 只需利用 `URL` 即可任意路由到任何界面
-  - [x] `H5` 发起路由不需要关心目标界面需要做的前期工作(框架的[页面拦截器]([https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A#%E9%A1%B5%E9%9D%A2%E6%8B%A6%E6%88%AA%E5%99%A8](https://github.com/xiaojinzi123/Component/wiki/名词解释#页面拦截器))已经帮您做完) 
-  - [ ] 不支持 `H5` 直接获取到目标接界面的数据,这种情况还是需要像以前一样根据 `type` 去做
-
-- [x] **0** 配置拿到目标界面返回的 `ActivityResult`,很多框架不支持或者需要入侵 `BaseActivity`
-
-  - [ ] 和系统的行为一样,当 `Context` 是 `Application` 或者 `Service 的 Context` 或者 `ContentProvider 的 Context `的时候,**不支持**
-  - [x] 除第一点说的几个 `Context`,其他的情况都是支持的,包括 `Dialog` 中获取到的 `Context`
-
-- [x] 服务发现和路由分开设计
-
-  - 其实这两块本来就是两个方面,我不清楚为什么很多方案中都柔和在一块
-
-- [x] 完美支持 `RxJava2`,使用 `rx` 库
-
-- [x] [业务模块单独运行]([https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E5%8D%95%E7%8B%AC%E8%BF%90%E8%A1%8C](https://github.com/xiaojinzi123/Component/wiki/业务组件单独运行))
+- [x] Support standard `URI`.
+- [x] Support `androidx`, there is almost no componentized framework can support it.
+- [x] Support lifecycle of `Module`
+- [x] The design of  `Component`  is close to native, less invasive for native code, minimizing the possibility of retaining native code
+- [x] Support autowire of `Parameter` and `Service` 
+- [x] The `Interceptor` of `Router` is running on `MainThread` 
+  - The design of `Interceptor`, we think 90% code is running on `MainThread`,so the  `Interceptor` of `Router` is running on `MainThread` .Then you can operate the `UI` or `Dialog` and so on.
+  - We provoder the `Callback` mechanism,then you can do any thing in `Interceptor`
+  - This advantage is very useful
+- [x] An `idea plugin`  can navigate to target `Activity`  and find all the use of target `Activity`, [here is the Plugin](https://github.com/xiaojinzi123/RouterGoPlugin)
+- [x] Cancel routering, this advantage is very useful
+  - [x] You can cancel routering
+  - [x] The routering will auto canceled when `Activity` or `Fragment` destoried
+- [x] `Interceptor` of router, more detail see [Interceptor Wiki](https://github.com/xiaojinzi123/Component/wiki/Interceptor)
+  - [x] Global Interceptor
+  - [x] Local Interceptor
+    - [x] page Interceptor
+    - [x] The alias name of Interceptor, you can use Interceptor by name anywhere
+- [x] Routering
+  - [x] Support standard `URI`
+  - [x] Support custom `Intent`
+  - [x] Support routering api like [Retrofit 
+  - [x] `Idea Plugin`  can navigate to target `Activity`  and find all the use of target `Activity``
+- [x] Perfect support `H5`
+  - [x] `H5` can use `URL` jump to any `Activity` 
+  - [x] Because of [page Interceptor](https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A#%E9%A1%B5%E9%9D%A2%E6%8B%A6%E6%88%AA%E5%99%A8), when you routering from `H5`,you don't need to care whether the target `Activity` is need login or other or not
+  - [x] Not Support get target `Activity` result from `H5`, this situation you have to design `Type` to do as before.
+- [x] **You can get `ActivityResult` with no change of code, also don't need to change any code of `BaseActivity` **
+  - [x] As the behavior of system, when `Context` is  `Application` or `Service Context` or `ContentProvider Context`, will not support.
+  - [x] In addition to the above points, other situations are all sopport, include `Dialog` and so on.
+- [x] The `Routering` and `Service` is divided
+- [x] Perfect support `RxJava2` when you use `rx` version.
+- [x] [Module run alone](https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E5%8D%95%E7%8B%AC%E8%BF%90%E8%A1%8C)
 
 ## hello world
 
-[最简单的 hello world](https://github.com/xiaojinzi123/Component/wiki)
+[hello world](https://github.com/xiaojinzi123/Component/wiki)
 
-## 更详细的使用
+## More usage detail
 
-- 依赖和配置
-  - [依赖和配置](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE)
-  - [依赖和配置 For AndroidX](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE-AndroidX)
-- [Activity注解使用](https://github.com/xiaojinzi123/Component/wiki/RouterAnno%E6%B3%A8%E8%A7%A3%E6%A0%87%E8%AE%B0%E7%9B%AE%E6%A0%87%E7%9A%84%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95)
-- 跳转
-  - [跳转-接口路由的方式](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E6%8E%A5%E5%8F%A3%E8%B7%AF%E7%94%B1%E7%9A%84%E6%96%B9%E5%BC%8F)
-  - [跳转-使用代码跳转](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%A0%81%E8%B7%B3%E8%BD%AC)
-- [拦截器](https://github.com/xiaojinzi123/Component/wiki/%E6%8B%A6%E6%88%AA%E5%99%A8)
-- [服务发现实现跨模块调用](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%A8%E6%A8%A1%E5%9D%97%E8%B0%83%E7%94%A8%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E5%8A%9F%E8%83%BD)
-- [单独运行](https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E5%8D%95%E7%8B%AC%E8%BF%90%E8%A1%8C)
-- [名词解释](https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A)
-- [基本介绍](https://github.com/xiaojinzi123/Component/wiki/%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D%E5%92%8C%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D)
+- dependence and config
+  - [dependence and config](https://github.com/xiaojinzi123/Component/wiki/Dependence-and-Config)
+  - [dependence and config For AndroidX](https://github.com/xiaojinzi123/Component/wiki/Dependence-and-Config-AndroidX)
+- The usage of [RouterAnno](https://github.com/xiaojinzi123/Component/wiki/RouterAnno-Anntation)
+- Routering
+  - [Routering Api](https://github.com/xiaojinzi123/Component/wiki/routering-api)
+  - [Routering with code](https://github.com/xiaojinzi123/Component/wiki/routering-with-code)
+- [Interceptor](https://github.com/xiaojinzi123/Component/wiki/Interceptor)
+- [SPI and use](https://github.com/xiaojinzi123/Component/wiki/cross-module-call-service)
+- [Module run alone](https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E5%8D%95%E7%8B%AC%E8%BF%90%E8%A1%8C)
+- [Noun explanation](https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A)
+- [Basic introduction](https://github.com/xiaojinzi123/Component/wiki/%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D%E5%92%8C%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D)
 
-**了解更多请看 [wiki](https://github.com/xiaojinzi123/Component/wiki/) 更多功能等你来发现**
+**if you want leran more you can see [wiki](https://github.com/xiaojinzi123/Component/wiki/) **
 
-## 有关的文章
+## Some articles
 
-- [到底什么是组件化](https://blog.csdn.net/u011692041/article/details/92572758)
+- Waht is componentized
 
-配套的 `Idea Plugin`
+ `Idea Plugin`
 
-[RouterGo 帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
+[RouterGo can navigate to target `Activity`  and find all the use of target `Activity`, you're worth it!](https://github.com/xiaojinzi123/RouterGoPlugin)
 
-## 扫码进群
+## Scan qrcode to join `QQ` group
 
 <div>
-<img src="imgs/qq_group1.JPG" width="260px" height="360px" />
-<img src="imgs/qq_group2.JPG" width="260px" height="360px" />
+<img src="./imgs/qq_group1.JPG" width="260px" height="360px" />
+<img src="./imgs/qq_group2.JPG" width="260px" height="360px" />
 </div>
+
+## 
 
 ## License
 
