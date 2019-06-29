@@ -1,6 +1,6 @@
 [English Doc](https://github.com/xiaojinzi123/Component) | [中文文档](https://github.com/xiaojinzi123/Component/blob/develop/README_cn.md)
 
-[Component vs ARouter]([https://github.com/xiaojinzi123/Component/wiki/Component-%E5%92%8C-ARouter-%E6%AF%94%E8%BE%83](https://github.com/xiaojinzi123/Component/wiki/Component-和-ARouter-比较))
+[Component VS ARouter](https://github.com/xiaojinzi123/Component/wiki/Component-%E5%92%8C-ARouter-%E6%AF%94%E8%BE%83)
 
 # Component
 
