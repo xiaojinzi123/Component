@@ -4,7 +4,7 @@
 
 # Component
 
-![](/Users/xiaojinzi/Documents/code/github/Component/imgs/logo1.png)
+![](./imgs/logo1.png)
 
 **A powerful componentized framework,We pay attention to user experience,welcome to use.Please commit your issue when you have any problem. Also you can scan qrcode to join  `QQ` group and ask some questions.**
 
