@@ -4,7 +4,9 @@
 
 ![](/Users/xiaojinzi/Documents/code/github/Component/imgs/logo1.png)
 
-**A powerful componentized framework,We pay attention to user experience,welcome to use.Please commit your issue when you have any problem. Also you can scan qrcode to join  `QQ` group and ask some questions.**
+A powerful componentized framework. `Component` focuses on improving the user experience.
+If you have any confusion while using Component, issues are welcomed any time.
+You can also join our community by scanning the QRCode below to discuss more about the `Component`
 
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=JitPack&color=%233fcd12)](https://jitpack.io/#xiaojinzi123/Component)
 [![](https://img.shields.io/github/release/xiaojinzi123/Component.svg?label=JitPack-AndroidX&color=%233fcd12)](https://jitpack.io/#xiaojinzi123/Component)
