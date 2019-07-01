@@ -1,8 +1,10 @@
 [English Doc](https://github.com/xiaojinzi123/Component) | [中文文档](https://github.com/xiaojinzi123/Component/blob/develop/README_cn.md)
 
+[Component VS ARouter](https://github.com/xiaojinzi123/Component/wiki/Component-VS-ARouter)
+
 # Component
 
-![](/Users/xiaojinzi/Documents/code/github/Component/imgs/logo1.png)
+![](./imgs/logo1.png)
 
 A powerful componentized framework. `Component` focuses on improving the user experience.
 If you have any confusion while using Component, issues are welcomed any time.
@@ -27,7 +29,7 @@ You can also join our community by scanning the QRCode below to discuss more abo
     <img height=180 src="./imgs/demoApk.png" />
 </a>
 
-## The advantage of `Component`
+## The advantage of Component
 
 There are many componentized framework for ` Android`, and what are advantages of `Component`?
 

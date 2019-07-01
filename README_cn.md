@@ -1,8 +1,10 @@
 [English Doc](https://github.com/xiaojinzi123/Component) | [中文文档](https://github.com/xiaojinzi123/Component/blob/develop/README_cn.md)
 
+[Component VS ARouter](https://github.com/xiaojinzi123/Component/wiki/Component-%E5%92%8C-ARouter-%E6%AF%94%E8%BE%83)
+
 # Component
 
-![](imgs/logo1.png)
+![](./imgs/logo1.png)
 
 **一个功能强大的组件化框架,极度注重用户体验,带给你使用上不一样的享受.欢迎大家使用,在使用的过程中发现任何问题,欢迎下方的 `QQ群` 里问或者提 `issue` 给我**
 
@@ -28,7 +30,7 @@
 ## Component 的优势
 
 组件化方案真的有很多,那么这个组件化方案优秀在哪里？相比于 `ARouter`、`WMRouter`、`ActivityRouter`、`CC`、`DDComponent`
-等开源的组件化框架,有哪些一样或者优秀的点
+等开源的组件化框架,有哪些一样或者更加优秀的点
 
 - [x] 支持标准 `URI` 的使用
 
