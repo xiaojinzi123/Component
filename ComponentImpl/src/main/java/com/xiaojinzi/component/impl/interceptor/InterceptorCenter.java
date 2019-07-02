@@ -6,9 +6,9 @@ import android.support.annotation.Nullable;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.error.InterceptorNameExistException;
 import com.xiaojinzi.component.impl.RouterInterceptor;
-import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.interceptor.IComponentCenterInterceptor;
 import com.xiaojinzi.component.interceptor.IComponentHostInterceptor;
+import com.xiaojinzi.component.support.RouterInterceptorCache;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +64,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
 
     /**
      * 每个业务组件的拦截器 name --> Class 映射关系的总的集合
-     * 这种拦截器不是全局拦截器,是随时随地使用的拦截器,见 {@link Router.Builder#interceptorNames(String...)}
+     * 这种拦截器不是全局拦截器,是随时随地使用的拦截器,见 {@link com.xiaojinzi.component.impl.Navigator#interceptorNames(String...)}
      */
     private Map<String, Class<? extends RouterInterceptor>> mInterceptorMap = new HashMap<>();
 

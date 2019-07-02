@@ -3,7 +3,6 @@ package com.xiaojinzi.component.cache;
 import android.app.ActivityManager;
 import android.content.Context;
 
-import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.support.Utils;
 
 /**
@@ -11,17 +10,19 @@ import com.xiaojinzi.component.support.Utils;
  * 从而为不同的模块构建不同的缓存策略
  */
 public interface CacheType {
-    int ROUTER_INTERCEPTOR_CACHE_TYPE_ID = 0;
+
+    int CLASS_CACHE_TYPE_ID = 0;
 
     /**
-     * 缓存 {@link RouterInterceptor} 的容器
+     * 缓存 {@link Class} 的容器
      */
-    CacheType ROUTER_INTERCEPTOR_CACHE = new CacheType() {
+    CacheType CLASS_CACHE = new CacheType() {
+
         private static final int MAX_SIZE = 25;
 
         @Override
         public int getCacheTypeId() {
-            return ROUTER_INTERCEPTOR_CACHE_TYPE_ID;
+            return CLASS_CACHE_TYPE_ID;
         }
 
         @Override

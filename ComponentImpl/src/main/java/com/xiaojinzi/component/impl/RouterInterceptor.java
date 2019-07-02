@@ -4,7 +4,7 @@ import android.support.annotation.AnyThread;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
-import com.xiaojinzi.component.impl.interceptor.RouterInterceptorCache;
+import com.xiaojinzi.component.support.RouterInterceptorCache;
 
 /**
  * 路由跳转的拦截器,设计是 callback 机制代替即时返回的,即时返回比如 OkHttp的拦截器

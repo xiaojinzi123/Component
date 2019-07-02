@@ -47,7 +47,7 @@ public class Router {
      * 拦截器 Class --> RouterInterceptor 的缓存
      */
     private static final Cache<Class, Object> apiClassCache =
-            DefaultCacheFactory.INSTANCE.build(CacheType.ROUTER_INTERCEPTOR_CACHE);
+            DefaultCacheFactory.INSTANCE.build(CacheType.CLASS_CACHE);
 
     /**
      * 空实现,里头都是不能调用的方法

@@ -2,7 +2,9 @@ package com.xiaojinzi.component.application;
 
 import android.support.annotation.NonNull;
 
-
+/**
+ * Module 管理中心的接口,用于管理所有 Module
+ */
 public interface IComponentModuleApplication {
 
     /**

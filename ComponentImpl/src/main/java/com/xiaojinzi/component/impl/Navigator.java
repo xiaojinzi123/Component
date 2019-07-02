@@ -22,7 +22,7 @@ import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.impl.interceptor.OpenOnceInterceptor;
-import com.xiaojinzi.component.impl.interceptor.RouterInterceptorCache;
+import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.Consumer;

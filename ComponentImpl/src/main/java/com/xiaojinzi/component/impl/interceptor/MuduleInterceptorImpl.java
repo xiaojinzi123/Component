@@ -1,11 +1,13 @@
 package com.xiaojinzi.component.impl.interceptor;
 
+import android.app.Application;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.interceptor.IComponentHostInterceptor;
+import com.xiaojinzi.component.support.RouterInterceptorCache;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +27,24 @@ abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
 
     private boolean isInitMap = false;
 
+    /**
+     * 用作销毁一些缓存
+     *
+     * @param app
+     */
+    @Override
+    public void onCreate(@NonNull Application app) {
+        // empty
+    }
+
+    /**
+     * 用作销毁一些缓存
+     */
+    @Override
+    public void onDestory() {
+        // empty
+    }
+
     @Override
     @NonNull
     public List<InterceptorBean> globalInterceptorList() {
@@ -35,7 +55,7 @@ abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
      * 初始化拦截器的集合
      */
     @CallSuper
-    protected void initInterceptorMap(){
+    protected void initInterceptorMap() {
         isInitMap = true;
     }
 

@@ -16,7 +16,7 @@ public class ComponentConstants {
 
     public static final String APPLCATON_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.application.IComponentApplication";
     public static final String INTERCEPTOR_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.impl.RouterInterceptor";
-    public static final String INTERCEPTOR_UTIL_CLASS_NAME = "com.xiaojinzi.component.impl.interceptor.RouterInterceptorCache";
+    public static final String INTERCEPTOR_UTIL_CLASS_NAME = "com.xiaojinzi.component.support.RouterInterceptorCache";
     public static final String ROUTER_CLASS_NAME = "com.xiaojinzi.component.impl.Router";
     public static final String ROUTER_RX_CLASS_NAME = "com.xiaojinzi.component.impl.RxRouter";
     public static final String INTERCEPTOR_BEAN_CLASS_NAME = "com.xiaojinzi.component.impl.interceptor.InterceptorBean";
@@ -32,6 +32,8 @@ public class ComponentConstants {
     public static final String NAVIGATOR_CLASS_NAME = "com.xiaojinzi.component.impl.Navigator";
     public static final String ROUTER_REQUEST_CLASS_NAME = "com.xiaojinzi.component.impl.RouterRequest";
     public static final String CONSUMER_CLASS_NAME = "com.xiaojinzi.component.support.Consumer";
+    public static final String CLASSCACHE_CLASS_NAME = "com.xiaojinzi.component.cache.ClassCache";
+    public static final String CONDITIONCACHE_CLASS_NAME = "com.xiaojinzi.component.support.ConditionCache";
 
     public static final String ANDROID_PARCELABLE = "android.os.Parcelable";
     public static final String ANDROID_APPLICATION = "android.app.Application";

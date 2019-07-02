@@ -3,7 +3,7 @@ package com.xiaojinzi.component.service;
 import android.support.annotation.NonNull;
 
 /**
- * 模块的UI服务接口
+ * 模块的服务接口
  * time   : 2018/07/26
  *
  * @author : xiaojinzi 30212

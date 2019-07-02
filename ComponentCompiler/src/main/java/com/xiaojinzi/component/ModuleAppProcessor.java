@@ -1,6 +1,5 @@
 package com.xiaojinzi.component;
 
-import com.xiaojinzi.component.anno.ModuleAppAnno;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -8,6 +7,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.xiaojinzi.component.anno.ModuleAppAnno;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -28,7 +28,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import javax.tools.Diagnostic;
 
 /**
  * 负责处理 {@link ModuleAppAnno}
@@ -42,13 +41,15 @@ public class ModuleAppProcessor extends BaseHostProcessor {
     private TypeElement centerInterceptorTypeElement;
     private TypeElement centerServiceTypeElement;
     private TypeElement routerTypeElement;
+    private TypeElement classCacheTypeElement;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-        centerInterceptorTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.CENTERINTERCEPTOR_CLASS_NAME);
-        centerServiceTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.CENTERSERVICE_CLASS_NAME);
-        routerTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.ROUTER_CLASS_NAME);
+        centerInterceptorTypeElement = mElements.getTypeElement(ComponentConstants.CENTERINTERCEPTOR_CLASS_NAME);
+        centerServiceTypeElement = mElements.getTypeElement(ComponentConstants.CENTERSERVICE_CLASS_NAME);
+        routerTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_CLASS_NAME);
+        classCacheTypeElement = mElements.getTypeElement(ComponentConstants.CLASSCACHE_CLASS_NAME);
         createImpl(true);
     }
 
@@ -178,6 +179,8 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         methodSpecBuilder.addStatement("$T.unregister(getHost())", routerTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerInterceptorTypeElement);
+        methodSpecBuilder.addComment("清空缓存");
+        methodSpecBuilder.addStatement("$T.clear()", classCacheTypeElement);
         return methodSpecBuilder.build();
     }
 
