@@ -16,6 +16,8 @@ import com.xiaojinzi.base.bean.UserWithSerializable;
 import com.xiaojinzi.base.interceptor.DialogShowInterceptor;
 import com.xiaojinzi.base.interceptor.TimeConsumingInterceptor;
 import com.xiaojinzi.component.anno.ParameterAnno;
+import com.xiaojinzi.component.anno.router.AfterActionAnno;
+import com.xiaojinzi.component.anno.router.BeforActionAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.NavigateAnno;
@@ -28,6 +30,7 @@ import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Call;
 import com.xiaojinzi.component.impl.Callback;
 import com.xiaojinzi.component.impl.Navigator;
+import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.NavigationDisposable;
 
@@ -51,6 +54,8 @@ public interface SampleApi {
     )
     Navigator test(Context context, @ParameterAnno("data") String data, Callback callback,
                    @NonNull @OptionsAnno Bundle options,
+                   @NonNull @BeforActionAnno Action beforAction,
+                   @NonNull @AfterActionAnno Action afterAction,
                    @NonNull Consumer<Intent> intentConsumer);
 
     @NavigateAnno

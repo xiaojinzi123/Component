@@ -6,12 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 这是一个标识某一个参数是路由跳转的 Fragment 或者 Context
- *
- * @see PathAnno
- * @see HostAndPathAnno
+ * 标记一个 Action 是跳转前的 Action
  */
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.CLASS)
-public @interface WithAnno {
+public @interface BeforActionAnno {
 }
