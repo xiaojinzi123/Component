@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
@@ -61,8 +60,7 @@ public interface SampleApi {
     @NavigateAnno
     @HostAnno(ModuleConfig.Module2.NAME)
     @PathAnno(ModuleConfig.Module1.TEST)
-    void test1(Fragment fragment,
-               @ParameterAnno("data") String data);
+    void test1(@ParameterAnno("data") String data);
 
     @NavigateAnno(forResult = true)
     @HostAndPathAnno(ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST)

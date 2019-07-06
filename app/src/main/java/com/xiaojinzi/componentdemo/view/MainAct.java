@@ -67,7 +67,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouter(View view) {
-        Router.withApi(AppApi.class).goToTestRouter(this);
+        Router.withApi(AppApi.class).goToTestRouter();
     }
 
     public void testWebRouter(View view) {
@@ -76,9 +76,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testQuality(View view) {
-        Router.withApi(AppApi.class)
-                .goToTestQuality(this)
-                .subscribe();
+        Router.withApi(AppApi.class).goToTestQuality().subscribe();
     }
 
     @Override

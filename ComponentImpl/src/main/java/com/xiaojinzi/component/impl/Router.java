@@ -117,6 +117,10 @@ public class Router {
         RouterCenter.getInstance().unregister(host);
     }
 
+    public static Navigator with(){
+        return new Navigator();
+    }
+
     public static Navigator with(@NonNull Context context) {
         return new Navigator(context);
     }

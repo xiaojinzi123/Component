@@ -51,6 +51,10 @@ public class RxRouter extends Router {
 
     public static final String TAG = "RxRouter";
 
+    public static Builder with() {
+        return new Builder();
+    }
+
     /**
      * 这个方法父类也有一个静态的,但是父类返回的是 {@link Navigator} 而这个返回的是
      * {@link RxRouter.Builder}
@@ -74,6 +78,10 @@ public class RxRouter extends Router {
     }
 
     public static class Builder extends Navigator {
+
+        private Builder() {
+            super();
+        }
 
         private Builder(@NonNull Context context) {
             super(context);

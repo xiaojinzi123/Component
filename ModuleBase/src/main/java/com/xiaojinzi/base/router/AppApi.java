@@ -1,6 +1,5 @@
 package com.xiaojinzi.base.router;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.xiaojinzi.base.ModuleConfig;
@@ -15,10 +14,10 @@ import io.reactivex.Completable;
 public interface AppApi {
 
     @PathAnno(ModuleConfig.App.TEST_ROUTER)
-    void goToTestRouter(Activity context);
+    void goToTestRouter();
 
     @PathAnno(ModuleConfig.App.TEST_QUALITY)
-    Completable goToTestQuality(Context context);
+    Completable goToTestQuality();
 
     @HostAnno(ModuleConfig.Help.NAME)
     @PathAnno((ModuleConfig.Help.TEST_WEB_ROUTER))

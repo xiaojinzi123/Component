@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.RouterRxFragment;
 import com.xiaojinzi.component.bean.ActivityResult;
@@ -22,11 +23,11 @@ import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.impl.interceptor.OpenOnceInterceptor;
-import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.NavigationDisposable;
+import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.support.Utils;
 
 import java.io.Serializable;
@@ -63,6 +64,9 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
      */
     protected boolean isFinish = false;
+
+    public Navigator() {
+    }
 
     public Navigator(@NonNull Context context) {
         Utils.checkNullPointer(context, "context");
@@ -371,6 +375,14 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return Help.randomlyGenerateRequestCode(super.build());
     }
 
+    private void useDefaultApplication(){
+        // 如果 Context 和 Fragment 都是空的,使用默认的 Application
+        if (context == null && fragment == null) {
+            context = Component.getApplication();
+            addIntentFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+    }
+
     /**
      * 路由前的检查
      *
@@ -397,7 +409,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     private void onCheckForResult() throws Exception {
         if (context == null && fragment == null) {
-            throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router"));
+            throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router if you want get ActivityResult"));
         }
         // 如果是使用 Context 的,那么就必须是 FragmentActivity,需要操作 Fragment
         // 这里的 context != null 判断条件不能去掉,不然使用 Fragment 跳转的就过不去了
@@ -648,6 +660,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
         // 构建请求对象
         RouterRequest originalRequest = null;
         try {
+            // 如果用户没填写 Context 或者 Fragment 默认使用 Application
+            useDefaultApplication();
             // 路由前的检查
             onCheck();
             // 标记这个 builder 已经不能使用了
