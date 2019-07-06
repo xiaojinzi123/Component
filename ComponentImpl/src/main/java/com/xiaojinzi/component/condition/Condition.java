@@ -1,4 +1,4 @@
-package com.xiaojinzi.component.api;
+package com.xiaojinzi.component.condition;
 
 /**
  * 这是一个条件的接口,实现此接口的类必须是无参数的构造函数
