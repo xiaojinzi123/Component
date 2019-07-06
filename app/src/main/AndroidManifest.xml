@@ -13,8 +13,8 @@
             android:roundIcon="@mipmap/app_icon"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <meta-data android:name="HOST" android:value="app"/>
-        <activity android:name="com.xiaojinzi.componentdemo.view.module1.TestInOtherModuleAct"></activity>
+        <meta-data android:name="host_app" android:value="app"/>
+        <activity android:name="com.xiaojinzi.componentdemo.view.module1.TestInOtherModuleAct" />
         <activity android:name="com.xiaojinzi.componentdemo.view.TestQualityAct"/>
         <activity android:name="com.xiaojinzi.componentdemo.view.TestErrorAct"/>
         <activity android:name="com.xiaojinzi.componentdemo.view.InfoAct"/>

@@ -22,7 +22,7 @@ import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
-import com.xiaojinzi.component.impl.interceptor.RouterInterceptorCache;
+import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.router.IComponentCenterRouter;
 import com.xiaojinzi.component.router.IComponentHostRouter;
 import com.xiaojinzi.component.support.ParameterSupport;
@@ -40,6 +40,8 @@ import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
 
 /**
  * 中央路由,挂载着多个子路由表,这里有总路由表
+ * 实际的跳转也是这里实现的,当有模块的注册和反注册发生的时候
+ * 总路由表会有响应的变化
  *
  * @author xiaojinzi 30212
  * @hide

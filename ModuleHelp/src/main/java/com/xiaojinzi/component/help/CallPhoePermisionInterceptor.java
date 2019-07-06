@@ -5,13 +5,19 @@ import android.Manifest;
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.util.PermissionsCallback;
 import com.xiaojinzi.base.util.PermissionsUtil;
+import com.xiaojinzi.component.anno.ConditionalAnno;
 import com.xiaojinzi.component.anno.InterceptorAnno;
+import com.xiaojinzi.component.condition.Condition;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 
 /**
  * 电话权限申请的拦截器
  */
 @InterceptorAnno(InterceptorConfig.HELP_CALLPHOEPERMISION)
+@ConditionalAnno(conditions = {
+        CallPhoePermisionInterceptor.OnCondition.class,
+        CallPhoePermisionInterceptor.OnCondition1.class
+})
 public class CallPhoePermisionInterceptor implements RouterInterceptor {
 
     @Override
@@ -32,6 +38,24 @@ public class CallPhoePermisionInterceptor implements RouterInterceptor {
                         }
                     }
                 });
+    }
+
+    public static class OnCondition implements Condition {
+
+        @Override
+        public boolean matches() {
+            return true;
+        }
+
+    }
+
+    public static class OnCondition1 implements Condition {
+
+        @Override
+        public boolean matches() {
+            return true;
+        }
+
     }
 
 }

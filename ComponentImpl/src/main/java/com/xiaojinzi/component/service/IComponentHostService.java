@@ -1,6 +1,11 @@
 package com.xiaojinzi.component.service;
 
-public interface IComponentHostService extends IComponentService {
+import com.xiaojinzi.component.application.IComponentApplication;
+
+/**
+ * 每个模块的接口,需要有生命周期的通知
+ */
+public interface IComponentHostService extends IComponentApplication {
 
     /**
      * 获取当前的 host

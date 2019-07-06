@@ -21,6 +21,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         mApp = this;
 
         // 初始化组件化相关
@@ -33,7 +34,7 @@ public class App extends Application {
         ModuleManager.getInstance().registerArr(
                 ModuleConfig.App.NAME, ModuleConfig.Module1.NAME,
                 ModuleConfig.Module2.NAME, ModuleConfig.User.NAME,
-                ModuleConfig.Help.NAME
+                ModuleConfig.Help.NAME, "123123123"
         );
 
         if (BuildConfig.DEBUG) {

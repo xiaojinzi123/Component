@@ -2,7 +2,9 @@ package com.xiaojinzi.component.application;
 
 import androidx.annotation.NonNull;
 
-
+/**
+ * Module 管理中心的接口,用于管理所有 Module
+ */
 public interface IComponentModuleApplication {
 
     /**
@@ -10,7 +12,7 @@ public interface IComponentModuleApplication {
      *
      * @param moduleApp
      */
-    void register(IComponentHostApplication moduleApp);
+    void register(@NonNull IComponentHostApplication moduleApp);
 
     /**
      * 通过host注册
@@ -24,7 +26,7 @@ public interface IComponentModuleApplication {
      *
      * @param moduleApp
      */
-    void unregister(IComponentHostApplication moduleApp);
+    void unregister(@NonNull IComponentHostApplication moduleApp);
 
     /**
      * 通过 host 反注册

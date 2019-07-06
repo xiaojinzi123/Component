@@ -13,15 +13,10 @@ import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Single;
-import io.reactivex.functions.Function;
-
-@RouterAnno(path = ModuleConfig.App.NAME, desc = "主界面")
+@RouterAnno(
+        host = "app",
+        path = "main"
+)
 public class MainAct extends AppCompatActivity {
 
     @Override
@@ -72,7 +67,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouter(View view) {
-        Router.withApi(AppApi.class).goToTestRouter(this);
+        Router.withApi(AppApi.class).goToTestRouter();
     }
 
     public void testWebRouter(View view) {
@@ -81,9 +76,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testQuality(View view) {
-        Router.withApi(AppApi.class)
-                .goToTestQuality(this)
-                .subscribe();
+        Router.withApi(AppApi.class).goToTestQuality().subscribe();
     }
 
     @Override
@@ -95,18 +88,6 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testService(View view) {
-
-        List<String> list = new ArrayList<>();
-        list.add("123123");
-
-        Observable<String> observable = Single.just(list)
-                .flatMapObservable(new Function<List<String>, ObservableSource<String>>() {
-                    @Override
-                    public ObservableSource<String> apply(List<String> strings) throws Exception {
-                        return Observable.fromIterable(strings);
-                    }
-                });
-
         Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.xiaojinzi.component1">
 
     <application>
-        <activity android:name=".view.TestPutQueryWithUrlAct"></activity>
+        <meta-data
+            android:name="host_component1"
+            android:value="component1" />
+
+        <activity android:name=".view.TestPutQueryWithUrlAct" />
         <activity android:name=".view.TestInjectAct1" />
         <activity android:name=".view.TestInjectAct2" />
         <activity android:name=".view.Component1TestDialogAct" />

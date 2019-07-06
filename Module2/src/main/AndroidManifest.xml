@@ -3,8 +3,12 @@
     package="com.xiaojinzi.component2">
 
     <application>
+        <meta-data
+            android:name="host_component2"
+            android:value="component2" />
+
         <activity android:name="com.xiaojinzi.component2.view.Component2Act" />
-        <activity android:name="com.xiaojinzi.component2.view.Component2TestAct"></activity>
+        <activity android:name="com.xiaojinzi.component2.view.Component2TestAct" />
     </application>
 
 </manifest>

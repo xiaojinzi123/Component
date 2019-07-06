@@ -9,6 +9,8 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.xiaojinzi.component.anno.ParameterAnno;
+import com.xiaojinzi.component.anno.router.AfterActionAnno;
+import com.xiaojinzi.component.anno.router.BeforActionAnno;
 import com.xiaojinzi.component.anno.router.CategoryAnno;
 import com.xiaojinzi.component.anno.router.FlagAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
@@ -268,6 +270,8 @@ public class RouterApiProcessor extends BaseProcessor {
         VariableElement requestCodeParameter = null;
         VariableElement activityBundleOptionsParameter = null;
         VariableElement intentConsumerParameter = null;
+        VariableElement beforActionParameter = null;
+        VariableElement afterActionParameter = null;
 
         StringBuffer parameterStatement = new StringBuffer();
         List<Object> parameterArgs = new ArrayList<>();
@@ -275,13 +279,13 @@ public class RouterApiProcessor extends BaseProcessor {
         for (VariableElement parameter : parameters) {
             // 参数的类型
             TypeMirror parameterTypeMirror = parameter.asType();
-            if (mTypes.isSubtype(parameterTypeMirror, contextTypeMirror)) { // mTypes.isSubtype(parameterTypeMirror, fragmentTypeMirror)
+            if (mTypes.isSubtype(parameterTypeMirror, contextTypeMirror)) { // 如果是一个 Context
                 contextParameter = parameter;
-            } else if (mTypes.isSubtype(parameterTypeMirror, fragmentTypeMirror)) {
+            } else if (mTypes.isSubtype(parameterTypeMirror, fragmentTypeMirror)) { // 如果是一个 Fragment
                 fragmentParameter = parameter;
-            } else if (parameterTypeMirror.equals(callBackTypeMirror)) { // 如果是 CallBack
+            } else if (mTypes.isSubtype(parameterTypeMirror, callBackTypeMirror)) { // 如果是 CallBack
                 callBackParameter = parameter;
-            } else if ((processingEnv.getTypeUtils().erasure(parameterTypeMirror)).equals(biCallBackErasureTypeMirror)) { // 如果是 BiCallback
+            } else if (mTypes.isSubtype(processingEnv.getTypeUtils().erasure(parameterTypeMirror), biCallBackErasureTypeMirror)) { // 如果是 BiCallback
                 biCallBackParameter = parameter;
             } else if (parameter.getAnnotation(RequestCodeAnno.class) != null) { // 表示这是一个 requestCode 的参数值
                 requestCodeParameter = parameter;
@@ -289,6 +293,10 @@ public class RouterApiProcessor extends BaseProcessor {
                 activityBundleOptionsParameter = parameter;
             } else if (intentComsumerParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) { // 如果是 Consumer<Intent>
                 intentConsumerParameter = parameter;
+            } else if (parameter.getAnnotation(BeforActionAnno.class) != null) { // 如果是 beforAction
+                beforActionParameter = parameter;
+            } else if (parameter.getAnnotation(AfterActionAnno.class) != null) { // 如果是 afterAction
+                afterActionParameter = parameter;
             } else if (parameterTypeMirror.equals(bundleTypeMirror)) { // 如果是 Bundle,这个参数可以选填 @ParameterAnno 注解
                 ParameterAnno parameterParameterAnno = parameter.getAnnotation(ParameterAnno.class);
                 // 不填写的话就是 putAll 否则就是 putBundle
@@ -417,7 +425,7 @@ public class RouterApiProcessor extends BaseProcessor {
                     if (!isReturnSingle) {
                         throw new ProcessException("the returnType of method (" + methodPath + ") must be " + ComponentConstants.RXJAVA_SINGLE + "<Integer>");
                     }
-                }else {
+                } else {
                     if (!isReturnCompletable) {
                         throw new ProcessException("the returnType of method (" + methodPath + ") must be " + ComponentConstants.RXJAVA_COMPLETABLE);
                     }
@@ -442,7 +450,7 @@ public class RouterApiProcessor extends BaseProcessor {
                     if (biCallBackParameter == null) {
                         throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Integer>) to you method(" + methodPath + ")?");
                     }
-                }else {
+                } else {
                     // 说明是想匹配 resultCode
                     if (navigateAnnotation.resultCodeMatch() != Integer.MIN_VALUE) {
                         throw new ProcessException("do you forget to add parameter(" + ComponentConstants.CALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
@@ -472,7 +480,8 @@ public class RouterApiProcessor extends BaseProcessor {
         } else if (fragmentParameter != null) {
             args.add(fragmentParameter.getSimpleName().toString());
         } else {
-            throw new ProcessException("do you forget to add a 'Context' or 'Activity' or 'android.support.v4.app.Fragment' parameter to method(" + methodPath + ") ?");
+            args.add("");
+            // throw new ProcessException("do you forget to add a 'Context' or 'Activity' or 'android.support.v4.app.Fragment' parameter to method(" + methodPath + ") ?");
         }
 
         // host 和 path
@@ -576,6 +585,16 @@ public class RouterApiProcessor extends BaseProcessor {
         if (intentConsumerParameter != null) {
             routerStatement.append("\n.intentConsumer($N)");
             args.add(intentConsumerParameter.getSimpleName().toString());
+        }
+
+        // 两个 action
+        if (beforActionParameter != null) {
+            routerStatement.append("\n.beforJumpAction($N)");
+            args.add(beforActionParameter.getSimpleName().toString());
+        }
+        if (afterActionParameter != null) {
+            routerStatement.append("\n.afterJumpAction($N)");
+            args.add(afterActionParameter.getSimpleName().toString());
         }
 
         // 根据跳转类型生成 navigate 方法

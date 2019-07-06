@@ -6,20 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 表示路由的 Scheme
- *
- * @see PathAnno
- * @see HostAndPathAnno
+ * 标记一个 Action 是跳转后的 Action
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.CLASS)
-public @interface SchemeAnno {
-
-    /**
-     * 表示路由的 host
-     *
-     * @return
-     */
-    String value();
-
+public @interface AfterActionAnno {
 }

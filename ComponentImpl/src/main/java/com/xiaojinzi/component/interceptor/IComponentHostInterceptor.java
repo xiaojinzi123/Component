@@ -3,6 +3,7 @@ package com.xiaojinzi.component.interceptor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.xiaojinzi.component.application.IComponentApplication;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.interceptor.InterceptorBean;
 
@@ -15,7 +16,7 @@ import java.util.Set;
  *
  * @author : xiaojinzi 30212
  */
-public interface IComponentHostInterceptor extends IComponentInterceptor {
+public interface IComponentHostInterceptor extends IComponentInterceptor, IComponentApplication {
 
     /**
      * 获取当前的 host
