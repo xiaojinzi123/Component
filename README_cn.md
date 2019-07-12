@@ -1,3 +1,12 @@
+很多选型的人有这么个疑问: 有了 `ARouter` 为啥要有 `Component`. 
+我这里在这里做一个回答.
+
+> `ARouter` 作为最早出现的组件化的一个实现方案,毋庸置疑有一个比较深的底蕴. 很多人看见 `ARouter` star 的数量和阿里出的框架就会产生莫名的信任.基本都会优先选择 `ARouter`.我的建议是组件化方案不同于一个简单的 `UI` 库,你应该做一个比较深入的了解,然后选择!
+
+> 如果 `ARouter` 真的优秀到没有不选择它的余地,那么起始根本没有我们这些新型框架的出现.而这里我要说的是,`ARouter` 虽然出现的早,但它不是最好.有一个朋友说 `ARouter` 只关注于路由方面,不做多余的事情,但是在我看来, `ARouter` 正是因为做的不够和一些不合理的地方,才有我们这些框架的出现.
+
+> 选型是你们团队的要做的事情,但是选择更好、更全面的、更稳定、更有发展前景的框架更是你们技术团队或者技术负责人要做的事情.
+
 [English Doc](https://github.com/xiaojinzi123/Component) | [中文文档](https://github.com/xiaojinzi123/Component/blob/develop/README_cn.md)
 
 [Component VS ARouter](https://github.com/xiaojinzi123/Component/wiki/Component-%E5%92%8C-ARouter-%E6%AF%94%E8%BE%83)
