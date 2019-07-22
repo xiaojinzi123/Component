@@ -18,7 +18,6 @@ import com.xiaojinzi.component1.R;
 public class Component1TestQueryAct extends BaseAct {
 
     @RouterAnno(
-            host = ModuleConfig.Module1.NAME,
             path = ModuleConfig.Module1.TEST_QUERY
     )
     public static Intent createIntent(RouterRequest request) {

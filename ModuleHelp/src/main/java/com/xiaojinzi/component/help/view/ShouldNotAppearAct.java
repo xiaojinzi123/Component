@@ -9,7 +9,6 @@ import com.xiaojinzi.component.help.R;
 import com.xiaojinzi.component.impl.RxRouter;
 
 @RouterAnno(
-        host = ModuleConfig.Help.NAME,
         path = ModuleConfig.Help.SHOULD_NOT_APPEAR,
         desc = "完成自动取消路由的测试"
 )

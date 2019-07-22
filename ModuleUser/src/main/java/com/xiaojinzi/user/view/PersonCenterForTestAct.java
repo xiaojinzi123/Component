@@ -12,7 +12,6 @@ import com.xiaojinzi.user.R;
  * 为了测试,启动了会自动销毁
  */
 @RouterAnno(
-        host = ModuleConfig.User.NAME,
         path = ModuleConfig.User.PERSON_CENTER_FOR_TEST,
         interceptorNames = InterceptorConfig.USER_LOGIN_FOR_TEST,
         desc = "用户个人中心界面"

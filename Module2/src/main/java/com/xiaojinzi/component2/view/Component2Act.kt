@@ -10,7 +10,6 @@ import com.xiaojinzi.component2.R
 import kotlinx.android.synthetic.main.component2_act.*
 
 @RouterAnno(
-        host = "component",
         path = ModuleConfig.Module2.MAIN,
         desc = "业务组件2的主界面"
 )

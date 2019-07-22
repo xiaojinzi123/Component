@@ -8,15 +8,13 @@ import android.widget.Toast;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
-import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
-@RouterAnno(
-        host = "app",
-        path = "main"
-)
+/**
+ * 启动界面
+ */
 public class MainAct extends AppCompatActivity {
 
     @Override

@@ -17,7 +17,6 @@ import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.Utils;
 
 @RouterAnno(
-        host = ModuleConfig.Help.NAME,
         path = ModuleConfig.Help.TEST_WEB_ROUTER,
         desc = "网页测试跳转"
 )

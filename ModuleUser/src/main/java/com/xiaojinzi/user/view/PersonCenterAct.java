@@ -9,7 +9,6 @@ import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.user.R;
 
 @RouterAnno(
-        host = ModuleConfig.User.NAME,
         path = ModuleConfig.User.PERSON_CENTER,
         interceptorNames = InterceptorConfig.USER_LOGIN,
         desc = "用户个人中心界面"
