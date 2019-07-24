@@ -179,7 +179,7 @@ public class RouterCenter implements IComponentCenterRouter {
 
     @NonNull
     @Override
-    public synchronized List<RouterInterceptor> interceptors(@NonNull Uri uri) {
+    public synchronized List<RouterInterceptor> listPageInterceptors(@NonNull Uri uri) {
         // 获取目标对象
         final String targetUrl = getTargetUrl(uri);
         final RouterBean routerBean = routerMap.get(targetUrl);
@@ -212,6 +212,12 @@ public class RouterCenter implements IComponentCenterRouter {
             }
         }
         return result;
+    }
+
+    @NonNull
+    @Override
+    public synchronized List<RouterInterceptor> listDegradeInterceptors(@NonNull Uri uri) throws Exception {
+        return Collections.emptyList();
     }
 
     /**

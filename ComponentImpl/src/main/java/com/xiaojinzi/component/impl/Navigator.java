@@ -719,34 +719,51 @@ public class Navigator extends RouterRequest.Builder implements Call {
         List<RouterInterceptor> publicInterceptors = InterceptorCenter.getInstance()
                 .getGlobalInterceptorList();
         // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
-        final List<RouterInterceptor> currentInterceptors = new ArrayList(8);
+        final List<RouterInterceptor> allInterceptors = new ArrayList(8);
         // 添加内置拦截器,目前就一个内置拦截器,而且必须在最前面,因为这个拦截器内部有一个时间的记录
         // 保证一秒内就只能打开一个相同的界面
-        currentInterceptors.add(OpenOnceInterceptor.getInstance());
+        allInterceptors.add(OpenOnceInterceptor.getInstance());
         // 添加共有拦截器
-        currentInterceptors.addAll(publicInterceptors);
-        // 添加自定义拦截器
-        addCustomInterceptors(originalRequest, customInterceptors, currentInterceptors);
+        allInterceptors.addAll(publicInterceptors);
+        // 添加自定义拦截器到 allInterceptors 中
+        addCustomInterceptors(originalRequest, customInterceptors, allInterceptors);
         // 扫尾拦截器,内部会添加目标要求执行的拦截器和真正执行跳转的拦截器
-        currentInterceptors.add(new RouterInterceptor() {
+        allInterceptors.add(new RouterInterceptor() {
             @Override
-            public void intercept(Chain nextChain) throws Exception {
-                // 这个地址要执行的拦截器,这里取的时候一定要注意了,不能拿最原始的那个 request,因为上面的拦截器都能更改 request,
-                // 导致最终跳转的界面和你拿到的拦截器不匹配,所以这里一定是拿上一个拦截器传给你的 request 对象
-                List<RouterInterceptor> targetInterceptors = RouterCenter.getInstance().interceptors(nextChain.request().uri);
-                if (!targetInterceptors.isEmpty()) {
-                    currentInterceptors.addAll(targetInterceptors);
+            public void intercept(final Chain outterChain) throws Exception {
+                // 这个地址要执行的页面拦截器,这里取的时候一定要注意了,不能拿最原始的那个 request,因为上面的拦截器都能更改 request,
+                // 导致最终跳转的界面和你拿到的页面拦截器不匹配,所以这里一定是拿上一个拦截器传给你的 request 对象
+                List<RouterInterceptor> targetPageInterceptors =
+                        RouterCenter.getInstance().listPageInterceptors(outterChain.request().uri);
+                if (!targetPageInterceptors.isEmpty()) {
+                    allInterceptors.addAll(targetPageInterceptors);
                 }
-                // 真正的执行跳转的拦截器
-                currentInterceptors.add(new RealInterceptor(originalRequest));
-                // 如果正常的情况下这个拦截器是不会有机会执行的
-                currentInterceptors.add(new DegradeInterceptor(originalRequest));
+                // 真正的执行跳转的拦截器, 如果正常跳转了 DoActivityStartInterceptor 拦截器就直接返回了
+                // 如果没有正常跳转过去, 内部会继续走拦截器, 会执行到后面的这个
+                allInterceptors.add(new DoActivityStartInterceptor(originalRequest));
+                // 如果正常的情况下这个拦截器是不会有机会执行的, 这是一个降级拦截器
+                allInterceptors.add(new RouterInterceptor() {
+                    @Override
+                    public void intercept(Chain innerChain) throws Exception {
+                        // 模拟一下
+                        List<RouterInterceptor> targetDeGradeInterceptors =
+                                RouterCenter.getInstance().listDegradeInterceptors(innerChain.request().uri);
+                        if (!targetDeGradeInterceptors.isEmpty()) {
+                            allInterceptors.addAll(targetDeGradeInterceptors);
+                        }
+                        // 真正的执行跳转的降级拦截器, 其实 DoDegradeStartInterceptor 和 DoActivityStartInterceptor 功能是差不多的
+                        allInterceptors.add(new DoDegradeStartInterceptor(originalRequest));
+                        // 继续下一个拦截器
+                        innerChain.proceed(innerChain.request());
+                    }
+                });
+                //allInterceptors.add(new DoDegradeStartInterceptor(originalRequest));
                 // 执行下一个拦截器,正好是上面代码添加的拦截器
-                nextChain.proceed(nextChain.request());
+                outterChain.proceed(outterChain.request());
             }
         });
         // 创建执行器
-        final RouterInterceptor.Chain chain = new InterceptorChain(currentInterceptors, 0, originalRequest,
+        final RouterInterceptor.Chain chain = new InterceptorChain(allInterceptors, 0, originalRequest,
                 callback);
         // 执行
         chain.proceed(originalRequest);
@@ -891,12 +908,12 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 1.如果跳转的时候没有发生异常, 说明可以跳转过去
      * 如果失败需要继续链接下一个拦截器
      */
-    private static class RealInterceptor implements RouterInterceptor {
+    private static class DoActivityStartInterceptor implements RouterInterceptor {
 
         @NonNull
         private final RouterRequest mOriginalRequest;
 
-        public RealInterceptor(@NonNull RouterRequest originalRequest) {
+        public DoActivityStartInterceptor(@NonNull RouterRequest originalRequest) {
             mOriginalRequest = originalRequest;
         }
 
@@ -940,12 +957,12 @@ public class Navigator extends RouterRequest.Builder implements Call {
     /**
      * 跳转失败的时候降维
      */
-    private static class DegradeInterceptor implements RouterInterceptor {
+    private static class DoDegradeStartInterceptor implements RouterInterceptor {
 
         @NonNull
         private final RouterRequest mOriginalRequest;
 
-        public DegradeInterceptor(@NonNull RouterRequest originalRequest) {
+        public DoDegradeStartInterceptor(@NonNull RouterRequest originalRequest) {
             mOriginalRequest = originalRequest;
         }
 
@@ -1055,7 +1072,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                                     "interceptor " + mInterceptors.get(mIndex - 1)
                                             + " must call proceed() exactly once"));
                         } else {
-                            // 当拦截器最后一个的时候,就不是这个类了,是 RealInterceptor 了
+                            // 当拦截器最后一个的时候,就不是这个类了,是 DoActivityStartInterceptor 了
                             InterceptorChain next = new InterceptorChain(mInterceptors, mIndex + 1,
                                     request, callback);
                             // current Interceptor

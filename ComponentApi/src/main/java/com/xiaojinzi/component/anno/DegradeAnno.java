@@ -7,25 +7,12 @@ package com.xiaojinzi.component.anno;
 public @interface DegradeAnno {
 
     /**
-     * 定义host
+     * 可以使用正则表达式匹配整个 URI
+     * 比如 router://user/login
+     * 你可以用 router://user/* 就可以让标记的降级起作用当用户模块任意一个界面跳转失败的情况下
      *
      * @return
      */
-    String host() default "";
-
-    /**
-     * 路径, 可以使用正则表达式匹配
-     *
-     * @return
-     */
-    String regexPath() default "";
-
-    /**
-     * 当你使用了 {@link #hostAndPath()} 那么就会自动忽略 {@link #host()} 和 {@link #path()}
-     * 一次性指定 host 和 path,字符串内至少包含一个 /
-     *
-     * @return
-     */
-    String hostAndPath() default "";
+    String value();
 
 }

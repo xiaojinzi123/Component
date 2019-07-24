@@ -121,8 +121,12 @@ public class FailureTest implements TestExecutor {
                 .query("data", "getIntentWithoutRequestCode")
                 .intentCall()
                 .subscribe(
-                        intent -> emitter.onError(new NavigationFailException("request should be error")),
-                        throwable -> emitter.onComplete()
+                        intent -> {
+                            emitter.onError(new NavigationFailException("request should be error"));
+                        },
+                        throwable -> {
+                            emitter.onComplete();
+                        }
                 )
         );
     }

@@ -660,11 +660,21 @@ public class RouterRequest {
             if (builder.url == null) {
                 Uri.Builder uriBuilder = new Uri.Builder();
                 uriBuilder
-                        .scheme(TextUtils.isEmpty(builder.scheme) ? Component.getDefaultScheme() : builder.scheme)
-                        .authority(Utils.checkStringNullPointer(builder.host, "host", "do you forget call host() to set host?"));
-                if (!TextUtils.isEmpty(builder.path)) {
-                    uriBuilder.path(builder.path);
-                }
+                        .scheme(TextUtils.isEmpty(builder.scheme) ?
+                                Component.getDefaultScheme() : builder.scheme)
+                        // host 一定不能为空
+                        .authority(
+                                Utils.checkStringNullPointer(
+                                        builder.host, "host",
+                                        "do you forget call host() to set host?"
+                                )
+                        )
+                        .path(
+                                Utils.checkStringNullPointer(
+                                        builder.path, "path",
+                                        "do you forget call path() to set path?"
+                                )
+                        );
                 for (Map.Entry<String, String> entry : builder.queryMap.entrySet()) {
                     uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
                 }
