@@ -375,7 +375,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return Help.randomlyGenerateRequestCode(super.build());
     }
 
-    private void useDefaultApplication(){
+    private void useDefaultApplication() {
         // 如果 Context 和 Fragment 都是空的,使用默认的 Application
         if (context == null && fragment == null) {
             context = Component.getApplication();
@@ -739,6 +739,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 }
                 // 真正的执行跳转的拦截器
                 currentInterceptors.add(new RealInterceptor(originalRequest));
+                // 如果正常的情况下这个拦截器是不会有机会执行的
+                currentInterceptors.add(new DegradeInterceptor(originalRequest));
                 // 执行下一个拦截器,正好是上面代码添加的拦截器
                 nextChain.proceed(nextChain.request());
             }
@@ -885,7 +887,9 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
-     * 实现拦截器列表中的最后一环,内部去执行了跳转的代码,并且切换了线程执行,当前线程会停住
+     * 实现拦截器列表中的最后一环,内部去执行了跳转的代码
+     * 1.如果跳转的时候没有发生异常, 说明可以跳转过去
+     * 如果失败需要继续链接下一个拦截器
      */
     private static class RealInterceptor implements RouterInterceptor {
 
@@ -903,14 +907,52 @@ public class Navigator extends RouterRequest.Builder implements Call {
         @Override
         @MainThread
         public void intercept(final Chain chain) throws Exception {
+            // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
+            RouterRequest finalRequest = chain.request();
             try {
-                // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
-                RouterRequest finalRequest = chain.request();
                 if (finalRequest.beforJumpAction != null) {
                     finalRequest.beforJumpAction.run();
                 }
-                // 真正执行跳转的逻辑
-                RouterCenter.getInstance().openUri(finalRequest);
+                boolean isSuccess = true;
+                try {
+                    // 真正执行跳转的逻辑, 失败的话, 备用计划就会启动
+                    RouterCenter.getInstance().openUri(finalRequest);
+                } catch (Exception e) {
+                    isSuccess = false;
+                    chain.proceed(finalRequest);
+                }
+                // 如果正常跳转成功需要执行下面的代码
+                if (isSuccess) {
+                    if (finalRequest.afterJumpAction != null) {
+                        finalRequest.afterJumpAction.run();
+                    }
+                    chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
+                }
+            } catch (Exception e) {
+                chain.callback().onError(e);
+            }
+        }
+
+    }
+
+    /**
+     * 跳转失败的时候降维
+     */
+    private static class DegradeInterceptor implements RouterInterceptor {
+
+        @NonNull
+        private final RouterRequest mOriginalRequest;
+
+        public DegradeInterceptor(@NonNull RouterRequest originalRequest) {
+            mOriginalRequest = originalRequest;
+        }
+
+        @Override
+        public void intercept(Chain chain) throws Exception {
+            // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
+            RouterRequest finalRequest = chain.request();
+            try {
+                // @TODO 执行备用计划跳转
                 if (finalRequest.afterJumpAction != null) {
                     finalRequest.afterJumpAction.run();
                 }
