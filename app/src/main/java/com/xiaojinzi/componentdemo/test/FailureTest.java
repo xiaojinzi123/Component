@@ -52,8 +52,12 @@ public class FailureTest implements TestExecutor {
                 .putString("data", "withoutHostOrPath1")
                 .intentCall()
                 .subscribe(
-                        intent -> emitter.onError(new NavigationFailException("request should be error")),
-                        throwable -> emitter.onComplete()
+                        intent -> {
+                            emitter.onError(new NavigationFailException("request should be error"));
+                        },
+                        throwable -> {
+                            emitter.onComplete();
+                        }
                 ));
     }
 
@@ -66,8 +70,12 @@ public class FailureTest implements TestExecutor {
                 .putString("data", "withoutHostOrPath1")
                 .intentCall()
                 .subscribe(
-                        intent -> emitter.onError(new NavigationFailException("request should be error")),
-                        throwable -> emitter.onComplete()
+                        intent -> {
+                            emitter.onError(new NavigationFailException("request should be error"));
+                        },
+                        throwable -> {
+                            emitter.onComplete();
+                        }
                 ));
     }
 

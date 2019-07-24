@@ -917,11 +917,13 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 try {
                     // 真正执行跳转的逻辑, 失败的话, 备用计划就会启动
                     RouterCenter.getInstance().openUri(finalRequest);
-                } catch (Exception e) {
+                } catch (Exception e) { // 错误的话继续下一个拦截器
                     isSuccess = false;
                     chain.proceed(finalRequest);
                 }
                 // 如果正常跳转成功需要执行下面的代码
+                // 为什么放这里, 是因为我想要执行 finalRequest.afterJumpAction.run() 方法如果有异常,
+                // 是直接走错误回调而不是继续路由
                 if (isSuccess) {
                     if (finalRequest.afterJumpAction != null) {
                         finalRequest.afterJumpAction.run();
