@@ -27,7 +27,6 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 
 @AutoService(Processor.class)
@@ -87,14 +86,6 @@ public class RouterDegradeProcessor extends BaseHostProcessor {
             RouterDegradeAnnoBean targetBean = new RouterDegradeAnnoBean();
             targetBean.setRawType(element);
             targetBean.setPriority(anno.priority());
-            targetBean.getInterceptors().clear();
-            targetBean.getInterceptors().addAll(getImplClassName(anno));
-            if (anno.interceptorNames() != null) {
-                targetBean.getInterceptorNames().clear();
-                for (String interceptorName : anno.interceptorNames()) {
-                    targetBean.getInterceptorNames().add(interceptorName);
-                }
-            }
             routerDegradeAnnoBeanList.add(targetBean);
 
         }
@@ -156,50 +147,9 @@ public class RouterDegradeProcessor extends BaseHostProcessor {
             methodSpecBuilder.addStatement(routerBeanName + ".setPriority($L)", item.getPriority());
             // 设置目标 Class
             methodSpecBuilder.addStatement(routerBeanName + ".setTargetClass($N.class)", className);
-            if (item.getInterceptors() != null && item.getInterceptors().size() > 0) {
-                String interceptorListName = "interceptorList" + atomicInteger.incrementAndGet();
-                methodSpecBuilder.addStatement("java.util.List<Class<? extends $T>> " + interceptorListName + " = new $T($L)",
-                        routerInterceptorTypeElement, ArrayList.class, item.getInterceptors().size());
-                for (String interceptorClassName : item.getInterceptors()) {
-                    methodSpecBuilder.addStatement("$N.add($T.class)", interceptorListName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
-                }
-                methodSpecBuilder.addStatement("$N.setInterceptors($N)", routerBeanName, interceptorListName);
-            }
-
-            if (item.getInterceptorNames() != null && item.getInterceptorNames().size() > 0) {
-                String interceptorNameListName = "interceptorNameList" + atomicInteger.incrementAndGet();
-                methodSpecBuilder.addStatement("java.util.List<String> " + interceptorNameListName + " = new $T($L)",
-                        ArrayList.class, item.getInterceptorNames().size());
-                for (String interceptorName : item.getInterceptorNames()) {
-                    methodSpecBuilder.addStatement("$N.add($S)", interceptorNameListName, interceptorName);
-                }
-                methodSpecBuilder.addStatement("$N.setInterceptorNames($N)", routerBeanName, interceptorNameListName);
-            }
-
             methodSpecBuilder.addStatement("routerDegradeBeanList.add($N)", routerBeanName);
-
         }
         return methodSpecBuilder.build();
-    }
-
-    private List<String> getImplClassName(RouterDegradeAnno anno) {
-        List<String> implClassNames = new ArrayList<>();
-        try {
-            implClassNames.clear();
-            //这里会报错，此时在catch中获取到拦截器的全类名
-            final Class[] interceptors = anno.interceptors();
-            // 这个循环其实不会走,我就随便写的,不过最好也不要删除
-            for (Class interceptor : interceptors) {
-                implClassNames.add(interceptor.getName());
-            }
-        } catch (MirroredTypesException e) {
-            implClassNames.clear();
-            final List<? extends TypeMirror> typeMirrors = e.getTypeMirrors();
-            for (TypeMirror typeMirror : typeMirrors) {
-                implClassNames.add(typeMirror.toString());
-            }
-        }
-        return implClassNames;
     }
 
 }

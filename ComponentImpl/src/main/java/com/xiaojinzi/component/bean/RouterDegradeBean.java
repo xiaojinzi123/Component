@@ -1,13 +1,8 @@
 package com.xiaojinzi.component.bean;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.impl.RouterDegrade;
-import com.xiaojinzi.component.impl.RouterInterceptor;
-
-import java.util.Collections;
-import java.util.List;
 
 public class RouterDegradeBean {
 
@@ -21,18 +16,6 @@ public class RouterDegradeBean {
      */
     @NonNull
     private Class<? extends RouterDegrade> targetClass;
-
-    /**
-     * 这个目标界面要执行的拦截器
-     */
-    @Nullable
-    private List<Class<? extends RouterInterceptor>> interceptors;
-
-    /**
-     * 这个目标界面要执行的拦截器
-     */
-    @Nullable
-    private List<String> interceptorNames;
 
     public int getPriority() {
         return priority;
@@ -49,27 +32,6 @@ public class RouterDegradeBean {
 
     public void setTargetClass(@NonNull Class<? extends RouterDegrade> targetClass) {
         this.targetClass = targetClass;
-    }
-
-    @NonNull
-    public List<Class<? extends RouterInterceptor>> getInterceptors() {
-        if (interceptors == null) {
-            return Collections.emptyList();
-        }
-        return interceptors;
-    }
-
-    public void setInterceptors(@Nullable List<Class<? extends RouterInterceptor>> interceptors) {
-        this.interceptors = interceptors;
-    }
-
-    @Nullable
-    public List<String> getInterceptorNames() {
-        return interceptorNames;
-    }
-
-    public void setInterceptorNames(@Nullable List<String> interceptorNames) {
-        this.interceptorNames = interceptorNames;
     }
 
 }

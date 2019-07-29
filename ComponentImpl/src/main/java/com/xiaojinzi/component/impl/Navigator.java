@@ -741,23 +741,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 // 真正的执行跳转的拦截器, 如果正常跳转了 DoActivityStartInterceptor 拦截器就直接返回了
                 // 如果没有正常跳转过去, 内部会继续走拦截器, 会执行到后面的这个
                 allInterceptors.add(new DoActivityStartInterceptor(originalRequest));
-                // 如果正常的情况下这个拦截器是不会有机会执行的, 这是一个降级拦截器
-                allInterceptors.add(new RouterInterceptor() {
-                    @Override
-                    public void intercept(Chain innerChain) throws Exception {
-                        // 模拟一下
-                        List<RouterInterceptor> targetDeGradeInterceptors =
-                                RouterDegradeCenter.getInstance().listDegradeInterceptors(innerChain.request());
-                        if (!targetDeGradeInterceptors.isEmpty()) {
-                            allInterceptors.addAll(targetDeGradeInterceptors);
-                        }
-                        // 真正的执行跳转的降级拦截器, 其实 DoDegradeStartInterceptor 和 DoActivityStartInterceptor 功能是差不多的
-                        allInterceptors.add(new DoDegradeStartInterceptor(originalRequest));
-                        // 继续下一个拦截器
-                        innerChain.proceed(innerChain.request());
-                    }
-                });
-                //allInterceptors.add(new DoDegradeStartInterceptor(originalRequest));
+                // 真正的执行跳转的降级拦截器, 其实 DoDegradeStartInterceptor 和 DoActivityStartInterceptor 功能是差不多的
+                allInterceptors.add(new DoDegradeStartInterceptor(originalRequest));
                 // 执行下一个拦截器,正好是上面代码添加的拦截器
                 outterChain.proceed(outterChain.request());
             }

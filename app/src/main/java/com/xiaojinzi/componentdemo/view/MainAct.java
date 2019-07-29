@@ -69,8 +69,12 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testWebRouter(View view) {
-        Router.withApi(AppApi.class).goToTestWebRouter(this);
-
+        // Router.withApi(AppApi.class).goToTestWebRouter(this);
+        Router
+                .with(this)
+                .host(ModuleConfig.App.NAME)
+                .path(ModuleConfig.App.NAME)
+                .navigate();
     }
 
     public void testQuality(View view) {
@@ -86,11 +90,18 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testService(View view) {
-        Router
+        /*Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)
-                .path(ModuleConfig.App.NOT_FOUND_TEST)
+                .path(ModuleConfig.App.TEST_SERVICE)
+                .navigate();*/
+
+        Router
+                .with(this)
+                .host(ModuleConfig.User.NAME)
+                .path(ModuleConfig.User.NAME)
                 .navigate();
+
     }
 
 }

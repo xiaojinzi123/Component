@@ -5,12 +5,9 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.bean.RouterDegradeBean;
-import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
-import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.router.IComponentCenterRouterDegrade;
 import com.xiaojinzi.component.router.IComponentHostRouterDegrade;
 import com.xiaojinzi.component.support.RouterDegradeCache;
-import com.xiaojinzi.component.support.RouterInterceptorCache;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,9 +85,7 @@ public class RouterDegradeCenter implements IComponentCenterRouterDegrade {
             mGlobalRouterDegradeList.add(
                     new RouterDegradeItem(
                             routerDegradeBean.getPriority(),
-                            RouterDegradeCache.getRouterDegradeByClass(routerDegradeBean.getTargetClass()),
-                            routerDegradeBean.getInterceptors(),
-                            routerDegradeBean.getInterceptorNames()
+                            RouterDegradeCache.getRouterDegradeByClass(routerDegradeBean.getTargetClass())
                     ));
         }
         // 排序所有的拦截器对象,按照优先级排序
@@ -141,52 +136,6 @@ public class RouterDegradeCenter implements IComponentCenterRouterDegrade {
         unregister(moduleRouterDegrade);
     }
 
-    @NonNull
-    @Override
-    public List<RouterInterceptor> listDegradeInterceptors(@NonNull RouterRequest request) throws Exception {
-
-        if (isRouterDegradeListHaveChange) {
-            loadAllGlobalRouterDegrade();
-            isRouterDegradeListHaveChange = false;
-        }
-
-        RouterDegradeItem findRouterDegradeItem = null;
-
-        for (RouterDegradeItem item : mGlobalRouterDegradeList) {
-            if (item.routerDegrade.isMatch(request)) {
-                findRouterDegradeItem = item;
-                break;
-            }
-        }
-        if (findRouterDegradeItem != null) {
-            final List<Class<? extends RouterInterceptor>> targetInterceptors = findRouterDegradeItem.interceptors;
-            final List<String> targetInterceptorNames = findRouterDegradeItem.interceptorNames;
-            // 如果没有拦截器直接返回 null
-            if (targetInterceptors.isEmpty() && targetInterceptorNames.isEmpty()) {
-                return Collections.emptyList();
-            }
-            final List<RouterInterceptor> result = new ArrayList<>();
-            for (Class<? extends RouterInterceptor> interceptorClass : targetInterceptors) {
-                final RouterInterceptor interceptor = RouterInterceptorCache.getInterceptorByClass(interceptorClass);
-                if (interceptor == null) {
-                    throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + request.uri.toString());
-                }
-                result.add(interceptor);
-            }
-            for (String interceptorName : targetInterceptorNames) {
-                final RouterInterceptor interceptor = InterceptorCenter.getInstance().getByName(interceptorName);
-                if (interceptor == null) {
-                    throw new InterceptorNotFoundException("can't find the interceptor and it's name is " + interceptorName + ",target url is " + request.uri.toString());
-                }
-                result.add(interceptor);
-            }
-            return result;
-        }
-
-        return Collections.EMPTY_LIST;
-
-    }
-
     @Nullable
     public IComponentHostRouterDegrade findModuleRouterDegrade(String host) {
         String className = ComponentUtil.genHostRouterDegradeClassName(host);
@@ -209,25 +158,9 @@ public class RouterDegradeCenter implements IComponentCenterRouterDegrade {
         @NonNull
         public RouterDegrade routerDegrade;
 
-        /**
-         * 这个目标界面要执行的拦截器
-         */
-        @Nullable
-        public List<Class<? extends RouterInterceptor>> interceptors;
-
-        /**
-         * 这个目标界面要执行的拦截器
-         */
-        @Nullable
-        public List<String> interceptorNames;
-
-        public RouterDegradeItem(int priority, @NonNull RouterDegrade routerDegrade,
-                                 @Nullable List<Class<? extends RouterInterceptor>> interceptors,
-                                 @Nullable List<String> interceptorNames) {
+        public RouterDegradeItem(int priority, @NonNull RouterDegrade routerDegrade) {
             this.priority = priority;
             this.routerDegrade = routerDegrade;
-            this.interceptors = interceptors;
-            this.interceptorNames = interceptorNames;
         }
 
     }
