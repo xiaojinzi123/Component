@@ -33,6 +33,11 @@ public class ComponentUtil {
     public static final String UIROUTER = "RouterGenerated";
 
     /**
+     * 生成的降级文件名称的后缀
+     */
+    public static final String UIROUTER_DEGRADE = "RouterDegradeGenerated";
+
+    /**
      * 生成的路由接口的实现类的后缀
      */
     public static final String UIROUTERAPI = "RouterApiGenerated";
@@ -60,6 +65,7 @@ public class ComponentUtil {
     public static final String GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.GlobalInterceptorAnno";
     public static final String INTERCEPTOR_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.InterceptorAnno";
     public static final String ROUTER_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.RouterAnno";
+    public static final String ROUTER_DEGRADE_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.RouterDegradeAnno";
     public static final String MODULE_APP_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ModuleAppAnno";
     public static final String SERVICE_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ServiceAnno";
     public static final String PARAMETERANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ParameterAnno";
@@ -70,6 +76,7 @@ public class ComponentUtil {
     // 路由框架基础实现类的全类名
 
     public static final String UIROUTER_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "ModuleRouterImpl";
+    public static final String UIROUTER_DEGRADE_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "ModuleRouterDegradeImpl";
     public static final String MODULE_APPLICATION_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "application" + DOT + "ModuleApplicationImpl";
     public static final String SERVICE_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "service" + DOT + "MuduleServiceImpl";
     public static final String INTERCEPTOR_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + "MuduleInterceptorImpl";
@@ -102,6 +109,10 @@ public class ComponentUtil {
 
     public static String genHostRouterClassName(String host) {
         return IMPL_OUTPUT_PKG + DOT + firstCharUpperCase(host) + UIROUTER;
+    }
+
+    public static String genHostRouterDegradeClassName(String host) {
+        return IMPL_OUTPUT_PKG + DOT + firstCharUpperCase(host) + UIROUTER_DEGRADE;
     }
 
     public static String genHostServiceClassName(String host) {

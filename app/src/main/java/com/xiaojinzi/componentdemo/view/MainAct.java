@@ -89,7 +89,7 @@ public class MainAct extends AppCompatActivity {
         Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)
-                .path(ModuleConfig.App.TEST_SERVICE)
+                .path(ModuleConfig.App.NOT_FOUND_TEST)
                 .navigate();
     }
 

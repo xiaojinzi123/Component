@@ -79,6 +79,18 @@ public class RouterCenter implements IComponentCenterRouter {
     }
 
     /**
+     * @param request             路由请求对象
+     * @param routerDegradeIntent 一个降级的 Intent
+     */
+    public void routerDegrade(@NonNull RouterRequest request, @NonNull Intent routerDegradeIntent) throws Exception {
+        String uriString = request.uri.toString();
+        if (routerDegradeIntent == null) {
+            throw new TargetActivityNotFoundException(uriString);
+        }
+        doStartIntent(request, routerDegradeIntent);
+    }
+
+    /**
      * content 参数和 fragment 参数必须有一个有值的
      *
      * @param request
@@ -121,6 +133,18 @@ public class RouterCenter implements IComponentCenterRouter {
         if (intent == null) {
             throw new TargetActivityNotFoundException(uriString);
         }
+        doStartIntent(request, intent);
+    }
+
+    /**
+     * 拿到 Intent 之后真正的跳转
+     *
+     * @param request
+     * @param intent
+     */
+    private void doStartIntent(@NonNull RouterRequest request, Intent intent) throws Exception {
+
+        // 前置工作
         // 所有的参数存到 Intent 中
         intent.putExtras(request.bundle);
         // 把用户的 flags 和 categories 都设置进来
@@ -133,16 +157,7 @@ public class RouterCenter implements IComponentCenterRouter {
         if (request.intentConsumer != null) {
             request.intentConsumer.accept(intent);
         }
-        jump(request, intent);
-    }
 
-    /**
-     * 拿到 Intent 之后真正的跳转
-     *
-     * @param request
-     * @param intent
-     */
-    private void jump(@NonNull RouterRequest request, Intent intent) {
         // 如果是普通的启动界面
         if (request.requestCode == null) { // 如果是 startActivity
             if (request.context != null) {
@@ -189,27 +204,23 @@ public class RouterCenter implements IComponentCenterRouter {
         final List<Class<? extends RouterInterceptor>> targetInterceptors = routerBean.getInterceptors();
         final List<String> targetInterceptorNames = routerBean.getInterceptorNames();
         // 如果没有拦截器直接返回 null
-        if ((targetInterceptors == null || targetInterceptors.isEmpty()) && (targetInterceptorNames == null || targetInterceptorNames.isEmpty())) {
+        if (targetInterceptors.isEmpty() && targetInterceptorNames.isEmpty()) {
             return Collections.emptyList();
         }
         final List<RouterInterceptor> result = new ArrayList<>();
-        if (targetInterceptors != null) {
-            for (Class<? extends RouterInterceptor> interceptorClass : targetInterceptors) {
-                final RouterInterceptor interceptor = RouterInterceptorCache.getInterceptorByClass(interceptorClass);
-                if (interceptor == null) {
-                    throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + uri.toString());
-                }
-                result.add(interceptor);
+        for (Class<? extends RouterInterceptor> interceptorClass : targetInterceptors) {
+            final RouterInterceptor interceptor = RouterInterceptorCache.getInterceptorByClass(interceptorClass);
+            if (interceptor == null) {
+                throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + uri.toString());
             }
+            result.add(interceptor);
         }
-        if (targetInterceptorNames != null) {
-            for (String interceptorName : targetInterceptorNames) {
-                final RouterInterceptor interceptor = InterceptorCenter.getInstance().getByName(interceptorName);
-                if (interceptor == null) {
-                    throw new InterceptorNotFoundException("can't find the interceptor and it's name is " + interceptorName + ",target url is " + uri.toString());
-                }
-                result.add(interceptor);
+        for (String interceptorName : targetInterceptorNames) {
+            final RouterInterceptor interceptor = InterceptorCenter.getInstance().getByName(interceptorName);
+            if (interceptor == null) {
+                throw new InterceptorNotFoundException("can't find the interceptor and it's name is " + interceptorName + ",target url is " + uri.toString());
             }
+            result.add(interceptor);
         }
         return result;
     }

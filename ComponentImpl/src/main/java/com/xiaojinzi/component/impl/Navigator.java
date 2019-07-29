@@ -747,7 +747,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                     public void intercept(Chain innerChain) throws Exception {
                         // 模拟一下
                         List<RouterInterceptor> targetDeGradeInterceptors =
-                                RouterCenter.getInstance().listDegradeInterceptors(innerChain.request().uri);
+                                RouterDegradeCenter.getInstance().listDegradeInterceptors(innerChain.request());
                         if (!targetDeGradeInterceptors.isEmpty()) {
                             allInterceptors.addAll(targetDeGradeInterceptors);
                         }
@@ -971,7 +971,24 @@ public class Navigator extends RouterRequest.Builder implements Call {
             // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
             RouterRequest finalRequest = chain.request();
             try {
-                // @TODO 执行备用计划跳转
+                // 获取所有降级类
+                List<RouterDegrade> routerDegradeList = RouterDegradeCenter.getInstance()
+                        .getGlobalRouterDegradeList();
+                RouterDegrade result = null;
+                for (int i = 0; i < routerDegradeList.size(); i++) {
+                    RouterDegrade routerDegrade = routerDegradeList.get(i);
+                    // 如果匹配
+                    boolean isMatch = routerDegrade.isMatch(finalRequest);
+                    if (isMatch) {
+                        result = routerDegrade;
+                        break;
+                    }
+                }
+                if (result == null) {
+                    throw new NavigationFailException("router fail, it's url is " + mOriginalRequest.uri.toString());
+                }
+                // 降级跳转
+                RouterCenter.getInstance().routerDegrade(finalRequest, result.onDegrade(finalRequest));
                 if (finalRequest.afterJumpAction != null) {
                     finalRequest.afterJumpAction.run();
                 }
