@@ -16,7 +16,7 @@ public class AppErrorRouterDegrade implements RouterDegrade {
 
     @Override
     public boolean isMatch(@NonNull RouterRequest request) {
-        return true;
+        return false;
     }
 
     @NonNull
