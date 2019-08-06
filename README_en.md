@@ -1,4 +1,4 @@
-[English Doc](https://github.com/xiaojinzi123/Component) | [中文文档](https://github.com/xiaojinzi123/Component/blob/develop/README_cn.md)
+[English Doc](https://github.com/xiaojinzi123/Component/blob/develop/README_en.md) | [中文文档](https://github.com/xiaojinzi123/Component)
 
 [Component VS ARouter](https://github.com/xiaojinzi123/Component/wiki/Component-VS-ARouter)
 

@@ -7,7 +7,7 @@
 
 选型是你们团队的要做的事情,但是选择更好、更全面的、更稳定、更有发展前景的框架更是你们技术团队或者技术负责人要做的事情.
 
-[English Doc](https://github.com/xiaojinzi123/Component) | [中文文档](https://github.com/xiaojinzi123/Component/blob/develop/README_cn.md)
+[English Doc](https://github.com/xiaojinzi123/Component/blob/develop/README_en.md) | [中文文档](https://github.com/xiaojinzi123/Component)
 
 [Component VS ARouter](https://github.com/xiaojinzi123/Component/wiki/Component-%E5%92%8C-ARouter-%E6%AF%94%E8%BE%83)
 
