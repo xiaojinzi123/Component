@@ -71,8 +71,8 @@ public class MainAct extends AppCompatActivity {
     public void testWebRouter(View view) {
         Router
                 .with(this)
-                .host(ModuleConfig.App.NAME)
-                .path(ModuleConfig.App.NAME)
+                .host(ModuleConfig.Help.NAME)
+                .path(ModuleConfig.Help.TEST_WEB_ROUTER)
                 .navigate();
     }
 
