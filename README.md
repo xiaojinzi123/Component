@@ -32,7 +32,7 @@
 
 ## Demo体验(扫码或者点击图片即可下载)
 
-<a href="https://files.gitee.com/group1/M00/07/F6/PaAvDFz3FnGAcMLcADcIxREinEY078.apk?attname=app-debug.apk">
+<a href="https://github.com/xiaojinzi123/Component/releases/download/v1.7.4/app-release.apk">
     <img height=180 src="./imgs/demoApk.png" />
 </a>
 
