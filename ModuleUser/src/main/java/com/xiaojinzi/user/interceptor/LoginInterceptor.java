@@ -35,19 +35,16 @@ public class LoginInterceptor implements RouterInterceptor {
     public void intercept(final Chain chain) throws Exception {
         final Context context = chain.request().getRawContext();
         UserService userService = Service.get(UserService.class);
-        if (chain.request().uri.toString().contains("user/login")) {
-            chain.proceed(chain.request());
-            return;
-        }
         if (userService == null) {
             chain.callback().onError(new ServiceNotFoundException("can't found UserService"));
             return;
-        }else if(userService.isLogin()) {
+        } else if (userService.isLogin()) {
             Toast.makeText(context, "已经登录,正在帮您跳转", Toast.LENGTH_SHORT).show();
             chain.proceed(chain.request());
             return;
         } else {
             Toast.makeText(context, "目标界面需要登录,拦截器帮您跳转到登录界面登录", Toast.LENGTH_SHORT).show();
+            // 这里为啥使用 Rx的方式, 是因为做一个延时的功能好做, 哈哈哈
             RxRouter.with(context)
                     .host(ModuleConfig.User.NAME)
                     .path(ModuleConfig.User.LOGIN)

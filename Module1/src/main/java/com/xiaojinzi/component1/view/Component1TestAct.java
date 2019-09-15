@@ -16,14 +16,12 @@ import com.xiaojinzi.component1.R;
  * 这个界面用于显示传递过来的 Data 数据,并且返回一个Result
  */
 @RouterAnno(
-        host = ModuleConfig.Module1.NAME,
         path = ModuleConfig.Module1.TEST,
         desc = "业务组件1的测试界面"
 )
 public class Component1TestAct extends BaseAct {
 
     @RouterAnno(
-            host = ModuleConfig.Module1.NAME,
             path = ModuleConfig.Module1.TEST_AUTORETURN,
             desc = "业务组件1的测试界面"
     )
@@ -34,7 +32,6 @@ public class Component1TestAct extends BaseAct {
     }
 
     @RouterAnno(
-            host = ModuleConfig.Module1.NAME,
             path = ModuleConfig.Module1.TEST_AUTORETURN1,
             desc = "业务组件1的测试界面"
     )

@@ -3,9 +3,11 @@ package com.xiaojinzi.base.router;
 import android.content.Context;
 
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.component.anno.router.AfterActionAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
+import com.xiaojinzi.component.support.Action;
 
 import io.reactivex.Completable;
 
@@ -14,7 +16,7 @@ import io.reactivex.Completable;
 public interface AppApi {
 
     @PathAnno(ModuleConfig.App.TEST_ROUTER)
-    void goToTestRouter();
+    void goToTestRouter(@AfterActionAnno Action afterAction);
 
     @PathAnno(ModuleConfig.App.TEST_QUALITY)
     Completable goToTestQuality();

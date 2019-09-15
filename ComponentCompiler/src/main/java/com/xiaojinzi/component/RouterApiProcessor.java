@@ -10,6 +10,8 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.router.AfterActionAnno;
+import com.xiaojinzi.component.anno.router.AfterErrorActionAnno;
+import com.xiaojinzi.component.anno.router.AfterEventActionAnno;
 import com.xiaojinzi.component.anno.router.BeforActionAnno;
 import com.xiaojinzi.component.anno.router.CategoryAnno;
 import com.xiaojinzi.component.anno.router.FlagAnno;
@@ -272,6 +274,8 @@ public class RouterApiProcessor extends BaseProcessor {
         VariableElement intentConsumerParameter = null;
         VariableElement beforActionParameter = null;
         VariableElement afterActionParameter = null;
+        VariableElement afterErrorActionParameter = null;
+        VariableElement afterEventActionParameter = null;
 
         StringBuffer parameterStatement = new StringBuffer();
         List<Object> parameterArgs = new ArrayList<>();
@@ -297,6 +301,10 @@ public class RouterApiProcessor extends BaseProcessor {
                 beforActionParameter = parameter;
             } else if (parameter.getAnnotation(AfterActionAnno.class) != null) { // 如果是 afterAction
                 afterActionParameter = parameter;
+            } else if (parameter.getAnnotation(AfterErrorActionAnno.class) != null) { // 如果是 afterErrorAction
+                afterErrorActionParameter = parameter;
+            } else if (parameter.getAnnotation(AfterEventActionAnno.class) != null) { // 如果是 afterEventAction
+                afterEventActionParameter = parameter;
             } else if (parameterTypeMirror.equals(bundleTypeMirror)) { // 如果是 Bundle,这个参数可以选填 @ParameterAnno 注解
                 ParameterAnno parameterParameterAnno = parameter.getAnnotation(ParameterAnno.class);
                 // 不填写的话就是 putAll 否则就是 putBundle
@@ -587,7 +595,7 @@ public class RouterApiProcessor extends BaseProcessor {
             args.add(intentConsumerParameter.getSimpleName().toString());
         }
 
-        // 两个 action
+        // 几个 action
         if (beforActionParameter != null) {
             routerStatement.append("\n.beforJumpAction($N)");
             args.add(beforActionParameter.getSimpleName().toString());
@@ -595,6 +603,14 @@ public class RouterApiProcessor extends BaseProcessor {
         if (afterActionParameter != null) {
             routerStatement.append("\n.afterJumpAction($N)");
             args.add(afterActionParameter.getSimpleName().toString());
+        }
+        if (afterErrorActionParameter != null) {
+            routerStatement.append("\n.afterErrorAction($N)");
+            args.add(afterErrorActionParameter.getSimpleName().toString());
+        }
+        if (afterEventActionParameter != null) {
+            routerStatement.append("\n.afterEventAction($N)");
+            args.add(afterEventActionParameter.getSimpleName().toString());
         }
 
         // 根据跳转类型生成 navigate 方法

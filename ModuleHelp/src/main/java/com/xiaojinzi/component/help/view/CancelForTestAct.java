@@ -1,8 +1,6 @@
 package com.xiaojinzi.component.help.view;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -10,12 +8,8 @@ import android.widget.TextView;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.help.R;
-import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.Navigator;
-import com.xiaojinzi.component.impl.RouterErrorResult;
-import com.xiaojinzi.component.impl.RouterRequest;
-import com.xiaojinzi.component.impl.RouterResult;
-import com.xiaojinzi.component.support.CallbackAdapter;
+import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.support.ParameterSupport;
 
 import java.util.concurrent.TimeUnit;
@@ -26,7 +20,6 @@ import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 @RouterAnno(
-        host = ModuleConfig.Help.NAME,
         path = ModuleConfig.Help.CANCEL_FOR_TEST,
         desc = "完成自动取消路由的测试"
 )

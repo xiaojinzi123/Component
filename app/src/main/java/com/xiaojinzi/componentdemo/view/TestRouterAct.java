@@ -42,7 +42,6 @@ import io.reactivex.schedulers.Schedulers;
 public class TestRouterAct extends BaseAct {
 
     @RouterAnno(
-            host = ModuleConfig.App.NAME,
             path = ModuleConfig.App.TEST_ROUTER,
             desc = "测试跳转的界面"
     )

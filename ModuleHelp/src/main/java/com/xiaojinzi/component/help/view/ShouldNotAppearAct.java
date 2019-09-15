@@ -9,7 +9,6 @@ import com.xiaojinzi.component.help.R;
 import com.xiaojinzi.component.impl.RxRouter;
 
 @RouterAnno(
-        host = ModuleConfig.Help.NAME,
         path = ModuleConfig.Help.SHOULD_NOT_APPEAR,
         desc = "完成自动取消路由的测试"
 )
@@ -19,7 +18,6 @@ public class ShouldNotAppearAct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.help_should_not_appear_act);
-        RxRouter.Builder builder = RxRouter.with(this);
     }
 
 }

@@ -25,7 +25,7 @@ import com.xiaojinzi.component.support.RouterInterceptorCache;
 public interface RouterInterceptor {
 
     /**
-     * 拦截器
+     * 拦截器的拦截方法, 一定是在主线程中被执行的, 您不必担心此方法的线程安全问题
      *
      * @param chain 拦截器执行连接器
      */
@@ -66,8 +66,10 @@ public interface RouterInterceptor {
 
     /**
      * 回调对象,错误和成功的方法均只能调用一次,多次调用只有第一次有用,其他会被忽略
+     * 内部的方法可能会在任何线程被调用,
+     * 虽然拦截器 {@link RouterInterceptor#intercept(Chain)} 的方法在主线程执行, 但是内部可以在其他线程去
+     * 调用 {@link Callback} 类中的每一个方法
      */
-    @MainThread
     interface Callback {
 
         /**
@@ -78,7 +80,7 @@ public interface RouterInterceptor {
          * @param result 路由成功的对象
          */
         @AnyThread
-        void onSuccess(RouterResult result);
+        void onSuccess(@NonNull RouterResult result);
 
         /**
          * 错误的回调
@@ -88,7 +90,7 @@ public interface RouterInterceptor {
          * @param error 路由失败的对象
          */
         @AnyThread
-        void onError(Throwable error);
+        void onError(@NonNull Throwable error);
 
         /**
          * 是否完成了

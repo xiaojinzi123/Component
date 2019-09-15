@@ -41,9 +41,7 @@ import javax.lang.model.type.TypeMirror;
 @SupportedAnnotationTypes({com.xiaojinzi.component.ComponentUtil.ROUTER_ANNO_CLASS_NAME})
 public class RouterProcessor extends BaseHostProcessor {
 
-    private static final String ROUTER_BEAN_NAME = "com.xiaojinzi.component.bean.RouterBean";
     private static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.xiaojinzi.component.bean.CustomerIntentCall";
-    private static final String CUSTOMER_JUMP_CLASS_NAME = "com.xiaojinzi.component.bean.CustomerJump";
 
     private static final String NAME_OF_REQUEST = "request";
 
@@ -62,8 +60,8 @@ public class RouterProcessor extends BaseHostProcessor {
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
 
-        interceptorTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.INTERCEPTOR_INTERFACE_CLASS_NAME);
-        routerBeanTypeElement = mElements.getTypeElement(ROUTER_BEAN_NAME);
+        interceptorTypeElement = mElements.getTypeElement(ComponentConstants.INTERCEPTOR_INTERFACE_CLASS_NAME);
+        routerBeanTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_BEAN_CLASS_NAME);
         final TypeElement exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
         exceptionClassName = ClassName.get(exceptionTypeElement);
         final TypeElement customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
@@ -210,7 +208,8 @@ public class RouterProcessor extends BaseHostProcessor {
                 // 拦截器的代码的生成
                 if (routerBean.getInterceptors() != null && !routerBean.getInterceptors().isEmpty()) {
                     String interceptorListName = "interceptorList" + atomicInteger.incrementAndGet();
-                    initMapMethodSpecBuilder.addStatement("java.util.List<Class<? extends $T>> " + interceptorListName + " = new $T($L)", interceptorTypeElement, ArrayList.class, routerBean.getInterceptors().size());
+                    initMapMethodSpecBuilder.addStatement("java.util.List<Class<? extends $T>> " + interceptorListName + " = new $T($L)",
+                            interceptorTypeElement, ArrayList.class, routerBean.getInterceptors().size());
                     for (String interceptorClassName : routerBean.getInterceptors()) {
                         initMapMethodSpecBuilder.addStatement("$N.add($T.class)", interceptorListName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
                     }

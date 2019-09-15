@@ -47,6 +47,7 @@ public class ModuleConfig {
         public static final String INFO = "info";
 
         public static final String NOT_FOUND_TEST = "notFountTest";
+        
     }
 
     public static class Module1 {

@@ -33,9 +33,9 @@ dependencies {
     api project(':ModuleBase')
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
         annotationProcessor libs.component_compiler
-    }else {
+    } else {
         annotationProcessor project(':ComponentCompiler')
     }
 
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
-
