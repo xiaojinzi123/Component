@@ -5,7 +5,6 @@ apply from: "dependencies.gradle"
 ext {
     component_group_id = "com.xiaojinzi"
     isDependMavenOnline = "false"
-    mavenServerUrl = "http://xiaojinzi.tpddns.cn:18081/repository/maven-releases/"
 }
 
 buildscript {
