@@ -1,8 +1,9 @@
 package com.xiaojinzi.module1run;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.xiaojinzi.base.router.Module1Api;
 import com.xiaojinzi.component.impl.Router;

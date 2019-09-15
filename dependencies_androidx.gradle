@@ -6,9 +6,9 @@ ext.androidxLibs = [
         appcompat                : 'androidx.appcompat:appcompat:1.0.2',
         constraintLayout         : "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}",
 
-        component_annotation     : "com.github.xiaojinzi123.Component:component-annotation:${versions.component_version}",
-        component_compiler       : "com.github.xiaojinzi123.Component:component-compiler:${versions.component_version}",
-        component_impl           : "com.github.xiaojinzi123.Component:component-impl:${versions.component_version}",
-        component_impl_rx        : "com.github.xiaojinzi123.Component:component-impl-rx:${versions.component_version}"
+        component_annotation     : "com.github.xiaojinzi123.Component:component-annotation:${versions.component_version}-androidx",
+        component_compiler       : "com.github.xiaojinzi123.Component:component-compiler:${versions.component_version}-androidx",
+        component_impl           : "com.github.xiaojinzi123.Component:component-impl:${versions.component_version}-androidx",
+        component_impl_rx        : "com.github.xiaojinzi123.Component:component-impl-rx:${versions.component_version}-androidx"
 
 ]
