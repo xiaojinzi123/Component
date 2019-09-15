@@ -9,7 +9,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.xiaojinzi.component.error.RouterRuntimeException;
 import com.xiaojinzi.component.support.LogUtil;
+import com.xiaojinzi.component.support.RouterRequestHelp;
 import com.xiaojinzi.component.support.Utils;
 
 /**
@@ -28,23 +30,21 @@ class RouterUtil {
      *
      * @param callback
      */
+    @AnyThread
     public static void cancelCallback(@Nullable final RouterRequest request, @Nullable final OnRouterCancel callback) {
-        if (Utils.isMainThread()) {
-            cancelCallbackOnMainThread(request, callback);
-        } else {
-            Utils.postActionToMainThreadAnyway(new Runnable() {
-                @Override
-                public void run() {
-                    cancelCallbackOnMainThread(request, callback);
-                }
-            });
-        }
+        Utils.postActionToMainThreadAnyway(new Runnable() {
+            @Override
+            public void run() {
+                cancelCallbackOnMainThread(request, callback);
+            }
+        });
         deliveryListener(null, null, request);
     }
 
     /**
      * @param callback
      */
+    @MainThread
     private static void cancelCallbackOnMainThread(@Nullable RouterRequest request,
                                                    @Nullable final OnRouterCancel callback) {
         LogUtil.log(Router.TAG, "路由取消：" + request.uri.toString());
@@ -60,90 +60,91 @@ class RouterUtil {
      * @param callback
      * @param errorResult
      */
+    @AnyThread
     public static void errorCallback(@Nullable final Callback callback,
                                      @NonNull final RouterErrorResult errorResult) {
-        if (Utils.isMainThread()) {
-            errorCallbackOnMainThread(callback, errorResult);
-        } else {
-            Utils.postActionToMainThreadAnyway(new Runnable() {
-                @Override
-                public void run() {
-                    errorCallbackOnMainThread(callback, errorResult);
-                }
-            });
-        }
+        Utils.postActionToMainThreadAnyway(new Runnable() {
+            @Override
+            public void run() {
+                errorCallbackOnMainThread(callback, errorResult);
+            }
+        });
         deliveryListener(null, errorResult, null);
     }
 
-    /**
-     * @param callback
-     * @param errorResult
-     */
+    @MainThread
     private static void errorCallbackOnMainThread(@Nullable final Callback callback,
                                                   @NonNull final RouterErrorResult errorResult) {
-        if (errorResult == null) {
-            return;
-        }
+        Utils.checkNullPointer(errorResult, "errorResult");
         if (errorResult.getOriginalRequest() == null) {
             LogUtil.log(Router.TAG, "路由失败：" + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
         } else {
             LogUtil.log(Router.TAG, "路由失败：" + errorResult.getOriginalRequest().uri.toString() + " and errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
         }
-        if (callback == null) {
+        // 如果发起了一个路由但是现在已经 GG 了, 那就不执行了回调了
+        if (errorResult.getOriginalRequest() != null && isRequestUnavailabled(errorResult.getOriginalRequest())) {
             return;
         }
-        callback.onError(errorResult);
-        callback.onEvent(null, errorResult);
+        // 执行 Request 中 的 errorCallback
+        if (errorResult.getOriginalRequest() != null) {
+            try {
+                RouterRequestHelp.executeAfterErrorCallback(errorResult.getOriginalRequest());
+            } catch (Exception e) {
+                throw new RouterRuntimeException("afterErrorCallback or afterEventCallback can't throw any exception!", e);
+            }
+        }
+        if (callback != null) {
+            callback.onError(errorResult);
+            callback.onEvent(null, errorResult);
+        }
     }
 
+    @AnyThread
     public static void successCallback(@Nullable final Callback callback,
                                        @NonNull final RouterResult successResult) {
-        if (Utils.isMainThread()) {
-            successCallbackOnMainThread(callback, successResult);
-        } else {
-            Utils.postActionToMainThreadAnyway(new Runnable() {
-                @Override
-                public void run() {
-                    successCallbackOnMainThread(callback, successResult);
-                }
-            });
-        }
+        Utils.postActionToMainThreadAnyway(new Runnable() {
+            @Override
+            public void run() {
+                successCallbackOnMainThread(callback, successResult);
+            }
+        });
         deliveryListener(successResult, null, null);
     }
 
-    public static void successCallbackOnMainThread(@Nullable final Callback callback,
-                                                   @NonNull final RouterResult result) {
-        if (result == null) {
-            return;
-        }
+    @MainThread
+    private static void successCallbackOnMainThread(@Nullable final Callback callback,
+                                                    @NonNull final RouterResult result) {
+        Utils.checkNullPointer(result, "result");
         LogUtil.log(Router.TAG, "路由成功：" + result.getOriginalRequest().uri.toString());
-        if (callback == null) {
-            return;
-        }
         // 如果请求的界面已经gg了
         if (isRequestUnavailabled(result.getOriginalRequest())) {
             return;
         }
-        callback.onSuccess(result);
-        callback.onEvent(result, null);
+        // 执行 Request 中 的 afterCallback
+        try {
+            RouterRequestHelp.executeAfterJumpCallback(result.getOriginalRequest());
+        } catch (Exception e) {
+            throw new RouterRuntimeException("afterJumpCallback or afterEventCallback can't throw any exception!", e);
+        }
+        if (callback != null) {
+            callback.onSuccess(result);
+            callback.onEvent(result, null);
+        }
     }
 
     @AnyThread
     public static void deliveryListener(@Nullable final RouterResult successResult,
                                         @Nullable final RouterErrorResult errorResult,
                                         @Nullable final RouterRequest cancelRequest) {
-        if (Utils.isMainThread()) {
-            deliveryListenerOnMainThread(successResult, errorResult, cancelRequest);
-        } else {
-            Utils.postActionToMainThreadAnyway(new Runnable() {
-                @Override
-                public void run() {
-                    deliveryListenerOnMainThread(successResult, errorResult, cancelRequest);
-                }
-            });
-        }
+        Utils.postActionToMainThread(new Runnable() {
+            @Override
+            public void run() {
+                deliveryListenerOnMainThread(successResult, errorResult, cancelRequest);
+            }
+        });
     }
 
+    @MainThread
     public static void deliveryListenerOnMainThread(@Nullable final RouterResult successResult,
                                                     @Nullable final RouterErrorResult errorResult,
                                                     @Nullable final RouterRequest cancelRequest) {
@@ -164,6 +165,12 @@ class RouterUtil {
         }
     }
 
+    /**
+     * 是否 Request 是不可用的, 其实是判断关联的界面是否已经 GG
+     *
+     * @param originalRequest 路由请求对象
+     * @return Request 是不可用的
+     */
     private static boolean isRequestUnavailabled(@NonNull RouterRequest originalRequest) {
         Context context = originalRequest.context;
         Fragment fragment = originalRequest.fragment;
@@ -188,6 +195,12 @@ class RouterUtil {
         return false;
     }
 
+    /**
+     * 是否 Activity 已经 GG
+     *
+     * @param activity {@link Activity}
+     * @return Activity 已经 GG
+     */
     private static boolean isActivityUnavailabled(@NonNull Activity activity) {
         boolean isUseful = true;
         if (activity.isFinishing()) {

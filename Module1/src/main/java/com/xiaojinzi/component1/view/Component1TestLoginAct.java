@@ -12,11 +12,9 @@ import com.xiaojinzi.component1.R;
  * 这个是一个测试登录的界面
  */
 @RouterAnno(
-        host = ModuleConfig.Module1.NAME,
         path = ModuleConfig.Module1.TEST_LOGIN,
         interceptorNames = {
-                InterceptorConfig.USER_LOGIN,
-                InterceptorConfig.HELP_CALLPHOEPERMISION
+                InterceptorConfig.USER_LOGIN
         }
 )
 public class Component1TestLoginAct extends AppCompatActivity {

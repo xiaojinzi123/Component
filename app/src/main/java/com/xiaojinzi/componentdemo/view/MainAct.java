@@ -8,15 +8,13 @@ import android.widget.Toast;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
-import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
-@RouterAnno(
-        host = "app",
-        path = "main"
-)
+/**
+ * 启动界面
+ */
 public class MainAct extends AppCompatActivity {
 
     @Override
@@ -67,24 +65,23 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouter(View view) {
-        Router.withApi(AppApi.class).goToTestRouter();
+        Router.withApi(AppApi.class).goToTestRouter(
+                () -> Toast.makeText(MainAct.this, "跳转后的提示", Toast.LENGTH_SHORT).show()
+        );
     }
 
     public void testWebRouter(View view) {
-        Router.withApi(AppApi.class).goToTestWebRouter(this);
-
+        Router
+                .with(this)
+                .host(ModuleConfig.Help.NAME)
+                .path(ModuleConfig.Help.TEST_WEB_ROUTER)
+                .navigate();
     }
 
     public void testQuality(View view) {
-        Router.withApi(AppApi.class).goToTestQuality().subscribe();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 123 && resultCode == RESULT_OK) {
-            Toast.makeText(this, "返回数据啦", Toast.LENGTH_SHORT).show();
-        }
+        Router.withApi(AppApi.class)
+                .goToTestQuality()
+                .subscribe();
     }
 
     public void testService(View view) {
@@ -93,6 +90,14 @@ public class MainAct extends AppCompatActivity {
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_SERVICE)
                 .navigate();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 123 && resultCode == RESULT_OK) {
+            Toast.makeText(this, "返回数据啦", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

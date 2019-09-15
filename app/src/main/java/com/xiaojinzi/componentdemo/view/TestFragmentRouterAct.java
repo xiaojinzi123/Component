@@ -16,7 +16,6 @@ import com.xiaojinzi.componentdemo.R;
  * @author : xiaojinzi 30212
  */
 @RouterAnno(
-        host = ModuleConfig.App.NAME,
         path = ModuleConfig.App.TEST_FRAGMENT_ROUTER,
         desc = "测试跳转的界面"
 )

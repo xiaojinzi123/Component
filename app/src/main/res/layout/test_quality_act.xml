@@ -45,6 +45,38 @@
             android:textAllCaps="false"
             android:textSize="@dimen/test_quality_textsize" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="testCrash1"
+            android:text="必须奔溃的测试1"
+            android:textAllCaps="false"
+            android:textSize="@dimen/test_quality_textsize_small" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="testCrash2"
+            android:text="必须奔溃的测试2"
+            android:textAllCaps="false"
+            android:textSize="@dimen/test_quality_textsize_small" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="testCrash3"
+            android:text="必须奔溃的测试3"
+            android:textAllCaps="false"
+            android:textSize="@dimen/test_quality_textsize_small" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="testCrash4"
+            android:text="必须奔溃的测试4"
+            android:textAllCaps="false"
+            android:textSize="@dimen/test_quality_textsize_small" />
+
     </com.xiaojinzi.componentdemo.view.XFlowLayout>
 
     <androidx.core.widget.NestedScrollView

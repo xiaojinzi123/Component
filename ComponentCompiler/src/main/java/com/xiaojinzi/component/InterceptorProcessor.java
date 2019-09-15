@@ -68,9 +68,6 @@ public class InterceptorProcessor extends BaseHostProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        if (componentHost == null || componentHost.isEmpty()) {
-            return false;
-        }
         if (CollectionUtils.isNotEmpty(set)) {
             final Set<? extends Element> globalInterceptorElements = roundEnvironment.getElementsAnnotatedWith(GlobalInterceptorAnno.class);
             final Set<? extends Element> interceptorElements = roundEnvironment.getElementsAnnotatedWith(InterceptorAnno.class);

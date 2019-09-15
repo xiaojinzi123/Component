@@ -12,7 +12,6 @@ public class InterceptorBean {
     public static final int GLOBAL_INTERCEPTOR = 0;
     public static final int NORMAL_INTERCEPTOR = 1;
 
-
     /**
      * 0 全局拦截器
      * 1 普通拦截器

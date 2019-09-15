@@ -45,7 +45,7 @@ public @interface RouterAnno {
     String hostAndPath() default "";
 
     /**
-     * 拦截器的地址
+     * 拦截器的Class
      *
      * @return
      */

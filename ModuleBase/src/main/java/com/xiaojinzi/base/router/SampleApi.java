@@ -17,6 +17,8 @@ import com.xiaojinzi.base.interceptor.DialogShowInterceptor;
 import com.xiaojinzi.base.interceptor.TimeConsumingInterceptor;
 import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.router.AfterActionAnno;
+import com.xiaojinzi.component.anno.router.AfterErrorActionAnno;
+import com.xiaojinzi.component.anno.router.AfterEventActionAnno;
 import com.xiaojinzi.component.anno.router.BeforActionAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
@@ -56,6 +58,8 @@ public interface SampleApi {
                    @NonNull @OptionsAnno Bundle options,
                    @NonNull @BeforActionAnno Action beforAction,
                    @NonNull @AfterActionAnno Action afterAction,
+                   @NonNull @AfterErrorActionAnno Action afterErrorAction,
+                   @NonNull @AfterEventActionAnno Action afterEventAction,
                    @NonNull Consumer<Intent> intentConsumer);
 
     @NavigateAnno

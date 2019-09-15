@@ -1,11 +1,13 @@
 package com.xiaojinzi.component.bean;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,16 +24,6 @@ public class RouterBean {
      */
     @Nullable
     private String desc;
-
-    /**
-     * uri 的 host
-     */
-    //private String host;
-
-    /**
-     * uri 的 path
-     */
-    //private String path;
 
     /**
      * 这个目标 Activity Class,可能为空,因为可能标记在静态方法上
@@ -79,8 +71,11 @@ public class RouterBean {
         this.targetClass = targetClass;
     }
 
-    @Nullable
+    @NonNull
     public List<Class<? extends RouterInterceptor>> getInterceptors() {
+        if (interceptors == null) {
+            return Collections.emptyList();
+        }
         return interceptors;
     }
 
@@ -88,8 +83,11 @@ public class RouterBean {
         this.interceptors = interceptors;
     }
 
-    @Nullable
+    @NonNull
     public List<String> getInterceptorNames() {
+        if (interceptorNames == null) {
+            return Collections.emptyList();
+        }
         return interceptorNames;
     }
 

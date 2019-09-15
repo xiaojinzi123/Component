@@ -117,7 +117,7 @@ public class Router {
         RouterCenter.getInstance().unregister(host);
     }
 
-    public static Navigator with(){
+    public static Navigator with() {
         return new Navigator();
     }
 
@@ -157,7 +157,7 @@ public class Router {
     /**
      * 取消某一个 Activity的有关的路由任务
      *
-     * @param act
+     * @param act 要取消的 {@link Activity}
      */
     @MainThread
     public static void cancel(@NonNull Activity act) {

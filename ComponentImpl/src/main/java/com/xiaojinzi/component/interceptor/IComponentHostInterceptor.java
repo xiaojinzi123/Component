@@ -23,6 +23,7 @@ public interface IComponentHostInterceptor extends IComponentInterceptor, ICompo
      *
      * @return
      */
+    @NonNull
     String getHost();
 
     /**

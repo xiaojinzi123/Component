@@ -12,7 +12,6 @@ import com.xiaojinzi.user.R;
 import com.xiaojinzi.user.service.UserServiceImpl;
 
 @RouterAnno(
-        host = ModuleConfig.User.NAME,
         path = ModuleConfig.User.LOGIN,
         desc = "用户模块的登录界面"
 )

@@ -1,5 +1,6 @@
 com.xiaojinzi.component.ModuleAppProcessor
 com.xiaojinzi.component.RouterProcessor
+com.xiaojinzi.component.RouterDegradeProcessor
 com.xiaojinzi.component.InterceptorProcessor
 com.xiaojinzi.component.ServiceProcessor
 com.xiaojinzi.component.AutowireProcessor

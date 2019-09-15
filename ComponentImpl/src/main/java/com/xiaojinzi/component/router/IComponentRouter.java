@@ -37,11 +37,23 @@ public interface IComponentRouter {
     boolean isMatchUri(@NonNull Uri uri);
 
     /**
-     * 获取这个目标要执行的拦截器
+     * 获取这个目标要执行的页面拦截器
      *
-     * @return
+     * @param uri
+     * @return 返回此界面的页面拦截器
+     * @throws Exception
      */
     @NonNull
-    List<RouterInterceptor> interceptors(@NonNull Uri uri) throws Exception;
+    List<RouterInterceptor> listPageInterceptors(@NonNull Uri uri) throws Exception;
+
+    /**
+     * 获取该 URI 对应的降级需要执行的拦截器
+     *
+     * @param uri
+     * @return
+     * @throws Exception
+     */
+    @NonNull
+    List<RouterInterceptor> listDegradeInterceptors(@NonNull Uri uri) throws Exception;
 
 }

@@ -102,6 +102,16 @@ public class RxRouter extends Router {
         }
 
         @Override
+        public Builder afterErrorAction(@Nullable Action action) {
+            return (Builder) super.afterErrorAction(action);
+        }
+
+        @Override
+        public Builder afterEventAction(@Nullable Action action) {
+            return (Builder) super.afterEventAction(action);
+        }
+
+        @Override
         public Builder intentConsumer(@NonNull com.xiaojinzi.component.support.Consumer<Intent> intentConsumer) {
             return (Builder) super.intentConsumer(intentConsumer);
         }

@@ -15,7 +15,6 @@ import com.xiaojinzi.component1.R;
  * 测试的时候这个界面需要每一个值都是有的
  */
 @RouterAnno(
-        host = ModuleConfig.Module1.NAME,
         path = ModuleConfig.Module1.TEST_PUT_QUERY_WITH_URL
 )
 public class TestPutQueryWithUrlAct extends BaseAct {

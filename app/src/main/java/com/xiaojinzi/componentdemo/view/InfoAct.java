@@ -10,7 +10,6 @@ import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
 @RouterAnno(
-        host = ModuleConfig.App.NAME,
         path = ModuleConfig.App.INFO
 )
 public class InfoAct extends AppCompatActivity {

@@ -17,7 +17,6 @@ import com.xiaojinzi.component1.R;
  * 测试除了基本属性之外的数据类型
  */
 @RouterAnno(
-        host = ModuleConfig.Module1.NAME,
         path = ModuleConfig.Module1.TEST_INJECT3
 )
 public class TestInjectAct3 extends BaseAct {

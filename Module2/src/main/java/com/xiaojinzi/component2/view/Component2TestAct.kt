@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.xiaojinzi.component.anno.RouterAnno
 import com.xiaojinzi.component2.R
 
-@RouterAnno(hostAndPath = "component2/test")
+@RouterAnno(
+        path = "test"
+)
 class Component2TestAct : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

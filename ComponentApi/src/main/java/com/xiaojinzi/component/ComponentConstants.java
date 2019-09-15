@@ -16,11 +16,13 @@ public class ComponentConstants {
 
     public static final String APPLCATON_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.application.IComponentApplication";
     public static final String INTERCEPTOR_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.impl.RouterInterceptor";
+    public static final String ROUTERDEGRADE_CLASS_NAME = "com.xiaojinzi.component.impl.RouterDegrade";
     public static final String INTERCEPTOR_UTIL_CLASS_NAME = "com.xiaojinzi.component.support.RouterInterceptorCache";
     public static final String ROUTER_CLASS_NAME = "com.xiaojinzi.component.impl.Router";
     public static final String ROUTER_RX_CLASS_NAME = "com.xiaojinzi.component.impl.RxRouter";
     public static final String INTERCEPTOR_BEAN_CLASS_NAME = "com.xiaojinzi.component.impl.interceptor.InterceptorBean";
     public static final String CENTERINTERCEPTOR_CLASS_NAME = "com.xiaojinzi.component.impl.interceptor.InterceptorCenter";
+    public static final String ROUTERDEGRADECENTER_CLASS_NAME = "com.xiaojinzi.component.impl.RouterDegradeCenter";
     public static final String SERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.Service";
     public static final String CENTERSERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.ServiceCenter";
     public static final String PARAMETERSUPPORT_CLASS_NAME = "com.xiaojinzi.component.support.ParameterSupport";
@@ -34,6 +36,8 @@ public class ComponentConstants {
     public static final String CONSUMER_CLASS_NAME = "com.xiaojinzi.component.support.Consumer";
     public static final String CLASSCACHE_CLASS_NAME = "com.xiaojinzi.component.cache.ClassCache";
     public static final String CONDITIONCACHE_CLASS_NAME = "com.xiaojinzi.component.support.ConditionCache";
+    public static final String ROUTER_BEAN_CLASS_NAME = "com.xiaojinzi.component.bean.RouterBean";
+    public static final String ROUTER_DEGRADE_BEAN_CLASS_NAME = "com.xiaojinzi.component.bean.RouterDegradeBean";
 
     public static final String ANDROID_PARCELABLE = "android.os.Parcelable";
     public static final String ANDROID_APPLICATION = "android.app.Application";
