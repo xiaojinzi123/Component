@@ -65,7 +65,9 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouter(View view) {
-        Router.withApi(AppApi.class).goToTestRouter();
+        Router.withApi(AppApi.class).goToTestRouter(
+                () -> Toast.makeText(MainAct.this, "跳转后的提示", Toast.LENGTH_SHORT).show()
+        );
     }
 
     public void testWebRouter(View view) {
