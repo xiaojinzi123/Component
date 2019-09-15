@@ -77,15 +77,9 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testQuality(View view) {
-        Router.withApi(AppApi.class).goToTestQuality().subscribe();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 123 && resultCode == RESULT_OK) {
-            Toast.makeText(this, "返回数据啦", Toast.LENGTH_SHORT).show();
-        }
+        Router.withApi(AppApi.class)
+                .goToTestQuality()
+                .subscribe();
     }
 
     public void testService(View view) {
@@ -94,6 +88,14 @@ public class MainAct extends AppCompatActivity {
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_SERVICE)
                 .navigate();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 123 && resultCode == RESULT_OK) {
+            Toast.makeText(this, "返回数据啦", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

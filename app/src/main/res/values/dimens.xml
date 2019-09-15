@@ -2,6 +2,7 @@
 <resources>
 
     <dimen name="test_router_textsize">12dp</dimen>
+    <dimen name="test_quality_textsize_small">10dp</dimen>
     <dimen name="test_quality_textsize">12dp</dimen>
 
 </resources>

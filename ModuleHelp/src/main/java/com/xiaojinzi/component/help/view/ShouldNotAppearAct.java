@@ -18,7 +18,6 @@ public class ShouldNotAppearAct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.help_should_not_appear_act);
-        RxRouter.Builder builder = RxRouter.with(this);
     }
 
 }

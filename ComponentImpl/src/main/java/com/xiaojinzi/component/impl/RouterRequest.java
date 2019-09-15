@@ -88,6 +88,12 @@ public class RouterRequest {
     @Nullable
     public final Action afterJumpAction;
 
+    @Nullable
+    public final Action afterErrorAction;
+
+    @Nullable
+    public final Action afterEventAction;
+
     /**
      * 从 {@link Fragment} 和 {@link Context} 中获取上下文
      *
@@ -200,6 +206,8 @@ public class RouterRequest {
         builder.intentConsumer = intentConsumer;
         builder.beforJumpAction = beforJumpAction;
         builder.afterJumpAction = afterJumpAction;
+        builder.afterErrorAction = afterErrorAction;
+        builder.afterEventAction = afterEventAction;
         return builder;
     }
 
@@ -219,6 +227,8 @@ public class RouterRequest {
         intentConsumer = builder.intentConsumer;
         beforJumpAction = builder.beforJumpAction;
         afterJumpAction = builder.afterJumpAction;
+        afterErrorAction = builder.afterErrorAction;
+        afterEventAction = builder.afterEventAction;
     }
 
     /**
@@ -258,11 +268,29 @@ public class RouterRequest {
         @Nullable
         protected Consumer<Intent> intentConsumer;
 
+        /**
+         * 跳转前的 Callback
+         */
         @Nullable
         protected Action beforJumpAction;
 
+        /**
+         * 跳转成功之后的 Callback
+         */
         @Nullable
         protected Action afterJumpAction;
+
+        /**
+         * 跳转失败之后的 Callback
+         */
+        @Nullable
+        protected Action afterErrorAction;
+
+        /**
+         * 跳转成功和失败之后的 Callback
+         */
+        @Nullable
+        protected Action afterEventAction;
 
         public Builder context(@Nullable Context context) {
             this.context = context;
@@ -312,6 +340,16 @@ public class RouterRequest {
 
         public Builder afterJumpAction(@Nullable Action action) {
             this.afterJumpAction = action;
+            return this;
+        }
+
+        public Builder afterErrorAction(@Nullable Action action) {
+            this.afterErrorAction = action;
+            return this;
+        }
+
+        public Builder afterEventAction(@Nullable Action action) {
+            this.afterEventAction = action;
             return this;
         }
 

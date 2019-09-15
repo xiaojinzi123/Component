@@ -38,8 +38,8 @@ public class FailureTest implements TestExecutor {
                 testContext.wrapTask(withoutHostOrPath2()).doOnComplete(() -> testContext.addTaskPassMsg("withoutHostOrPath2")),
                 testContext.wrapTask(useSameRequestCode()).doOnComplete(() -> testContext.addTaskPassMsg("useSameRequestCode")),
                 testContext.wrapTask(getIntentWithoutRequestCode()).doOnComplete(() -> testContext.addTaskPassMsg("getIntentWithoutRequestCode")),
-                testContext.wrapTask(targetNotFound()).doOnComplete(() -> testContext.addTaskPassMsg("targetNotFound")),
-                testContext.wrapTask(crashOnAfterJumpAction()).doOnComplete(() -> testContext.addTaskPassMsg("crashOnAfterJumpAction"))
+                testContext.wrapTask(targetNotFound()).doOnComplete(() -> testContext.addTaskPassMsg("targetNotFound"))
+                /*testContext.wrapTask(crashOnAfterJumpAction()).doOnComplete(() -> testContext.addTaskPassMsg("crashOnAfterJumpAction"))*/
         );
     }
 
@@ -102,7 +102,9 @@ public class FailureTest implements TestExecutor {
                                 },
                                 throwable -> {
                                     chain.callback().onError(new Exception(throwable));
-                                }))
+                                }
+                        )
+                )
                 .query("data", "useSameRequestCode")
                 .intentCall()
                 .subscribe(
@@ -148,26 +150,6 @@ public class FailureTest implements TestExecutor {
                         emitter.onComplete();
                     }
                 }));
-    }
-
-    /**
-     * 这个会导致界面已经跳过去了,但是回调啥的都没了,因为出现的异常
-     */
-    public Completable crashOnAfterJumpAction() {
-        return mTestContext.testWrap(emitter -> RxRouter
-                .with(mContext)
-                .host(ModuleConfig.Module1.NAME)
-                .path(ModuleConfig.Module1.TEST_AUTORETURN1)
-                .requestCode(123)
-                .putString("data", "crashOnAfterJumpAction")
-                .afterJumpAction(() -> {
-                    throw new NullPointerException("test exception on afterJumpAction");
-                })
-                .activityResultCall()
-                .subscribe(
-                        activityResult -> emitter.onError(new NavigationFailException("request should be error")),
-                        throwable -> emitter.onComplete()
-                ));
     }
 
 }

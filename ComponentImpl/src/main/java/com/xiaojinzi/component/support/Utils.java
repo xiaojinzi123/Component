@@ -7,6 +7,7 @@ import android.content.ContextWrapper;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -36,6 +37,7 @@ public class Utils {
      *
      * @param r
      */
+    @AnyThread
     public static void postActionToMainThread(@NonNull Runnable r) {
         if (isMainThread()) {
             r.run();

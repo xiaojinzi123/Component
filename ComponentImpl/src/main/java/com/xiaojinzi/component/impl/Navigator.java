@@ -28,6 +28,7 @@ import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
+import com.xiaojinzi.component.support.RouterRequestHelp;
 import com.xiaojinzi.component.support.Utils;
 
 import java.io.Serializable;
@@ -139,6 +140,16 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @Override
     public Navigator afterJumpAction(@Nullable Action action) {
         return (Navigator) super.afterJumpAction(action);
+    }
+
+    @Override
+    public Navigator afterErrorAction(@Nullable Action action) {
+        return (Navigator) super.afterErrorAction(action);
+    }
+
+    @Override
+    public Navigator afterEventAction(@Nullable Action action) {
+        return (Navigator) super.afterEventAction(action);
     }
 
     @Override
@@ -699,6 +710,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
             intentConsumer = null;
             beforJumpAction = null;
             afterJumpAction = null;
+            afterErrorAction = null;
+            afterEventAction = null;
         }
         return Router.emptyNavigationDisposable;
     }
@@ -713,14 +726,24 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @AnyThread
     private static void realNavigate(@NonNull final RouterRequest originalRequest,
                                      @Nullable List<Object> customInterceptors,
-                                     @NonNull RouterInterceptor.Callback callback) {
+                                     @NonNull final RouterInterceptor.Callback callback) {
 
         // 拿到共有的拦截器
         List<RouterInterceptor> publicInterceptors = InterceptorCenter.getInstance()
                 .getGlobalInterceptorList();
         // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
-        final List<RouterInterceptor> allInterceptors = new ArrayList(8);
-        // 添加内置拦截器,目前就一个内置拦截器,而且必须在最前面,因为这个拦截器内部有一个时间的记录
+        final List<RouterInterceptor> allInterceptors = new ArrayList(10);
+        // 此拦截器用于执行一些整个流程开始之前的事情
+        allInterceptors.add(new RouterInterceptor() {
+            @Override
+            public void intercept(Chain chain) throws Exception {
+                // 执行跳转前的 Callback
+                RouterRequestHelp.executeBeforCallback(chain.request());
+                // 继续下一个拦截器
+                chain.proceed(chain.request());
+            }
+        });
+        // 添加内置拦截器,目前就一个内置拦截器,而且必须在其他功能拦截器的前面,因为这个拦截器内部有一个时间的记录
         // 保证一秒内就只能打开一个相同的界面
         allInterceptors.add(OpenOnceInterceptor.getInstance());
         // 添加共有拦截器
@@ -748,8 +771,10 @@ public class Navigator extends RouterRequest.Builder implements Call {
             }
         });
         // 创建执行器
-        final RouterInterceptor.Chain chain = new InterceptorChain(allInterceptors, 0, originalRequest,
-                callback);
+        final RouterInterceptor.Chain chain = new InterceptorChain(
+                allInterceptors, 0,
+                originalRequest, callback
+        );
         // 执行
         chain.proceed(originalRequest);
 
@@ -832,7 +857,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         }
 
         @Override
-        public void onSuccess(RouterResult result) {
+        public void onSuccess(@NonNull RouterResult result) {
             synchronized (this) {
                 if (isEnd()) {
                     return;
@@ -843,13 +868,15 @@ public class Navigator extends RouterRequest.Builder implements Call {
         }
 
         @Override
-        public void onError(Throwable error) {
+        public void onError(@NonNull Throwable error) {
             synchronized (this) {
                 if (isEnd()) {
                     return;
                 }
                 isComplete = true;
+                // 创建错误的对象
                 RouterErrorResult errorResult = new RouterErrorResult(mOriginalRequest, error);
+                // 回调执行
                 RouterUtil.errorCallback(mCallback, errorResult);
             }
         }
@@ -912,27 +939,25 @@ public class Navigator extends RouterRequest.Builder implements Call {
             // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
             RouterRequest finalRequest = chain.request();
             try {
-                if (finalRequest.beforJumpAction != null) {
-                    finalRequest.beforJumpAction.run();
-                }
+                // 是否成功执行跳转
                 boolean isSuccess = true;
                 try {
                     // 真正执行跳转的逻辑, 失败的话, 备用计划就会启动
                     RouterCenter.getInstance().openUri(finalRequest);
                 } catch (Exception e) { // 错误的话继续下一个拦截器
                     isSuccess = false;
+                    // 继续下一个拦截器
                     chain.proceed(finalRequest);
                 }
                 // 如果正常跳转成功需要执行下面的代码
                 // 为什么放这里, 是因为我想要执行 finalRequest.afterJumpAction.run() 方法如果有异常,
                 // 是直接走错误回调而不是继续路由
                 if (isSuccess) {
-                    if (finalRequest.afterJumpAction != null) {
-                        finalRequest.afterJumpAction.run();
-                    }
+                    // 成功的回调
                     chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
                 }
             } catch (Exception e) {
+                // 错误的回调
                 chain.callback().onError(e);
             }
         }
@@ -940,7 +965,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
-     * 跳转失败的时候降维
+     * 跳转失败的时候降级的拦截器
      */
     private static class DoDegradeStartInterceptor implements RouterInterceptor {
 
@@ -970,15 +995,15 @@ public class Navigator extends RouterRequest.Builder implements Call {
                     }
                 }
                 if (result == null) {
+                    // 抛出异常走 try catch 的逻辑
                     throw new NavigationFailException("router fail, it's url is " + mOriginalRequest.uri.toString());
                 }
                 // 降级跳转
                 RouterCenter.getInstance().routerDegrade(finalRequest, result.onDegrade(finalRequest));
-                if (finalRequest.afterJumpAction != null) {
-                    finalRequest.afterJumpAction.run();
-                }
+                // 成功的回调
                 chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
             } catch (Exception e) {
+                // 错误的回调
                 chain.callback().onError(e);
             }
         }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.support.Utils;
 import com.xiaojinzi.componentdemo.R;
 import com.xiaojinzi.componentdemo.test.CancelTest;
@@ -24,8 +25,6 @@ import com.xiaojinzi.componentdemo.test.TestContext;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
-import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -230,32 +229,82 @@ public class TestQualityAct extends BaseAct implements TestContext {
     // -------------------------------------------------------- 失败的例子 -------------------------------end
 
     public Completable testWrap(TestBack testBack) {
-        return Completable.create(new CompletableOnSubscribe() {
-            @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                if (emitter.isDisposed()) {
-                    return;
-                }
-                testBack.run(emitter);
+        return Completable.create(emitter -> {
+            if (emitter.isDisposed()) {
+                return;
             }
+            testBack.run(emitter);
         });
     }
 
     public Completable testWrapWithChildThread(TestBack testBack) {
-        return Completable.create(new CompletableOnSubscribe() {
-            @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                if (emitter.isDisposed()) {
-                    return;
-                }
-                new Thread("child thread") {
-                    @Override
-                    public void run() {
-                        testBack.run(emitter);
-                    }
-                }.start();
+        return Completable.create(emitter -> {
+            if (emitter.isDisposed()) {
+                return;
             }
+            new Thread("child thread") {
+                @Override
+                public void run() {
+                    testBack.run(emitter);
+                }
+            }.start();
         });
+    }
+
+    public void testCrash1(View view) {
+        RxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_AUTORETURN1)
+                .requestCodeRandom()
+                .putString("data", "crashOnAfterJumpAction")
+                .afterJumpAction(() -> {
+                    throw new NullPointerException("test exception on afterJumpAction");
+                })
+                .activityResultCall()
+                .subscribe();
+    }
+
+    public void testCrash2(View view) {
+        RxRouter
+                .with(mContext)
+                .host(ModuleConfig.App.NAME)
+                .path(ModuleConfig.App.NOT_FOUND_TEST)
+                .requestCodeRandom()
+                .putString("data", "crashOnAfterErrorAction")
+                .afterErrorAction(() -> {
+                    throw new NullPointerException("test exception on afterJumpAction");
+                })
+                .activityResultCall()
+                .subscribe();
+    }
+
+    public void testCrash3(View view) {
+        RxRouter
+                .with(mContext)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_AUTORETURN1)
+                .requestCodeRandom()
+                .putString("data", "crashOnAfterEventAction")
+                .afterEventAction(() -> {
+                    throw new NullPointerException("test exception on afterJumpAction");
+                })
+                .activityResultCall()
+                .subscribe();
+    }
+
+    public void testCrash4(View view) {
+        RxRouter
+                .with(mContext)
+                .host(ModuleConfig.App.NAME)
+                .path(ModuleConfig.App.NOT_FOUND_TEST)
+                .requestCodeRandom()
+                .putString("data", "crashOnAfterEventAction")
+                .afterEventAction(() -> {
+                    throw new NullPointerException("test exception on afterJumpAction");
+                })
+                .activityResultCall()
+                .subscribe();
     }
 
 }
