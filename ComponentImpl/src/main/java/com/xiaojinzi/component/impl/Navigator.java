@@ -386,6 +386,9 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return Help.randomlyGenerateRequestCode(super.build());
     }
 
+    /**
+     * 使用默认的 Application Context, 并且添加 {@link Intent#FLAG_ACTIVITY_NEW_TASK} 标记
+     */
     private void useDefaultApplication() {
         // 如果 Context 和 Fragment 都是空的,使用默认的 Application
         if (context == null && fragment == null) {
@@ -420,15 +423,30 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     private void onCheckForResult() throws Exception {
         if (context == null && fragment == null) {
-            throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router if you want get ActivityResult"));
+            throw new NavigationFailException(
+                    new NullPointerException(
+                            "Context or Fragment is necessary if you want get ActivityResult"
+                    )
+            );
         }
         // 如果是使用 Context 的,那么就必须是 FragmentActivity,需要操作 Fragment
         // 这里的 context != null 判断条件不能去掉,不然使用 Fragment 跳转的就过不去了
         if (context != null && !(Utils.getActivityFromContext(context) instanceof FragmentActivity)) {
-            throw new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity"));
+            throw new NavigationFailException(
+                    new IllegalArgumentException(
+                            "context must be FragmentActivity or fragment must not be null " +
+                                    "when you want get ActivityResult from target Activity"
+                    )
+            );
         }
         if (requestCode == null) {
-            throw new NavigationFailException(new NullPointerException("requestCode must not be null for router"));
+            throw new NavigationFailException(
+                    new NullPointerException(
+                            "requestCode must not be null when you want get ActivityResult from target Activity, " +
+                                    "if you use code, do you forget call requestCodeRandom() or requestCode(Integer). " +
+                                    "if you use routerApi, do you forget mark method or parameter with @RequestCodeAnno() Annotation"
+                    )
+            );
         }
     }
 
@@ -1166,7 +1184,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
             return isExist(act, request.fragment, request.requestCode);
         }
 
-        public static boolean isExist(@Nullable Activity act, @Nullable Fragment fragment, @NonNull Integer requestCode) {
+        public static boolean isExist(@Nullable Activity act, @Nullable Fragment fragment,
+                                      @NonNull Integer requestCode) {
             if (act != null) {
                 return mRequestCodeSet.contains(act.getClass().getName() + requestCode);
             } else if (fragment != null) {

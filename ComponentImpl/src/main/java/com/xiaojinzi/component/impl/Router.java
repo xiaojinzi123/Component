@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.cache.Cache;
 import com.xiaojinzi.component.cache.CacheType;
@@ -117,7 +118,19 @@ public class Router {
         RouterCenter.getInstance().unregister(host);
     }
 
+    /**
+     * 空参数的默认会使用 {@link Component#getApplication()} 来跳转,
+     * 所以空参数的这种不能够用来获取 {@link com.xiaojinzi.component.bean.ActivityResult}
+     * 同时用户在自定义拦截器的时候, 也要注意 {@link Context} 未必是一个 {@link Activity}
+     * 所以使用者请注意了, 此方法在明确有 {@link Activity} 可以拿到的时候请务必使用
+     * {@link #with(Context)} 方法或者 {@link #with(Fragment)}
+     * 此方法虽然你可以在任何时候用, 但是作者建议一定要在拿不到 {@link Activity} 和 {@link Fragment}
+     * 的时候去用, 而不是随便用
+     *
+     * @return 返回一个路由的 Builder
+     */
     public static Navigator with() {
+
         return new Navigator();
     }
 
