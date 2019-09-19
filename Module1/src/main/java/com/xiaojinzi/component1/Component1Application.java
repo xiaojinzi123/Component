@@ -25,7 +25,7 @@ public class Component1Application implements IComponentApplication {
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         // 你可以销毁有关当前业务模块的东西
     }
 

@@ -15,6 +15,6 @@ abstract class MuduleServiceImpl implements IComponentHostService {
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
     }
 }

@@ -50,7 +50,7 @@ public class AppModuleApplication implements IComponentApplication {
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         Router.removeRouterListener(listener);
     }
 

@@ -59,7 +59,7 @@ public class ServiceCenter implements IComponentCenterService {
         if (moduleService == null) {
             return;
         }
-        moduleService.onDestory();
+        moduleService.onDestroy();
     }
 
     @Override

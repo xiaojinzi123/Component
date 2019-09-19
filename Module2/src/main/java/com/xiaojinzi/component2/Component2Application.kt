@@ -10,7 +10,7 @@ class Component2Application : IComponentApplication {
     override fun onCreate(app: Application) {
     }
 
-    override fun onDestory() {
+    override fun onDestroy() {
     }
 
 }
