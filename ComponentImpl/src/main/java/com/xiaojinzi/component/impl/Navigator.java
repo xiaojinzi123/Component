@@ -984,10 +984,10 @@ public class Navigator extends RouterRequest.Builder implements Call {
                         RouterCenter.getInstance().routerDegrade(finalRequest, routerDegrade.onDegrade(finalRequest));
                         // 成功的回调
                         chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
-                    } catch (Exception routerDegradeException) {
+                    } catch (Exception ignore) {
                         // 如果版本足够就添加到异常堆中, 否则忽略降级路由的错误
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            routeException.addSuppressed(routeException);
+                            routeException.addSuppressed(ignore);
                         }
                         throw routeException;
                     }
