@@ -783,8 +783,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 // 真正的执行跳转的拦截器, 如果正常跳转了 DoActivityStartInterceptor 拦截器就直接返回了
                 // 如果没有正常跳转过去, 内部会继续走拦截器, 会执行到后面的这个
                 allInterceptors.add(new DoActivityStartInterceptor(originalRequest));
-                // 真正的执行跳转的降级拦截器, 其实 DoDegradeStartInterceptor 和 DoActivityStartInterceptor 功能是差不多的
-                allInterceptors.add(new DoDegradeStartInterceptor(originalRequest));
                 // 执行下一个拦截器,正好是上面代码添加的拦截器
                 outterChain.proceed(outterChain.request());
             }
@@ -1019,52 +1017,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 }
             }
             return result;
-        }
-
-    }
-
-    /**
-     * 跳转失败的时候降级的拦截器
-     */
-    private static class DoDegradeStartInterceptor implements RouterInterceptor {
-
-        @NonNull
-        private final RouterRequest mOriginalRequest;
-
-        public DoDegradeStartInterceptor(@NonNull RouterRequest originalRequest) {
-            mOriginalRequest = originalRequest;
-        }
-
-        @Override
-        public void intercept(Chain chain) throws Exception {
-            // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
-            RouterRequest finalRequest = chain.request();
-            try {
-                // 获取所有降级类
-                List<RouterDegrade> routerDegradeList = RouterDegradeCenter.getInstance()
-                        .getGlobalRouterDegradeList();
-                RouterDegrade result = null;
-                for (int i = 0; i < routerDegradeList.size(); i++) {
-                    RouterDegrade routerDegrade = routerDegradeList.get(i);
-                    // 如果匹配
-                    boolean isMatch = routerDegrade.isMatch(finalRequest);
-                    if (isMatch) {
-                        result = routerDegrade;
-                        break;
-                    }
-                }
-                if (result == null) {
-                    // 抛出异常走 try catch 的逻辑
-                    throw new NavigationFailException("router fail, it's url is " + mOriginalRequest.uri.toString());
-                }
-                // 降级跳转
-                RouterCenter.getInstance().routerDegrade(finalRequest, result.onDegrade(finalRequest));
-                // 成功的回调
-                chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
-            } catch (Exception e) {
-                // 错误的回调
-                chain.callback().onError(e);
-            }
         }
 
     }
