@@ -1,0 +1,70 @@
+package com.xiaojinzi.component1.view;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import com.xiaojinzi.base.view.BaseAct;
+import com.xiaojinzi.component.Component;
+import com.xiaojinzi.component.anno.FiledAutowiredAnno;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component1.R;
+
+/**
+ * 测试这个界面是一个 Singletask 模式的
+ * 当收到 onNewIntent 方法回调的时候才会返回
+ */
+@RouterAnno(
+        path = "testInjectAct4"
+)
+public class TestInjectAct4 extends BaseAct {
+
+    private String compareStr = "defaultName";
+
+    TextView tv_name;
+
+    @FiledAutowiredAnno("name")
+    String name = compareStr;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.component1_test_inject_parameter_act4);
+        tv_name = findViewById(R.id.tv_name);
+        Component.inject(this);
+        tv_name.setText(name);
+
+        if (compareStr.equals(name)) {
+            returnData();
+        }else {
+            compareStr = name;
+        }
+
+    }
+
+    @Override
+    protected boolean isReturnError() {
+        return compareStr.equals(name);
+    }
+
+    @Override
+    protected boolean isReturnIntent() {
+        return true;
+    }
+
+    @Override
+    protected boolean isReturn() {
+        return false;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Component.inject(this);
+        // Component.injectFromIntent(this, intent);
+        tv_name.setText(name);
+
+        returnData();
+    }
+
+}
