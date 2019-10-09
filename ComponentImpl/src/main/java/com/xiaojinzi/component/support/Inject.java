@@ -1,7 +1,8 @@
 package com.xiaojinzi.component.support;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * 每一个生成的类都应该实现这个接口

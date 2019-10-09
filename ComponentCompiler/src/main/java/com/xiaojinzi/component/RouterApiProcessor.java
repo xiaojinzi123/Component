@@ -489,7 +489,7 @@ public class RouterApiProcessor extends BaseProcessor {
             args.add(fragmentParameter.getSimpleName().toString());
         } else {
             args.add("");
-            // throw new ProcessException("do you forget to add a 'Context' or 'Activity' or 'android.support.v4.app.Fragment' parameter to method(" + methodPath + ") ?");
+            // throw new ProcessException("do you forget to add a 'Context' or 'Activity' or 'androidx.fragment.app.Fragment' parameter to method(" + methodPath + ") ?");
         }
 
         // host 和 path
