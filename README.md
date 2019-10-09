@@ -132,6 +132,23 @@
 <img src="./imgs/qq_group2.JPG" width="260px" height="360px" />
 </div>
 
+## 版本更新日志
+
+#### v1.7.5.1 
+- 属性注入增加方法 `Component.inject(Object target, Intent intent)` 以便在 `onNewIntent` 方法中使用
+- 升级 RxJava 版本到 2.2.13
+- 升级其他库的版本至最新
+
+#### v1.7.5
+- 纠正接口 `IComponentApplication` 中 `onDestory` 方法的拼写错误, 正确为 `onDestroy`
+- 新增 afterEventAction, 表示跳转成功或者失败之后的回调, 不允许抛出异常, 会导致奔溃
+- 新增 afterErrorAction, 表示跳转失败之后的回调, 不允许抛出异常, 会导致奔溃
+- 修改内置的同样的路由请求在一秒内只能启动一次的错误日志的输出形式
+- 重构几个 `Action` 这块用户自定义的这块的执行顺序
+
+#### v1.7.5 之前的版本
+之前的版本就不再追溯了, 之后的每次更新我都会详细记录更新的日志
+
 ## License
 
 ```
