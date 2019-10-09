@@ -42,10 +42,11 @@ public class Service {
 
     @Nullable
     public static <T> T get(@NonNull Class<T> tClass) {
-        if (map.get(tClass) == null) {
+        IServiceLoad<?> serviceLoad = map.get(tClass);
+        if (serviceLoad == null) {
             return null;
         } else {
-            return (T) map.get(tClass).get();
+            return (T) serviceLoad.get();
         }
     }
 
