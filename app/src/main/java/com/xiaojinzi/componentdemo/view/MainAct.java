@@ -71,11 +71,27 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testWebRouter(View view) {
-        Router
+
+        /*Router
                 .with(this)
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.TEST_WEB_ROUTER)
+                .navigate();*/
+
+        Router.with(this)
+                .host(ModuleConfig.Module1.NAME)
+                .path("testInjectAct4")
+                .putString("name", "小金子测试")
+                .afterEventAction(() -> {
+                    Router.with(this)
+                            .host(ModuleConfig.Module1.NAME)
+                            .path("testInjectAct4")
+                            .putString("name", "小金子测试 onNewIntent")
+                            .navigate();
+                })
                 .navigate();
+
+
     }
 
     public void testQuality(View view) {

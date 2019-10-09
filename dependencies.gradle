@@ -26,15 +26,8 @@ ext.libs = [
         constraintLayout         : "com.android.support.constraint:constraint-layout:${versions.constraintLayout}",
         design                   : "com.android.support:design:${versions.support_lib}",
         commons_codec            : "commons-codec:commons-codec:1.11",
-        // 第三方
-        greendao                 : "org.greenrobot:greendao:$versions.greendao",
-        gson                     : "com.google.code.gson:gson:${versions.gson}",
         rxjava                   : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
         rxandroid                : "io.reactivex.rxjava2:rxandroid:$versions.rxandroid",
-        retrofit2                : 'com.squareup.retrofit2:retrofit:2.5.0',
-        retrofit2_converter_gson : 'com.squareup.retrofit2:converter-gson:2.5.0',
-        retrofit2_rxjava2_adapter: 'com.squareup.retrofit2:adapter-rxjava2:2.5.0',
-        okhttp                   : 'com.squareup.okhttp3:okhttp:3.14.+',
 
         component_annotation     : "com.github.xiaojinzi123.Component:component-annotation:${versions.component_version}",
         component_compiler       : "com.github.xiaojinzi123.Component:component-compiler:${versions.component_version}",

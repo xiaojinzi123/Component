@@ -3,9 +3,9 @@ package com.xiaojinzi.component2.view
 import android.os.Bundle
 import com.xiaojinzi.base.ModuleConfig
 import com.xiaojinzi.base.view.BaseAct
+import com.xiaojinzi.component.Component
 import com.xiaojinzi.component.anno.FiledAutowiredAnno
 import com.xiaojinzi.component.anno.RouterAnno
-import com.xiaojinzi.component.support.ParameterSupport
 import com.xiaojinzi.component2.R
 import kotlinx.android.synthetic.main.component2_act.*
 
@@ -19,10 +19,15 @@ class Component2Act : BaseAct() {
     @FiledAutowiredAnno("name")
     var name: String? = null
 
+    @JvmField
+    @FiledAutowiredAnno("data")
+    var data: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.component2_act)
-        tv_data.text = ParameterSupport.getString(intent, "data")
+        Component.inject(this);
+        tv_data.text = data;
     }
 
 }

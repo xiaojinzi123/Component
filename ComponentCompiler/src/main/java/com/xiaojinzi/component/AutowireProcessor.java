@@ -58,6 +58,8 @@ public class AutowireProcessor extends BaseProcessor {
     private TypeElement serviceTypeElement;
     private ClassName serviceClassName;
 
+    private TypeElement bundleTypeElement;
+
     private ParameterizedTypeName stringArrayListParameterizedTypeName;
     private ParameterizedTypeName integerArrayListParameterizedTypeName;
     private ParameterizedTypeName parcelableArrayListParameterizedTypeName;
@@ -69,6 +71,8 @@ public class AutowireProcessor extends BaseProcessor {
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
 
+        bundleTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_BUNDLE);
+
         charsequenceTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_CHARSEQUENCE);
         charsequenceTypeMirror = charsequenceTypeElement.asType();
         charsequenceTypeName = ClassName.get(charsequenceTypeMirror);
@@ -78,11 +82,11 @@ public class AutowireProcessor extends BaseProcessor {
         TypeElement injectTypeElement = mElements.getTypeElement(ComponentConstants.INJECT_CLASS_NAME);
         injectTypeName = TypeName.get(injectTypeElement.asType());
         injectClassName = ClassName.get(injectTypeElement);
-        final TypeElement parameterSupportTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.PARAMETERSUPPORT_CLASS_NAME);
+        final TypeElement parameterSupportTypeElement = mElements.getTypeElement(ComponentConstants.PARAMETERSUPPORT_CLASS_NAME);
         parameterSupportTypeMirror = parameterSupportTypeElement.asType();
-        final TypeElement serializableTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_SERIALIZABLE);
+        final TypeElement serializableTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_SERIALIZABLE);
         serializableTypeMirror = serializableTypeElement.asType();
-        final TypeElement parcelableTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.ANDROID_PARCELABLE);
+        final TypeElement parcelableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_PARCELABLE);
         parcelableTypeMirror = parcelableTypeElement.asType();
 
         stringArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, mClassNameString);
@@ -165,6 +169,7 @@ public class AutowireProcessor extends BaseProcessor {
                 .classBuilder(className + ComponentConstants.INJECT_SUFFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addSuperinterface(ParameterizedTypeName.get(injectClassName, TypeName.get(mElements.getTypeElement(fullClassName).asType())))
+                .addMethod(injectMethodForView(targetClass, parameterFieldSet))
                 .addMethod(injectMethod(targetClass, parameterFieldSet));
         try {
             JavaFile.builder(pkg, classBuilder.build()
@@ -172,6 +177,25 @@ public class AutowireProcessor extends BaseProcessor {
         } catch (IOException ignore) {
             // ignore
         }
+    }
+
+    private MethodSpec injectMethodForView(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
+        MethodSpec.Builder methodBuilder = MethodSpec
+                .methodBuilder("inject")
+                .addJavadoc("属性注入\n")
+                .addParameter(
+                        ParameterSpec
+                                .builder(TypeName.get(targetClass.asType()), "target")
+                                .build()
+                )
+                .addModifiers(Modifier.PUBLIC);
+        // 如果是 Activity
+        if (mTypes.isSubtype(targetClass.asType(), activityTypeMirror)) {
+            methodBuilder.addStatement("inject(target, target.getIntent().getExtras())");
+        } else if (mTypes.isSubtype(targetClass.asType(), fragmentTypeMirror)) {
+            methodBuilder.addStatement("inject(target, target.getArguments())");
+        }
+        return methodBuilder.build();
     }
 
     private MethodSpec injectMethod(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
@@ -183,12 +207,16 @@ public class AutowireProcessor extends BaseProcessor {
                                 .builder(TypeName.get(targetClass.asType()), "target")
                                 .build()
                 )
+                .addParameter(
+                        ParameterSpec
+                                .builder(TypeName.get(bundleTypeElement.asType()), "bundle")
+                                .build()
+                )
                 .addModifiers(Modifier.PUBLIC);
         boolean isAutowireParameter = true;
+        // 如果是 Activity
         if (mTypes.isSubtype(targetClass.asType(), activityTypeMirror)) {
-            methodBuilder.addStatement("android.os.Bundle bundle = target.getIntent().getExtras()");
         } else if (mTypes.isSubtype(targetClass.asType(), fragmentTypeMirror)) {
-            methodBuilder.addStatement("android.os.Bundle bundle = target.getArguments()");
         } else {
             isAutowireParameter = false;
         }

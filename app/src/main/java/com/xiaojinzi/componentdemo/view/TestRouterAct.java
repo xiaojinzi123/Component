@@ -450,6 +450,10 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module2.NAME)
                 .path(ModuleConfig.Module2.MAIN)
+                .putString("data", "testGotoKotlin")
+                .afterEventAction(() -> {
+                        finish();
+                })
                 .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {

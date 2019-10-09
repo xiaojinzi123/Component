@@ -1,6 +1,8 @@
 package com.xiaojinzi.component;
 
 import android.app.Application;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -98,15 +100,37 @@ public class Component {
     /**
      * 找到实现类,执行注入
      *
-     * @param target
+     * @param target 目标界面
      */
     public static void inject(@NonNull Object target) {
+        injectFromBundle(target, null);
+    }
+
+    /**
+     * 找到实现类,执行注入
+     *
+     * @param target 目标界面
+     */
+    public static void injectFromIntent(@NonNull Object target, @Nullable Intent intent) {
+        injectFromBundle(target, intent == null ? null : intent.getExtras());
+    }
+
+    /**
+     * 找到实现类,执行注入
+     *
+     * @param target 目标界面
+     */
+    public static void injectFromBundle(@NonNull Object target, @Nullable Bundle bundle) {
         Utils.checkNullPointer(target, "target");
         String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;
         try {
             Class<?> targetInjectClass = Class.forName(injectClassName);
             Inject inject = (Inject) targetInjectClass.newInstance();
-            inject.inject(target);
+            if (bundle == null) {
+                inject.inject(target);
+            } else {
+                inject.inject(target, bundle);
+            }
         } catch (Exception ignore) {
             LogUtil.log(target.getClass().getName(), "field inject fail");
         }
