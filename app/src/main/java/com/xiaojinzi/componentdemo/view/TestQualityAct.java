@@ -208,12 +208,9 @@ public class TestQualityAct extends BaseAct implements TestContext {
         );
 
         observable
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        testFailure();
-                        resultColor.setText("");
-                    }
+                .doOnSubscribe(disposable -> {
+                    testFailure();
+                    resultColor.setText("");
                 })
                 .subscribe(
                         () -> testSuccess(),

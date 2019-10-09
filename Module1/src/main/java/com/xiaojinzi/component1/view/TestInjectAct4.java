@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.FiledAutowiredAnno;
@@ -15,7 +16,7 @@ import com.xiaojinzi.component1.R;
  * 当收到 onNewIntent 方法回调的时候才会返回
  */
 @RouterAnno(
-        path = "testInjectAct4"
+        path = ModuleConfig.Module1.TEST_INJECT4
 )
 public class TestInjectAct4 extends BaseAct {
 
@@ -45,11 +46,6 @@ public class TestInjectAct4 extends BaseAct {
     @Override
     protected boolean isReturnError() {
         return compareStr.equals(name);
-    }
-
-    @Override
-    protected boolean isReturnIntent() {
-        return true;
     }
 
     @Override

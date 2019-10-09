@@ -1,5 +1,6 @@
 package com.xiaojinzi.componentdemo.view;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
@@ -71,27 +73,11 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testWebRouter(View view) {
-
-        /*Router
+        Router
                 .with(this)
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.TEST_WEB_ROUTER)
-                .navigate();*/
-
-        Router.with(this)
-                .host(ModuleConfig.Module1.NAME)
-                .path("testInjectAct4")
-                .putString("name", "小金子测试")
-                .afterEventAction(() -> {
-                    Router.with(this)
-                            .host(ModuleConfig.Module1.NAME)
-                            .path("testInjectAct4")
-                            .putString("name", "小金子测试 onNewIntent")
-                            .navigate();
-                })
                 .navigate();
-
-
     }
 
     public void testQuality(View view) {

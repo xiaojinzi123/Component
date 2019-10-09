@@ -32,6 +32,7 @@ public class TestRouterWebAct extends AppCompatActivity {
         wv.addJavascriptInterface(this, "testWebRouter");
 
         String url = "file:///android_asset/index.html";
+        // wv.loadUrl("www.baidu.com");
         wv.loadUrl(url);
 
     }

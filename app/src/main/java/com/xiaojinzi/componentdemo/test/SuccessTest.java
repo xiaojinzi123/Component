@@ -45,10 +45,6 @@ public class SuccessTest implements TestExecutor {
         mContext = testContext.context();
 
         return Completable.concatArray(
-                testContext.wrapTask(testInjectForOnNewIntent()).doOnComplete(() -> testContext.addTaskPassMsg("testFieldInject"))
-        );
-
-        /*return Completable.concatArray(
                 testContext.wrapTask(testNavigate()).doOnComplete(() -> testContext.addTaskPassMsg("testNavigate")),
                 testContext.wrapTask(testNavigatex()).doOnComplete(() -> testContext.addTaskPassMsg("testNavigatex")),
                 testContext.wrapTask(testNavigatexx()).doOnComplete(() -> testContext.addTaskPassMsg("testNavigatexx")),
@@ -71,10 +67,9 @@ public class SuccessTest implements TestExecutor {
                 testContext.wrapTask(testPassQuery()).doOnComplete(() -> testContext.addTaskPassMsg("testPassQuery")),
                 testContext.wrapTask(testModifyByInterceptor()).doOnComplete(() -> testContext.addTaskPassMsg("testModifyByInterceptor")),
                 testContext.wrapTask(testFieldInject()).doOnComplete(() -> testContext.addTaskPassMsg("testFieldInject")),
-                testContext.wrapTask(testInjectForOnNewIntent()).doOnComplete(() -> testContext.addTaskPassMsg("testFieldInject")),
                 testContext.wrapTask(testPutQueryWithUrl()).doOnComplete(() -> testContext.addTaskPassMsg("testPutQueryWithUrl")),
                 testContext.wrapTask(goToNeedLoginView()).doOnComplete(() -> testContext.addTaskPassMsg("goToNeedLoginView"))
-        );*/
+        );
 
     }
 
@@ -567,28 +562,6 @@ public class SuccessTest implements TestExecutor {
                 .requestCodeRandom()
                 .putBoolean("isReturnAuto", true)
                 .resultCodeMatchCall(Activity.RESULT_OK);
-
-        return Completable.concatArray(wrapTask(completable1), wrapTask(completable2));
-
-    }
-
-    private Completable testInjectForOnNewIntent() {
-
-        Completable completable1 = RxRouter
-                .with(mContext)
-                .host(ModuleConfig.Module1.NAME)
-                .path("testInjectAct4")
-                .putString("name", "testName1")
-                .putBoolean("isReturnAuto", true)
-                .call();
-
-        Completable completable2 = RxRouter
-                .with(mContext)
-                .host(ModuleConfig.Module1.NAME)
-                .path("testInjectAct4")
-                .putString("name", "testName2")
-                .putBoolean("isReturnAuto", true)
-                .call();
 
         return Completable.concatArray(wrapTask(completable1), wrapTask(completable2));
 

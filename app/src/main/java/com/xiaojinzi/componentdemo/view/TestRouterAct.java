@@ -179,8 +179,7 @@ public class TestRouterAct extends BaseAct {
 
     public void jumpToWeb(View v) {
         Router.with(this)
-                .scheme("https")
-                .host("www.baidu.com")
+                .url("https://www.baidu.com")
                 .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
@@ -451,9 +450,6 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.Module2.NAME)
                 .path(ModuleConfig.Module2.MAIN)
                 .putString("data", "testGotoKotlin")
-                .afterEventAction(() -> {
-                        finish();
-                })
                 .navigate(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {

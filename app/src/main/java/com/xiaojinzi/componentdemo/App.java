@@ -35,7 +35,7 @@ public class App extends Application {
         ModuleManager.getInstance().registerArr(
                 ModuleConfig.App.NAME, ModuleConfig.Module1.NAME,
                 ModuleConfig.Module2.NAME, ModuleConfig.User.NAME,
-                ModuleConfig.Help.NAME, "123123123"
+                ModuleConfig.Help.NAME
         );
         long endTime = System.currentTimeMillis();
         System.out.println("耗时：" + (endTime - startTime));
