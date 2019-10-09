@@ -1,6 +1,5 @@
 package com.xiaojinzi.component;
 
-import com.xiaojinzi.component.anno.ServiceAnno;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -9,6 +8,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.xiaojinzi.component.anno.ServiceAnno;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -32,7 +32,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
-import javax.tools.Diagnostic;
 
 /**
  * 负责处理 {@link ServiceAnno}
@@ -102,14 +101,14 @@ public class ServiceProcessor extends BaseHostProcessor {
         ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.SERVICE_IMPL_CLASS_NAME));
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec onCreateMethod = generateOnCreateMethod();
-        MethodSpec onDestoryMethod = generateOnDestoryMethod();
+        MethodSpec onDestroyMethod = generateOnDestroyMethod();
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 //.addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
                 .superclass(superClass)
                 .addMethod(initHostMethod)
                 .addMethod(onCreateMethod)
-                .addMethod(onDestoryMethod)
+                .addMethod(onDestroyMethod)
                 .build();
 
         try {
@@ -204,13 +203,13 @@ public class ServiceProcessor extends BaseHostProcessor {
         return methodSpecBuilder.build();
     }
 
-    private MethodSpec generateOnDestoryMethod() {
+    private MethodSpec generateOnDestroyMethod() {
         TypeName returnType = TypeName.VOID;
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onDestory")
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onDestroy")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
-        methodSpecBuilder.addStatement("super.onDestory()");
+        methodSpecBuilder.addStatement("super.onDestroy()");
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {

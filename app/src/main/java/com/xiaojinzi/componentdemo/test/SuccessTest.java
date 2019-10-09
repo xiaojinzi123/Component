@@ -20,8 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableOnSubscribe;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
@@ -46,6 +44,7 @@ public class SuccessTest implements TestExecutor {
     public Completable execute(TestContext testContext) {
         mTestContext = testContext;
         mContext = testContext.context();
+
         return Completable.concatArray(
                 testContext.wrapTask(testNavigate()).doOnComplete(() -> testContext.addTaskPassMsg("testNavigate")),
                 testContext.wrapTask(testNavigatex()).doOnComplete(() -> testContext.addTaskPassMsg("testNavigatex")),
@@ -72,6 +71,7 @@ public class SuccessTest implements TestExecutor {
                 testContext.wrapTask(testPutQueryWithUrl()).doOnComplete(() -> testContext.addTaskPassMsg("testPutQueryWithUrl")),
                 testContext.wrapTask(goToNeedLoginView()).doOnComplete(() -> testContext.addTaskPassMsg("goToNeedLoginView"))
         );
+
     }
 
     /**

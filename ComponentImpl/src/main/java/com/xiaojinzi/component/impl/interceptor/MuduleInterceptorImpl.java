@@ -41,7 +41,7 @@ abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
      * 用作销毁一些缓存
      */
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         // empty
     }
 

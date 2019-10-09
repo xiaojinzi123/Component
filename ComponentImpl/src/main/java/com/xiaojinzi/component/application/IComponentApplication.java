@@ -23,6 +23,6 @@ public interface IComponentApplication {
     /**
      * 模块被卸载的时候会被调用,该模块被卸载,对应的路由也会被卸载,也就是表现为跳转不过去了
      */
-    void onDestory();
+    void onDestroy();
 
 }

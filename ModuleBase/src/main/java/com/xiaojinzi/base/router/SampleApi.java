@@ -25,6 +25,7 @@ import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.NavigateAnno;
 import com.xiaojinzi.component.anno.router.OptionsAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
+import com.xiaojinzi.component.anno.router.RequestCodeAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
 import com.xiaojinzi.component.anno.router.UseInteceptorAnno;
 import com.xiaojinzi.component.bean.ActivityResult;
@@ -88,6 +89,7 @@ public interface SampleApi {
                                @ParameterAnno("data") String data,
                                BiCallback<ActivityResult> callback);
 
+    @RequestCodeAnno
     @NavigateAnno(forResult = true)
     @PathAnno(ModuleConfig.Module1.TEST)
     Single<ActivityResult> test5Rx(Context context,

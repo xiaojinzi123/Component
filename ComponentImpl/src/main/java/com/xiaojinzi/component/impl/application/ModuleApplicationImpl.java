@@ -48,7 +48,7 @@ abstract class ModuleApplicationImpl implements IComponentHostApplication {
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         if (!hasInitList) {
             initList();
         }
@@ -56,7 +56,7 @@ abstract class ModuleApplicationImpl implements IComponentHostApplication {
             return;
         }
         for (IComponentApplication application : moduleAppList) {
-            application.onDestory();
+            application.onDestroy();
         }
     }
 

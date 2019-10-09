@@ -4,6 +4,9 @@
     package="com.xiaojinzi.component1">
 
     <application>
+        <activity android:name=".view.TestInjectAct4"
+            android:launchMode="singleTask"/>
+
         <meta-data
             android:name="host_component1"
             android:value="component1" />

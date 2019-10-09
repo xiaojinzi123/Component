@@ -1,5 +1,6 @@
 package com.xiaojinzi.componentdemo.view;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 

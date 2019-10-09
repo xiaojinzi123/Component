@@ -44,7 +44,7 @@ public class OpenOnceInterceptor implements RouterInterceptor {
         long currentTime = System.currentTimeMillis();
         // 如果匹配了
         if (currentHost.equals(preHost) && currentPath.equals(prePath) && (currentTime - preTargetTime) < 1000) {
-            chain.callback().onError(new NavigationFailException("target '" + uri.toString() + "' can't launch twice in a second"));
+            chain.callback().onError(new NavigationFailException("same request can't launch twice in a second, target uri is：" + uri.toString()));
         } else {
             preHost = currentHost;
             prePath = currentPath;

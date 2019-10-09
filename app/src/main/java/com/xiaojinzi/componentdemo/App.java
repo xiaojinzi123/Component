@@ -30,12 +30,15 @@ public class App extends Application {
         // 忽略一些不想处理的错误
         RxErrorIgnoreUtil.ignoreError();
 
+        long startTime = System.currentTimeMillis();
         // 装载各个业务组件
         ModuleManager.getInstance().registerArr(
                 ModuleConfig.App.NAME, ModuleConfig.Module1.NAME,
                 ModuleConfig.Module2.NAME, ModuleConfig.User.NAME,
-                ModuleConfig.Help.NAME, "123123123"
+                ModuleConfig.Help.NAME
         );
+        long endTime = System.currentTimeMillis();
+        System.out.println("耗时：" + (endTime - startTime));
 
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();

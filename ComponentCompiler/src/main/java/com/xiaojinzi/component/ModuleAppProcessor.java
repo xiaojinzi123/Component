@@ -112,7 +112,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();
         MethodSpec onCreateMethod = generateOnCreateMethod();
-        MethodSpec onDestoryMethod = generateOnDestoryMethod();
+        MethodSpec onDestroyMethod = generateOnDestroyMethod();
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 //.addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
@@ -120,7 +120,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addMethod(initHostMethod)
                 .addMethod(initMapMethod)
                 .addMethod(onCreateMethod)
-                .addMethod(onDestoryMethod)
+                .addMethod(onDestroyMethod)
                 .addJavadoc(classJavaDoc)
                 .build();
         try {
@@ -171,14 +171,14 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         return methodSpecBuilder.build();
     }
 
-    private MethodSpec generateOnDestoryMethod() {
+    private MethodSpec generateOnDestroyMethod() {
         TypeName returnType = TypeName.VOID;
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onDestory")
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onDestroy")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
 
-        methodSpecBuilder.addStatement("super.onDestory()");
+        methodSpecBuilder.addStatement("super.onDestroy()");
         methodSpecBuilder.addStatement("$T.unregister(getHost())", routerTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerInterceptorTypeElement);

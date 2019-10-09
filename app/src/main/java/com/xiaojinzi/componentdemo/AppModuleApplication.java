@@ -16,7 +16,7 @@ import com.xiaojinzi.component.support.Utils;
 @ModuleAppAnno()
 public class AppModuleApplication implements IComponentApplication {
 
-    private final String tag = "appModule";
+    private final String tag = "自定义实现的路由监听";
 
     private RouterListener listener = new RouterListener() {
         @Override
@@ -50,7 +50,7 @@ public class AppModuleApplication implements IComponentApplication {
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         Router.removeRouterListener(listener);
     }
 

@@ -23,8 +23,7 @@ public interface Module1Api {
     @NavigateAnno(forIntent = true)
     @PathAnno(ModuleConfig.Module1.TEST)
     @RequestCodeAnno()
-    void toTestView(Context context,
-                    @ParameterAnno("data") String data,
+    void toTestView(Context context, @ParameterAnno("data") String data,
                     BiCallback<Intent> callback);
 
 }

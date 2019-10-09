@@ -63,6 +63,7 @@ public class ModuleConfig {
         public static final String TEST_INJECT1 = "testInject1";
         public static final String TEST_INJECT2 = "testInject2";
         public static final String TEST_INJECT3 = "testInject3";
+        public static final String TEST_INJECT4 = "testInject4";
         public static final String TEST_PUT_QUERY_WITH_URL = "testPutQueryWithUrl";
 
     }

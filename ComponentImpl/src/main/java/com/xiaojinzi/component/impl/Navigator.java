@@ -3,6 +3,7 @@ package com.xiaojinzi.component.impl;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import androidx.annotation.AnyThread;
@@ -386,6 +387,9 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return Help.randomlyGenerateRequestCode(super.build());
     }
 
+    /**
+     * 使用默认的 Application Context, 并且添加 {@link Intent#FLAG_ACTIVITY_NEW_TASK} 标记
+     */
     private void useDefaultApplication() {
         // 如果 Context 和 Fragment 都是空的,使用默认的 Application
         if (context == null && fragment == null) {
@@ -420,15 +424,30 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     private void onCheckForResult() throws Exception {
         if (context == null && fragment == null) {
-            throw new NavigationFailException(new NullPointerException("Context or Fragment is necessary for router if you want get ActivityResult"));
+            throw new NavigationFailException(
+                    new NullPointerException(
+                            "Context or Fragment is necessary if you want get ActivityResult"
+                    )
+            );
         }
         // 如果是使用 Context 的,那么就必须是 FragmentActivity,需要操作 Fragment
         // 这里的 context != null 判断条件不能去掉,不然使用 Fragment 跳转的就过不去了
         if (context != null && !(Utils.getActivityFromContext(context) instanceof FragmentActivity)) {
-            throw new NavigationFailException(new IllegalArgumentException("Context must be FragmentActivity"));
+            throw new NavigationFailException(
+                    new IllegalArgumentException(
+                            "context must be FragmentActivity or fragment must not be null " +
+                                    "when you want get ActivityResult from target Activity"
+                    )
+            );
         }
         if (requestCode == null) {
-            throw new NavigationFailException(new NullPointerException("requestCode must not be null for router"));
+            throw new NavigationFailException(
+                    new NullPointerException(
+                            "requestCode must not be null when you want get ActivityResult from target Activity, " +
+                                    "if you use code, do you forget call requestCodeRandom() or requestCode(Integer). " +
+                                    "if you use routerApi, do you forget mark method or parameter with @RequestCodeAnno() Annotation"
+                    )
+            );
         }
     }
 
@@ -764,8 +783,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 // 真正的执行跳转的拦截器, 如果正常跳转了 DoActivityStartInterceptor 拦截器就直接返回了
                 // 如果没有正常跳转过去, 内部会继续走拦截器, 会执行到后面的这个
                 allInterceptors.add(new DoActivityStartInterceptor(originalRequest));
-                // 真正的执行跳转的降级拦截器, 其实 DoDegradeStartInterceptor 和 DoActivityStartInterceptor 功能是差不多的
-                allInterceptors.add(new DoDegradeStartInterceptor(originalRequest));
                 // 执行下一个拦截器,正好是上面代码添加的拦截器
                 outterChain.proceed(outterChain.request());
             }
@@ -939,73 +956,67 @@ public class Navigator extends RouterRequest.Builder implements Call {
             // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
             RouterRequest finalRequest = chain.request();
             try {
-                // 是否成功执行跳转
-                boolean isSuccess = true;
+                // 执行真正路由跳转回出现的异常
+                Exception routeException = null;
                 try {
                     // 真正执行跳转的逻辑, 失败的话, 备用计划就会启动
                     RouterCenter.getInstance().openUri(finalRequest);
                 } catch (Exception e) { // 错误的话继续下一个拦截器
-                    isSuccess = false;
+                    routeException = e;
                     // 继续下一个拦截器
                     chain.proceed(finalRequest);
                 }
                 // 如果正常跳转成功需要执行下面的代码
-                // 为什么放这里, 是因为我想要执行 finalRequest.afterJumpAction.run() 方法如果有异常,
-                // 是直接走错误回调而不是继续路由
-                if (isSuccess) {
+                if (routeException == null) {
                     // 成功的回调
                     chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
-                }
-            } catch (Exception e) {
-                // 错误的回调
-                chain.callback().onError(e);
-            }
-        }
-
-    }
-
-    /**
-     * 跳转失败的时候降级的拦截器
-     */
-    private static class DoDegradeStartInterceptor implements RouterInterceptor {
-
-        @NonNull
-        private final RouterRequest mOriginalRequest;
-
-        public DoDegradeStartInterceptor(@NonNull RouterRequest originalRequest) {
-            mOriginalRequest = originalRequest;
-        }
-
-        @Override
-        public void intercept(Chain chain) throws Exception {
-            // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
-            RouterRequest finalRequest = chain.request();
-            try {
-                // 获取所有降级类
-                List<RouterDegrade> routerDegradeList = RouterDegradeCenter.getInstance()
-                        .getGlobalRouterDegradeList();
-                RouterDegrade result = null;
-                for (int i = 0; i < routerDegradeList.size(); i++) {
-                    RouterDegrade routerDegrade = routerDegradeList.get(i);
-                    // 如果匹配
-                    boolean isMatch = routerDegrade.isMatch(finalRequest);
-                    if (isMatch) {
-                        result = routerDegrade;
-                        break;
+                } else {
+                    try {
+                        // 获取路由的降级处理类
+                        RouterDegrade routerDegrade = getRouterDegrade(finalRequest);
+                        if (routerDegrade == null) {
+                            // 抛出异常走 try catch 的逻辑
+                            throw new NavigationFailException("degrade route fail, it's url is " + mOriginalRequest.uri.toString());
+                        }
+                        // 降级跳转
+                        RouterCenter.getInstance().routerDegrade(finalRequest, routerDegrade.onDegrade(finalRequest));
+                        // 成功的回调
+                        chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
+                    } catch (Exception ignore) {
+                        // 如果版本足够就添加到异常堆中, 否则忽略降级路由的错误
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            routeException.addSuppressed(ignore);
+                        }
+                        throw routeException;
                     }
                 }
-                if (result == null) {
-                    // 抛出异常走 try catch 的逻辑
-                    throw new NavigationFailException("router fail, it's url is " + mOriginalRequest.uri.toString());
-                }
-                // 降级跳转
-                RouterCenter.getInstance().routerDegrade(finalRequest, result.onDegrade(finalRequest));
-                // 成功的回调
-                chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
             } catch (Exception e) {
                 // 错误的回调
                 chain.callback().onError(e);
             }
+        }
+
+        /**
+         * 获取降级的处理类
+         *
+         * @param finalRequest 最终的路由请求
+         * @return
+         */
+        private RouterDegrade getRouterDegrade(@NonNull RouterRequest finalRequest) {
+            // 获取所有降级类
+            List<RouterDegrade> routerDegradeList = RouterDegradeCenter.getInstance()
+                    .getGlobalRouterDegradeList();
+            RouterDegrade result = null;
+            for (int i = 0; i < routerDegradeList.size(); i++) {
+                RouterDegrade routerDegrade = routerDegradeList.get(i);
+                // 如果匹配
+                boolean isMatch = routerDegrade.isMatch(finalRequest);
+                if (isMatch) {
+                    result = routerDegrade;
+                    break;
+                }
+            }
+            return result;
         }
 
     }
@@ -1166,7 +1177,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
             return isExist(act, request.fragment, request.requestCode);
         }
 
-        public static boolean isExist(@Nullable Activity act, @Nullable Fragment fragment, @NonNull Integer requestCode) {
+        public static boolean isExist(@Nullable Activity act, @Nullable Fragment fragment,
+                                      @NonNull Integer requestCode) {
             if (act != null) {
                 return mRequestCodeSet.contains(act.getClass().getName() + requestCode);
             } else if (fragment != null) {

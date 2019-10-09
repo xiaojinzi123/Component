@@ -86,7 +86,7 @@ public class ModuleManager implements IComponentModuleApplication {
 
     @Override
     public void unregister(@NonNull IComponentHostApplication moduleApp) {
-        moduleApp.onDestory();
+        moduleApp.onDestroy();
     }
 
     @Override
