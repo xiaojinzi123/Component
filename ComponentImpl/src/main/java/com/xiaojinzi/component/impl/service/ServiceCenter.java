@@ -59,12 +59,13 @@ public class ServiceCenter implements IComponentCenterService {
         if (moduleService == null) {
             return;
         }
+        moduleServiceMap.remove(moduleService.getHost());
         moduleService.onDestroy();
     }
 
     @Override
     public void unregister(@NonNull String host) {
-        IComponentHostService moduleService = moduleServiceMap.remove(host);
+        IComponentHostService moduleService = moduleServiceMap.get(host);
         unregister(moduleService);
     }
 

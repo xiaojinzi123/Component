@@ -10,8 +10,10 @@ import com.xiaojinzi.component.application.IComponentModuleApplication;
 import com.xiaojinzi.component.impl.RouterCenter;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.support.LogUtil;
+import com.xiaojinzi.component.support.Utils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -85,17 +87,29 @@ public class ModuleManager implements IComponentModuleApplication {
     }
 
     @Override
-    public void unregister(@NonNull IComponentHostApplication moduleApp) {
+    public void unregister(@Nullable IComponentHostApplication moduleApp) {
+        if (moduleApp == null) {
+            return;
+        }
+        moduleApplicationMap.remove(moduleApp.getHost());
         moduleApp.onDestroy();
     }
 
     @Override
     public void unregister(@NonNull String host) {
-        IComponentHostApplication moduleApp = moduleApplicationMap.remove(host);
+        Utils.checkNullPointer(host, "host");
+        IComponentHostApplication moduleApp = moduleApplicationMap.get(host);
         if (moduleApp == null) {
             LogUtil.log("模块 '" + host + "' 卸载失败");
         } else {
             unregister(moduleApp);
+        }
+    }
+
+    public void unregisterAll() {
+        // 创建一个 HashSet 是为了能循环的时候删除集合中的元素
+        for (String host : new HashSet<>(moduleApplicationMap.keySet())) {
+            unregister(host);
         }
     }
 

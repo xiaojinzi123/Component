@@ -114,6 +114,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
         if (interceptor == null) {
             return;
         }
+        moduleInterceptorMap.remove(interceptor.getHost());
         isInterceptorListHaveChange = true;
         // 子拦截器列表
         Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = interceptor.getInterceptorMap();
@@ -127,7 +128,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
 
     @Override
     public void unregister(@NonNull String host) {
-        IComponentHostInterceptor moduleInterceptor = moduleInterceptorMap.remove(host);
+        IComponentHostInterceptor moduleInterceptor = moduleInterceptorMap.get(host);
         unregister(moduleInterceptor);
     }
 

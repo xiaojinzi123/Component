@@ -65,6 +65,7 @@ public class ComponentUtil {
     public static final String GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.GlobalInterceptorAnno";
     public static final String INTERCEPTOR_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.InterceptorAnno";
     public static final String ROUTER_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.RouterAnno";
+    public static final String FRAGMENTANNO_CLASS_NAME = "com.xiaojinzi.component.anno.FragmentAnno";
     public static final String ROUTER_DEGRADE_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.RouterDegradeAnno";
     public static final String MODULE_APP_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ModuleAppAnno";
     public static final String SERVICE_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ServiceAnno";
@@ -72,6 +73,7 @@ public class ComponentUtil {
     public static final String FILEDAUTOWIREDANNO_CLASS_NAME = "com.xiaojinzi.component.anno.FiledAutowiredAnno";
     public static final String SERVICEAUTOWIREDANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ServiceAutowiredAnno";
     public static final String ROUTERAPIANNO_CLASS_NAME = "com.xiaojinzi.component.anno.router.RouterApiAnno";
+
 
     // 路由框架基础实现类的全类名
 
