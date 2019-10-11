@@ -22,7 +22,7 @@ public class ComponentConstants {
     public static final String INTERCEPTOR_BEAN_CLASS_NAME = "com.xiaojinzi.component.impl.interceptor.InterceptorBean";
     public static final String CENTERINTERCEPTOR_CLASS_NAME = "com.xiaojinzi.component.impl.interceptor.InterceptorCenter";
     public static final String ROUTERDEGRADECENTER_CLASS_NAME = "com.xiaojinzi.component.impl.RouterDegradeCenter";
-    public static final String SERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.Service";
+    public static final String SERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.ServiceManager";
     public static final String CENTERSERVICE_CLASS_NAME = "com.xiaojinzi.component.impl.service.ServiceCenter";
     public static final String PARAMETERSUPPORT_CLASS_NAME = "com.xiaojinzi.component.support.ParameterSupport";
     public static final String INJECT_CLASS_NAME = "com.xiaojinzi.component.support.Inject";

@@ -11,8 +11,8 @@ import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
 import com.xiaojinzi.base.service.inter.component1.Component1Service;
 import com.xiaojinzi.base.service.inter.component2.Component2Service;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.impl.service.RxService;
-import com.xiaojinzi.component.impl.service.Service;
+import com.xiaojinzi.component.impl.service.RxServiceManager;
+import com.xiaojinzi.component.impl.service.ServiceManager;
 import com.xiaojinzi.component.support.Utils;
 import com.xiaojinzi.componentdemo.R;
 
@@ -64,7 +64,7 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void findComponent2Service(View view) {
-        service2 = Service.get(Component2Service.class);
+        service2 = ServiceManager.get(Component2Service.class);
         if (service2 == null) {
             Toast.makeText(this, "Component2Service服务没找到", Toast.LENGTH_SHORT).show();
             return;
@@ -72,7 +72,7 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void findComponent1Service(View view) {
-        service1 = Service.get(Component1Service.class);
+        service1 = ServiceManager.get(Component1Service.class);
         if (service1 == null) {
             Toast.makeText(this, "Component1Service服务没找到", Toast.LENGTH_SHORT).show();
             return;
@@ -80,7 +80,7 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void rxServiceUse1(View view) {
-        RxService.with(AnnoMethodService.class)
+        RxServiceManager.with(AnnoMethodService.class)
                 .map(new Function<AnnoMethodService, String>() {
                     @Override
                     public String apply(AnnoMethodService service) throws Exception {
@@ -103,7 +103,7 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void rxServiceUse2(View view) {
-        RxService.with(Component1Service.class)
+        RxServiceManager.with(Component1Service.class)
                 .flatMap(new Function<Component1Service, SingleSource<String>>() {
                     @Override
                     public SingleSource<String> apply(Component1Service service) throws Exception {

@@ -109,6 +109,7 @@
   - [依赖和配置 For AndroidX](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE-AndroidX)
 - [Activity注解使用](https://github.com/xiaojinzi123/Component/wiki/RouterAnno-%E6%B3%A8%E8%A7%A3)
 - 跳转
+  - [跳转 Fragment](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-Fragment)
   - [跳转-接口路由的方式](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E6%8E%A5%E5%8F%A3%E8%B7%AF%E7%94%B1%E7%9A%84%E6%96%B9%E5%BC%8F)
   - [跳转-使用代码跳转](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%A0%81%E8%B7%B3%E8%BD%AC)
 - [拦截器](https://github.com/xiaojinzi123/Component/wiki/%E6%8B%A6%E6%88%AA%E5%99%A8)
@@ -141,7 +142,9 @@
 - 增加"路由" `Fragment` 的功能(其实就是针对`Fragment`做的一个更简单的获取方式)
     - 任意一个 `Fragment` 使用 `@FragmentAnno` 标记即可
     - 如何使用请看, 路由的 wiki [跳转 Fragment](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-Fragment)
--  `debug` 检测中增加对 `Fragment` 是否重复的检测
+- 增加 RxRouter 对路由 Fragment 的支持, 返回的是 Single<Fragment>
+- 重命名 RxService 为 RxServiceManager
+- 重命名 Service 为 ServiceManager
 
 #### v1.7.5.1 
 - 属性注入增加方法 `Component.inject(Object target, Intent intent)` 以便在 `onNewIntent` 方法中使用

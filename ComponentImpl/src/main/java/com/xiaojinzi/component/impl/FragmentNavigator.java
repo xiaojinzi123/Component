@@ -10,19 +10,22 @@ import com.xiaojinzi.component.impl.fragment.FragmentManager;
 public class FragmentNavigator {
 
     @NonNull
-    private String fragmentFlag;
+    protected String fragmentFlag;
+
+    @NonNull
+    protected Bundle bundle;
 
     public FragmentNavigator(@NonNull String fragmentFlag) {
         this.fragmentFlag = fragmentFlag;
     }
 
-    @Nullable
-    public Fragment navigate(){
-        return navigate(null);
+    public FragmentNavigator bundle(@NonNull Bundle bundle) {
+        this.bundle = bundle;
+        return this;
     }
 
     @Nullable
-    public Fragment navigate(@Nullable Bundle bundle){
+    public Fragment navigate(){
         return FragmentManager.get(fragmentFlag, bundle);
     }
 

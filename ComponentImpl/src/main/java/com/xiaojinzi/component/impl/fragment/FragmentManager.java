@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.component.support.Function1;
+import com.xiaojinzi.component.support.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,8 @@ public class FragmentManager {
      * @param function
      */
     public static void register(@NonNull String flag, @NonNull Function1<Bundle, ? extends Fragment> function) {
+        Utils.checkNullPointer(flag, "flag");
+        Utils.checkNullPointer(function, "function");
         map.put(flag, function);
     }
 
