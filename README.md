@@ -140,8 +140,7 @@
 
 - 增加"路由" `Fragment` 的功能(其实就是针对`Fragment`做的一个更简单的获取方式)
     - 任意一个 `Fragment` 使用 `@FragmentAnno` 标记即可
-    - 使用 `Router` 中的 `navigateForFragment` 方法即可获取到对应的 `Fragment`
-- 增加一个 `Gradle` 插件, 对于那些追求性能极致的同学做的, 它会大幅度提升框架初始化的速度
+    - 如何使用请看, 路由的 wiki [跳转 Fragment](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-Fragment)
 -  `debug` 检测中增加对 `Fragment` 是否重复的检测
 
 #### v1.7.5.1 
