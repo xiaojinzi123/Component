@@ -62,6 +62,11 @@ public class ComponentUtil {
      */
     public static final String INTERCEPTOR = "InterceptorGenerated";
 
+    /**
+     * 生成的文件名称的后缀
+     */
+    public static final String Fragment = "FragmentGenerated";
+
     public static final String GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.GlobalInterceptorAnno";
     public static final String INTERCEPTOR_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.InterceptorAnno";
     public static final String ROUTER_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.RouterAnno";
@@ -123,6 +128,10 @@ public class ComponentUtil {
 
     public static String genHostInterceptorClassName(String host) {
         return IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + firstCharUpperCase(host) + INTERCEPTOR;
+    }
+
+    public static String genHostFragmentClassName(String host) {
+        return IMPL_OUTPUT_PKG + DOT + "fragment" + DOT + firstCharUpperCase(host) + Fragment;
     }
 
 }

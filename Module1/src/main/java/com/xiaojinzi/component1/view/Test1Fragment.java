@@ -6,6 +6,5 @@ import com.xiaojinzi.component.anno.FragmentAnno;
 
 @FragmentAnno("test1Fragment")
 public class Test1Fragment extends Fragment {
-
 }
 

@@ -1,4 +1,4 @@
-package com.xiaojinzi.component.service;
+package com.xiaojinzi.component.support;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,16 +8,16 @@ import android.support.annotation.Nullable;
  *
  * @param <T>
  */
-public abstract class SingletonService<T> implements IServiceLoad<T> {
+public abstract class SingletonLazyLoad<T> implements ILazyLoad<T> {
 
     @Nullable
     private volatile T instance;
 
     @Override
     public final T get() {
-        if (instance == null) {
+        if (null == instance) {
             synchronized (this) {
-                if (instance == null) {
+                if (null == instance) {
                     instance = getRaw();
                 }
             }

@@ -142,6 +142,7 @@
     - 任意一个 `Fragment` 使用 `@FragmentAnno` 标记即可
     - 使用 `Router` 中的 `navigateForFragment` 方法即可获取到对应的 `Fragment`
 - 增加一个 `Gradle` 插件, 对于那些追求性能极致的同学做的, 它会大幅度提升框架初始化的速度
+-  `debug` 检测中增加对 `Fragment` 是否重复的检测
 
 #### v1.7.5.1 
 - 属性注入增加方法 `Component.inject(Object target, Intent intent)` 以便在 `onNewIntent` 方法中使用

@@ -42,8 +42,8 @@ import javax.lang.model.type.TypeMirror;
 @SupportedAnnotationTypes({com.xiaojinzi.component.ComponentUtil.SERVICE_ANNO_CLASS_NAME})
 public class ServiceProcessor extends BaseHostProcessor {
 
-    private static final String SERVICE_SEPER_NAME1 = "com.xiaojinzi.component.service.IServiceLoad";
-    private static final String SERVICE_SEPER_NAME2 = "com.xiaojinzi.component.service.SingletonService";
+    private static final String SERVICE_SEPER_NAME1 = "com.xiaojinzi.component.support.ILazyLoad";
+    private static final String SERVICE_SEPER_NAME2 = "com.xiaojinzi.component.support.SingletonLazyLoad";
     private static final String NAME_OF_APPLICATION = "application";
 
     private ClassName classNameServiceContainer;
