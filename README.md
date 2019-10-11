@@ -1,3 +1,5 @@
+**相信 Component 能成为最优秀的那个框架!**
+
 很多选型的人有这么个疑问: 有了 `ARouter` 为啥要有 `Component`. 
 我这里在这里做一个回答.
 
@@ -134,6 +136,13 @@
 
 ## 版本更新日志
 
+#### v1.7.6
+
+- 增加"路由" `Fragment` 的功能(其实就是针对`Fragment`做的一个更简单的获取方式)
+    - 任意一个 `Fragment` 使用 `@FragmentAnno` 标记即可
+    - 使用 `Router` 中的 `navigateForFragment` 方法即可获取到对应的 `Fragment`
+- 增加一个 `Gradle` 插件, 对于那些追求性能极致的同学做的, 它会大幅度提升框架初始化的速度
+
 #### v1.7.5.1 
 - 属性注入增加方法 `Component.inject(Object target, Intent intent)` 以便在 `onNewIntent` 方法中使用
 - 升级 RxJava 版本到 2.2.13
@@ -145,6 +154,7 @@
 - 新增 afterErrorAction, 表示跳转失败之后的回调, 不允许抛出异常, 会导致奔溃
 - 修改内置的同样的路由请求在一秒内只能启动一次的错误日志的输出形式
 - 重构几个 `Action` 这块用户自定义的这块的执行顺序
+- 路由 `Api` 增加 `AfterErrorActionAnno` 和 `AfterEventActionAnno` 注解
 
 #### v1.7.4
 - Router.with() 方法支持空参数的形式了, 这种形式默认会使用 `Application` 作为 `Context`, 作者虽然支持了这种形式, 但是不建议平时使用的时候故意使用 `Application`. 因为当你没有用路由框架的之前, 你通常也会使用当前 `Activity Context` 的, 所以作者呼吁大家, 在有 `Activity Context` 的时候, 建议传入 `Activity` 的 `Context`
