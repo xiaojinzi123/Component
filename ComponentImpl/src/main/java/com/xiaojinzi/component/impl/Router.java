@@ -101,6 +101,12 @@ public class Router {
         routerListeners.remove(listener);
     }
 
+    @NonNull
+    public static FragmentNavigator with(@NonNull String fragmentFlag) {
+        Utils.checkNullPointer(fragmentFlag, "fragmentFlag");
+        return new FragmentNavigator(fragmentFlag);
+    }
+
     /**
      * 空参数的默认会使用 {@link Component#getApplication()} 来跳转,
      * 所以空参数的这种不能够用来获取 {@link com.xiaojinzi.component.bean.ActivityResult}
@@ -112,15 +118,17 @@ public class Router {
      *
      * @return 返回一个路由的 Builder
      */
+    @NonNull
     public static Navigator with() {
-
         return new Navigator();
     }
 
+    @NonNull
     public static Navigator with(@NonNull Context context) {
         return new Navigator(context);
     }
 
+    @NonNull
     public static Navigator with(@NonNull Fragment fragment) {
         return new Navigator(fragment);
     }
@@ -132,6 +140,7 @@ public class Router {
      * @param <T>
      * @return
      */
+    @NonNull
     public static <T> T withApi(@NonNull Class<T> apiClass) {
         T t = (T) apiClassCache.get(apiClass);
         if (t == null) {

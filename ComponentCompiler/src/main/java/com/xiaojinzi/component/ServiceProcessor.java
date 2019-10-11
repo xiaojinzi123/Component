@@ -42,24 +42,21 @@ import javax.lang.model.type.TypeMirror;
 @SupportedAnnotationTypes({com.xiaojinzi.component.ComponentUtil.SERVICE_ANNO_CLASS_NAME})
 public class ServiceProcessor extends BaseHostProcessor {
 
-    private static final String SERVICE_SEPER_NAME1 = "com.xiaojinzi.component.support.ILazyLoad";
-    private static final String SERVICE_SEPER_NAME2 = "com.xiaojinzi.component.support.SingletonLazyLoad";
     private static final String NAME_OF_APPLICATION = "application";
 
     private ClassName classNameServiceContainer;
-    private ClassName service1ClassName;
-    private ClassName service2ClassName;
+    private ClassName lazyLoadClassName;
+    private ClassName singletonLazyLoadClassName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         final TypeElement typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.SERVICE_CLASS_NAME);
         classNameServiceContainer = ClassName.get(typeElementServiceContainer);
-        final TypeElement service1TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME1);
-        final TypeElement service2TypeElement = mElements.getTypeElement(SERVICE_SEPER_NAME2);
-        service1ClassName = ClassName.get(service1TypeElement);
-        service2ClassName = ClassName.get(service2TypeElement);
-
+        final TypeElement service1TypeElement = mElements.getTypeElement(ComponentConstants.CALLABLE_CLASS_NAME);
+        final TypeElement service2TypeElement = mElements.getTypeElement(ComponentConstants.SINGLETON_CALLABLE_CLASS_NAME);
+        lazyLoadClassName = ClassName.get(service1TypeElement);
+        singletonLazyLoadClassName = ClassName.get(service2TypeElement);
     }
 
     @Override
@@ -166,15 +163,14 @@ public class ServiceProcessor extends BaseHostProcessor {
                                 .returns(serviceImplTypeName);
                     }
                     TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(service2ClassName, serviceImplTypeName))
+                            .addSuperinterface(ParameterizedTypeName.get(singletonLazyLoadClassName, serviceImplTypeName))
                             .addMethod(getRawMethodBuilder.build())
                             .build();
-                    methodSpecBuilder.addStatement("$T $N = $L", service1ClassName, implName, innerTypeSpec);
+                    methodSpecBuilder.addStatement("$T $N = $L", lazyLoadClassName, implName, innerTypeSpec);
                 } else {
                     MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder("get")
                             .addAnnotation(Override.class)
-                            .addModifiers(Modifier.PUBLIC)
-                            .returns(TypeName.get(element.asType()));
+                            .addModifiers(Modifier.PUBLIC);
                     if (serviceImplCallPath == null) {
                         boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
                         getMethodBuilder
@@ -186,10 +182,10 @@ public class ServiceProcessor extends BaseHostProcessor {
                                 .returns(serviceImplTypeName);
                     }
                     TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(service1ClassName, serviceImplTypeName))
+                            .addSuperinterface(ParameterizedTypeName.get(lazyLoadClassName, serviceImplTypeName))
                             .addMethod(getMethodBuilder.build())
                             .build();
-                    methodSpecBuilder.addStatement("$T $N = $L", service1ClassName, implName, innerTypeSpec);
+                    methodSpecBuilder.addStatement("$T $N = $L", lazyLoadClassName, implName, innerTypeSpec);
                 }
 
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);

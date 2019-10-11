@@ -41,6 +41,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
     private TypeElement centerInterceptorTypeElement;
     private TypeElement centerServiceTypeElement;
     private TypeElement centerRouterDegradeTypeElement;
+    private TypeElement centerFragmentTypeElement;
     private TypeElement routerCenterTypeElement;
     private TypeElement classCacheTypeElement;
 
@@ -49,6 +50,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         super.init(processingEnvironment);
         centerInterceptorTypeElement = mElements.getTypeElement(ComponentConstants.CENTERINTERCEPTOR_CLASS_NAME);
         centerRouterDegradeTypeElement = mElements.getTypeElement(ComponentConstants.ROUTERDEGRADECENTER_CLASS_NAME);
+        centerFragmentTypeElement = mElements.getTypeElement(ComponentConstants.FRAGMENT_CENTER_CALL_CLASS_NAME);
         centerServiceTypeElement = mElements.getTypeElement(ComponentConstants.CENTERSERVICE_CLASS_NAME);
         routerCenterTypeElement = mElements.getTypeElement(ComponentConstants.ROUTERCENTER_CLASS_NAME);
         classCacheTypeElement = mElements.getTypeElement(ComponentConstants.CLASSCACHE_CLASS_NAME);
@@ -168,6 +170,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerInterceptorTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerRouterDegradeTypeElement);
+        methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerFragmentTypeElement);
         return methodSpecBuilder.build();
     }
 
@@ -183,6 +186,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerInterceptorTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerRouterDegradeTypeElement);
+        methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerFragmentTypeElement);
         methodSpecBuilder.addComment("清空缓存");
         methodSpecBuilder.addStatement("$T.clear()", classCacheTypeElement);
         return methodSpecBuilder.build();

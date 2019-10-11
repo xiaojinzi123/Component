@@ -17,6 +17,13 @@ public @interface FragmentAnno {
      *
      * @return 对应 Fragment 的一个标记, 不能重复
      */
-    String value();
+    String[] value();
+
+    /**
+     * 是否是单例,默认是单例模式的
+     *
+     * @return
+     */
+    boolean singleTon() default false;
 
 }

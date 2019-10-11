@@ -90,6 +90,7 @@ public class MainAct extends AppCompatActivity {
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_SERVICE)
                 .navigate();
+
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.xiaojinzi.component.impl.service;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.xiaojinzi.component.support.ILazyLoad;
+import com.xiaojinzi.component.support.Callable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class Service {
     /**
      * Service 的集合
      */
-    private static Map<Class, ILazyLoad<?>> map = new HashMap<>();
+    private static Map<Class, Callable<?>> map = new HashMap<>();
 
     /**
      * 你可以注册一个服务,服务的初始化可以是 懒加载的
@@ -31,18 +31,18 @@ public class Service {
      * @param iServiceLoad
      * @param <T>
      */
-    public static <T> void register(@NonNull Class<T> tClass, @NonNull ILazyLoad<? extends T> iServiceLoad) {
+    public static <T> void register(@NonNull Class<T> tClass, @NonNull Callable<? extends T> iServiceLoad) {
         map.put(tClass, iServiceLoad);
     }
 
     @Nullable
-    public static <T> T unregister(@NonNull Class<T> tClass) {
-        return (T) map.remove(tClass);
+    public static <T> void unregister(@NonNull Class<T> tClass) {
+        map.remove(tClass);
     }
 
     @Nullable
     public static <T> T get(@NonNull Class<T> tClass) {
-        ILazyLoad<?> serviceLoad = map.get(tClass);
+        Callable<?> serviceLoad = map.get(tClass);
         if (serviceLoad == null) {
             return null;
         } else {
