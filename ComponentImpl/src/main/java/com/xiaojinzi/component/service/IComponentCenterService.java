@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.service;
 
-import android.support.annotation.NonNull;
+import com.xiaojinzi.component.support.IComponentCenter;
 
 /**
  * 模块的服务接口
@@ -8,34 +8,5 @@ import android.support.annotation.NonNull;
  *
  * @author : xiaojinzi 30212
  */
-public interface IComponentCenterService {
-
-    /**
-     * 注册每一个模块的服务
-     *
-     * @param service
-     */
-    void register(@NonNull IComponentHostService service);
-
-    /**
-     * 通过host注册
-     *
-     * @param host
-     */
-    void register(@NonNull String host);
-
-    /**
-     * 反注册模块的服务
-     *
-     * @param service
-     */
-    void unregister(@NonNull IComponentHostService service);
-
-    /**
-     * 通过 host 反注册
-     *
-     * @param host
-     */
-    void unregister(@NonNull String host);
-
+public interface IComponentCenterService extends IComponentCenter<IComponentHostService> {
 }

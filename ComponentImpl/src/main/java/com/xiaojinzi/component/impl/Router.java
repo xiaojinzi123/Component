@@ -13,7 +13,6 @@ import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.cache.Cache;
 import com.xiaojinzi.component.cache.CacheType;
 import com.xiaojinzi.component.cache.DefaultCacheFactory;
-import com.xiaojinzi.component.router.IComponentHostRouter;
 import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.Utils;
 
@@ -100,22 +99,6 @@ public class Router {
             return;
         }
         routerListeners.remove(listener);
-    }
-
-    public static void register(IComponentHostRouter router) {
-        RouterCenter.getInstance().register(router);
-    }
-
-    public static void register(@NonNull String host) {
-        RouterCenter.getInstance().register(host);
-    }
-
-    public static void unregister(IComponentHostRouter router) {
-        RouterCenter.getInstance().unregister(router);
-    }
-
-    public static void unregister(@NonNull String host) {
-        RouterCenter.getInstance().unregister(host);
     }
 
     /**

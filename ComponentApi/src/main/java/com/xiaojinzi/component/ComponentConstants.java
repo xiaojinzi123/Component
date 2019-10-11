@@ -16,6 +16,7 @@ public class ComponentConstants {
 
     public static final String APPLCATON_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.application.IComponentApplication";
     public static final String INTERCEPTOR_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.impl.RouterInterceptor";
+    public static final String ROUTERCENTER_CLASS_NAME = "com.xiaojinzi.component.impl.RouterCenter";
     public static final String ROUTERDEGRADE_CLASS_NAME = "com.xiaojinzi.component.impl.RouterDegrade";
     public static final String INTERCEPTOR_UTIL_CLASS_NAME = "com.xiaojinzi.component.support.RouterInterceptorCache";
     public static final String ROUTER_CLASS_NAME = "com.xiaojinzi.component.impl.Router";

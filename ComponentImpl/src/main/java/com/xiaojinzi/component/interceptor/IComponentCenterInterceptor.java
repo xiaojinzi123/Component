@@ -2,6 +2,7 @@ package com.xiaojinzi.component.interceptor;
 
 import android.support.annotation.NonNull;
 
+import com.xiaojinzi.component.support.IComponentCenter;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 
 import java.util.List;
@@ -12,41 +13,14 @@ import java.util.List;
  *
  * @author : xiaojinzi 30212
  */
-public interface IComponentCenterInterceptor extends IComponentInterceptor {
+public interface IComponentCenterInterceptor extends IComponentInterceptor, IComponentCenter<IComponentHostInterceptor> {
 
     /**
      * 获取全局拦截器列表
      *
-     * @return
+     * @return 全局的拦截器列表
      */
+    @NonNull
     List<RouterInterceptor> getGlobalInterceptorList();
-
-    /**
-     * 注册每一个模块的拦截器
-     *
-     * @param interceptor
-     */
-    void register(@NonNull IComponentHostInterceptor interceptor);
-
-    /**
-     * 通过host注册
-     *
-     * @param host
-     */
-    void register(@NonNull String host);
-
-    /**
-     * 反注册模块的拦截器
-     *
-     * @param interceptor
-     */
-    void unregister(@NonNull IComponentHostInterceptor interceptor);
-
-    /**
-     * 通过 host 反注册
-     *
-     * @param host
-     */
-    void unregister(@NonNull String host);
 
 }

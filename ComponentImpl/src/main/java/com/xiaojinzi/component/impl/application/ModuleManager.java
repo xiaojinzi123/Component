@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.application.IComponentHostApplication;
-import com.xiaojinzi.component.application.IComponentModuleApplication;
+import com.xiaojinzi.component.application.IComponentCenterApplication;
 import com.xiaojinzi.component.impl.RouterCenter;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.support.ASMUtil;
@@ -23,7 +23,7 @@ import java.util.Map;
  *
  * @author xiaojinzi 30212
  */
-public class ModuleManager implements IComponentModuleApplication {
+public class ModuleManager implements IComponentCenterApplication {
 
     /**
      * 单例对象

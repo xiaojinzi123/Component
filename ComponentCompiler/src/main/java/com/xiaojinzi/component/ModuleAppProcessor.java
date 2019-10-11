@@ -41,7 +41,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
     private TypeElement centerInterceptorTypeElement;
     private TypeElement centerServiceTypeElement;
     private TypeElement centerRouterDegradeTypeElement;
-    private TypeElement routerTypeElement;
+    private TypeElement routerCenterTypeElement;
     private TypeElement classCacheTypeElement;
 
     @Override
@@ -50,7 +50,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         centerInterceptorTypeElement = mElements.getTypeElement(ComponentConstants.CENTERINTERCEPTOR_CLASS_NAME);
         centerRouterDegradeTypeElement = mElements.getTypeElement(ComponentConstants.ROUTERDEGRADECENTER_CLASS_NAME);
         centerServiceTypeElement = mElements.getTypeElement(ComponentConstants.CENTERSERVICE_CLASS_NAME);
-        routerTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_CLASS_NAME);
+        routerCenterTypeElement = mElements.getTypeElement(ComponentConstants.ROUTERCENTER_CLASS_NAME);
         classCacheTypeElement = mElements.getTypeElement(ComponentConstants.CLASSCACHE_CLASS_NAME);
         createImpl(true);
     }
@@ -164,7 +164,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addParameter(parameterSpec)
                 .addModifiers(Modifier.PUBLIC);
         methodSpecBuilder.addStatement("super.onCreate(application)");
-        methodSpecBuilder.addStatement("$T.register(getHost())", routerTypeElement);
+        methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", routerCenterTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerInterceptorTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerRouterDegradeTypeElement);
@@ -179,7 +179,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addModifiers(Modifier.PUBLIC);
 
         methodSpecBuilder.addStatement("super.onDestroy()");
-        methodSpecBuilder.addStatement("$T.unregister(getHost())", routerTypeElement);
+        methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", routerCenterTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerInterceptorTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerRouterDegradeTypeElement);
