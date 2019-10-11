@@ -9,6 +9,7 @@ import com.xiaojinzi.component.application.IComponentHostApplication;
 import com.xiaojinzi.component.application.IComponentModuleApplication;
 import com.xiaojinzi.component.impl.RouterCenter;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
+import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.Utils;
 
@@ -114,14 +115,16 @@ public class ModuleManager implements IComponentModuleApplication {
     }
 
     @Nullable
-    public static IComponentHostApplication findModuleApplication(String host) {
-        IComponentHostApplication result = null;
-        try {
-            // 先找正常的
-            Class<?> clazz = Class.forName(ComponentUtil.genHostModuleApplicationClassName(host));
-            result = (IComponentHostApplication) clazz.newInstance();
-        } catch (Exception ignore) {
-            // ignore
+    public static IComponentHostApplication findModuleApplication(@NonNull String host) {
+        IComponentHostApplication result = ASMUtil.findModuleApplicationAsmImpl(host);
+        if (result == null) {
+            try {
+                // 先找正常的
+                Class<?> clazz = Class.forName(ComponentUtil.genHostModuleApplicationClassName(host));
+                result = (IComponentHostApplication) clazz.newInstance();
+            } catch (Exception ignore) {
+                // ignore
+            }
         }
         if (result == null) {
             try {
