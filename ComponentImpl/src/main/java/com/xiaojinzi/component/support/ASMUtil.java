@@ -23,9 +23,13 @@ public class ASMUtil {
      */
     @Nullable
     public static IComponentHostApplication findModuleApplicationAsmImpl(@NonNull String host) {
-        //if ("user".equals(host)) {
-        //    return UserModuleApplicationGenerated();
-        //}
+//        if ("user1".equals(host)) {
+//            return null;
+//        } else if ("user2".equals(host)) {
+//            return null;
+//        } else if ("user3".equals(host)) {
+//            return null;
+//        }
         return null;
     }
 

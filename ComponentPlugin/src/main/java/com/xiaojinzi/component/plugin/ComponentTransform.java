@@ -15,7 +15,10 @@ import com.android.utils.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class ComponentTransform extends Transform {
 
@@ -53,11 +56,23 @@ public class ComponentTransform extends Transform {
         TransformOutputProvider outputProvider = transformInvocation.getOutputProvider();
         for(TransformInput input : inputs) {
             for(JarInput jarInput : input.getJarInputs()) {
+                String jarName = jarInput.getFile().getPath();
                 File dest = outputProvider.getContentLocation(
                         jarInput.getFile().getAbsolutePath(),
                         jarInput.getContentTypes(),
                         jarInput.getScopes(),
                         Format.JAR);
+                JarFile jarFile = new JarFile(jarInput.getFile());
+                Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
+                while (jarEntryEnumeration.hasMoreElements()) {
+                    JarEntry jarEntry = jarEntryEnumeration.nextElement();
+                    String entryName = jarEntry.getName();
+                    // 如果是目标工具类
+                    if ("com/xiaojinzi/component/support/ASMUtil.class".equals(entryName)) {
+                        System.out.println("jarName = " + jarName);
+                        System.out.println("entryName = " + entryName);
+                    }
+                }
                 //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
                 FileUtils.copyFile(jarInput.getFile(), dest);
             }
