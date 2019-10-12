@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+// apply plugin: 'com.xiaojinzi.component.plugin'
 
 android {
     compileSdkVersion versions.android_compile_sdk
