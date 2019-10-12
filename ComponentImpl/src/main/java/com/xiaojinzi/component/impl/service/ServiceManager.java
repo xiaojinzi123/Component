@@ -3,7 +3,8 @@ package com.xiaojinzi.component.impl.service;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.xiaojinzi.component.service.IServiceLoad;
+import com.xiaojinzi.component.support.Callable;
+import com.xiaojinzi.component.support.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,39 +15,41 @@ import java.util.Map;
  *
  * @author xiaojinzi 30212
  */
-public class Service {
+public class ServiceManager {
 
-    private Service() {
+    private ServiceManager() {
     }
 
     /**
      * Service 的集合
      */
-    private static Map<Class, IServiceLoad<?>> map = new HashMap<>();
+    private static Map<Class, Callable<?>> map = new HashMap<>();
 
     /**
      * 你可以注册一个服务,服务的初始化可以是 懒加载的
      *
      * @param tClass
-     * @param iServiceLoad
+     * @param callable
      * @param <T>
      */
-    public static <T> void register(@NonNull Class<T> tClass, @NonNull IServiceLoad<? extends T> iServiceLoad) {
-        map.put(tClass, iServiceLoad);
+    public static <T> void register(@NonNull Class<T> tClass, @NonNull Callable<? extends T> callable) {
+        Utils.checkNullPointer(tClass, "tClass");
+        Utils.checkNullPointer(callable, "callable");
+        map.put(tClass, callable);
     }
 
     @Nullable
-    public static <T> T unregister(@NonNull Class<T> tClass) {
-        return (T) map.remove(tClass);
+    public static <T> void unregister(@NonNull Class<T> tClass) {
+        map.remove(tClass);
     }
 
     @Nullable
     public static <T> T get(@NonNull Class<T> tClass) {
-        IServiceLoad<?> serviceLoad = map.get(tClass);
-        if (serviceLoad == null) {
+        Callable<?> callable = map.get(tClass);
+        if (callable == null) {
             return null;
         } else {
-            return (T) serviceLoad.get();
+            return (T) callable.get();
         }
     }
 

@@ -1,4 +1,4 @@
-package com.xiaojinzi.component.service;
+package com.xiaojinzi.component.fragment;
 
 import com.xiaojinzi.component.support.IComponentCenter;
 
@@ -8,5 +8,5 @@ import com.xiaojinzi.component.support.IComponentCenter;
  *
  * @author : xiaojinzi 30212
  */
-public interface IComponentCenterService extends IComponentCenter<IComponentHostService> {
+public interface IComponentCenterFragment extends IComponentCenter<IComponentHostFragment> {
 }

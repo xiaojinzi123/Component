@@ -8,12 +8,13 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.xiaojinzi.component.anno.ServiceAnno;
+import com.xiaojinzi.component.anno.FragmentAnno;
 
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,33 +31,35 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.MirroredTypesException;
-import javax.lang.model.type.TypeMirror;
 
 /**
- * 负责处理 {@link ServiceAnno}
+ * 支持 Fragment 的路由的注解驱动器
  */
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-@SupportedAnnotationTypes({com.xiaojinzi.component.ComponentUtil.SERVICE_ANNO_CLASS_NAME})
-public class ServiceProcessor extends BaseHostProcessor {
+@SupportedAnnotationTypes(ComponentUtil.FRAGMENTANNO_CLASS_NAME)
+public class FragmentProcessor extends BaseHostProcessor {
 
     private static final String NAME_OF_APPLICATION = "application";
 
-    private ClassName classNameServiceContainer;
-    private ClassName lazyLoadClassName;
-    private ClassName singletonLazyLoadClassName;
+    private ClassName classNameFragmentContainer;
+    private ClassName function1ClassName;
+    private ClassName singletonFunction1ClassName;
+    private TypeElement bundleTypeElement;
+    private TypeName bundleTypeName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-        final TypeElement typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.SERVICE_CLASS_NAME);
-        classNameServiceContainer = ClassName.get(typeElementServiceContainer);
-        final TypeElement service1TypeElement = mElements.getTypeElement(ComponentConstants.CALLABLE_CLASS_NAME);
-        final TypeElement service2TypeElement = mElements.getTypeElement(ComponentConstants.SINGLETON_CALLABLE_CLASS_NAME);
-        lazyLoadClassName = ClassName.get(service1TypeElement);
-        singletonLazyLoadClassName = ClassName.get(service2TypeElement);
+        final TypeElement typeElementFragmentContainer = mElements.getTypeElement(ComponentConstants.FRAGMENT_MANAGER_CALL_CLASS_NAME);
+        classNameFragmentContainer = ClassName.get(typeElementFragmentContainer);
+        final TypeElement function1TypeElement = mElements.getTypeElement(ComponentConstants.FUNCTION1_CLASS_NAME);
+        final TypeElement singletonFunctionTypeElement = mElements.getTypeElement(ComponentConstants.SINGLETON_FUNCTION1_CLASS_NAME);
+        function1ClassName = ClassName.get(function1TypeElement);
+        singletonFunction1ClassName = ClassName.get(singletonFunctionTypeElement);
+        bundleTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_BUNDLE);
+        bundleTypeName = TypeName.get(bundleTypeElement.asType());
     }
 
     @Override
@@ -65,7 +68,7 @@ public class ServiceProcessor extends BaseHostProcessor {
             return false;
         }
         if (CollectionUtils.isNotEmpty(set)) {
-            Set<? extends Element> annoElements = roundEnvironment.getElementsAnnotatedWith(ServiceAnno.class);
+            Set<? extends Element> annoElements = roundEnvironment.getElementsAnnotatedWith(FragmentAnno.class);
             parseAnnotation(annoElements);
             createImpl();
             return true;
@@ -79,7 +82,7 @@ public class ServiceProcessor extends BaseHostProcessor {
         annoElementList.clear();
         for (Element element : annoElements) {
             // 如果是一个 Service
-            final ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
+            final FragmentAnno anno = element.getAnnotation(FragmentAnno.class);
             if (anno == null) {
                 continue;
             }
@@ -89,13 +92,13 @@ public class ServiceProcessor extends BaseHostProcessor {
 
     private void createImpl() {
 
-        String claName = ComponentUtil.genHostServiceClassName(componentHost);
+        String claName = ComponentUtil.genHostFragmentClassName(componentHost);
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf('.'));
         //simpleName
         String cn = claName.substring(claName.lastIndexOf('.') + 1);
         // superClassName
-        ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.SERVICE_IMPL_CLASS_NAME));
+        ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.FRAGMENT_IMPL_CLASS_NAME));
         MethodSpec initHostMethod = generateInitHostMethod();
         MethodSpec onCreateMethod = generateOnCreateMethod();
         MethodSpec onDestroyMethod = generateOnDestroyMethod();
@@ -117,6 +120,9 @@ public class ServiceProcessor extends BaseHostProcessor {
     }
 
     private MethodSpec generateOnCreateMethod() {
+
+        final ParameterSpec bundleParameter = ParameterSpec.builder(bundleTypeName, "bundle").build();
+
         TypeName returnType = TypeName.VOID;
         ClassName applicationName = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_APPLICATION));
         ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, NAME_OF_APPLICATION)
@@ -146,11 +152,12 @@ public class ServiceProcessor extends BaseHostProcessor {
                     String serviceImplClassName = element.toString();
                     serviceImplTypeName = TypeName.get(mElements.getTypeElement(serviceImplClassName).asType());
                 }
-                ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
+                FragmentAnno anno = element.getAnnotation(FragmentAnno.class);
                 String implName = "implName" + atomicInteger.incrementAndGet();
                 if (anno.singleTon()) {
-                    MethodSpec.Builder getRawMethodBuilder = MethodSpec.methodBuilder("getRaw")
+                    MethodSpec.Builder getRawMethodBuilder = MethodSpec.methodBuilder("applyRaw")
                             .addAnnotation(Override.class)
+                            .addParameter(bundleParameter)
                             .addModifiers(Modifier.PROTECTED);
                     if (serviceImplCallPath == null) {
                         boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
@@ -159,17 +166,21 @@ public class ServiceProcessor extends BaseHostProcessor {
                                 .returns(TypeName.get(element.asType()));
                     } else {
                         getRawMethodBuilder
-                                .addStatement("return $N()", serviceImplCallPath)
+                                .beginControlFlow("if(bundle == null)")
+                                .addStatement("bundle = new Bundle()")
+                                .endControlFlow()
+                                .addStatement("return $N(bundle)", serviceImplCallPath)
                                 .returns(serviceImplTypeName);
                     }
                     TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(singletonLazyLoadClassName, serviceImplTypeName))
+                            .addSuperinterface(ParameterizedTypeName.get(singletonFunction1ClassName, bundleTypeName, serviceImplTypeName))
                             .addMethod(getRawMethodBuilder.build())
                             .build();
-                    methodSpecBuilder.addStatement("$T $N = $L", lazyLoadClassName, implName, innerTypeSpec);
+                    methodSpecBuilder.addStatement("$T $N = $L", function1ClassName, implName, innerTypeSpec);
                 } else {
-                    MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder("get")
+                    MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder("apply")
                             .addAnnotation(Override.class)
+                            .addParameter(bundleParameter)
                             .addModifiers(Modifier.PUBLIC);
                     if (serviceImplCallPath == null) {
                         boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
@@ -178,19 +189,22 @@ public class ServiceProcessor extends BaseHostProcessor {
                                 .returns(TypeName.get(element.asType()));
                     } else {
                         getMethodBuilder
-                                .addStatement("return $N()", serviceImplCallPath)
+                                .beginControlFlow("if(bundle == null)")
+                                .addStatement("bundle = new Bundle()")
+                                .endControlFlow()
+                                .addStatement("return $N(bundle)", serviceImplCallPath)
                                 .returns(serviceImplTypeName);
                     }
                     TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(lazyLoadClassName, serviceImplTypeName))
+                            .addSuperinterface(ParameterizedTypeName.get(function1ClassName, bundleTypeName, serviceImplTypeName))
                             .addMethod(getMethodBuilder.build())
                             .build();
-                    methodSpecBuilder.addStatement("$T $N = $L", lazyLoadClassName, implName, innerTypeSpec);
+                    methodSpecBuilder.addStatement("$T $N = $L", function1ClassName, implName, innerTypeSpec);
                 }
 
-                List<String> interServiceClassNames = getInterServiceClassNames(anno);
-                for (String interServiceClassName : interServiceClassNames) {
-                    methodSpecBuilder.addStatement("$T.register($T.class,$N)", classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)), implName);
+                List<String> fragmentFlags = Arrays.asList(anno.value());
+                for (String fragmentFlag : fragmentFlags) {
+                    methodSpecBuilder.addStatement("$T.register($S,$N)", classNameFragmentContainer, fragmentFlag, implName);
                 }
 
             }
@@ -209,10 +223,10 @@ public class ServiceProcessor extends BaseHostProcessor {
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {
-                ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
-                List<String> interServiceClassNames = getInterServiceClassNames(anno);
-                for (String interServiceClassName : interServiceClassNames) {
-                    methodSpecBuilder.addStatement("$T.unregister($T.class)", classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)));
+                FragmentAnno anno = element.getAnnotation(FragmentAnno.class);
+                List<String> fragmentFlags = Arrays.asList(anno.value());
+                for (String fragmentFlag : fragmentFlags) {
+                    methodSpecBuilder.addStatement("$T.unregister($S)", classNameFragmentContainer, fragmentFlag);
                 }
             }
         });
@@ -228,30 +242,6 @@ public class ServiceProcessor extends BaseHostProcessor {
 
         openUriMethodSpecBuilder.addStatement("return $S", componentHost);
         return openUriMethodSpecBuilder.build();
-    }
-
-    /**
-     * 获取注解中的目标 Service 接口的全类名
-     *
-     * @param anno
-     * @return
-     */
-    private List<String> getInterServiceClassNames(ServiceAnno anno) {
-        List<String> implClassNames = new ArrayList<>();
-        try {
-            implClassNames.clear();
-            Class[] interceptors = anno.value();
-            for (Class interceptor : interceptors) {
-                implClassNames.add(interceptor.getName());
-            }
-        } catch (MirroredTypesException e) {
-            implClassNames.clear();
-            List<? extends TypeMirror> typeMirrors = e.getTypeMirrors();
-            for (TypeMirror typeMirror : typeMirrors) {
-                implClassNames.add(typeMirror.toString());
-            }
-        }
-        return implClassNames;
     }
 
     /**

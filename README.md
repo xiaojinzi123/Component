@@ -1,3 +1,5 @@
+**相信 Component 能成为最优秀的那个框架!**
+
 很多选型的人有这么个疑问: 有了 `ARouter` 为啥要有 `Component`. 
 我这里在这里做一个回答.
 
@@ -42,6 +44,8 @@
 等开源的组件化框架,有哪些一样或者更加优秀的点
 
 - [x] 支持标准 `URI` 的使用
+
+- [x] 支持跳转 `Fragment`(也就是跨组件获取`Fragment`)
 
 - [x] 支持 `androidx`,几乎没有其他组件化框架支持 `androidx` 的
 
@@ -107,6 +111,7 @@
   - [依赖和配置 For AndroidX](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE-AndroidX)
 - [Activity注解使用](https://github.com/xiaojinzi123/Component/wiki/RouterAnno-%E6%B3%A8%E8%A7%A3)
 - 跳转
+  - [跳转 Fragment](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-Fragment)
   - [跳转-接口路由的方式](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E6%8E%A5%E5%8F%A3%E8%B7%AF%E7%94%B1%E7%9A%84%E6%96%B9%E5%BC%8F)
   - [跳转-使用代码跳转](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%A0%81%E8%B7%B3%E8%BD%AC)
 - [拦截器](https://github.com/xiaojinzi123/Component/wiki/%E6%8B%A6%E6%88%AA%E5%99%A8)
@@ -131,6 +136,76 @@
 <img src="./imgs/qq_group1.JPG" width="260px" height="360px" />
 <img src="./imgs/qq_group2.JPG" width="260px" height="360px" />
 </div>
+
+## 版本更新日志
+
+#### v1.7.6
+
+- 增加"路由" `Fragment` 的功能(其实就是针对`Fragment`做的一个更简单的获取方式)
+    - 任意一个 `Fragment` 使用 `@FragmentAnno` 标记即可
+    - 如何使用请看, 路由的 wiki [跳转 Fragment](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-Fragment)
+- 增加 RxRouter 对路由 Fragment 的支持, 返回的是 Single<Fragment>
+- 重命名 RxService 为 RxServiceManager
+- 重命名 Service 为 ServiceManager
+
+#### v1.7.5.1 
+- 属性注入增加方法 `Component.inject(Object target, Intent intent)` 以便在 `onNewIntent` 方法中使用
+- 升级 RxJava 版本到 2.2.13
+- 升级其他库的版本至最新
+
+#### v1.7.5
+- 纠正接口 `IComponentApplication` 中 `onDestory` 方法的拼写错误, 正确为 `onDestroy`
+- 新增 afterEventAction, 表示跳转成功或者失败之后的回调, 不允许抛出异常, 会导致奔溃
+- 新增 afterErrorAction, 表示跳转失败之后的回调, 不允许抛出异常, 会导致奔溃
+- 修改内置的同样的路由请求在一秒内只能启动一次的错误日志的输出形式
+- 重构几个 `Action` 这块用户自定义的这块的执行顺序
+- 路由 `Api` 增加 `AfterErrorActionAnno` 和 `AfterEventActionAnno` 注解
+
+#### v1.7.4
+- Router.with() 方法支持空参数的形式了, 这种形式默认会使用 `Application` 作为 `Context`, 作者虽然支持了这种形式, 但是不建议平时使用的时候故意使用 `Application`. 因为当你没有用路由框架的之前, 你通常也会使用当前 `Activity Context` 的, 所以作者呼吁大家, 在有 `Activity Context` 的时候, 建议传入 `Activity` 的 `Context`
+
+#### v1.7.3.2
+- 路由跳转的进阶版路由 Api 支持返回 RxJava 的 Observable 啦, 支持 `Single`, `Completeable`
+
+#### v1.7.3.1
+- 修复 `Fragment` 无法自动注入的 `Bug`
+- 类 `ComponentConfig` 重命名为 `Component`
+- 源码中增加单独运行模块 `Module1` 的范例,通过新建了一个 `Module1Run` 的 `Module` 去运行
+
+#### v1.7.3.0
+- 支持属性的注入, 使用 `@FiledAutowireAnno` 注解
+- 支持 `Service` 的注入, 使用 `@ServiceAutowireAnno` 注解
+- 使用 `Component.inject(this)` 注入属性和 `Service`
+
+#### v1.7.2.3
+- 支持每一个业务 `Module` 可选的创建生命周期的实现类, 有些模块可能不需要, 那么这个对于用户来说又可以少一个配置
+
+#### v1.7.2.2
+- 增加 `@RouterAnno` 注解的 `hostAndPath` 的属性
+
+#### v1.7.2.1
+- 仓库变为 `jitpack`,一个可以提供更加稳定的依赖仓库
+
+#### v1.7.2
+- 支持路由 Api 中 `Activity Options` 的使用, 使用 `@OptionsAnno` 标记参数即可
+
+#### v1.7.1
+- 完善支持路由 api 的使用方式
+- 删除自定义跳转返回 void 的功能
+- 跳转增加支持 flag 和 category 的支持
+
+#### v1.7.0
+- 取消支持自定义跳转的时候方法的参数可以自定义的功能
+- 支持了全部属性的界面注入功能,通过 ParameterSupport.inject(this) 即可完成注入
+
+#### v1.6.1
+- 修复无法支持 `requestCode` 的问题
+
+#### v1.6.0
+- 支持了类似 `Retrofit` 的路由接口 `Api`, 详细的请看源码中的示例代码. 全局搜索 `@RouterApiAnno` 注解标记的类, 那些都是范例
+
+#### v1.6.0 之前的版本
+之前的版本就不再追溯了, 之后的每次更新我都会详细记录更新的日志
 
 ## License
 

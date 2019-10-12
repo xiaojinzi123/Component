@@ -127,12 +127,13 @@ public class RouterDegradeCenter implements IComponentCenterRouterDegrade {
         if (routerDegrade == null) {
             return;
         }
+        moduleRouterDegradeMap.remove(routerDegrade.getHost());
         isRouterDegradeListHaveChange = true;
     }
 
     @Override
     public void unregister(@NonNull String host) {
-        IComponentHostRouterDegrade moduleRouterDegrade = moduleRouterDegradeMap.remove(host);
+        IComponentHostRouterDegrade moduleRouterDegrade = moduleRouterDegradeMap.get(host);
         unregister(moduleRouterDegrade);
     }
 

@@ -62,9 +62,15 @@ public class ComponentUtil {
      */
     public static final String INTERCEPTOR = "InterceptorGenerated";
 
+    /**
+     * 生成的文件名称的后缀
+     */
+    public static final String Fragment = "FragmentGenerated";
+
     public static final String GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.GlobalInterceptorAnno";
     public static final String INTERCEPTOR_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.InterceptorAnno";
     public static final String ROUTER_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.RouterAnno";
+    public static final String FRAGMENTANNO_CLASS_NAME = "com.xiaojinzi.component.anno.FragmentAnno";
     public static final String ROUTER_DEGRADE_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.RouterDegradeAnno";
     public static final String MODULE_APP_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ModuleAppAnno";
     public static final String SERVICE_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ServiceAnno";
@@ -73,6 +79,7 @@ public class ComponentUtil {
     public static final String SERVICEAUTOWIREDANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ServiceAutowiredAnno";
     public static final String ROUTERAPIANNO_CLASS_NAME = "com.xiaojinzi.component.anno.router.RouterApiAnno";
 
+
     // 路由框架基础实现类的全类名
 
     public static final String UIROUTER_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "ModuleRouterImpl";
@@ -80,6 +87,7 @@ public class ComponentUtil {
     public static final String MODULE_APPLICATION_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "application" + DOT + "ModuleApplicationImpl";
     public static final String SERVICE_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "service" + DOT + "MuduleServiceImpl";
     public static final String INTERCEPTOR_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + "MuduleInterceptorImpl";
+    public static final String FRAGMENT_IMPL_CLASS_NAME = IMPL_OUTPUT_PKG + DOT + "fragment" + DOT + "MuduleFragmentImpl";
 
     /**
      * 首字母小写
@@ -121,6 +129,10 @@ public class ComponentUtil {
 
     public static String genHostInterceptorClassName(String host) {
         return IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + firstCharUpperCase(host) + INTERCEPTOR;
+    }
+
+    public static String genHostFragmentClassName(String host) {
+        return IMPL_OUTPUT_PKG + DOT + "fragment" + DOT + firstCharUpperCase(host) + Fragment;
     }
 
 }

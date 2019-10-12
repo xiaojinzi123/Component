@@ -13,7 +13,6 @@ import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.cache.Cache;
 import com.xiaojinzi.component.cache.CacheType;
 import com.xiaojinzi.component.cache.DefaultCacheFactory;
-import com.xiaojinzi.component.router.IComponentHostRouter;
 import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.Utils;
 
@@ -102,20 +101,10 @@ public class Router {
         routerListeners.remove(listener);
     }
 
-    public static void register(IComponentHostRouter router) {
-        RouterCenter.getInstance().register(router);
-    }
-
-    public static void register(@NonNull String host) {
-        RouterCenter.getInstance().register(host);
-    }
-
-    public static void unregister(IComponentHostRouter router) {
-        RouterCenter.getInstance().unregister(router);
-    }
-
-    public static void unregister(@NonNull String host) {
-        RouterCenter.getInstance().unregister(host);
+    @NonNull
+    public static FragmentNavigator with(@NonNull String fragmentFlag) {
+        Utils.checkNullPointer(fragmentFlag, "fragmentFlag");
+        return new FragmentNavigator(fragmentFlag);
     }
 
     /**
@@ -129,15 +118,17 @@ public class Router {
      *
      * @return 返回一个路由的 Builder
      */
+    @NonNull
     public static Navigator with() {
-
         return new Navigator();
     }
 
+    @NonNull
     public static Navigator with(@NonNull Context context) {
         return new Navigator(context);
     }
 
+    @NonNull
     public static Navigator with(@NonNull Fragment fragment) {
         return new Navigator(fragment);
     }
@@ -149,6 +140,7 @@ public class Router {
      * @param <T>
      * @return
      */
+    @NonNull
     public static <T> T withApi(@NonNull Class<T> apiClass) {
         T t = (T) apiClassCache.get(apiClass);
         if (t == null) {

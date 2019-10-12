@@ -34,9 +34,9 @@ import io.reactivex.functions.Function;
  *
  * @author : xiaojinzi 30212
  */
-public class RxService {
+public class RxServiceManager {
 
-    private RxService() {
+    private RxServiceManager() {
     }
 
     /**
@@ -55,13 +55,14 @@ public class RxService {
      * @param <T>
      * @return
      */
+    @NonNull
     public static <T> Single<T> with(@NonNull final Class<T> tClass) {
         return Single.fromCallable(new Callable<T>() {
             @Override
             public T call() throws Exception {
                 T tempImpl = null;
                 if (Utils.isMainThread()) {
-                    tempImpl = Service.get(tClass);
+                    tempImpl = ServiceManager.get(tClass);
                 } else {
                     // 这段代码如何为空的话会直接抛出异常
                     tempImpl = blockingGetInChildThread(tClass);
@@ -86,6 +87,7 @@ public class RxService {
      * @param <T>
      * @return
      */
+    @NonNull
     private static <T> T proxy(@NonNull final Class<T> tClass, final T serviceImpl) {
         return (T) Proxy.newProxyInstance(tClass.getClassLoader(), new Class[]{tClass}, new InvocationHandler() {
             @Override
@@ -171,7 +173,7 @@ public class RxService {
                 Utils.postActionToMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        T t = Service.get(tClass);
+                        T t = ServiceManager.get(tClass);
                         if (emitter.isDisposed()) {
                             return;
                         }

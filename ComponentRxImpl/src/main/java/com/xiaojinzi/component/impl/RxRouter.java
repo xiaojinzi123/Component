@@ -16,6 +16,7 @@ import com.xiaojinzi.component.error.ignore.ActivityResultException;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
+import com.xiaojinzi.component.impl.fragment.RxFragmentManager;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.NavigationDisposable;
@@ -43,137 +44,148 @@ import io.reactivex.functions.Function;
  */
 public class RxRouter extends Router {
 
-    /**
-     * requestCode 如果等于这个值,就表示是随机生成的
-     * 从 1-256 中随机生成一个,如果生成的正好是目前正在用的,会重新生成一个
-     */
-    public static final Integer RANDOM_REQUSET_CODE = Integer.MIN_VALUE;
+    @NonNull
+    public static RxFragmentNavigator with(@NonNull String fragmentFlag) {
+        Utils.checkNullPointer(fragmentFlag, "fragmentFlag");
+        return new RxFragmentNavigator(fragmentFlag);
+    }
 
-    public static final String TAG = "RxRouter";
-
-    public static Builder with() {
-        return new Builder();
+    public static RxNavigator with() {
+        return new RxNavigator();
     }
 
     /**
      * 这个方法父类也有一个静态的,但是父类返回的是 {@link Navigator} 而这个返回的是
-     * {@link RxRouter.Builder}
+     * {@link RxNavigator}
      *
      * @param context
      * @return
      */
-    public static Builder with(@NonNull Context context) {
-        return new Builder(context);
+    public static RxNavigator with(@NonNull Context context) {
+        return new RxNavigator(context);
     }
 
     /**
      * 这个方法父类也有一个静态的,但是父类返回的是 {@link Navigator} 而这个返回的是
-     * {@link RxRouter.Builder}
+     * {@link RxNavigator}
      *
      * @param fragment
      * @return
      */
-    public static Builder with(@NonNull Fragment fragment) {
-        return new Builder(fragment);
+    public static RxNavigator with(@NonNull Fragment fragment) {
+        return new RxNavigator(fragment);
     }
 
-    public static class Builder extends Navigator {
+    public static class RxFragmentNavigator extends FragmentNavigator {
 
-        private Builder() {
+        public RxFragmentNavigator(@NonNull String fragmentFlag) {
+            super(fragmentFlag);
+        }
+
+        @NonNull
+        public Single<Fragment> call(){
+            return RxFragmentManager.with(fragmentFlag, bundle);
+        }
+
+    }
+
+    public static class RxNavigator extends Navigator {
+
+        private RxNavigator() {
             super();
         }
 
-        private Builder(@NonNull Context context) {
+        private RxNavigator(@NonNull Context context) {
             super(context);
         }
 
-        private Builder(@NonNull Fragment fragment) {
+        private RxNavigator(@NonNull Fragment fragment) {
             super(fragment);
         }
 
         @Override
-        public Builder beforJumpAction(@NonNull Action action) {
-            return (Builder) super.beforJumpAction(action);
+        public RxNavigator beforJumpAction(@NonNull Action action) {
+            return (RxNavigator) super.beforJumpAction(action);
         }
 
         @Override
-        public Builder afterJumpAction(@NonNull Action action) {
-            return (Builder) super.afterJumpAction(action);
+        public RxNavigator afterJumpAction(@NonNull Action action) {
+            return (RxNavigator) super.afterJumpAction(action);
         }
 
         @Override
-        public Builder afterErrorAction(@Nullable Action action) {
-            return (Builder) super.afterErrorAction(action);
+        public RxNavigator afterErrorAction(@Nullable Action action) {
+            return (RxNavigator) super.afterErrorAction(action);
         }
 
         @Override
-        public Builder afterEventAction(@Nullable Action action) {
-            return (Builder) super.afterEventAction(action);
+        public RxNavigator afterEventAction(@Nullable Action action) {
+            return (RxNavigator) super.afterEventAction(action);
         }
 
         @Override
-        public Builder intentConsumer(@NonNull com.xiaojinzi.component.support.Consumer<Intent> intentConsumer) {
-            return (Builder) super.intentConsumer(intentConsumer);
+        public RxNavigator intentConsumer(@NonNull com.xiaojinzi.component.support.Consumer<Intent> intentConsumer) {
+            return (RxNavigator) super.intentConsumer(intentConsumer);
         }
 
         @Override
-        public Builder addIntentFlags(@Nullable Integer... flags) {
-            return (Builder) super.addIntentFlags(flags);
+        public RxNavigator addIntentFlags(@Nullable Integer... flags) {
+            return (RxNavigator) super.addIntentFlags(flags);
         }
 
         @Override
-        public Builder addIntentCategories(@Nullable String... categories) {
-            return (Builder) super.addIntentCategories(categories);
+        public RxNavigator addIntentCategories(@Nullable String... categories) {
+            return (RxNavigator) super.addIntentCategories(categories);
         }
 
         @Override
-        public Builder interceptors(@NonNull RouterInterceptor... interceptors) {
-            return (Builder) super.interceptors(interceptors);
+        public RxNavigator interceptors(@NonNull RouterInterceptor... interceptors) {
+            return (RxNavigator) super.interceptors(interceptors);
         }
 
         @Override
-        public Builder interceptors(@NonNull Class<? extends RouterInterceptor>... interceptors) {
-            return (Builder) super.interceptors(interceptors);
+        public RxNavigator interceptors(@NonNull Class<? extends RouterInterceptor>... interceptors) {
+            return (RxNavigator) super.interceptors(interceptors);
         }
 
         @Override
-        public Builder interceptorNames(@NonNull String... interceptors) {
-            return (Builder) super.interceptorNames(interceptors);
+        public RxNavigator interceptorNames(@NonNull String... interceptors) {
+            return (RxNavigator) super.interceptorNames(interceptors);
         }
 
         @Override
-        public Builder url(@NonNull String url) {
-            return (Builder) super.url(url);
+        public RxNavigator url(@NonNull String url) {
+            return (RxNavigator) super.url(url);
         }
 
         @Override
-        public Builder scheme(@NonNull String scheme) {
-            return (Builder) super.scheme(scheme);
+        public RxNavigator scheme(@NonNull String scheme) {
+            return (RxNavigator) super.scheme(scheme);
         }
 
         @Override
-        public Builder hostAndPath(@NonNull String hostAndPath) {
-            return (Builder) super.hostAndPath(hostAndPath);
+        public RxNavigator hostAndPath(@NonNull String hostAndPath) {
+            return (RxNavigator) super.hostAndPath(hostAndPath);
         }
 
         @Override
-        public Builder host(@NonNull String host) {
-            return (Builder) super.host(host);
+        public RxNavigator host(@NonNull String host) {
+            return (RxNavigator) super.host(host);
         }
 
         @Override
-        public Builder path(@NonNull String path) {
-            return (Builder) super.path(path);
+        public RxNavigator path(@NonNull String path) {
+            return (RxNavigator) super.path(path);
         }
 
         @Override
-        public Builder requestCode(@Nullable Integer requestCode) {
-            return (Builder) super.requestCode(requestCode);
+        public RxNavigator requestCode(@Nullable Integer requestCode) {
+            return (RxNavigator) super.requestCode(requestCode);
         }
 
         @Override
-        public Builder options(@Nullable Bundle options) {
-            return (Builder) super.options(options);
+        public RxNavigator options(@Nullable Bundle options) {
+            return (RxNavigator) super.options(options);
         }
 
         /**
@@ -181,193 +193,193 @@ public class RxRouter extends Router {
          *
          * @return
          */
-        public Builder requestCodeRandom() {
+        public RxNavigator requestCodeRandom() {
             return requestCode(RANDOM_REQUSET_CODE);
         }
 
         @Override
-        public Builder putBundle(@NonNull String key, @Nullable Bundle bundle) {
-            return (Builder) super.putBundle(key, bundle);
+        public RxNavigator putBundle(@NonNull String key, @Nullable Bundle bundle) {
+            return (RxNavigator) super.putBundle(key, bundle);
         }
 
         @Override
-        public Builder putAll(@NonNull Bundle bundle) {
-            return (Builder) super.putAll(bundle);
+        public RxNavigator putAll(@NonNull Bundle bundle) {
+            return (RxNavigator) super.putAll(bundle);
         }
 
         @Override
-        public Builder putCharSequence(@NonNull String key, @Nullable CharSequence value) {
-            return (Builder) super.putCharSequence(key, value);
+        public RxNavigator putCharSequence(@NonNull String key, @Nullable CharSequence value) {
+            return (RxNavigator) super.putCharSequence(key, value);
         }
 
         @Override
-        public Builder putCharSequenceArray(@NonNull String key, @Nullable CharSequence[] value) {
-            return (Builder) super.putCharSequenceArray(key, value);
+        public RxNavigator putCharSequenceArray(@NonNull String key, @Nullable CharSequence[] value) {
+            return (RxNavigator) super.putCharSequenceArray(key, value);
         }
 
         @Override
-        public Builder putCharSequenceArrayList(@NonNull String key, @Nullable ArrayList<CharSequence> value) {
-            return (Builder) super.putCharSequenceArrayList(key, value);
+        public RxNavigator putCharSequenceArrayList(@NonNull String key, @Nullable ArrayList<CharSequence> value) {
+            return (RxNavigator) super.putCharSequenceArrayList(key, value);
         }
 
         @Override
-        public Builder putByte(@NonNull String key, @Nullable byte value) {
-            return (Builder) super.putByte(key, value);
+        public RxNavigator putByte(@NonNull String key, @Nullable byte value) {
+            return (RxNavigator) super.putByte(key, value);
         }
 
         @Override
-        public Builder putByteArray(@NonNull String key, @Nullable byte[] value) {
-            return (Builder) super.putByteArray(key, value);
+        public RxNavigator putByteArray(@NonNull String key, @Nullable byte[] value) {
+            return (RxNavigator) super.putByteArray(key, value);
         }
 
         @Override
-        public Builder putChar(@NonNull String key, @Nullable char value) {
-            return (Builder) super.putChar(key, value);
+        public RxNavigator putChar(@NonNull String key, @Nullable char value) {
+            return (RxNavigator) super.putChar(key, value);
         }
 
         @Override
-        public Builder putCharArray(@NonNull String key, @Nullable char[] value) {
-            return (Builder) super.putCharArray(key, value);
+        public RxNavigator putCharArray(@NonNull String key, @Nullable char[] value) {
+            return (RxNavigator) super.putCharArray(key, value);
         }
 
         @Override
-        public Builder putBoolean(@NonNull String key, @Nullable boolean value) {
-            return (Builder) super.putBoolean(key, value);
+        public RxNavigator putBoolean(@NonNull String key, @Nullable boolean value) {
+            return (RxNavigator) super.putBoolean(key, value);
         }
 
         @Override
-        public Builder putBooleanArray(@NonNull String key, @Nullable boolean[] value) {
-            return (Builder) super.putBooleanArray(key, value);
+        public RxNavigator putBooleanArray(@NonNull String key, @Nullable boolean[] value) {
+            return (RxNavigator) super.putBooleanArray(key, value);
         }
 
         @Override
-        public Builder putString(@NonNull String key, @Nullable String value) {
-            return (Builder) super.putString(key, value);
+        public RxNavigator putString(@NonNull String key, @Nullable String value) {
+            return (RxNavigator) super.putString(key, value);
         }
 
         @Override
-        public Builder putStringArray(@NonNull String key, @Nullable String[] value) {
-            return (Builder) super.putStringArray(key, value);
+        public RxNavigator putStringArray(@NonNull String key, @Nullable String[] value) {
+            return (RxNavigator) super.putStringArray(key, value);
         }
 
         @Override
-        public Builder putStringArrayList(@NonNull String key, @Nullable ArrayList<String> value) {
-            return (Builder) super.putStringArrayList(key, value);
+        public RxNavigator putStringArrayList(@NonNull String key, @Nullable ArrayList<String> value) {
+            return (RxNavigator) super.putStringArrayList(key, value);
         }
 
         @Override
-        public Builder putShort(@NonNull String key, @Nullable short value) {
-            return (Builder) super.putShort(key, value);
+        public RxNavigator putShort(@NonNull String key, @Nullable short value) {
+            return (RxNavigator) super.putShort(key, value);
         }
 
         @Override
-        public Builder putShortArray(@NonNull String key, @Nullable short[] value) {
-            return (Builder) super.putShortArray(key, value);
+        public RxNavigator putShortArray(@NonNull String key, @Nullable short[] value) {
+            return (RxNavigator) super.putShortArray(key, value);
         }
 
         @Override
-        public Builder putInt(@NonNull String key, @Nullable int value) {
-            return (Builder) super.putInt(key, value);
+        public RxNavigator putInt(@NonNull String key, @Nullable int value) {
+            return (RxNavigator) super.putInt(key, value);
         }
 
         @Override
-        public Builder putIntArray(@NonNull String key, @Nullable int[] value) {
-            return (Builder) super.putIntArray(key, value);
+        public RxNavigator putIntArray(@NonNull String key, @Nullable int[] value) {
+            return (RxNavigator) super.putIntArray(key, value);
         }
 
         @Override
-        public Builder putIntegerArrayList(@NonNull String key, @Nullable ArrayList<Integer> value) {
-            return (Builder) super.putIntegerArrayList(key, value);
+        public RxNavigator putIntegerArrayList(@NonNull String key, @Nullable ArrayList<Integer> value) {
+            return (RxNavigator) super.putIntegerArrayList(key, value);
         }
 
         @Override
-        public Builder putLong(@NonNull String key, @Nullable long value) {
-            return (Builder) super.putLong(key, value);
+        public RxNavigator putLong(@NonNull String key, @Nullable long value) {
+            return (RxNavigator) super.putLong(key, value);
         }
 
         @Override
-        public Builder putLongArray(@NonNull String key, @Nullable long[] value) {
-            return (Builder) super.putLongArray(key, value);
+        public RxNavigator putLongArray(@NonNull String key, @Nullable long[] value) {
+            return (RxNavigator) super.putLongArray(key, value);
         }
 
         @Override
-        public Builder putFloat(@NonNull String key, @Nullable float value) {
-            return (Builder) super.putFloat(key, value);
+        public RxNavigator putFloat(@NonNull String key, @Nullable float value) {
+            return (RxNavigator) super.putFloat(key, value);
         }
 
         @Override
-        public Builder putFloatArray(@NonNull String key, @Nullable float[] value) {
-            return (Builder) super.putFloatArray(key, value);
+        public RxNavigator putFloatArray(@NonNull String key, @Nullable float[] value) {
+            return (RxNavigator) super.putFloatArray(key, value);
         }
 
         @Override
-        public Builder putDouble(@NonNull String key, @Nullable double value) {
-            return (Builder) super.putDouble(key, value);
+        public RxNavigator putDouble(@NonNull String key, @Nullable double value) {
+            return (RxNavigator) super.putDouble(key, value);
         }
 
         @Override
-        public Builder putDoubleArray(@NonNull String key, @Nullable double[] value) {
-            return (Builder) super.putDoubleArray(key, value);
+        public RxNavigator putDoubleArray(@NonNull String key, @Nullable double[] value) {
+            return (RxNavigator) super.putDoubleArray(key, value);
         }
 
         @Override
-        public Builder putParcelable(@NonNull String key, @Nullable Parcelable value) {
-            return (Builder) super.putParcelable(key, value);
+        public RxNavigator putParcelable(@NonNull String key, @Nullable Parcelable value) {
+            return (RxNavigator) super.putParcelable(key, value);
         }
 
         @Override
-        public Builder putParcelableArray(@NonNull String key, @Nullable Parcelable[] value) {
-            return (Builder) super.putParcelableArray(key, value);
+        public RxNavigator putParcelableArray(@NonNull String key, @Nullable Parcelable[] value) {
+            return (RxNavigator) super.putParcelableArray(key, value);
         }
 
         @Override
-        public Builder putParcelableArrayList(@NonNull String key, @Nullable ArrayList<? extends Parcelable> value) {
-            return (Builder) super.putParcelableArrayList(key, value);
+        public RxNavigator putParcelableArrayList(@NonNull String key, @Nullable ArrayList<? extends Parcelable> value) {
+            return (RxNavigator) super.putParcelableArrayList(key, value);
         }
 
         @Override
-        public Builder putSparseParcelableArray(@NonNull String key, @Nullable SparseArray<? extends Parcelable> value) {
-            return (Builder) super.putSparseParcelableArray(key, value);
+        public RxNavigator putSparseParcelableArray(@NonNull String key, @Nullable SparseArray<? extends Parcelable> value) {
+            return (RxNavigator) super.putSparseParcelableArray(key, value);
         }
 
         @Override
-        public Builder putSerializable(@NonNull String key, @Nullable Serializable value) {
-            return (Builder) super.putSerializable(key, value);
+        public RxNavigator putSerializable(@NonNull String key, @Nullable Serializable value) {
+            return (RxNavigator) super.putSerializable(key, value);
         }
 
         @Override
-        public Builder query(@NonNull String queryName, @Nullable String queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+        public RxNavigator query(@NonNull String queryName, @Nullable String queryValue) {
+            return (RxNavigator) super.query(queryName, queryValue);
         }
 
         @Override
-        public Builder query(@NonNull String queryName, boolean queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+        public RxNavigator query(@NonNull String queryName, boolean queryValue) {
+            return (RxNavigator) super.query(queryName, queryValue);
         }
 
         @Override
-        public Builder query(@NonNull String queryName, byte queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+        public RxNavigator query(@NonNull String queryName, byte queryValue) {
+            return (RxNavigator) super.query(queryName, queryValue);
         }
 
         @Override
-        public Builder query(@NonNull String queryName, int queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+        public RxNavigator query(@NonNull String queryName, int queryValue) {
+            return (RxNavigator) super.query(queryName, queryValue);
         }
 
         @Override
-        public Builder query(@NonNull String queryName, float queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+        public RxNavigator query(@NonNull String queryName, float queryValue) {
+            return (RxNavigator) super.query(queryName, queryValue);
         }
 
         @Override
-        public Builder query(@NonNull String queryName, long queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+        public RxNavigator query(@NonNull String queryName, long queryValue) {
+            return (RxNavigator) super.query(queryName, queryValue);
         }
 
         @Override
-        public Builder query(@NonNull String queryName, double queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+        public RxNavigator query(@NonNull String queryName, double queryValue) {
+            return (RxNavigator) super.query(queryName, queryValue);
         }
 
         /**

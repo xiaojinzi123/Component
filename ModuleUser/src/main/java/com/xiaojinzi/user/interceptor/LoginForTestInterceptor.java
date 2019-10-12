@@ -12,7 +12,7 @@ import com.xiaojinzi.component.anno.InterceptorAnno;
 import com.xiaojinzi.component.error.ServiceNotFoundException;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.RxRouter;
-import com.xiaojinzi.component.impl.service.Service;
+import com.xiaojinzi.component.impl.service.ServiceManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +34,7 @@ public class LoginForTestInterceptor implements RouterInterceptor {
     @Override
     public void intercept(final Chain chain) throws Exception {
         final Context context = chain.request().getRawContext();
-        UserService userService = Service.get(UserService.class);
+        UserService userService = ServiceManager.get(UserService.class);
         if (chain.request().uri.toString().contains("user/login")) {
             chain.proceed(chain.request());
             return;

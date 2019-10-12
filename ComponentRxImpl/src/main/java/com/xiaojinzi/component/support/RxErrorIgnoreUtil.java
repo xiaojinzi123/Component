@@ -2,14 +2,15 @@ package com.xiaojinzi.component.support;
 
 import androidx.annotation.NonNull;
 
-import com.xiaojinzi.component.error.ignore.ActivityResultException;
-import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
-import com.xiaojinzi.component.error.ignore.NavigationFailException;
+import com.xiaojinzi.component.error.FragmentNotFoundException;
 import com.xiaojinzi.component.error.RxJavaException;
 import com.xiaojinzi.component.error.ServiceInvokeException;
 import com.xiaojinzi.component.error.ServiceNotFoundException;
-import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
 import com.xiaojinzi.component.error.UnknowException;
+import com.xiaojinzi.component.error.ignore.ActivityResultException;
+import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
+import com.xiaojinzi.component.error.ignore.NavigationFailException;
+import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
 
 import io.reactivex.plugins.RxJavaPlugins;
 
@@ -33,8 +34,10 @@ public class RxErrorIgnoreUtil {
             ActivityResultException.class,
             TargetActivityNotFoundException.class,
             InterceptorNotFoundException.class,
-            // RxService 中需要忽略的错误
+            // RxServiceManager 中需要忽略的错误
             ServiceNotFoundException.class,
+            // RxFragmentManager 中需要忽略的错误
+            FragmentNotFoundException.class,
             ServiceInvokeException.class,
             RxJavaException.class,
             // 任何地方可以使用的一个未知的错误,也会被忽略

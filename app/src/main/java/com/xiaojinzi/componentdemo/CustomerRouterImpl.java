@@ -82,7 +82,7 @@ public class CustomerRouterImpl {
         return intent;
     }
 
-    @ServiceAnno(AnnoMethodService.class)
+    @ServiceAnno(value = AnnoMethodService.class)
     public static AnnoMethodService getTestService() {
         return (AnnoMethodService) Proxy.newProxyInstance(AnnoMethodService.class.getClassLoader(), new Class[]{AnnoMethodService.class}, new InvocationHandler() {
             @Override

@@ -6,12 +6,15 @@ import androidx.annotation.Nullable;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.application.IComponentHostApplication;
-import com.xiaojinzi.component.application.IComponentModuleApplication;
+import com.xiaojinzi.component.application.IComponentCenterApplication;
 import com.xiaojinzi.component.impl.RouterCenter;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
+import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.LogUtil;
+import com.xiaojinzi.component.support.Utils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -20,7 +23,7 @@ import java.util.Map;
  *
  * @author xiaojinzi 30212
  */
-public class ModuleManager implements IComponentModuleApplication {
+public class ModuleManager implements IComponentCenterApplication {
 
     /**
      * 单例对象
@@ -85,13 +88,18 @@ public class ModuleManager implements IComponentModuleApplication {
     }
 
     @Override
-    public void unregister(@NonNull IComponentHostApplication moduleApp) {
+    public void unregister(@Nullable IComponentHostApplication moduleApp) {
+        if (moduleApp == null) {
+            return;
+        }
+        moduleApplicationMap.remove(moduleApp.getHost());
         moduleApp.onDestroy();
     }
 
     @Override
     public void unregister(@NonNull String host) {
-        IComponentHostApplication moduleApp = moduleApplicationMap.remove(host);
+        Utils.checkNullPointer(host, "host");
+        IComponentHostApplication moduleApp = moduleApplicationMap.get(host);
         if (moduleApp == null) {
             LogUtil.log("模块 '" + host + "' 卸载失败");
         } else {
@@ -99,15 +107,24 @@ public class ModuleManager implements IComponentModuleApplication {
         }
     }
 
+    public void unregisterAll() {
+        // 创建一个 HashSet 是为了能循环的时候删除集合中的元素
+        for (String host : new HashSet<>(moduleApplicationMap.keySet())) {
+            unregister(host);
+        }
+    }
+
     @Nullable
-    public static IComponentHostApplication findModuleApplication(String host) {
-        IComponentHostApplication result = null;
-        try {
-            // 先找正常的
-            Class<?> clazz = Class.forName(ComponentUtil.genHostModuleApplicationClassName(host));
-            result = (IComponentHostApplication) clazz.newInstance();
-        } catch (Exception ignore) {
-            // ignore
+    public static IComponentHostApplication findModuleApplication(@NonNull String host) {
+        IComponentHostApplication result = ASMUtil.findModuleApplicationAsmImpl(host);
+        if (result == null) {
+            try {
+                // 先找正常的
+                Class<?> clazz = Class.forName(ComponentUtil.genHostModuleApplicationClassName(host));
+                result = (IComponentHostApplication) clazz.newInstance();
+            } catch (Exception ignore) {
+                // ignore
+            }
         }
         if (result == null) {
             try {

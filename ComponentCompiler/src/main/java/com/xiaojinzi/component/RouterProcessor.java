@@ -41,8 +41,6 @@ import javax.lang.model.type.TypeMirror;
 @SupportedAnnotationTypes({com.xiaojinzi.component.ComponentUtil.ROUTER_ANNO_CLASS_NAME})
 public class RouterProcessor extends BaseHostProcessor {
 
-    private static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.xiaojinzi.component.bean.CustomerIntentCall";
-
     private static final String NAME_OF_REQUEST = "request";
 
     private ClassName customerIntentCallClassName;
@@ -64,8 +62,8 @@ public class RouterProcessor extends BaseHostProcessor {
         routerBeanTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_BEAN_CLASS_NAME);
         final TypeElement exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
         exceptionClassName = ClassName.get(exceptionTypeElement);
-        final TypeElement customerIntentCallTypeElement = mElements.getTypeElement(CUSTOMER_INTENT_CALL_CLASS_NAME);
-        intentTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.ANDROID_INTENT);
+        final TypeElement customerIntentCallTypeElement = mElements.getTypeElement(ComponentConstants.CUSTOMER_INTENT_CALL_CLASS_NAME);
+        intentTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_INTENT);
         intentTypeMirror = intentTypeElement.asType();
         final TypeElement routerRequestTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_REQUEST_CLASS_NAME);
         routerRequestTypeMirror = routerRequestTypeElement.asType();
