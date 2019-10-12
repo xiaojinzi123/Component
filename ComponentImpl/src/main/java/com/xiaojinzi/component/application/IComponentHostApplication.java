@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.application;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * 每一个实现类都必须返回对应的 Host
