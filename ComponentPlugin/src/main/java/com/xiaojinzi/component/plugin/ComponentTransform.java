@@ -12,6 +12,9 @@ import com.android.build.api.transform.TransformOutputProvider;
 import com.android.build.gradle.internal.pipeline.TransformManager;
 import com.android.utils.FileUtils;
 
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -19,6 +22,8 @@ import java.util.Enumeration;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import jdk.internal.org.objectweb.asm.Opcodes;
 
 public class ComponentTransform extends Transform {
 
