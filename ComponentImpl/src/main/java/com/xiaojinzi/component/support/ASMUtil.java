@@ -1,9 +1,7 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.xiaojinzi.component.application.IComponentHostApplication;
+import com.xiaojinzi.component.test.TestIComponentHostApplication;
 
 /**
  * 下面的方法都是空方法, 如果用户用了 Gradele 插件去配置各个模块的名称, 那么下面的空方法都会被 Gradle 插件
@@ -21,15 +19,10 @@ public class ASMUtil {
      * @param host 对应模块的名称
      * @return 返回对应模块的 Application {@link IComponentHostApplication}
      */
-    @Nullable
-    public static IComponentHostApplication findModuleApplicationAsmImpl(@NonNull String host) {
-//        if ("user1".equals(host)) {
-//            return null;
-//        } else if ("user2".equals(host)) {
-//            return null;
-//        } else if ("user3".equals(host)) {
-//            return null;
-//        }
+    public static IComponentHostApplication findModuleApplicationAsmImpl(String host) {
+        if ("user1".equals(host)) {
+            return new TestIComponentHostApplication();
+        }
         return null;
     }
 
