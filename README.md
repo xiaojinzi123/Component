@@ -155,8 +155,8 @@
 ## 扫码进群
 
 <div>
-    <img src="./imgs/qq_group1.JPG" width="260px" height="360px" />
-    <img src="./imgs/qq_group2.JPG" width="260px" height="360px" />
+    <img src="./imgs/qq_group1.JPG" width="210px" height="300px" />
+    <img src="./imgs/qq_group2.JPG" width="210px" height="300px" />
 </div>
 
 ## 如果你觉得项目不错, 就请我喝杯咖啡吧! 一块钱也是爱!
