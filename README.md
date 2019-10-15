@@ -161,10 +161,7 @@
 
 ## 如果你觉得项目不错, 就请我喝杯咖啡吧! 一块钱也是爱!
 
-</div>
-    <img width="180px" height=200 src="./imgs/alipayCollectCode.png" />
-    <img width="180px" height=200 src="./imgs/wechatCollectCode.png" />
-</div>
+<img height=200 src="./imgs/collectQRCode.png" />
 
 ## 版本更新日志
 
