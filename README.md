@@ -155,9 +155,14 @@
 ## 扫码进群
 
 <div>
-<img src="./imgs/qq_group1.JPG" width="260px" height="360px" />
-<img src="./imgs/qq_group2.JPG" width="260px" height="360px" />
+    <img src="./imgs/qq_group1.JPG" width="260px" height="360px" />
+    <img src="./imgs/qq_group2.JPG" width="260px" height="360px" />
 </div>
+
+## 如果你觉得项目不错, 就请我喝杯咖啡吧! 一块钱也是爱!
+
+<img height=200 src="./imgs/alipayCollectCode.png" />
+<img height=200 src="./imgs/wechatCollectCode.png" />
 
 ## 版本更新日志
 
