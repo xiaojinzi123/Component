@@ -1,7 +1,8 @@
 package com.xiaojinzi.component.impl;
 
 import android.content.Intent;
-import android.support.annotation.AnyThread;
+
+import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
