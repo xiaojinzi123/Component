@@ -75,7 +75,7 @@ public class MainAct extends AppCompatActivity {
                 .with(this)
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.TEST_WEB_ROUTER)
-                .navigate();
+                .forward();
     }
 
     public void testQuality(View view) {
@@ -89,7 +89,7 @@ public class MainAct extends AppCompatActivity {
                 .with(this)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_SERVICE)
-                .navigate();
+                .forward();
     }
 
     @Override
