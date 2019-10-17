@@ -455,9 +455,19 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 为了拿到 {@link ActivityResult#resultCode}
      *
      * @param callback 回调方法
-     * @return
+     */
+    @AnyThread
+    public void forwardForResultCode(@NonNull final BiCallback<Integer> callback) {
+        navigateForResultCode(callback);
+    }
+
+    /**
+     * 为了拿到 {@link ActivityResult#resultCode}
+     *
+     * @param callback 回调方法
      */
     @NonNull
+    @AnyThread
     public NavigationDisposable navigateForResultCode(@NonNull final BiCallback<Integer> callback) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Integer>(callback) {
             @NonNull
@@ -472,9 +482,20 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 为了拿到 {@link ActivityResult#resultCode}
      *
      * @param callback 回调方法
-     * @return
+     */
+    @AnyThread
+    public void forwardForResultCodeMatch(@NonNull final Callback callback,
+                                          final int expectedResultCode) {
+        navigateForResultCodeMatch(callback, expectedResultCode);
+    }
+
+    /**
+     * 为了拿到 {@link ActivityResult#resultCode}
+     *
+     * @param callback 回调方法
      */
     @NonNull
+    @AnyThread
     public NavigationDisposable navigateForResultCodeMatch(@NonNull final Callback callback,
                                                            final int expectedResultCode) {
         return navigateForResult(new BiCallback<ActivityResult>() {
@@ -503,9 +524,21 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 为了拿到 {@link Intent}
      *
      * @param callback 回调方法
+     */
+    @AnyThread
+    public void forwardForIntentAndResultCodeMatch(@NonNull final BiCallback<Intent> callback,
+                                                   final int expectedResultCode) {
+        navigateForIntentAndResultCodeMatch(callback, expectedResultCode);
+    }
+
+    /**
+     * 为了拿到 {@link Intent}
+     *
+     * @param callback 回调方法
      * @return
      */
     @NonNull
+    @AnyThread
     public NavigationDisposable navigateForIntentAndResultCodeMatch(@NonNull final BiCallback<Intent> callback,
                                                                     final int expectedResultCode) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Intent>(callback) {
@@ -523,7 +556,19 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 回调方法
      * @return
      */
+    @AnyThread
+    public void forwardForIntent(@NonNull final BiCallback<Intent> callback) {
+        navigateForIntent(callback);
+    }
+
+    /**
+     * 为了拿到 {@link Intent}
+     *
+     * @param callback 回调方法
+     * @return
+     */
     @NonNull
+    @AnyThread
     public NavigationDisposable navigateForIntent(@NonNull final BiCallback<Intent> callback) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Intent>(callback) {
             @NonNull
@@ -532,6 +577,16 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 return activityResult.intentCheckAndGet();
             }
         });
+    }
+
+    /**
+     * 为了拿 {@link ActivityResult}
+     *
+     * @param callback 这里是为了拿返回的东西是不可以为空的
+     */
+    @AnyThread
+    public void forwardForResult(@NonNull final BiCallback<ActivityResult> callback) {
+        navigateForResult(callback);
     }
 
 
@@ -553,7 +608,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
         final NavigationDisposable.ProxyNavigationDisposableImpl proxyDisposable =
                 new NavigationDisposable.ProxyNavigationDisposableImpl();
-
         // 主线程执行
         Utils.postActionToMainThread(new Runnable() {
             @Override
@@ -568,9 +622,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
             }
         });
-
         return proxyDisposable;
-
     }
 
     /**
@@ -578,9 +630,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 用户收到的回调可能是 error,但是全局的监听可能是 cancel,其实这个问题也能解决,
      * 就是路由调用之前提前通过方法 {@link Navigator#build()} 提前构建一个 {@link RouterRequest} 出来判断
      * 但是没有那个必要去做这件事情了,等到有必要的时候再说,基本不会出现并且出现了也不是什么问题
-     *
-     * @param biCallback
-     * @return
      */
     @NonNull
     @MainThread
@@ -670,11 +719,30 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
+     * 没有返回值
+     */
+    @AnyThread
+    public void forward() {
+        navigate(null);
+    }
+
+    /**
      * @return 返回的对象有可能是一个空实现对象 {@link Router#emptyNavigationDisposable}
      */
     @NonNull
+    @AnyThread
     public NavigationDisposable navigate() {
         return navigate(null);
+    }
+
+    /**
+     * 没有返回值
+     *
+     * @param callback 路由的回调
+     */
+    @AnyThread
+    public void forward(@Nullable final Callback callback) {
+        navigate(callback);
     }
 
     /**
