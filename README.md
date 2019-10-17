@@ -165,6 +165,10 @@
 
 ## 版本更新日志
 
+#### v1.7.6.1
+
+- 增加全套的 forward 方法, 没有 NavigationDisposable 返回值
+
 #### v1.7.6
 
 - 增加"路由" `Fragment` 的功能(其实就是针对`Fragment`做的一个更简单的获取方式)
