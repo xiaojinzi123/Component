@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.AnyThread;
+import android.support.annotation.CheckResult;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -468,6 +469,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     public NavigationDisposable navigateForResultCode(@NonNull final BiCallback<Integer> callback) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Integer>(callback) {
             @NonNull
@@ -496,6 +498,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     public NavigationDisposable navigateForResultCodeMatch(@NonNull final Callback callback,
                                                            final int expectedResultCode) {
         return navigateForResult(new BiCallback<ActivityResult>() {
@@ -539,6 +542,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     public NavigationDisposable navigateForIntentAndResultCodeMatch(@NonNull final BiCallback<Intent> callback,
                                                                     final int expectedResultCode) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Intent>(callback) {
@@ -569,6 +573,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     public NavigationDisposable navigateForIntent(@NonNull final BiCallback<Intent> callback) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Intent>(callback) {
             @NonNull
@@ -598,6 +603,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     public NavigationDisposable navigateForResult(@NonNull final BiCallback<ActivityResult> callback) {
         return realNavigateForResult(callback);
     }
@@ -615,6 +621,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     public NavigationDisposable navigate() {
         return navigate(null);
     }
@@ -636,8 +643,9 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 回调
      * @return 返回的对象有可能是一个空实现对象 {@link Router#emptyNavigationDisposable},可以取消路由或者获取原始request对象
      */
-    @AnyThread
     @NonNull
+    @AnyThread
+    @CheckResult
     public synchronized NavigationDisposable navigate(@Nullable final Callback callback) {
         // 构建请求对象
         RouterRequest originalRequest = null;

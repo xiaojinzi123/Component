@@ -2,6 +2,7 @@ package com.xiaojinzi.component.impl;
 
 import android.content.Intent;
 import android.support.annotation.AnyThread;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -26,6 +27,7 @@ public interface Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     NavigationDisposable navigate();
 
     /**
@@ -44,6 +46,7 @@ public interface Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     NavigationDisposable navigate(@Nullable final Callback callback);
 
     /**
@@ -62,6 +65,7 @@ public interface Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     NavigationDisposable navigateForResult(@NonNull final BiCallback<ActivityResult> callback);
 
     /**
@@ -80,6 +84,7 @@ public interface Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     NavigationDisposable navigateForIntent(@NonNull final BiCallback<Intent> callback);
 
     /**
@@ -101,6 +106,7 @@ public interface Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     NavigationDisposable navigateForIntentAndResultCodeMatch(@NonNull final BiCallback<Intent> callback,
                                                              final int expectedResultCode);
 
@@ -123,6 +129,7 @@ public interface Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     NavigationDisposable navigateForResultCodeMatch(@NonNull final Callback callback,
                                                     final int expectedResultCode);
 
@@ -142,6 +149,7 @@ public interface Call {
      */
     @NonNull
     @AnyThread
+    @CheckResult
     NavigationDisposable navigateForResultCode(@NonNull final BiCallback<Integer> callback);
 
 }
