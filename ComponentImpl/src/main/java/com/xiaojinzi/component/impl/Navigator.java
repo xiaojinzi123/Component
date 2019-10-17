@@ -602,6 +602,91 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return realNavigateForResult(callback);
     }
 
+    /**
+     * 没有返回值
+     */
+    @AnyThread
+    public void forward() {
+        navigate(null);
+    }
+
+    /**
+     * @return 返回的对象有可能是一个空实现对象 {@link Router#emptyNavigationDisposable}
+     */
+    @NonNull
+    @AnyThread
+    public NavigationDisposable navigate() {
+        return navigate(null);
+    }
+
+    /**
+     * 没有返回值
+     *
+     * @param callback 路由的回调
+     */
+    @AnyThread
+    public void forward(@Nullable final Callback callback) {
+        navigate(callback);
+    }
+
+    /**
+     * 执行跳转的具体逻辑
+     * 返回值不可以为空,是为了使用的时候更加的顺溜,不用判断空
+     *
+     * @param callback 回调
+     * @return 返回的对象有可能是一个空实现对象 {@link Router#emptyNavigationDisposable},可以取消路由或者获取原始request对象
+     */
+    @AnyThread
+    @NonNull
+    public synchronized NavigationDisposable navigate(@Nullable final Callback callback) {
+        // 构建请求对象
+        RouterRequest originalRequest = null;
+        try {
+            // 如果用户没填写 Context 或者 Fragment 默认使用 Application
+            useDefaultApplication();
+            // 路由前的检查
+            onCheck();
+            // 标记这个 builder 已经不能使用了
+            isFinish = true;
+            // 生成路由请求对象
+            originalRequest = build();
+            // 创建整个拦截器到最终跳转需要使用的 Callback
+            final InterceptorCallback interceptorCallback = new InterceptorCallback(originalRequest, callback);
+            // Fragment 的销毁的自动取消
+            if (originalRequest.fragment != null) {
+                Router.mNavigationDisposableList.add(interceptorCallback);
+            }
+            // Activity 的自动取消
+            if (Utils.getActivityFromContext(originalRequest.context) != null) {
+                Router.mNavigationDisposableList.add(interceptorCallback);
+            }
+            // 真正的去执行路由
+            realNavigate(originalRequest, customInterceptors, interceptorCallback);
+            // 返回对象
+            return interceptorCallback;
+        } catch (Exception e) { // 发生路由错误的时候
+            RouterErrorResult errorResult = new RouterErrorResult(originalRequest, e);
+            RouterUtil.errorCallback(callback, errorResult);
+        } finally {
+            // 释放资源
+            context = null;
+            fragment = null;
+            scheme = null;
+            url = null;
+            host = null;
+            path = null;
+            requestCode = null;
+            queryMap = null;
+            bundle = null;
+            intentConsumer = null;
+            beforJumpAction = null;
+            afterJumpAction = null;
+            afterErrorAction = null;
+            afterEventAction = null;
+        }
+        return Router.emptyNavigationDisposable;
+    }
+
     @NonNull
     @AnyThread
     private NavigationDisposable realNavigateForResult(@NonNull final BiCallback<ActivityResult> callback) {
@@ -716,91 +801,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
             return Router.emptyNavigationDisposable;
         }
 
-    }
-
-    /**
-     * 没有返回值
-     */
-    @AnyThread
-    public void forward() {
-        navigate(null);
-    }
-
-    /**
-     * @return 返回的对象有可能是一个空实现对象 {@link Router#emptyNavigationDisposable}
-     */
-    @NonNull
-    @AnyThread
-    public NavigationDisposable navigate() {
-        return navigate(null);
-    }
-
-    /**
-     * 没有返回值
-     *
-     * @param callback 路由的回调
-     */
-    @AnyThread
-    public void forward(@Nullable final Callback callback) {
-        navigate(callback);
-    }
-
-    /**
-     * 执行跳转的具体逻辑
-     * 返回值不可以为空,是为了使用的时候更加的顺溜,不用判断空
-     *
-     * @param callback 回调
-     * @return 返回的对象有可能是一个空实现对象 {@link Router#emptyNavigationDisposable},可以取消路由或者获取原始request对象
-     */
-    @AnyThread
-    @NonNull
-    public synchronized NavigationDisposable navigate(@Nullable final Callback callback) {
-        // 构建请求对象
-        RouterRequest originalRequest = null;
-        try {
-            // 如果用户没填写 Context 或者 Fragment 默认使用 Application
-            useDefaultApplication();
-            // 路由前的检查
-            onCheck();
-            // 标记这个 builder 已经不能使用了
-            isFinish = true;
-            // 生成路由请求对象
-            originalRequest = build();
-            // 创建整个拦截器到最终跳转需要使用的 Callback
-            final InterceptorCallback interceptorCallback = new InterceptorCallback(originalRequest, callback);
-            // Fragment 的销毁的自动取消
-            if (originalRequest.fragment != null) {
-                Router.mNavigationDisposableList.add(interceptorCallback);
-            }
-            // Activity 的自动取消
-            if (Utils.getActivityFromContext(originalRequest.context) != null) {
-                Router.mNavigationDisposableList.add(interceptorCallback);
-            }
-            // 真正的去执行路由
-            realNavigate(originalRequest, customInterceptors, interceptorCallback);
-            // 返回对象
-            return interceptorCallback;
-        } catch (Exception e) { // 发生路由错误的时候
-            RouterErrorResult errorResult = new RouterErrorResult(originalRequest, e);
-            RouterUtil.errorCallback(callback, errorResult);
-        } finally {
-            // 释放资源
-            context = null;
-            fragment = null;
-            scheme = null;
-            url = null;
-            host = null;
-            path = null;
-            requestCode = null;
-            queryMap = null;
-            bundle = null;
-            intentConsumer = null;
-            beforJumpAction = null;
-            afterJumpAction = null;
-            afterErrorAction = null;
-            afterEventAction = null;
-        }
-        return Router.emptyNavigationDisposable;
     }
 
     /**
