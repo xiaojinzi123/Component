@@ -13,11 +13,15 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url uri('./repo')
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.0'
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // classpath "com.xiaojinzi.component:component-plugin:1.7.6"
     }
 }
 

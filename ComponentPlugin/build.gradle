@@ -1,0 +1,30 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    // https://mvnrepository.com/artifact/org.ow2.asm/asm
+    //implementation group: 'org.ow2.asm', name: 'asm', version: '7.2'
+    // https://mvnrepository.com/artifact/org.ow2.asm/asm-all
+    implementation group: 'org.ow2.asm', name: 'asm-all', version: '5.2'
+    implementation 'com.android.tools.build:gradle:3.3.0'
+    implementation 'org.javassist:javassist:3.20.0-GA'
+}
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = "7"
+targetCompatibility = "7"
+
+group='com.xiaojinzi.component'
+version='1.7.6'
+archivesBaseName='component-plugin'
+
+uploadArchives{
+    repositories {
+        mavenDeployer{
+            repository(url: uri('../repo'))
+        }
+    }
+}

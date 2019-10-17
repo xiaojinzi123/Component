@@ -25,6 +25,10 @@ public abstract class BaseHostProcessor extends BaseProcessor {
         if (componentHost == null || componentHost.isEmpty()) {
             throw NULLHOSTEXCEPTION;
         }
+        boolean isMatch = componentHost.matches("^([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*$");
+        if (!isMatch) {
+            throw new RuntimeException("the host is not a valid name：" + componentHost);
+        }
     }
 
 }
