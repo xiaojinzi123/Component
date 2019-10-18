@@ -131,9 +131,11 @@
 
 - [到底什么是组件化](https://blog.csdn.net/u011692041/article/details/92572758)
 
-配套的 `Idea Plugin`
+## 配套的 `Idea Plugin`
 
-[RouterGo 帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
+`Android Studio` 中搜索插件名称：RouterGo, 即可下载对应的插件
+
+[RouterGo 源码地址：帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
 
 ## 扫码进群
 
