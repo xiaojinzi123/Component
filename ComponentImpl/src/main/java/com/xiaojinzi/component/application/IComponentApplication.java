@@ -4,6 +4,7 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 
 import com.xiaojinzi.component.ComponentConstants;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 
 /**
  * 这是生命周期接口
@@ -11,6 +12,7 @@ import com.xiaojinzi.component.ComponentConstants;
  * 1. 用户自定义类去实现此接口,想要有生命周期的回调
  * 2. 拦截器或者服务的模块也想要这个通知,但是只是用到了这个接口,和 Application 生命周期模块没有关联
  */
+@CheckClassName
 public interface IComponentApplication {
 
     /**

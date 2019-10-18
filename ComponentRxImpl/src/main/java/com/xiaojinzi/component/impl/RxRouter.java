@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.SparseArray;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.error.UnknowException;
 import com.xiaojinzi.component.error.ignore.ActivityResultException;
@@ -43,6 +44,7 @@ import io.reactivex.functions.Function;
  *
  * @author : xiaojinzi 30212
  */
+@CheckClassName
 public class RxRouter extends Router {
 
     @NonNull

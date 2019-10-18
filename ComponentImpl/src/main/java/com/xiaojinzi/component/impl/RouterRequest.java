@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.xiaojinzi.component.Component;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.Utils;
@@ -37,6 +38,7 @@ import java.util.Set;
  *
  * @author xiaojinzi 30212
  */
+@CheckClassName
 public class RouterRequest {
 
     @Nullable
