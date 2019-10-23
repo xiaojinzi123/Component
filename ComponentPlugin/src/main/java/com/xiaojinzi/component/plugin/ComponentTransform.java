@@ -23,8 +23,6 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import jdk.internal.org.objectweb.asm.Opcodes;
-
 public class ComponentTransform extends Transform {
 
     @Override

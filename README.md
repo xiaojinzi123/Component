@@ -60,7 +60,7 @@
 
 ## Demo体验(扫码或者点击图片即可下载)
 
-<a href="https://github.com/xiaojinzi123/Component/releases/download/v1.7.4/app-release.apk">
+<a href="https://github.com/xiaojinzi123/Component/releases/download/v1.7.6.1/app-release.apk">
     <img height=180 src="./imgs/demoApk.png" />
 </a>
 
@@ -165,9 +165,13 @@
 
 ## 版本更新日志
 
+#### v1.7.6.2
+
+- 全部的 `navigate` 方法都增加了 @CheckResult 注解, 提示使用者此方法是有返回值的, 不要返回值你可以使用对应的 `forward` 方法
+
 #### v1.7.6.1
 
-- 增加全套的 forward 方法, 没有 NavigationDisposable 返回值
+- 增加全套的 `forward` 方法, 没有 `NavigationDisposable` 返回值
 
 #### v1.7.6
 
