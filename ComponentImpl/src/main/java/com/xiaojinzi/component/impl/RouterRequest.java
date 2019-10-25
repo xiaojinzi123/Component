@@ -98,8 +98,17 @@ public class RouterRequest {
 
     /**
      * 从 {@link Fragment} 和 {@link Context} 中获取上下文
+     * <p>
+     * 参数中的 {@link RouterRequest#context} 可能是一个 {@link android.app.Application} 或者是一个
+     * {@link android.content.ContextWrapper} 或者是一个 {@link Activity}
+     * 无论参数的类型是哪种, 此方法的返回值就只有两种类型：
+     * 1. {@link android.app.Application}
+     * 2. {@link Activity}
+     * <p>
+     * 如果返回的是 {@link Activity} 的 {@link Context}, 当 {@link Activity} 销毁了就会返回 null
+     * 另外就是返回 {@link android.app.Application}
      *
-     * @return 当 Activity 已经销毁了就返回 null
+     * @return {@link Context}, 可能为 null
      */
     @Nullable
     public final Context getRawContext() {
