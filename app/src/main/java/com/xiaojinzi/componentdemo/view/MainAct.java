@@ -2,6 +2,7 @@ package com.xiaojinzi.componentdemo.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -69,6 +70,15 @@ public class MainAct extends AppCompatActivity {
         Router.withApi(AppApi.class).goToTestRouter(
                 () -> Toast.makeText(MainAct.this, "跳转后的提示", Toast.LENGTH_SHORT).show()
         );
+    }
+
+    public void testRouterForFragment(View view) {
+        Fragment fragment = Router.with("component1.fragment").navigate();
+        if (fragment == null) {
+            Toast.makeText(this, "没有找到 'component1.fragment' 对应的 Fragment", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "找到了 'component1.fragment' 对应的 Fragment：：" + fragment, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void testWebRouter(View view) {
