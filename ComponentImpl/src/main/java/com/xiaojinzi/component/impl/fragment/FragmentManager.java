@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.support.Function1;
 import com.xiaojinzi.component.support.Utils;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  *
  * @author xiaojinzi 30212
  */
+@CheckClassName
 public class FragmentManager {
 
     private FragmentManager() {

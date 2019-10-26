@@ -2,8 +2,10 @@ package com.xiaojinzi.component.bean;
 
 import android.support.annotation.NonNull;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.impl.RouterDegrade;
 
+@CheckClassName
 public class RouterDegradeBean {
 
     /**
