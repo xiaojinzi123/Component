@@ -11,6 +11,7 @@ import com.android.build.api.transform.TransformInvocation;
 import com.android.build.api.transform.TransformOutputProvider;
 import com.android.build.gradle.internal.pipeline.TransformManager;
 import com.android.utils.FileUtils;
+import com.xiaojinzi.component.plugin.util.IOUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -58,8 +59,8 @@ public class ComponentTransform extends Transform {
         Collection<TransformInput> referencedInputs = transformInvocation.getReferencedInputs();
         // OutputProvider管理输出路径，如果消费型输入为空，你会发现OutputProvider == null
         TransformOutputProvider outputProvider = transformInvocation.getOutputProvider();
-        for(TransformInput input : inputs) {
-            for(JarInput jarInput : input.getJarInputs()) {
+        for (TransformInput input : inputs) {
+            for (JarInput jarInput : input.getJarInputs()) {
                 String jarName = jarInput.getFile().getPath();
                 File dest = outputProvider.getContentLocation(
                         jarInput.getFile().getAbsolutePath(),
@@ -89,9 +90,6 @@ public class ComponentTransform extends Transform {
                 JarOutputStream jarOutputStream = new JarOutputStream(
                         new FileOutputStream(destJarFile)
                 );
-
-                System.out.println("mmmmmmmmmm jarFile.size() = " + jarFile.size());
-
                 while (jarEntryEnumeration.hasMoreElements()) {
                     JarEntry jarEntry = jarEntryEnumeration.nextElement();
 
@@ -101,28 +99,19 @@ public class ComponentTransform extends Transform {
                     if ("com/xiaojinzi/component/support/ASMUtil.class".equals(entryName)) {
                         System.out.println("mmmmmmmmmm-jarName = " + jarName);
                         System.out.println("mmmmmmmmmm-找到了对应的类, 删除你!");
-                    }else {
-                    }
-                    try {
+                    } else {
                         jarOutputStream.putNextEntry(jarEntry);
                         InputStream inputStream = jarFile.getInputStream(jarEntry);
-                        // .copy(inputStream,jarOutputStream);
-                        FileUtils
-                    } catch (Exception e) {
-                        System.out.println("jarEntry.isDirectory()：" + jarEntry.isDirectory());
-                        System.out.println("错误信息：" + e.getMessage());
-                        e.printStackTrace();
-                        throw e;
+                        IOUtil.readAndWrite(inputStream, jarOutputStream);
+                        inputStream.close();
+                        jarOutputStream.closeEntry();
                     }
                 }
                 jarOutputStream.close();
-                // System.out.println("mmmmmmmmmm-destJarFile.getPath() = " + destJarFile.getPath());
-                //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
-                // FileUtils.copyFile(destJarFile, dest);
-                FileUtils.copyFile(jarInput.getFile(), dest);
-
+                FileUtils.copyFile(destJarFile, dest);
+                // FileUtils.copyFile(jarInput.getFile(), dest);
             }
-            for(DirectoryInput directoryInput : input.getDirectoryInputs()) {
+            for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
                 File dest = outputProvider.getContentLocation(directoryInput.getName(),
                         directoryInput.getContentTypes(), directoryInput.getScopes(),
                         Format.DIRECTORY);
