@@ -1,14 +1,13 @@
-package com.xiaojinzi.component.support;
+package com.xiaojinzi.componentdemo;
 
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.application.IComponentHostApplication;
-import com.xiaojinzi.component.fragment.IComponentHostFragment;
+import com.xiaojinzi.component.impl.AppRouterGenerated;
 import com.xiaojinzi.component.impl.application.ModuleManager;
+import com.xiaojinzi.component.impl.interceptor.AppInterceptorGenerated;
 import com.xiaojinzi.component.interceptor.IComponentHostInterceptor;
 import com.xiaojinzi.component.router.IComponentHostRouter;
-import com.xiaojinzi.component.router.IComponentHostRouterDegrade;
-import com.xiaojinzi.component.service.IComponentHostService;
 
 /**
  * 下面的方法都是空方法, 如果用户用了 Gradele 插件去配置各个模块的名称, 那么下面的空方法都会被 Gradle 插件
@@ -62,6 +61,9 @@ public class ASMUtil {
      */
     @Nullable
     public static IComponentHostApplication findModuleApplicationAsmImpl(String host) {
+        if ("User".equalsIgnoreCase(host)) {
+            return null;
+        }
         return null;
     }
 
@@ -69,10 +71,13 @@ public class ASMUtil {
      * 获取指定模块的拦截器管理器
      *
      * @param host 对应模块的名称, 不考虑大小写
-     * @return 返回对应模块的 Application {@link IComponentHostInterceptor} 的 Class
+     * @return 返回对应模块的 {@link IComponentHostInterceptor} 的 Class
      */
     @Nullable
-    public static Class<IComponentHostInterceptor> findModuleInterceptorAsmImpl(String host) {
+    public static Class<? extends IComponentHostInterceptor> findModuleInterceptorAsmImpl(String host) {
+        if ("User".equalsIgnoreCase(host)) {
+            return AppInterceptorGenerated.class;
+        }
         return null;
     }
 
@@ -84,39 +89,9 @@ public class ASMUtil {
      */
     @Nullable
     public static Class<? extends IComponentHostRouter> findModuleRouterAsmImpl(String host) {
-        return null;
-    }
-
-    /**
-     * 获取指定模块的 RouterDegrade 管理器
-     *
-     * @param host 对应模块的名称, 不考虑大小写
-     * @return 返回对应模块的 {@link IComponentHostRouterDegrade} 的 Class
-     */
-    @Nullable
-    public static Class<? extends IComponentHostRouterDegrade> findModuleRouterDegradeAsmImpl(String host) {
-        return null;
-    }
-
-    /**
-     * 获取指定模块的 Service 管理器
-     *
-     * @param host 对应模块的名称, 不考虑大小写
-     * @return 返回对应模块的 {@link IComponentHostService} 的 Class
-     */
-    @Nullable
-    public static Class<? extends IComponentHostService> findModuleServiceAsmImpl(String host) {
-        return null;
-    }
-
-    /**
-     * 获取指定模块的 Fragment 管理器
-     *
-     * @param host 对应模块的名称, 不考虑大小写
-     * @return 返回对应模块的 {@link IComponentHostFragment} 的 Class
-     */
-    @Nullable
-    public static Class<? extends IComponentHostFragment> findModuleFragmentAsmImpl(String host) {
+        if ("User".equalsIgnoreCase(host)) {
+            return AppRouterGenerated.class;
+        }
         return null;
     }
 

@@ -26,6 +26,8 @@ public class App extends Application {
 
         // 初始化组件化相关
         Component.init(this, BuildConfig.DEBUG);
+        // 打开 Gradle 初始化优化开关
+        Component.openInitOptimize();
         // 忽略一些不想处理的错误
         RxErrorIgnoreUtil.ignoreError();
 
@@ -37,7 +39,7 @@ public class App extends Application {
                 ModuleConfig.User.NAME, "base"
         );
         long endTime = System.currentTimeMillis();
-        System.out.println("耗时：" + (endTime - startTime));
+        System.out.println("---------------------------------耗时：" + (endTime - startTime));
 
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();

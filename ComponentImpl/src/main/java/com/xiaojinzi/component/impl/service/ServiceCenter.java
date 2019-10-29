@@ -8,6 +8,7 @@ import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.service.IComponentCenterService;
 import com.xiaojinzi.component.service.IComponentHostService;
+import com.xiaojinzi.component.support.ASMUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,9 +74,14 @@ public class ServiceCenter implements IComponentCenterService {
 
     @Nullable
     public IComponentHostService findModuleService(String host) {
-        String className = ComponentUtil.genHostServiceClassName(host);
         try {
-            Class<?> clazz = Class.forName(className);
+            Class<?> clazz = null;
+            if (Component.isInitOptimize()) {
+                clazz = ASMUtil.findModuleServiceAsmImpl(host);
+            } else {
+                String className = ComponentUtil.genHostServiceClassName(host);
+                clazz = Class.forName(className);
+            }
             return (IComponentHostService) clazz.newInstance();
         } catch (Exception ignore) {
             // ignore

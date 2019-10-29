@@ -43,7 +43,9 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void loadComponent1Fragment(View view) {
-        Fragment fragment = Router.with("component1.fragment").navigate();
+        Fragment fragment = Router
+                .with("component1.fragment")
+                .navigate();
         if (fragment == null) {
             Toast.makeText(this, "对应的 component1.fragment 没有找到", Toast.LENGTH_SHORT).show();
             return;

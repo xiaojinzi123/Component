@@ -15,11 +15,8 @@ public class ComponentPlugin implements Plugin<Project> {
     public void apply(Project project) {
         System.out.println("=============ComponentPlugin===================================" + project.getProperties().get("android").getClass().getName());
         BaseAppModuleExtension appModuleExtension =  (BaseAppModuleExtension)project.getProperties().get("android");
-        appModuleExtension.registerTransform(new ComponentTransform());
+        appModuleExtension.registerTransform(new ModifyASMUtilTransform());
         System.out.println("====================== After ComponentPlugin");
-        /*AppExtension appExtension = (AppExtension) project.getProperties().get("android");
-        BaseAppModuleExtension
-        appExtension.registerTransform(new ComponentTransform());*/
     }
 
 }

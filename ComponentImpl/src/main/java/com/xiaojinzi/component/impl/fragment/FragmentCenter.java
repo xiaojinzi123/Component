@@ -8,6 +8,7 @@ import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.fragment.IComponentCenterFragment;
 import com.xiaojinzi.component.fragment.IComponentHostFragment;
+import com.xiaojinzi.component.support.ASMUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,10 +74,15 @@ public class FragmentCenter implements IComponentCenterFragment {
 
     @Nullable
     public IComponentHostFragment findModuleService(String host) {
-        String className = ComponentUtil.genHostFragmentClassName(host);
         try {
-            Class<?> clazz = Class.forName(className);
-            return (IComponentHostFragment) clazz.newInstance();
+            Class<? extends IComponentHostFragment> clazz = null;
+            if (Component.isInitOptimize()) {
+                clazz = ASMUtil.findModuleFragmentAsmImpl(host);
+            } else {
+                String className = ComponentUtil.genHostFragmentClassName(host);
+                clazz = (Class<? extends IComponentHostFragment>) Class.forName(className);
+            }
+            return clazz.newInstance();
         } catch (Exception ignore) {
             // ignore
         }

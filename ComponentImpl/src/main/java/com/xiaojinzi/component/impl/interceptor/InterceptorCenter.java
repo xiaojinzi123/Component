@@ -3,12 +3,14 @@ package com.xiaojinzi.component.impl.interceptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.error.InterceptorNameExistException;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.interceptor.IComponentCenterInterceptor;
 import com.xiaojinzi.component.interceptor.IComponentHostInterceptor;
+import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
 
 import java.util.ArrayList;
@@ -164,10 +166,15 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
 
     @Nullable
     public IComponentHostInterceptor findModuleInterceptor(String host) {
-        String className = ComponentUtil.genHostInterceptorClassName(host);
         try {
-            Class<?> clazz = Class.forName(className);
-            return (IComponentHostInterceptor) clazz.newInstance();
+            Class<IComponentHostInterceptor> clazz = null;
+            if (Component.isInitOptimize()) {
+                clazz = ASMUtil.findModuleInterceptorAsmImpl(host);
+            }else {
+                String className = ComponentUtil.genHostInterceptorClassName(host);
+                clazz = (Class<IComponentHostInterceptor>) Class.forName(className);
+            }
+            return clazz.newInstance();
         } catch (Exception ignore) {
             // ignore
         }

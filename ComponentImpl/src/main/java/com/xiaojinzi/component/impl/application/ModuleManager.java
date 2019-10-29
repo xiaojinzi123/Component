@@ -121,23 +121,27 @@ public class ModuleManager implements IComponentCenterApplication {
 
     @Nullable
     public static IComponentHostApplication findModuleApplication(@NonNull String host) {
-        IComponentHostApplication result = ASMUtil.findModuleApplicationAsmImpl(host);
-        if (result == null) {
-            try {
-                // 先找正常的
-                Class<?> clazz = Class.forName(ComponentUtil.genHostModuleApplicationClassName(host));
-                result = (IComponentHostApplication) clazz.newInstance();
-            } catch (Exception ignore) {
-                // ignore
+        IComponentHostApplication result = null;
+        if (Component.isInitOptimize()) {
+            result = ASMUtil.findModuleApplicationAsmImpl(host);
+        }else {
+            if (result == null) {
+                try {
+                    // 先找正常的
+                    Class<?> clazz = Class.forName(ComponentUtil.genHostModuleApplicationClassName(host));
+                    result = (IComponentHostApplication) clazz.newInstance();
+                } catch (Exception ignore) {
+                    // ignore
+                }
             }
-        }
-        if (result == null) {
-            try {
-                // 找默认的
-                Class<?> clazz = Class.forName(ComponentUtil.genDefaultHostModuleApplicationClassName(host));
-                result = (IComponentHostApplication) clazz.newInstance();
-            } catch (Exception ignore) {
-                // ignore
+            if (result == null) {
+                try {
+                    // 找默认的
+                    Class<?> clazz = Class.forName(ComponentUtil.genDefaultHostModuleApplicationClassName(host));
+                    result = (IComponentHostApplication) clazz.newInstance();
+                } catch (Exception ignore) {
+                    // ignore
+                }
             }
         }
         return result;
