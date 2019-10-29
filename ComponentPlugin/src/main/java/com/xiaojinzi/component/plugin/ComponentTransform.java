@@ -12,9 +12,6 @@ import com.android.build.api.transform.TransformOutputProvider;
 import com.android.build.gradle.internal.pipeline.TransformManager;
 import com.android.utils.FileUtils;
 
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -83,8 +80,25 @@ public class ComponentTransform extends Transform {
                 File dest = outputProvider.getContentLocation(directoryInput.getName(),
                         directoryInput.getContentTypes(), directoryInput.getScopes(),
                         Format.DIRECTORY);
+                File directoryInputFile = directoryInput.getFile();
+                printFile(directoryInputFile);
                 //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
                 FileUtils.copyDirectory(directoryInput.getFile(), dest);
+            }
+        }
+    }
+
+    private void printFile(File file) {
+        if (file.isFile()) {
+            System.out.println("printFile = " + file.getName());
+        }else {
+            File[] files = file.listFiles();
+            for (File subFile : files) {
+                if (subFile.isFile()) {
+                    System.out.println("printFile = " + subFile.getName());
+                }else {
+                    printFile(subFile);
+                }
             }
         }
     }
