@@ -75,14 +75,14 @@ public class ServiceCenter implements IComponentCenterService {
     @Nullable
     public IComponentHostService findModuleService(String host) {
         try {
-            Class<?> clazz = null;
             if (Component.isInitOptimize()) {
-                clazz = ASMUtil.findModuleServiceAsmImpl(host);
+                return ASMUtil.findModuleServiceAsmImpl(host);
             } else {
+                Class<? extends IComponentHostService> clazz = null;
                 String className = ComponentUtil.genHostServiceClassName(host);
-                clazz = Class.forName(className);
+                clazz = (Class<? extends IComponentHostService>) Class.forName(className);
+                return clazz.newInstance();
             }
-            return (IComponentHostService) clazz.newInstance();
         } catch (Exception ignore) {
             // ignore
         }

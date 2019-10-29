@@ -144,14 +144,14 @@ public class RouterDegradeCenter implements IComponentCenterRouterDegrade {
     @Nullable
     public IComponentHostRouterDegrade findModuleRouterDegrade(String host) {
         try {
-            Class<?> clazz = null;
             if (Component.isInitOptimize()) {
-                clazz = ASMUtil.findModuleRouterDegradeAsmImpl(host);
+                return ASMUtil.findModuleRouterDegradeAsmImpl(host);
             }else {
+                Class<? extends IComponentHostRouterDegrade> clazz = null;
                 String className = ComponentUtil.genHostRouterDegradeClassName(host);
-                clazz = Class.forName(className);
+                clazz = (Class<? extends IComponentHostRouterDegrade>) Class.forName(className);
+                return clazz.newInstance();
             }
-            return (IComponentHostRouterDegrade) clazz.newInstance();
         } catch (Exception ignore) {
             // ignore
         }

@@ -167,14 +167,15 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     @Nullable
     public IComponentHostInterceptor findModuleInterceptor(String host) {
         try {
-            Class<IComponentHostInterceptor> clazz = null;
+
             if (Component.isInitOptimize()) {
-                clazz = ASMUtil.findModuleInterceptorAsmImpl(host);
+                return ASMUtil.findModuleInterceptorAsmImpl(host);
             }else {
+                Class<? extends IComponentHostInterceptor> clazz = null;
                 String className = ComponentUtil.genHostInterceptorClassName(host);
-                clazz = (Class<IComponentHostInterceptor>) Class.forName(className);
+                clazz = (Class<? extends IComponentHostInterceptor>) Class.forName(className);
+                return clazz.newInstance();
             }
-            return clazz.newInstance();
         } catch (Exception ignore) {
             // ignore
         }

@@ -69,10 +69,10 @@ public class ASMUtil {
      * 获取指定模块的拦截器管理器
      *
      * @param host 对应模块的名称, 不考虑大小写
-     * @return 返回对应模块的 Application {@link IComponentHostInterceptor} 的 Class
+     * @return 返回对应模块的 Application {@link IComponentHostInterceptor}
      */
     @Nullable
-    public static Class<IComponentHostInterceptor> findModuleInterceptorAsmImpl(String host) {
+    public static IComponentHostInterceptor findModuleInterceptorAsmImpl(String host) {
         return null;
     }
 
@@ -80,10 +80,10 @@ public class ASMUtil {
      * 获取指定模块的 Router 管理器
      *
      * @param host 对应模块的名称, 不考虑大小写
-     * @return 返回对应模块的 {@link IComponentHostRouter} 的 Class
+     * @return 返回对应模块的 {@link IComponentHostRouter}
      */
     @Nullable
-    public static Class<? extends IComponentHostRouter> findModuleRouterAsmImpl(String host) {
+    public static IComponentHostRouter findModuleRouterAsmImpl(String host) {
         return null;
     }
 
@@ -91,10 +91,10 @@ public class ASMUtil {
      * 获取指定模块的 RouterDegrade 管理器
      *
      * @param host 对应模块的名称, 不考虑大小写
-     * @return 返回对应模块的 {@link IComponentHostRouterDegrade} 的 Class
+     * @return 返回对应模块的 {@link IComponentHostRouterDegrade}
      */
     @Nullable
-    public static Class<? extends IComponentHostRouterDegrade> findModuleRouterDegradeAsmImpl(String host) {
+    public static IComponentHostRouterDegrade findModuleRouterDegradeAsmImpl(String host) {
         return null;
     }
 
@@ -102,10 +102,10 @@ public class ASMUtil {
      * 获取指定模块的 Service 管理器
      *
      * @param host 对应模块的名称, 不考虑大小写
-     * @return 返回对应模块的 {@link IComponentHostService} 的 Class
+     * @return 返回对应模块的 {@link IComponentHostService}
      */
     @Nullable
-    public static Class<? extends IComponentHostService> findModuleServiceAsmImpl(String host) {
+    public static IComponentHostService findModuleServiceAsmImpl(String host) {
         return null;
     }
 
@@ -113,10 +113,10 @@ public class ASMUtil {
      * 获取指定模块的 Fragment 管理器
      *
      * @param host 对应模块的名称, 不考虑大小写
-     * @return 返回对应模块的 {@link IComponentHostFragment} 的 Class
+     * @return 返回对应模块的 {@link IComponentHostFragment}
      */
     @Nullable
-    public static Class<? extends IComponentHostFragment> findModuleFragmentAsmImpl(String host) {
+    public static IComponentHostFragment findModuleFragmentAsmImpl(String host) {
         return null;
     }
 

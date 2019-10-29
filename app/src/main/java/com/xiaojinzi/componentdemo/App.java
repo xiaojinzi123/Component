@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.impl.application.ModuleManager;
+import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
 public class App extends Application {
@@ -27,7 +28,7 @@ public class App extends Application {
         // 初始化组件化相关
         Component.init(this, BuildConfig.DEBUG);
         // 打开 Gradle 初始化优化开关
-        Component.openInitOptimize();
+        // Component.openInitOptimize();
         // 忽略一些不想处理的错误
         RxErrorIgnoreUtil.ignoreError();
 
@@ -39,7 +40,7 @@ public class App extends Application {
                 ModuleConfig.User.NAME, "base"
         );
         long endTime = System.currentTimeMillis();
-        System.out.println("---------------------------------耗时：" + (endTime - startTime));
+        LogUtil.log("Componnet.Application", "---------------------------------耗时：" + (endTime - startTime));
 
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();

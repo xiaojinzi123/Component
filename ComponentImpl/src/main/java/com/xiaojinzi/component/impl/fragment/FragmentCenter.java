@@ -75,14 +75,14 @@ public class FragmentCenter implements IComponentCenterFragment {
     @Nullable
     public IComponentHostFragment findModuleService(String host) {
         try {
-            Class<? extends IComponentHostFragment> clazz = null;
             if (Component.isInitOptimize()) {
-                clazz = ASMUtil.findModuleFragmentAsmImpl(host);
+                return ASMUtil.findModuleFragmentAsmImpl(host);
             } else {
+                Class<? extends IComponentHostFragment> clazz = null;
                 String className = ComponentUtil.genHostFragmentClassName(host);
                 clazz = (Class<? extends IComponentHostFragment>) Class.forName(className);
+                return clazz.newInstance();
             }
-            return clazz.newInstance();
         } catch (Exception ignore) {
             // ignore
         }

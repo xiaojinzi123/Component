@@ -5,7 +5,6 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +12,7 @@ import java.util.Set;
 public class ASMUtilClassGen implements Opcodes {
 
     public static byte[] getBytes(Map<String, String> applicationMap, Map<String, String> interceptorMap,
-            Map<String, String> routerMap, Map<String, String> routerDegradeMap, Map<String, String> serviceMap
+                                  Map<String, String> routerMap, Map<String, String> routerDegradeMap, Map<String, String> serviceMap
             , Map<String, String> fragmentMap
     ) {
 
@@ -53,7 +52,8 @@ public class ASMUtilClassGen implements Opcodes {
 
     private static void writeApplicationMethod(ClassVisitor cw, Map<String, String> applicationMap) {
 
-        MethodVisitor methodVisitor = cw.visitMethod(ACC_PUBLIC | ACC_STATIC, "findModuleApplicationAsmImpl", "(Ljava/lang/String;)Lcom/xiaojinzi/component/application/IComponentHostApplication;", null, null);
+        MethodVisitor methodVisitor = cw.visitMethod(ACC_PUBLIC | ACC_STATIC, "findModuleApplicationAsmImpl",
+                "(Ljava/lang/String;)Lcom/xiaojinzi/component/application/IComponentHostApplication;", null, null);
         methodVisitor.visitCode();
         // 开始的标记
         Label labelStart = new Label();
@@ -95,8 +95,8 @@ public class ASMUtilClassGen implements Opcodes {
     private static void writeInterceptorMethod(ClassVisitor cw, Map<String, String> map) {
 
         MethodVisitor methodVisitor = cw.visitMethod(ACC_PUBLIC | ACC_STATIC, "findModuleInterceptorAsmImpl",
-                "(Ljava/lang/String;)Ljava/lang/Class;",
-                "(Ljava/lang/String;)Ljava/lang/Class<Lcom/xiaojinzi/component/interceptor/IComponentHostInterceptor;>;",
+                "(Ljava/lang/String;)Lcom/xiaojinzi/component/interceptor/IComponentHostInterceptor;",
+                null,
                 null);
         methodVisitor.visitCode();
         // 开始的标记
@@ -118,7 +118,9 @@ public class ASMUtilClassGen implements Opcodes {
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equalsIgnoreCase", "(Ljava/lang/String;)Z", false);
             methodVisitor.visitJumpInsn(IFEQ, ifJumpLabel);
-            methodVisitor.visitLdcInsn(Type.getType("L" + classPathName + ";"));
+            methodVisitor.visitTypeInsn(NEW, classPathName);
+            methodVisitor.visitInsn(DUP);
+            methodVisitor.visitMethodInsn(INVOKESPECIAL, classPathName, "<init>", "()V", false);
             methodVisitor.visitInsn(ARETURN);
             methodVisitor.visitLabel(ifJumpLabel);
         }
@@ -137,8 +139,8 @@ public class ASMUtilClassGen implements Opcodes {
     private static void writeRouterMethod(ClassVisitor cw, Map<String, String> map) {
 
         MethodVisitor methodVisitor = cw.visitMethod(ACC_PUBLIC | ACC_STATIC, "findModuleRouterAsmImpl",
-                "(Ljava/lang/String;)Ljava/lang/Class;",
-                "(Ljava/lang/String;)Ljava/lang/Class<Lcom/xiaojinzi/component/router/IComponentHostRouter;>;",
+                "(Ljava/lang/String;)Lcom/xiaojinzi/component/router/IComponentHostRouter;",
+                null,
                 null);
         methodVisitor.visitCode();
         // 开始的标记
@@ -160,7 +162,9 @@ public class ASMUtilClassGen implements Opcodes {
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equalsIgnoreCase", "(Ljava/lang/String;)Z", false);
             methodVisitor.visitJumpInsn(IFEQ, ifJumpLabel);
-            methodVisitor.visitLdcInsn(Type.getType("L" + classPathName + ";"));
+            methodVisitor.visitTypeInsn(NEW, classPathName);
+            methodVisitor.visitInsn(DUP);
+            methodVisitor.visitMethodInsn(INVOKESPECIAL, classPathName, "<init>", "()V", false);
             methodVisitor.visitInsn(ARETURN);
             methodVisitor.visitLabel(ifJumpLabel);
         }
@@ -179,8 +183,8 @@ public class ASMUtilClassGen implements Opcodes {
     private static void writeRouterDegradeMethod(ClassVisitor cw, Map<String, String> map) {
 
         MethodVisitor methodVisitor = cw.visitMethod(ACC_PUBLIC | ACC_STATIC, "findModuleRouterDegradeAsmImpl",
-                "(Ljava/lang/String;)Ljava/lang/Class;",
-                "(Ljava/lang/String;)Ljava/lang/Class<Lcom/xiaojinzi/component/router/IComponentHostRouterDegrade;>;",
+                "(Ljava/lang/String;)Lcom/xiaojinzi/component/router/IComponentHostRouterDegrade;",
+                null,
                 null);
         methodVisitor.visitCode();
         // 开始的标记
@@ -202,7 +206,9 @@ public class ASMUtilClassGen implements Opcodes {
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equalsIgnoreCase", "(Ljava/lang/String;)Z", false);
             methodVisitor.visitJumpInsn(IFEQ, ifJumpLabel);
-            methodVisitor.visitLdcInsn(Type.getType("L" + classPathName + ";"));
+            methodVisitor.visitTypeInsn(NEW, classPathName);
+            methodVisitor.visitInsn(DUP);
+            methodVisitor.visitMethodInsn(INVOKESPECIAL, classPathName, "<init>", "()V", false);
             methodVisitor.visitInsn(ARETURN);
             methodVisitor.visitLabel(ifJumpLabel);
         }
@@ -221,8 +227,8 @@ public class ASMUtilClassGen implements Opcodes {
     private static void writeServiceMethod(ClassVisitor cw, Map<String, String> map) {
 
         MethodVisitor methodVisitor = cw.visitMethod(ACC_PUBLIC | ACC_STATIC, "findModuleServiceAsmImpl",
-                "(Ljava/lang/String;)Ljava/lang/Class;",
-                "(Ljava/lang/String;)Ljava/lang/Class<Lcom/xiaojinzi/component/service/IComponentHostService;>;",
+                "(Ljava/lang/String;)Lcom/xiaojinzi/component/service/IComponentHostService;",
+                null,
                 null);
         methodVisitor.visitCode();
         // 开始的标记
@@ -244,7 +250,9 @@ public class ASMUtilClassGen implements Opcodes {
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equalsIgnoreCase", "(Ljava/lang/String;)Z", false);
             methodVisitor.visitJumpInsn(IFEQ, ifJumpLabel);
-            methodVisitor.visitLdcInsn(Type.getType("L" + classPathName + ";"));
+            methodVisitor.visitTypeInsn(NEW, classPathName);
+            methodVisitor.visitInsn(DUP);
+            methodVisitor.visitMethodInsn(INVOKESPECIAL, classPathName, "<init>", "()V", false);
             methodVisitor.visitInsn(ARETURN);
             methodVisitor.visitLabel(ifJumpLabel);
         }
@@ -263,8 +271,8 @@ public class ASMUtilClassGen implements Opcodes {
     private static void writeFragmentMethod(ClassVisitor cw, Map<String, String> map) {
 
         MethodVisitor methodVisitor = cw.visitMethod(ACC_PUBLIC | ACC_STATIC, "findModuleFragmentAsmImpl",
-                "(Ljava/lang/String;)Ljava/lang/Class;",
-                "(Ljava/lang/String;)Ljava/lang/Class<Lcom/xiaojinzi/component/fragment/IComponentHostFragment;>;",
+                "(Ljava/lang/String;)Lcom/xiaojinzi/component/fragment/IComponentHostFragment;",
+                null,
                 null);
         methodVisitor.visitCode();
         // 开始的标记
@@ -286,7 +294,9 @@ public class ASMUtilClassGen implements Opcodes {
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equalsIgnoreCase", "(Ljava/lang/String;)Z", false);
             methodVisitor.visitJumpInsn(IFEQ, ifJumpLabel);
-            methodVisitor.visitLdcInsn(Type.getType("L" + classPathName + ";"));
+            methodVisitor.visitTypeInsn(NEW, classPathName);
+            methodVisitor.visitInsn(DUP);
+            methodVisitor.visitMethodInsn(INVOKESPECIAL, classPathName, "<init>", "()V", false);
             methodVisitor.visitInsn(ARETURN);
             methodVisitor.visitLabel(ifJumpLabel);
         }
