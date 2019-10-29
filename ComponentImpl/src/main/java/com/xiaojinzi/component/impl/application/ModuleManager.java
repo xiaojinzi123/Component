@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.application.IComponentHostApplication;
 import com.xiaojinzi.component.application.IComponentCenterApplication;
+import com.xiaojinzi.component.application.IComponentHostApplication;
 import com.xiaojinzi.component.impl.RouterCenter;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.support.ASMUtil;
@@ -74,6 +74,11 @@ public class ModuleManager implements IComponentCenterApplication {
         }
     }
 
+    /**
+     * 注册业务模块, 可以传多个名称
+     *
+     * @param hosts host 的名称数组
+     */
     public void registerArr(@Nullable String... hosts) {
         if (hosts != null) {
             for (String host : hosts) {

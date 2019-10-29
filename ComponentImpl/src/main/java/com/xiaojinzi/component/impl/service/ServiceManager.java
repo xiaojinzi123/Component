@@ -3,6 +3,7 @@ package com.xiaojinzi.component.impl.service;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.Utils;
 
@@ -15,6 +16,7 @@ import java.util.Map;
  *
  * @author xiaojinzi 30212
  */
+@CheckClassName
 public class ServiceManager {
 
     private ServiceManager() {

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.service.IComponentCenterService;
 import com.xiaojinzi.component.service.IComponentHostService;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  *
  * @author xiaojinzi 30212
  */
+@CheckClassName
 public class ServiceCenter implements IComponentCenterService {
 
     private Map<String, IComponentHostService> moduleServiceMap = new HashMap<>();

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.cache.ClassCache;
 import com.xiaojinzi.component.error.CreateInterceptorException;
 import com.xiaojinzi.component.impl.RouterInterceptor;
@@ -26,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
  *
  * @author : xiaojinzi 30212
  */
+@CheckClassName
 public class RouterInterceptorCache {
 
     private RouterInterceptorCache() {

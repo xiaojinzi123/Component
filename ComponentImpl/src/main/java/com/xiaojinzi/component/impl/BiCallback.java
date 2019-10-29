@@ -1,10 +1,10 @@
 package com.xiaojinzi.component.impl;
 
-import android.support.annotation.CallSuper;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.support.Function;
 import com.xiaojinzi.component.support.Utils;
 
@@ -15,6 +15,7 @@ import com.xiaojinzi.component.support.Utils;
  *
  * @author xiaojinzi 30212
  */
+@CheckClassName
 public interface BiCallback<T> extends OnRouterCancel, OnRouterError {
 
     /**
