@@ -1,10 +1,12 @@
 package com.xiaojinzi.componentdemo.view;
 
 import android.os.Bundle;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
