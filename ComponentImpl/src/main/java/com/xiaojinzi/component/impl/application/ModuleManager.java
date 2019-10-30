@@ -123,7 +123,7 @@ public class ModuleManager implements IComponentCenterApplication {
     public static IComponentHostApplication findModuleApplication(@NonNull String host) {
         IComponentHostApplication result = null;
         if (Component.isInitOptimize()) {
-            LogUtil.log("Componnet", host + " 采用优化加载");
+            LogUtil.log("Componnet", host + " 采用字节码方式加载");
             result = ASMUtil.findModuleApplicationAsmImpl(host);
         }else {
             LogUtil.log("Componnet", host + " 采用反射加载");
