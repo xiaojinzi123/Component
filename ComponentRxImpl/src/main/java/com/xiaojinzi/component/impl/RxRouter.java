@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import androidx.annotation.MainThread;
+import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.util.SparseArray;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.error.UnknowException;
 import com.xiaojinzi.component.error.ignore.ActivityResultException;
@@ -42,6 +44,7 @@ import io.reactivex.functions.Function;
  *
  * @author : xiaojinzi 30212
  */
+@CheckClassName
 public class RxRouter extends Router {
 
     @NonNull
@@ -83,7 +86,7 @@ public class RxRouter extends Router {
         }
 
         @NonNull
-        public Single<Fragment> call(){
+        public Single<Fragment> call() {
             return RxFragmentManager.with(fragmentFlag, bundle);
         }
 
@@ -388,6 +391,8 @@ public class RxRouter extends Router {
          * @return
          * @see #activityResultCall()
          */
+        @NonNull
+        @CheckResult
         public Single<Intent> intentCall() {
             return activityResultCall()
                     .map(new Function<ActivityResult, Intent>() {
@@ -400,9 +405,9 @@ public class RxRouter extends Router {
 
         /**
          * 拿到 resultCode 的 Observable
-         *
-         * @return
          */
+        @NonNull
+        @CheckResult
         public Single<Integer> resultCodeCall() {
             return activityResultCall()
                     .map(new Function<ActivityResult, Integer>() {
@@ -422,6 +427,8 @@ public class RxRouter extends Router {
          * @return 返回一个完成状态的 Observable
          * @see #activityResultCall()
          */
+        @NonNull
+        @CheckResult
         public Completable resultCodeMatchCall(final int expectedResultCode) {
             return activityResultCall()
                     .doOnSuccess(new Consumer<ActivityResult>() {
@@ -442,6 +449,8 @@ public class RxRouter extends Router {
          * @return 返回一个发射 Single 的 Observable
          * @see #activityResultCall()
          */
+        @NonNull
+        @CheckResult
         public Single<Intent> intentResultCodeMatchCall(final int expectedResultCode) {
             return activityResultCall()
                     .map(new Function<ActivityResult, Intent>() {
@@ -454,9 +463,9 @@ public class RxRouter extends Router {
 
         /**
          * 一个可以拿到 ActivityResult 的路由 Observable
-         *
-         * @return
          */
+        @NonNull
+        @CheckResult
         public Single<ActivityResult> activityResultCall() {
             return Single.create(new SingleOnSubscribe<ActivityResult>() {
                 @Override
@@ -500,9 +509,9 @@ public class RxRouter extends Router {
 
         /**
          * 一个完成状态的 Observable 的路由跳转
-         *
-         * @return
          */
+        @NonNull
+        @CheckResult
         public Completable call() {
             return Completable.create(new CompletableOnSubscribe() {
                 @Override

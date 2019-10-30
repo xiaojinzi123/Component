@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.cache.Cache;
 import com.xiaojinzi.component.cache.CacheType;
 import com.xiaojinzi.component.cache.DefaultCacheFactory;
@@ -33,6 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author : xiaojinzi 30212
  */
+@CheckClassName
 public class Router {
 
     protected Router() {

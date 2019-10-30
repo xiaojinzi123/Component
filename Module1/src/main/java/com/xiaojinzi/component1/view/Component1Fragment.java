@@ -12,12 +12,14 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.component.anno.FragmentAnno;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component1.R;
 
 import io.reactivex.functions.Consumer;
 
+@FragmentAnno("component1.fragment")
 public class Component1Fragment extends Fragment {
 
     private Button bt_go_component2;

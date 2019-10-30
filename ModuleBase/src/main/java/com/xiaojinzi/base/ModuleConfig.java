@@ -79,6 +79,7 @@ public class ModuleConfig {
 
         public static final String NAME = "user";
         public static final String LOGIN = "login";
+        public static final String LOGIN_URL = NAME + "/" + LOGIN;
         public static final String PERSON_CENTER = "personCenter";
         public static final String PERSON_CENTER_FOR_TEST = "personCenterForTest";
 

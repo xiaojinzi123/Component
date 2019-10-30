@@ -4,6 +4,9 @@ package com.xiaojinzi.component.cache;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
+
+@CheckClassName
 public class ClassCache {
 
     private static final Cache<Class, Object> classCache =

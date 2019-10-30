@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import com.xiaojinzi.base.service.inter.component1.Component1Service;
 import com.xiaojinzi.component.anno.ServiceAnno;
-import com.xiaojinzi.component1.view.Component1Fragment;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -25,11 +24,6 @@ public class Component1ServiceImpl implements Component1Service {
     public Component1ServiceImpl(@NonNull Application app) {
         context = app;
         Toast.makeText(app, "创建了 Component1Service 服务", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public Fragment getFragment() {
-        return new Component1Fragment();
     }
 
     @Override

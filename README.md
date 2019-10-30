@@ -9,35 +9,18 @@
 很多选型的人有这么个疑问: 有了 `ARouter` 为啥要有 `Component`. 
 我这里在这里做一个回答.
 
-`ARouter` 作为最早出现的组件化的一个实现方案,毋庸置疑有一个比较深的底蕴. 很多人看见 `ARouter` star 的数量和阿里出的框架就会产生莫名的信任.基本都会优先选择 `ARouter`.我的建议是组件化方案不同于一个简单的 `UI` 库,你应该做一个比较深入的了解,然后选择!
+`ARouter` 是最早出现的组件化的一个实现方案, 早不一定最好. 很多人看见 `ARouter` star 的数量和阿里出的框架就会产生莫名的信任.基本都会优先选择 `ARouter`. 
+组件化方案不同于一个简单的 `UI` 库、控件库, 作为技术选型的你应该做一个比较深入的了解, 然后选择你认为好的、合适的.
 
-如果 `ARouter` 真的优秀到没有不选择它的余地,那么其实根本没有我们这些新型框架的出现.而这里我要说的是,`ARouter` 虽然出现的早,但它不是最好.有一个朋友说 `ARouter` 只关注于路由方面,不做多余的事情,
-但是在我看来, `ARouter` 正是因为做的不够和一些不合理的地方,才有我们这些框架的出现.
+可以说到目前为止, 基于 'URI' 方面的所有路由框架中(`ARouter`、`WMRouter`、`ActivityRouter` ...) `Component` 是最强大和完善的组件化框架.
 
-选型是你们团队的要做的事情,但是选择更好、更全面的、更稳定、更有发展前景的框架更是你们技术团队或者技术负责人要做的事情. Component 是目前组件化方面所有框架中最优秀的框架, 不接受反驳.
+选择一个更好、更全面的、更稳定、更有发展前景的框架更是你们技术团队或者技术负责人要做的事情!
 
 [English Doc](https://github.com/xiaojinzi123/Component/blob/develop/README_en.md) | [中文文档](https://github.com/xiaojinzi123/Component)
 
 [Component VS ARouter](https://github.com/xiaojinzi123/Component/wiki/Component-%E5%92%8C-ARouter-%E6%AF%94%E8%BE%83)
 
-# 痛点
-
-我们团队在整个开发过程中, 会有几个很恶心的痛点, 代码不能不写, 但是写了有恶心. 所以在组件化过程中, 发现这些是可以被解决的的. 
-于是 `Component` 从最早的设计上就考虑了一些痛点
-
-- 你有没有因为在 `Adater` 或者 `Dialog` 或者其他没有 `Activity` 的地方需要 `startActivityForResult`. [痛点解决方式,0入侵](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%A0%81%E8%B7%B3%E8%BD%AC#%E8%B7%B3%E8%BD%AC%E6%8B%BF-activityresult-%E6%95%B0%E6%8D%AE)
-- 你有没有因为进入一些界面有前置条件而写一些恶心代码. 比如 A 界面需要定位成功才能进去. 你可能有以下两种方式去解决. [痛点解决：Component 页面拦截器](https://github.com/xiaojinzi123/Component/wiki/%E6%8B%A6%E6%88%AA%E5%99%A8#%E7%BB%99%E4%BD%A0%E7%9A%84%E6%8B%A6%E6%88%AA%E5%99%A8%E8%B5%B7%E4%B8%80%E4%B8%AA%E5%88%AB%E5%90%8D)
-    - 你不得不在任何一个跳转到 A 界面的地方去判断当前是否定位成功, 处理完毕之后再跳转. 这种方式恶心至极, 每次都要写一些固定代码
-    - 在目标界面去处理定位的事情. 这个方式相对来说比较好, 但是它毕竟已经进入了 A 界面, A 界面需要额外考虑这些, 并且还可能要展示定位失败的视图等等
-    - 你使用 `ARouter` 的 extra 做, 这个是一一种方式, 但是有两个问题:
-        - `ARouter` 的路由拦截器设计在子线程, 而定位这些漫长的, 通常你希望弹个框卡住用户操作, 你会发现写起来贼恶心. `Component` 设计在主线程的, 但是整个跳转是 `"异步的"`
-        - `ARouter` 的每个拦截器都是全局拦截器, 你每多一个这种拦截器, 都会加长整个路由的流程
-- 整合 `RxJava`, `Component` 本身完美支持 `RxJava`, 这样子你的跳转就可以嵌入你任何一个其他 `RxJava` 流程中去了. 不会像之前一样整个流程被打断
-- 你以为你写的界面, 你可以路由到就已经 ok 了吗? 其实不然, 每一个你写的界面、系统界面、第三方界面都应该是一个可路由的目标, 其他框架不能给任意一个界面标记路由. 这个也是一个痛点. [解决方案](https://github.com/xiaojinzi123/Component/wiki/RouterAnno-注解#标记在静态方法上方法允许抛出任何-exception)
-    - 比如拨打电话界面, 是需要申请权限才能进入的. 如果你能给拨打界面标记一个路由, 并且结合上面的页面拦截器. 你会发现这件事做起来舒服至极！
-    - 比如拍照界面, 需要申请相机权限. 同样可以这么处理.
-    - 当然了, 适用于任何一个你觉得可以标记的界面. 并结合页面拦截器会有奇效!
-- 有些界面参数较多, 跳转入口也较多, 你会发现维护这些跳转的参数其实会比较头疼. 这时候你可以使用 [类似 `Retrofit` 接口编程式跳转](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E6%8E%A5%E5%8F%A3%E8%B7%AF%E7%94%B1%E7%9A%84%E6%96%B9%E5%BC%8F)
+**[点击查看 Component 解决了哪些开发中的痛点](https://github.com/xiaojinzi123/Component/wiki/Component-%E7%9B%B4%E5%87%BB%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84%E7%97%9B%E7%82%B9)**
 
 # Component
 
@@ -54,13 +37,15 @@
 ![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
 ![](https://img.shields.io/github/license/xiaojinzi123/Component.svg)
 <a href="https://gitee.com/xiaojinziCoder/Component" >
-    <img height=20 src="https://gitee.com/logo-black.svg" /></a>
+    <img height=20 src="https://gitee.com/logo-black.svg" />
+</a>
 <a href="https://github.com/xiaojinzi123/Component">
-    <img height=22 src="https://xiaojinzi.oss-cn-shanghai.aliyuncs.com/blogImages/fluidicon.png" /></a>
+    <img height=22 src="https://xiaojinzi.oss-cn-shanghai.aliyuncs.com/blogImages/fluidicon.png" />
+</a>
 
 ## Demo体验(扫码或者点击图片即可下载)
 
-<a href="https://github.com/xiaojinzi123/Component/releases/download/v1.7.4/app-release.apk">
+<a href="https://github.com/xiaojinzi123/Component/releases/download/v1.7.6.1/app-release.apk">
     <img height=180 src="./imgs/demoApk.png" />
 </a>
 
@@ -72,6 +57,10 @@
 - [x] 支持多 `Module`
 
 - [x] 支持标准 `URI` 的使用
+
+- [x] 支持原生的跳转动画
+
+- [x] 支持 `Flutter`, `H5` 等混合项目
 
 - [x] 支持跳转 `Fragment`(也就是跨组件获取`Fragment`)
 
@@ -148,9 +137,11 @@
 
 - [到底什么是组件化](https://blog.csdn.net/u011692041/article/details/92572758)
 
-配套的 `Idea Plugin`
+## 配套的 `Idea Plugin`
 
-[RouterGo 帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
+`Android Studio` 中搜索插件名称：RouterGo, 即可下载对应的插件
+
+[RouterGo 源码地址：帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
 
 ## 扫码进群
 
@@ -165,8 +156,24 @@
 
 ## 版本更新日志
 
-#### v1.7.6
+#### v1.7.7
+- `Component` 中增加一个方法 `Component.openInitOptimize()`, 调用了之后, 初始化的实现就会变成使用 ASM 技术实现的, 反之使用反射
+    - 其实两者性能几乎无差别, 不是极致优化的情况下, 我建议还是别用
+- `Gradle Plugin`
+    - 在之前版本的基础上, 增加一个 `Gradle Plugin`, 用来加快启动的速度. 具体问题请看 [issue](https://github.com/xiaojinzi123/Component/issues/26)
+    - `Component` 默认采用反射进行初始化, 但是优化后和优化前的时间相差的很小, 只有几毫秒. 所以并不推荐使用 `Gradle Plugin` 
+    - 当然了使用 `Gradle` 插件也会带来一定的未知的风险, 当有任何问题产生的时候, 请第一时间禁用此插件来排查是否是此插件引起的. 
+    - 如果是插件引起的问题, 请您禁用此插件, 请放心, 不会对你代码造成任何的影响. 可以的话把问题反馈给我. 谢谢
+- `Idea Plugin` 修复对 `RxRouter` 的图标显示问题
+- `Idea Plugin` 不在支持 AS3.4, 最低支持 AS3.5
 
+#### v1.7.6.2
+- 全部的 `navigate` 方法都增加了 @CheckResult 注解, 提示使用者此方法是有返回值的, 不要返回值你可以使用对应的 `forward` 方法
+
+#### v1.7.6.1
+- 增加全套的 `forward` 方法, 没有 `NavigationDisposable` 返回值
+
+#### v1.7.6
 - 增加"路由" `Fragment` 的功能(其实就是针对`Fragment`做的一个更简单的获取方式)
     - 任意一个 `Fragment` 使用 `@FragmentAnno` 标记即可
     - 如何使用请看, 路由的 wiki [跳转 Fragment](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-Fragment)

@@ -5,8 +5,8 @@ import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.application.IComponentHostApplication;
 import com.xiaojinzi.component.application.IComponentCenterApplication;
+import com.xiaojinzi.component.application.IComponentHostApplication;
 import com.xiaojinzi.component.impl.RouterCenter;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.support.ASMUtil;
@@ -74,6 +74,11 @@ public class ModuleManager implements IComponentCenterApplication {
         }
     }
 
+    /**
+     * 注册业务模块, 可以传多个名称
+     *
+     * @param hosts host 的名称数组
+     */
     public void registerArr(@Nullable String... hosts) {
         if (hosts != null) {
             for (String host : hosts) {
@@ -116,23 +121,29 @@ public class ModuleManager implements IComponentCenterApplication {
 
     @Nullable
     public static IComponentHostApplication findModuleApplication(@NonNull String host) {
-        IComponentHostApplication result = ASMUtil.findModuleApplicationAsmImpl(host);
-        if (result == null) {
-            try {
-                // 先找正常的
-                Class<?> clazz = Class.forName(ComponentUtil.genHostModuleApplicationClassName(host));
-                result = (IComponentHostApplication) clazz.newInstance();
-            } catch (Exception ignore) {
-                // ignore
+        IComponentHostApplication result = null;
+        if (Component.isInitOptimize()) {
+            LogUtil.log("Componnet", host + " 采用优化加载");
+            result = ASMUtil.findModuleApplicationAsmImpl(host);
+        }else {
+            LogUtil.log("Componnet", host + " 采用反射加载");
+            if (result == null) {
+                try {
+                    // 先找正常的
+                    Class<?> clazz = Class.forName(ComponentUtil.genHostModuleApplicationClassName(host));
+                    result = (IComponentHostApplication) clazz.newInstance();
+                } catch (Exception ignore) {
+                    // ignore
+                }
             }
-        }
-        if (result == null) {
-            try {
-                // 找默认的
-                Class<?> clazz = Class.forName(ComponentUtil.genDefaultHostModuleApplicationClassName(host));
-                result = (IComponentHostApplication) clazz.newInstance();
-            } catch (Exception ignore) {
-                // ignore
+            if (result == null) {
+                try {
+                    // 找默认的
+                    Class<?> clazz = Class.forName(ComponentUtil.genDefaultHostModuleApplicationClassName(host));
+                    result = (IComponentHostApplication) clazz.newInstance();
+                } catch (Exception ignore) {
+                    // ignore
+                }
             }
         }
         return result;

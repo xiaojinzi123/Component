@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
+
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -18,6 +20,7 @@ import java.util.Set;
  *
  * @author : xiaojinzi 30212
  */
+@CheckClassName
 public class ParameterSupport {
 
     private ParameterSupport() {

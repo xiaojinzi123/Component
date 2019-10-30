@@ -86,24 +86,25 @@ public class FailureTest implements TestExecutor {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_AUTORETURN1)
                 .requestCode(123)
-                .interceptors((RouterInterceptor) chain -> RxRouter.with(chain.request().getRawContext())
-                        .host(ModuleConfig.User.NAME)
-                        .path(ModuleConfig.User.LOGIN)
-                        .requestCode(123)
-                        .intentCall()
-                        .doOnSuccess(intent -> ToastUtil.toastShort("登录成功,1秒后跳转到目标界面"))
-                        .observeOn(Schedulers.io())
-                        .delay(1, TimeUnit.SECONDS)
-                        .map(intent -> (User) intent.getSerializableExtra("data"))
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                intent -> {
-                                    chain.proceed(chain.request());
-                                },
-                                throwable -> {
-                                    chain.callback().onError(new Exception(throwable));
-                                }
-                        )
+                .interceptors((RouterInterceptor) chain ->
+                        RxRouter.with(chain.request().getRawContext())
+                                .host(ModuleConfig.User.NAME)
+                                .path(ModuleConfig.User.LOGIN)
+                                .requestCode(123)
+                                .intentCall()
+                                .doOnSuccess(intent -> ToastUtil.toastShort("登录成功,1秒后跳转到目标界面"))
+                                .observeOn(Schedulers.io())
+                                .delay(1, TimeUnit.SECONDS)
+                                .map(intent -> (User) intent.getSerializableExtra("data"))
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        intent -> {
+                                            chain.proceed(chain.request());
+                                        },
+                                        throwable -> {
+                                            chain.callback().onError(new Exception(throwable));
+                                        }
+                                )
                 )
                 .query("data", "useSameRequestCode")
                 .intentCall()

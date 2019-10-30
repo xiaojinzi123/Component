@@ -4,6 +4,7 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
 
 /**
@@ -22,6 +23,7 @@ import com.xiaojinzi.component.support.RouterInterceptorCache;
  *
  * @author xiaojinzi
  */
+@CheckClassName
 public interface RouterInterceptor {
 
     /**

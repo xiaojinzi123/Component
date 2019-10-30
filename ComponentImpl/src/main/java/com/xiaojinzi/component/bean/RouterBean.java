@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 
@@ -17,6 +18,7 @@ import java.util.List;
  *
  * @author : xiaojinzi 30212
  */
+@CheckClassName
 public class RouterBean {
 
     /**

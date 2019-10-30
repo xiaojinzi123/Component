@@ -3,10 +3,13 @@ package com.xiaojinzi.component.impl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.bean.RouterDegradeBean;
 import com.xiaojinzi.component.router.IComponentCenterRouterDegrade;
 import com.xiaojinzi.component.router.IComponentHostRouterDegrade;
+import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.RouterDegradeCache;
 
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CheckClassName
 public class RouterDegradeCenter implements IComponentCenterRouterDegrade {
 
     private RouterDegradeCenter() {
@@ -139,10 +143,15 @@ public class RouterDegradeCenter implements IComponentCenterRouterDegrade {
 
     @Nullable
     public IComponentHostRouterDegrade findModuleRouterDegrade(String host) {
-        String className = ComponentUtil.genHostRouterDegradeClassName(host);
         try {
-            Class<?> clazz = Class.forName(className);
-            return (IComponentHostRouterDegrade) clazz.newInstance();
+            if (Component.isInitOptimize()) {
+                return ASMUtil.findModuleRouterDegradeAsmImpl(host);
+            }else {
+                Class<? extends IComponentHostRouterDegrade> clazz = null;
+                String className = ComponentUtil.genHostRouterDegradeClassName(host);
+                clazz = (Class<? extends IComponentHostRouterDegrade>) Class.forName(className);
+                return clazz.newInstance();
+            }
         } catch (Exception ignore) {
             // ignore
         }

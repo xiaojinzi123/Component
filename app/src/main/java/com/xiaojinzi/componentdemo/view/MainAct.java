@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
@@ -70,12 +71,21 @@ public class MainAct extends AppCompatActivity {
         );
     }
 
+    public void testRouterForFragment(View view) {
+        Fragment fragment = Router.with("component1.fragment").navigate();
+        if (fragment == null) {
+            Toast.makeText(this, "没有找到 'component1.fragment' 对应的 Fragment", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "找到了 'component1.fragment' 对应的 Fragment：：" + fragment, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void testWebRouter(View view) {
         Router
                 .with(this)
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.TEST_WEB_ROUTER)
-                .navigate();
+                .forward();
     }
 
     public void testQuality(View view) {
