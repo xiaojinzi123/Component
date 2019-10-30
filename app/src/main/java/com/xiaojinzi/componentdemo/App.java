@@ -40,7 +40,7 @@ public class App extends Application {
                 ModuleConfig.User.NAME, "base"
         );
         long endTime = System.currentTimeMillis();
-        LogUtil.log("Componnet.Application", "---------------------------------耗时：" + (endTime - startTime));
+        LogUtil.log("Componnet", "---------------------------------耗时：" + (endTime - startTime));
 
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();

@@ -12,7 +12,7 @@
 `ARouter` 是最早出现的组件化的一个实现方案, 早不一定最好. 很多人看见 `ARouter` star 的数量和阿里出的框架就会产生莫名的信任.基本都会优先选择 `ARouter`. 
 组件化方案不同于一个简单的 `UI` 库、控件库, 作为技术选型的你应该做一个比较深入的了解, 然后选择你认为好的、合适的.
 
-可以说到目前为止, 基于 'URI' 方面的所有路由框架中(ARouter、WMRouter、ActivityRouter...) Component 是最强大和完善的组件化框架.
+可以说到目前为止, 基于 'URI' 方面的所有路由框架中(`ARouter`、`WMRouter`、`ActivityRouter` ...) `Component` 是最强大和完善的组件化框架.
 
 选择一个更好、更全面的、更稳定、更有发展前景的框架更是你们技术团队或者技术负责人要做的事情!
 
@@ -37,9 +37,11 @@
 ![](https://img.shields.io/github/languages/code-size/xiaojinzi123/Component.svg)
 ![](https://img.shields.io/github/license/xiaojinzi123/Component.svg)
 <a href="https://gitee.com/xiaojinziCoder/Component" >
-    <img height=20 src="https://gitee.com/logo-black.svg" /></a>
+    <img height=20 src="https://gitee.com/logo-black.svg" />
+</a>
 <a href="https://github.com/xiaojinzi123/Component">
-    <img height=22 src="https://xiaojinzi.oss-cn-shanghai.aliyuncs.com/blogImages/fluidicon.png" /></a>
+    <img height=22 src="https://xiaojinzi.oss-cn-shanghai.aliyuncs.com/blogImages/fluidicon.png" />
+</a>
 
 ## Demo体验(扫码或者点击图片即可下载)
 
@@ -55,6 +57,10 @@
 - [x] 支持多 `Module`
 
 - [x] 支持标准 `URI` 的使用
+
+- [x] 支持原生的跳转动画
+
+- [x] 支持 `Flutter`, `H5` 等混合项目
 
 - [x] 支持跳转 `Fragment`(也就是跨组件获取`Fragment`)
 
@@ -150,25 +156,24 @@
 
 ## 版本更新日志
 
-#### v1.7.7
-
-- 深度优化 `Component` 的初始化过程. 
-    - `Component` 默认采用反射原理寻找对应模块的组件类(实现了接口 IComponentApplication 的类), 新版本以后新增一个 `Gradle` 插件来帮助优化这部分反射的代码
-    - 当然了, `Gradle` 插件选择用或者不用都是可以的. 不用的话无非就是初始化损失几十毫秒的时间. 用了就可以大大减少初始化的时间
-    - `Gradle` 插件是为了加快初始化速度的, 所以并不是强制推荐的. 
+#### v1.7.7(未发布)
+- `Component` 中增加一个方法 `Component.openInitOptimize()`, 调用了之后, 初始化的实现就会变成使用 ASM 技术实现的, 反之使用反射
+    - 其实两者性能几乎无差别, 不是极致优化的情况下, 我建议还是别用
+- `Gradle Plugin`
+    - 在之前版本的基础上, 增加一个 `Gradle Plugin`, 用来加快启动的速度. 具体问题请看 [issue](https://github.com/xiaojinzi123/Component/issues/26)
+    - `Component` 默认采用反射进行初始化, 但是优化后和优化前的时间相差的很小, 只有几毫秒. 所以并不推荐使用 `Gradle Plugin` 
     - 当然了使用 `Gradle` 插件也会带来一定的未知的风险, 当有任何问题产生的时候, 请第一时间禁用此插件来排查是否是此插件引起的. 
     - 如果是插件引起的问题, 请您禁用此插件, 请放心, 不会对你代码造成任何的影响. 可以的话把问题反馈给我. 谢谢
+- `Idea Plugin` 修复对 `RxRouter` 的图标显示问题
+- `Idea Plugin` 不在支持 AS3.4, 最低支持 AS3.5
 
 #### v1.7.6.2
-
 - 全部的 `navigate` 方法都增加了 @CheckResult 注解, 提示使用者此方法是有返回值的, 不要返回值你可以使用对应的 `forward` 方法
 
 #### v1.7.6.1
-
 - 增加全套的 `forward` 方法, 没有 `NavigationDisposable` 返回值
 
 #### v1.7.6
-
 - 增加"路由" `Fragment` 的功能(其实就是针对`Fragment`做的一个更简单的获取方式)
     - 任意一个 `Fragment` 使用 `@FragmentAnno` 标记即可
     - 如何使用请看, 路由的 wiki [跳转 Fragment](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-Fragment)
