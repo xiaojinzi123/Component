@@ -107,9 +107,10 @@ public class ModifyASMUtilTransform extends BaseTransform {
                                 routerDegradeMap, serviceMap, fragmentMap
                         );
 
-                        FileOutputStream fileOutputStream = new FileOutputStream(new File("/Users/xiaojinzi/Desktop/test.class"));
+                        // 生成到桌面用来测试
+                        /*FileOutputStream fileOutputStream = new FileOutputStream(new File("/Users/xiaojinzi/Desktop/test.class"));
                         fileOutputStream.write(bytes);
-                        fileOutputStream.close();
+                        fileOutputStream.close();*/
 
                         JarEntry asmUtiJarEntry = new JarEntry(jarEntry.getName());
                         asmUtiJarEntry.setSize(bytes.length);
@@ -129,7 +130,8 @@ public class ModifyASMUtilTransform extends BaseTransform {
                 }
                 jarOutputStream.close();
                 FileUtils.copyFile(destJarFile, dest);
-                // FileUtils.copyFile(jarInput.getFile(), dest);
+                // 删除文件
+                destJarFile.delete();
             }
             for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
                 File dest = outputProvider.getContentLocation(directoryInput.getName(),
