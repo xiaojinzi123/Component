@@ -143,6 +143,12 @@
 
 [RouterGo 源码地址：帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
 
+## 接入的App
+
+<div>
+    <img src="./imgs/appsIcon/ehi.png" height="60px" />
+</div>
+
 ## 扫码进群
 
 <div>
