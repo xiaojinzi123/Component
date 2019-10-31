@@ -73,80 +73,75 @@ public class ModifyASMUtilTransform extends BaseTransform {
 
         filterAllNames(transformInvocation);
 
-        System.out.println("======================== transform ==========================");
         // 消费型输入，可以从中获取jar包和class文件夹路径。需要输出给下一个任务
         Collection<TransformInput> inputs = transformInvocation.getInputs();
         // OutputProvider管理输出路径，如果消费型输入为空，你会发现OutputProvider == null
         TransformOutputProvider outputProvider = transformInvocation.getOutputProvider();
-        try {
-            for (TransformInput input : inputs) {
-                for (JarInput jarInput : input.getJarInputs()) {
-                    File dest = outputProvider.getContentLocation(
-                            jarInput.getFile().getAbsolutePath(),
-                            jarInput.getContentTypes(),
-                            jarInput.getScopes(),
-                            Format.JAR);
-                    File destJarFile = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString() + "_" + jarInput.getFile().getName());
-                    if (destJarFile.exists()) {
-                        destJarFile.delete();
-                    }
 
-                    JarFile jarFile = new JarFile(jarInput.getFile());
-                    Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
-
-                    JarOutputStream jarOutputStream = new JarOutputStream(
-                            new FileOutputStream(destJarFile)
-                    );
-                    while (jarEntryEnumeration.hasMoreElements()) {
-                        JarEntry jarEntry = jarEntryEnumeration.nextElement();
-                        String entryName = jarEntry.getName();
-                        // 如果是目标工具类, 就换成手动生成的
-                        if ("com/xiaojinzi/component/support/ASMUtil.class".equals(entryName)) {
-
-                            byte[] bytes = ASMUtilClassGen.getBytes(
-                                    applicationMap, interceptorMap, routerMap,
-                                    routerDegradeMap, serviceMap, fragmentMap
-                            );
-
-                            FileOutputStream fileOutputStream = new FileOutputStream(new File("/Users/xiaojinzi/Desktop/test.class"));
-                            fileOutputStream.write(bytes);
-                            fileOutputStream.close();
-
-                            JarEntry asmUtiJarEntry = new JarEntry(jarEntry.getName());
-                            asmUtiJarEntry.setSize(bytes.length);
-                            CRC32 crc = new CRC32();
-                            crc.update(bytes);
-                            asmUtiJarEntry.setCrc(crc.getValue());
-                            jarOutputStream.putNextEntry(asmUtiJarEntry);
-                            jarOutputStream.write(bytes);
-
-                        } else {
-                            jarOutputStream.putNextEntry(jarEntry);
-                            InputStream inputStream = jarFile.getInputStream(jarEntry);
-                            IOUtil.readAndWrite(inputStream, jarOutputStream);
-                            inputStream.close();
-                        }
-                        jarOutputStream.closeEntry();
-                    }
-                    jarOutputStream.close();
-                    FileUtils.copyFile(destJarFile, dest);
-                    // FileUtils.copyFile(jarInput.getFile(), dest);
+        for (TransformInput input : inputs) {
+            for (JarInput jarInput : input.getJarInputs()) {
+                File dest = outputProvider.getContentLocation(
+                        jarInput.getFile().getAbsolutePath(),
+                        jarInput.getContentTypes(),
+                        jarInput.getScopes(),
+                        Format.JAR);
+                File destJarFile = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString() + "_" + jarInput.getFile().getName());
+                if (destJarFile.exists()) {
+                    destJarFile.delete();
                 }
-                for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
-                    File dest = outputProvider.getContentLocation(directoryInput.getName(),
-                            directoryInput.getContentTypes(), directoryInput.getScopes(),
-                            Format.DIRECTORY);
-                    File directoryInputFile = directoryInput.getFile();
-                    System.out.println("directoryInputFile = " + directoryInputFile.getPath());
-                    printFile(directoryInputFile);
-                    //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
-                    FileUtils.copyDirectory(directoryInputFile, dest);
+
+                JarFile jarFile = new JarFile(jarInput.getFile());
+                Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
+
+                JarOutputStream jarOutputStream = new JarOutputStream(
+                        new FileOutputStream(destJarFile)
+                );
+                while (jarEntryEnumeration.hasMoreElements()) {
+                    JarEntry jarEntry = jarEntryEnumeration.nextElement();
+                    String entryName = jarEntry.getName();
+                    // 如果是目标工具类, 就换成手动生成的
+                    if ("com/xiaojinzi/component/support/ASMUtil.class".equals(entryName)) {
+
+                        byte[] bytes = ASMUtilClassGen.getBytes(
+                                applicationMap, interceptorMap, routerMap,
+                                routerDegradeMap, serviceMap, fragmentMap
+                        );
+
+                        // 生成到桌面用来测试
+                        /*FileOutputStream fileOutputStream = new FileOutputStream(new File("/Users/xiaojinzi/Desktop/test.class"));
+                        fileOutputStream.write(bytes);
+                        fileOutputStream.close();*/
+
+                        JarEntry asmUtiJarEntry = new JarEntry(jarEntry.getName());
+                        asmUtiJarEntry.setSize(bytes.length);
+                        CRC32 crc = new CRC32();
+                        crc.update(bytes);
+                        asmUtiJarEntry.setCrc(crc.getValue());
+                        jarOutputStream.putNextEntry(asmUtiJarEntry);
+                        jarOutputStream.write(bytes);
+
+                    } else {
+                        jarOutputStream.putNextEntry(jarEntry);
+                        InputStream inputStream = jarFile.getInputStream(jarEntry);
+                        IOUtil.readAndWrite(inputStream, jarOutputStream);
+                        inputStream.close();
+                    }
+                    jarOutputStream.closeEntry();
                 }
+                jarOutputStream.close();
+                FileUtils.copyFile(destJarFile, dest);
+                // 删除文件
+                destJarFile.delete();
             }
-        } catch (Exception e) {
-            System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-            e.printStackTrace();
-            throw e;
+            for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
+                File dest = outputProvider.getContentLocation(directoryInput.getName(),
+                        directoryInput.getContentTypes(), directoryInput.getScopes(),
+                        Format.DIRECTORY);
+                File directoryInputFile = directoryInput.getFile();
+                // printFile(directoryInputFile);
+                //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
+                FileUtils.copyDirectory(directoryInputFile, dest);
+            }
         }
 
     }
@@ -273,13 +268,13 @@ public class ModifyASMUtilTransform extends BaseTransform {
 
     private void printFile(File file) {
         if (file.isFile()) {
-            System.out.println("printFile = " + file.getPath());
+            // System.out.println("printFile = " + file.getPath());
         } else {
-            System.out.println("printFolder = " + file.getPath());
+            // System.out.println("printFolder = " + file.getPath());
             File[] files = file.listFiles();
             for (File subFile : files) {
                 if (subFile.isFile()) {
-                    System.out.println("printFile = " + subFile.getPath());
+                    // System.out.println("printFile = " + subFile.getPath());
                 } else {
                     printFile(subFile);
                 }

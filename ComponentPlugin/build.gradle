@@ -22,13 +22,13 @@ sourceCompatibility = "7"
 targetCompatibility = "7"
 
 group='com.xiaojinzi.component'
-version='1.7.6'
+version="${versions.component_version}"
 archivesBaseName='component-plugin'
 
 uploadArchives{
     repositories {
         mavenDeployer{
-            repository(url: uri('../repo'))
+            repository(url: uri('../RepoComponent'))
         }
     }
 }

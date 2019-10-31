@@ -10,7 +10,7 @@ ext.versions = [
         constraintLayout   : '2.0.0-beta3',
         rxjava             : '2.2.13',
         rxandroid          : "2.1.1",
-        component_version  : "1.7.6"
+        component_version  : "1.7.7.1"
 ]
 
 ext.libs = [

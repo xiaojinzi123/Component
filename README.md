@@ -6,6 +6,8 @@
 会持续在组件化方面保持领先. 并且之后也会不断发现用户的需求, 然后迭代. 希望你们能积极的提 issue, 
 告诉我你们在组件化方面的困恼!
 
+如果您选择了 `Component`, 可以的话留下您的 `App` 名称或者公司名称, 我做一个展示, 不甚感激~~~
+
 很多选型的人有这么个疑问: 有了 `ARouter` 为啥要有 `Component`. 
 我这里在这里做一个回答.
 
@@ -142,6 +144,12 @@
 `Android Studio` 中搜索插件名称：RouterGo, 即可下载对应的插件
 
 [RouterGo 源码地址：帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
+
+## 接入的App
+
+<div>
+    <img src="./imgs/appsIcon/ehi.png" height="60px" />
+</div>
 
 ## 扫码进群
 
