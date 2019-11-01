@@ -46,6 +46,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
     protected ClassName mClassNameString;
     protected ClassName mClassNameList;
     protected ClassName mClassNameArrayList;
+    protected ClassName mClassNameKeep;
 
     protected TypeName mTypeNameString;
 
@@ -67,6 +68,8 @@ public abstract class BaseProcessor extends AbstractProcessor {
         mClassNameArrayList = ClassName.get(mTypeElementArrayList);
 
         mTypeNameString = TypeName.get(mTypeElementString.asType());
+
+        mClassNameKeep = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_KEEP));
 
     }
 

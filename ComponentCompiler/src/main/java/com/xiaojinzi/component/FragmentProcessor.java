@@ -103,6 +103,7 @@ public class FragmentProcessor extends BaseHostProcessor {
         MethodSpec onCreateMethod = generateOnCreateMethod();
         MethodSpec onDestroyMethod = generateOnDestroyMethod();
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
+                .addAnnotation(mClassNameKeep)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
                 .superclass(superClass)

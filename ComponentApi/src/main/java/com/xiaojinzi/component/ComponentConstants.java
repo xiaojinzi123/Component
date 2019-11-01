@@ -53,6 +53,7 @@ public class ComponentConstants {
     public static final String ANDROID_INTENT = "android.content.Intent";
     public static final String ANDROID_ANNOTATION_NULLABLE = "android.support.annotation.Nullable";
     public static final String ANDROID_ANNOTATION_NONNULL = "android.support.annotation.NonNull";
+    public static final String ANDROID_ANNOTATION_KEEP = "android.support.annotation.Keep";
     public static final String ANDROID_BUNDLE = "android.os.Bundle";
 
     public static final String JAVA_CLASS = "java.lang.Class";

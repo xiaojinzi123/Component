@@ -141,6 +141,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
         MethodSpec globalInterceptorListMethod = generateGlobalInterceptorListMethod();
         MethodSpec normalInterceptorListMethod = generateNormalInterceptorInitMapMethod();
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
+                .addAnnotation(mClassNameKeep)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
                 .superclass(superClass)

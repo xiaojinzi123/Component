@@ -169,8 +169,9 @@ public class AutowireProcessor extends BaseProcessor {
                 .classBuilder(className + ComponentConstants.INJECT_SUFFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addSuperinterface(ParameterizedTypeName.get(injectClassName, TypeName.get(mElements.getTypeElement(fullClassName).asType())))
-                .addMethod(injectMethodForView(targetClass, parameterFieldSet))
-                .addMethod(injectMethod(targetClass, parameterFieldSet));
+                .addMethod(injectMethodForView(targetClass))
+                .addMethod(injectMethod(targetClass, parameterFieldSet))
+                .addAnnotation(mClassNameKeep);
         try {
             JavaFile.builder(pkg, classBuilder.build()
             ).indent("    ").build().writeTo(mFiler);
@@ -179,7 +180,7 @@ public class AutowireProcessor extends BaseProcessor {
         }
     }
 
-    private MethodSpec injectMethodForView(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
+    private MethodSpec injectMethodForView(TypeElement targetClass) {
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder("inject")
                 .addJavadoc("属性注入\n")
