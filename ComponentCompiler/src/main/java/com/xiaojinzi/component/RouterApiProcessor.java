@@ -212,7 +212,6 @@ public class RouterApiProcessor extends BaseProcessor {
      * @param defaultHost
      */
     private void implementInterfaceMethods(TypeSpec.Builder typeSpecBuilder, TypeElement apiTypeElement, String defaultHost) {
-
         // 拿出所有的方法
         List<? extends Element> enclosedElements = apiTypeElement.getEnclosedElements();
         for (Element methodElement : enclosedElements) {
@@ -220,7 +219,6 @@ public class RouterApiProcessor extends BaseProcessor {
                 implementInterfaceMethod(typeSpecBuilder, (ExecutableElement) methodElement, defaultHost);
             }
         }
-
     }
 
     private void implementInterfaceMethod(TypeSpec.Builder typeSpecBuilder, ExecutableElement executableElement, String defaultHost) {

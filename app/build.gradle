@@ -29,7 +29,7 @@ android {
             debuggable = true
             jniDebuggable = true
             renderscriptDebuggable = true
-            minifyEnabled = true
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
