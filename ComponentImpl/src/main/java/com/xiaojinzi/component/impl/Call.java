@@ -41,10 +41,12 @@ public interface Call {
     void forward(@Nullable final Callback callback);
 
     /**
-     * 普通跳转
+     * 执行跳转的具体逻辑
+     * 返回值不可以为空,是为了使用的时候更加的顺溜,不用判断空
      *
-     * @param callback 当跳转完毕或者发生错误会回调
-     * @return 可用于取消本次路由
+     * @param callback 当跳转完毕或者发生错误会回调,
+     *                 回调给用户的 {@link Callback}, 回调中的各个方法, 每个方法至多有一个方法被调用, 并且只有一次
+     * @return 返回的对象有可能是一个空实现对象 {@link Router#emptyNavigationDisposable},可以取消路由或者获取原始request对象
      */
     @NonNull
     @AnyThread

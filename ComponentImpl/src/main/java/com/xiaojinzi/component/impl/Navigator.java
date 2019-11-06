@@ -168,8 +168,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
     /**
      * requestCode 会随机的生成
-     *
-     * @return
      */
     public Navigator requestCodeRandom() {
         return requestCode(RANDOM_REQUSET_CODE);
@@ -638,19 +636,14 @@ public class Navigator extends RouterRequest.Builder implements Call {
         navigate(callback);
     }
 
-    /**
-     * 执行跳转的具体逻辑
-     * 返回值不可以为空,是为了使用的时候更加的顺溜,不用判断空
-     *
-     * @param callback 回调
-     * @return 返回的对象有可能是一个空实现对象 {@link Router#emptyNavigationDisposable},可以取消路由或者获取原始request对象
-     */
     @NonNull
     @AnyThread
     @CheckResult
     public synchronized NavigationDisposable navigate(@Nullable final Callback callback) {
         // 构建请求对象
         RouterRequest originalRequest = null;
+        // 可取消对象
+        InterceptorCallback interceptorCallback = null;
         try {
             // 如果用户没填写 Context 或者 Fragment 默认使用 Application
             useDefaultApplication();
@@ -661,7 +654,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
             // 生成路由请求对象
             originalRequest = build();
             // 创建整个拦截器到最终跳转需要使用的 Callback
-            final InterceptorCallback interceptorCallback = new InterceptorCallback(originalRequest, callback);
+            interceptorCallback = new InterceptorCallback(originalRequest, callback);
             // Fragment 的销毁的自动取消
             if (originalRequest.fragment != null) {
                 Router.mNavigationDisposableList.add(interceptorCallback);
@@ -674,11 +667,19 @@ public class Navigator extends RouterRequest.Builder implements Call {
             realNavigate(originalRequest, customInterceptors, interceptorCallback);
             // 返回对象
             return interceptorCallback;
-        } catch (Exception e) { // 发生路由错误的时候
-            RouterErrorResult errorResult = new RouterErrorResult(originalRequest, e);
-            RouterUtil.errorCallback(callback, errorResult);
+        } catch (Exception e) { // 发生路由错误
+            if (interceptorCallback == null) {
+                RouterErrorResult errorResult = new RouterErrorResult(originalRequest, e);
+                RouterUtil.errorCallback(callback, null, errorResult);
+            } else {
+                // 这里错误回调也会让 interceptorCallback 内部的 isEnd 是 true, 所以不用去特意取消
+                // 也会让整个路由终止
+                interceptorCallback.onError(e);
+            }
         } finally {
             // 释放资源
+            originalRequest = null;
+            interceptorCallback = null;
             context = null;
             fragment = null;
             scheme = null;
@@ -732,7 +733,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         // 直接 gg
         Utils.checkNullPointer(biCallback, "callback");
         // 做一个包裹实现至多只能调用一次内部的其中一个方法
-        final BiCallback<ActivityResult> callback = new BiCallbackWrap<>(biCallback);
+        final BiCallback<ActivityResult> biCallbackWrap = new BiCallbackWrap<>(biCallback);
         NavigationDisposable finalNavigationDisposable = null;
         try {
             // 为了拿数据做的检查
@@ -766,7 +767,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                         @Override
                         public void accept(@NonNull ActivityResult result) throws Exception {
                             Help.removeRequestCode(routerResult.getOriginalRequest());
-                            callback.onSuccess(routerResult, result);
+                            biCallbackWrap.onSuccess(routerResult, result);
                         }
                     });
                 }
@@ -776,7 +777,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 public void onError(@NonNull RouterErrorResult errorResult) {
                     super.onError(errorResult);
                     Help.removeRequestCode(errorResult.getOriginalRequest());
-                    callback.onError(errorResult);
+                    // 这里为啥没有调用
+                    biCallbackWrap.onError(errorResult);
                 }
 
                 @Override
@@ -785,7 +787,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                     super.onCancel(originalRequest);
                     rxFragment.removeActivityResultConsumer(originalRequest);
                     Help.removeRequestCode(originalRequest);
-                    callback.onCancel(originalRequest);
+                    biCallbackWrap.onCancel(originalRequest);
                 }
 
             });
@@ -795,19 +797,24 @@ public class Navigator extends RouterRequest.Builder implements Call {
             boolean isExist = Help.isExist(finalNavigationDisposable.originalRequest());
             if (isExist) { // 如果存在直接返回错误给 callback
                 throw new NavigationFailException("request&result code is " +
-                        finalNavigationDisposable.originalRequest().requestCode + " is exist and " +
-                        "uri is " + finalNavigationDisposable.originalRequest().uri.toString());
+                        finalNavigationDisposable.originalRequest().requestCode + " is exist!");
             } else {
                 Help.addRequestCode(finalNavigationDisposable.originalRequest());
             }
             return finalNavigationDisposable;
         } catch (Exception e) {
-            callback.onError(new RouterErrorResult(e));
-            if (finalNavigationDisposable != null) {
-                // 取消这个路由
+            // biCallbackWrap.onError(new RouterErrorResult(finalNavigationDisposable.originalRequest(), e));
+            if (finalNavigationDisposable == null) {
+                RouterUtil.errorCallback(null, biCallbackWrap, new RouterErrorResult(e));
+                // 就只会打印出一个错误信息: 路由失败信息
+            } else {
+                // 取消这个路由, 此时其实会输出两个信息
+                // 第一个是打印出路由失败的信息
+                // 第二个是路由被取消的信息
+                RouterUtil.errorCallback(null, biCallbackWrap, new RouterErrorResult(finalNavigationDisposable.originalRequest(), e));
                 finalNavigationDisposable.cancel();
-                finalNavigationDisposable = null;
             }
+            finalNavigationDisposable = null;
             return Router.emptyNavigationDisposable;
         }
 
@@ -816,14 +823,14 @@ public class Navigator extends RouterRequest.Builder implements Call {
     /**
      * 真正的执行路由
      *
-     * @param originalRequest    最原始的请求对象
-     * @param customInterceptors 自定义的拦截器
-     * @param callback           回调对象
+     * @param originalRequest           最原始的请求对象
+     * @param customInterceptors        自定义的拦截器
+     * @param routerInterceptorCallback 回调对象
      */
     @AnyThread
     private static void realNavigate(@NonNull final RouterRequest originalRequest,
                                      @Nullable List<Object> customInterceptors,
-                                     @NonNull final RouterInterceptor.Callback callback) {
+                                     @NonNull final RouterInterceptor.Callback routerInterceptorCallback) {
 
         // 拿到共有的拦截器
         List<RouterInterceptor> publicInterceptors = InterceptorCenter.getInstance()
@@ -868,7 +875,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         // 创建执行器
         final RouterInterceptor.Chain chain = new InterceptorChain(
                 allInterceptors, 0,
-                originalRequest, callback
+                originalRequest, routerInterceptorCallback
         );
         // 执行
         chain.proceed(originalRequest);
@@ -941,7 +948,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
          *
          * @return
          */
-        private boolean isEnd() {
+        public boolean isEnd() {
             return isComplete || isCanceled;
         }
 
@@ -972,7 +979,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 // 创建错误的对象
                 RouterErrorResult errorResult = new RouterErrorResult(mOriginalRequest, error);
                 // 回调执行
-                RouterUtil.errorCallback(mCallback, errorResult);
+                RouterUtil.errorCallback(mCallback, null, errorResult);
             }
         }
 
@@ -1172,7 +1179,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 @Override
                 public void run() {
                     try {
-                        if (callback().isComplete() || callback().isCanceled()) {
+                        if (callback().isEnd()) {
                             return;
                         }
                         if (request == null) {
