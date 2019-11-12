@@ -4,6 +4,8 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
+
 /**
  * 当路由完成的时候,回调这个接口,这时候的完成不一定是成功的,可能是失败的,成功和失败都表示完成
  * 所有的调用顺序整理：
@@ -13,6 +15,7 @@ import android.support.annotation.Nullable;
  *
  * @author xiaojinzi 30212
  */
+@CheckClassName
 public interface Callback extends OnRouterError, OnRouterCancel {
 
     /**

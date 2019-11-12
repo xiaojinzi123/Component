@@ -1,6 +1,7 @@
 package com.xiaojinzi.componentdemo.view;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
 import com.xiaojinzi.base.service.inter.component1.Component1Service;
 import com.xiaojinzi.base.service.inter.component2.Component2Service;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.service.RxServiceManager;
 import com.xiaojinzi.component.impl.service.ServiceManager;
 import com.xiaojinzi.component.support.Utils;
@@ -41,15 +43,16 @@ public class TestServiceAct extends AppCompatActivity {
     }
 
     public void loadComponent1Fragment(View view) {
-
-        if (service1 == null) {
-            Toast.makeText(this, "请先 find Component1Service服务", Toast.LENGTH_SHORT).show();
+        Fragment fragment = Router
+                .with("component1.fragment")
+                .navigate();
+        if (fragment == null) {
+            Toast.makeText(this, "对应的 component1.fragment 没有找到", Toast.LENGTH_SHORT).show();
             return;
         }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fl, service1.getFragment());
+        ft.replace(R.id.fl, fragment);
         ft.commit();
-
     }
 
     Component1Service service1 = null;

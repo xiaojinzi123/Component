@@ -20,6 +20,11 @@ import com.xiaojinzi.component.support.Utils;
 public class Component {
 
     /**
+     * 是否初始化过了
+     */
+    private static boolean isInit = false;
+
+    /**
      * 是否是 debug 状态
      */
     private static boolean isDebug = false;
@@ -33,6 +38,13 @@ public class Component {
      * 默认的 scheme
      */
     private static String defaultScheme = "router";
+
+    /**
+     * 初始化优化的开关.
+     * 默认是 false, 初始化的时候采用反射的形式
+     * 当是 true 的时候, 初始化的时候,
+     */
+    private static boolean isInitOptimize = false;
 
     private Component() {
     }
@@ -48,12 +60,25 @@ public class Component {
     }
 
     /**
+     * 打开初始化优化的开关
+     */
+    public static void openInitOptimize() {
+        if (!isInit) {
+            throw new RuntimeException("you must init Component first");
+        }
+        isInitOptimize = true;
+    }
+
+    /**
      * 初始化
      *
      * @param application App 的 Application
      * @param isDebug     是否是debug模式
      */
     public static void init(@NonNull Application application, boolean isDebug, @Nullable String defaultScheme) {
+        if (isInit) {
+            throw new RuntimeException("Component is already init");
+        }
         if (application == null) {
             throw new NullPointerException("the Application is null");
         }
@@ -64,15 +89,21 @@ public class Component {
         }
         // 注册
         application.registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
+        isInit = true;
     }
 
     /**
      * 返回是否是 debug 状态
-     *
-     * @return
      */
     public static boolean isDebug() {
         return isDebug;
+    }
+
+    /**
+     * 返回是否开启初始化优化
+     */
+    public static boolean isInitOptimize() {
+        return isInitOptimize;
     }
 
     /**

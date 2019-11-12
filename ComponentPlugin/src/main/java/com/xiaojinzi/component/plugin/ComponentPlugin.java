@@ -13,12 +13,8 @@ public class ComponentPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        System.out.println("=============oooooooooooooooooo===================================" + project.getProperties().get("android").getClass().getName());
         BaseAppModuleExtension appModuleExtension =  (BaseAppModuleExtension)project.getProperties().get("android");
-        appModuleExtension.registerTransform(new ComponentTransform());
-        /*AppExtension appExtension = (AppExtension) project.getProperties().get("android");
-        BaseAppModuleExtension
-        appExtension.registerTransform(new ComponentTransform());*/
+        appModuleExtension.registerTransform(new ModifyASMUtilTransform());
     }
 
 }

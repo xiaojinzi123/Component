@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.xiaojinzi.component.Component;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.Utils;
@@ -37,6 +38,7 @@ import java.util.Set;
  *
  * @author xiaojinzi 30212
  */
+@CheckClassName
 public class RouterRequest {
 
     @Nullable
@@ -96,8 +98,17 @@ public class RouterRequest {
 
     /**
      * 从 {@link Fragment} 和 {@link Context} 中获取上下文
+     * <p>
+     * 参数中的 {@link RouterRequest#context} 可能是一个 {@link android.app.Application} 或者是一个
+     * {@link android.content.ContextWrapper} 或者是一个 {@link Activity}
+     * 无论参数的类型是哪种, 此方法的返回值就只有两种类型：
+     * 1. {@link android.app.Application}
+     * 2. {@link Activity}
+     * <p>
+     * 如果返回的是 {@link Activity} 的 {@link Context}, 当 {@link Activity} 销毁了就会返回 null
+     * 另外就是返回 {@link android.app.Application}
      *
-     * @return 当 Activity 已经销毁了就返回 null
+     * @return {@link Context}, 可能为 null
      */
     @Nullable
     public final Context getRawContext() {
@@ -276,6 +287,9 @@ public class RouterRequest {
 
         /**
          * 跳转成功之后的 Callback
+         * 此时的跳转成功仅代表目标界面启动成功, 不代表跳转拿数据的回调被回调了
+         * 假如你是跳转拿数据的, 当你跳转到 A 界面, 此回调就会回调了,
+         * 当你拿到 Intent 的回调了, 和此回调已经没关系了
          */
         @Nullable
         protected Action afterJumpAction;

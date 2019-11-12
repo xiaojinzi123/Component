@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.component.impl.fragment.FragmentManager;
 
+/**
+ * 一个为 {@link Fragment} 设计的导航器
+ */
 public class FragmentNavigator {
 
     @NonNull
@@ -25,7 +28,7 @@ public class FragmentNavigator {
     }
 
     @Nullable
-    public Fragment navigate(){
+    public Fragment navigate() {
         return FragmentManager.get(fragmentFlag, bundle);
     }
 

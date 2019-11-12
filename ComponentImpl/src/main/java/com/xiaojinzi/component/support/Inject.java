@@ -3,9 +3,12 @@ package com.xiaojinzi.component.support;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.xiaojinzi.component.anno.support.CheckClassName;
+
 /**
  * 每一个生成的类都应该实现这个接口
  */
+@CheckClassName
 public interface Inject<T> {
 
     /**

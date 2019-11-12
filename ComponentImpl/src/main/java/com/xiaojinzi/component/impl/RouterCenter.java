@@ -11,12 +11,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.bean.RouterBean;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
+import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.router.IComponentCenterRouter;
 import com.xiaojinzi.component.router.IComponentHostRouter;
@@ -41,6 +44,7 @@ import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
  * @author xiaojinzi 30212
  * @hide
  */
+@CheckClassName
 public class RouterCenter implements IComponentCenterRouter {
 
     /**
@@ -350,10 +354,15 @@ public class RouterCenter implements IComponentCenterRouter {
      */
     @Nullable
     public IComponentHostRouter findUiRouter(String host) {
-        final String className = ComponentUtil.genHostRouterClassName(host);
         try {
-            Class<?> clazz = Class.forName(className);
-            return (IComponentHostRouter) clazz.newInstance();
+            if (Component.isInitOptimize()) {
+                return ASMUtil.findModuleRouterAsmImpl(host);
+            } else {
+                Class<? extends IComponentHostRouter> clazz = null;
+                String className = ComponentUtil.genHostRouterClassName(host);
+                clazz = (Class<? extends IComponentHostRouter>) Class.forName(className);
+                return clazz.newInstance();
+            }
         } catch (Exception ignore) {
             // ignore
         }

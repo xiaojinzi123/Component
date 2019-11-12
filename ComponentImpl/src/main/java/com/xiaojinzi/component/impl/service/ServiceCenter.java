@@ -5,8 +5,10 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.service.IComponentCenterService;
 import com.xiaojinzi.component.service.IComponentHostService;
+import com.xiaojinzi.component.support.ASMUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +18,7 @@ import java.util.Map;
  *
  * @author xiaojinzi 30212
  */
+@CheckClassName
 public class ServiceCenter implements IComponentCenterService {
 
     private Map<String, IComponentHostService> moduleServiceMap = new HashMap<>();
@@ -71,10 +74,15 @@ public class ServiceCenter implements IComponentCenterService {
 
     @Nullable
     public IComponentHostService findModuleService(String host) {
-        String className = ComponentUtil.genHostServiceClassName(host);
         try {
-            Class<?> clazz = Class.forName(className);
-            return (IComponentHostService) clazz.newInstance();
+            if (Component.isInitOptimize()) {
+                return ASMUtil.findModuleServiceAsmImpl(host);
+            } else {
+                Class<? extends IComponentHostService> clazz = null;
+                String className = ComponentUtil.genHostServiceClassName(host);
+                clazz = (Class<? extends IComponentHostService>) Class.forName(className);
+                return clazz.newInstance();
+            }
         } catch (Exception ignore) {
             // ignore
         }

@@ -5,8 +5,10 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.fragment.IComponentCenterFragment;
 import com.xiaojinzi.component.fragment.IComponentHostFragment;
+import com.xiaojinzi.component.support.ASMUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +18,7 @@ import java.util.Map;
  *
  * @author xiaojinzi 30212
  */
+@CheckClassName
 public class FragmentCenter implements IComponentCenterFragment {
 
     private Map<String, IComponentHostFragment> moduleServiceMap = new HashMap<>();
@@ -71,10 +74,15 @@ public class FragmentCenter implements IComponentCenterFragment {
 
     @Nullable
     public IComponentHostFragment findModuleService(String host) {
-        String className = ComponentUtil.genHostFragmentClassName(host);
         try {
-            Class<?> clazz = Class.forName(className);
-            return (IComponentHostFragment) clazz.newInstance();
+            if (Component.isInitOptimize()) {
+                return ASMUtil.findModuleFragmentAsmImpl(host);
+            } else {
+                Class<? extends IComponentHostFragment> clazz = null;
+                String className = ComponentUtil.genHostFragmentClassName(host);
+                clazz = (Class<? extends IComponentHostFragment>) Class.forName(className);
+                return clazz.newInstance();
+            }
         } catch (Exception ignore) {
             // ignore
         }

@@ -94,6 +94,13 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="testRouterForFragment"
+        android:textAllCaps="false"
+        android:text="跳转Fragment" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:onClick="testWebRouter"
         android:textAllCaps="false"
         android:text="测试Web跳转" />

@@ -3,11 +3,14 @@ package com.xiaojinzi.component.impl.interceptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.error.InterceptorNameExistException;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.interceptor.IComponentCenterInterceptor;
 import com.xiaojinzi.component.interceptor.IComponentHostInterceptor;
+import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
 
 import java.util.ArrayList;
@@ -24,8 +27,8 @@ import java.util.Set;
  * time   : 2018/12/26
  *
  * @author : xiaojinzi 30212
- * @hide
  */
+@CheckClassName
 public class InterceptorCenter implements IComponentCenterInterceptor {
 
     private InterceptorCenter() {
@@ -163,10 +166,16 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
 
     @Nullable
     public IComponentHostInterceptor findModuleInterceptor(String host) {
-        String className = ComponentUtil.genHostInterceptorClassName(host);
         try {
-            Class<?> clazz = Class.forName(className);
-            return (IComponentHostInterceptor) clazz.newInstance();
+
+            if (Component.isInitOptimize()) {
+                return ASMUtil.findModuleInterceptorAsmImpl(host);
+            }else {
+                Class<? extends IComponentHostInterceptor> clazz = null;
+                String className = ComponentUtil.genHostInterceptorClassName(host);
+                clazz = (Class<? extends IComponentHostInterceptor>) Class.forName(className);
+                return clazz.newInstance();
+            }
         } catch (Exception ignore) {
             // ignore
         }
