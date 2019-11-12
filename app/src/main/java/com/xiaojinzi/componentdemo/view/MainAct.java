@@ -72,7 +72,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testWebRouter(View view) {
-        RxRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.TEST_WEB_ROUTER)
