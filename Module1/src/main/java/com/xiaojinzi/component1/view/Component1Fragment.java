@@ -19,7 +19,7 @@ import com.xiaojinzi.component1.R;
 
 import io.reactivex.functions.Consumer;
 
-@FragmentAnno("component1.fragment")
+@FragmentAnno(value = "component1.fragment", singleTon = true)
 public class Component1Fragment extends Fragment {
 
     private Button bt_go_component2;
