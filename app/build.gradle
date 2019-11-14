@@ -63,4 +63,8 @@ dependencies {
     } else {
         annotationProcessor project(':ComponentCompiler')
     }
+
+    // 内存检测的
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+
 }
