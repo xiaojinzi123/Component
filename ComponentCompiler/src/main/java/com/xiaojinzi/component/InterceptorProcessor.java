@@ -122,6 +122,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
                 }
                 continue;
             }
+            // 同一个模块名称不可以相同
             if (mNormalInterceptElementMap.containsKey(anno.value())) {
                 throw new ProcessException("the interceptor's name '" + anno.value() + "' is exist");
             }

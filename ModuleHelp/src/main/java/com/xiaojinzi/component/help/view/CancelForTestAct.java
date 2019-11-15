@@ -42,7 +42,7 @@ public class CancelForTestAct extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action() {
                     @Override
-                    public void run() throws Exception {
+                    public void run() {
                         start();
                     }
                 });

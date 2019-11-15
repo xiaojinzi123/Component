@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.impl.interceptor;
 
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -12,6 +13,7 @@ import com.xiaojinzi.component.interceptor.IComponentCenterInterceptor;
 import com.xiaojinzi.component.interceptor.IComponentHostInterceptor;
 import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
+import com.xiaojinzi.component.support.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,9 +80,8 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
 
     /**
      * 获取全局拦截器
-     *
-     * @return
      */
+    @MainThread
     public List<RouterInterceptor> getGlobalInterceptorList() {
         if (isInterceptorListHaveChange) {
             loadAllGlobalInterceptor();
@@ -138,6 +139,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     /**
      * 按顺序弄好所有全局拦截器
      */
+    @MainThread
     private void loadAllGlobalInterceptor() {
         mGlobalInterceptorList.clear();
         List<InterceptorBean> totalList = new ArrayList<>();
@@ -165,9 +167,10 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     }
 
     @Nullable
+    @MainThread
     public IComponentHostInterceptor findModuleInterceptor(String host) {
+        Utils.checkMainThread();
         try {
-
             if (Component.isInitOptimize()) {
                 return ASMUtil.findModuleInterceptorAsmImpl(host);
             }else {
@@ -184,6 +187,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
 
     @Nullable
     @Override
+    @MainThread
     public RouterInterceptor getByName(@Nullable String interceptorName) {
         if (interceptorName == null) {
             return null;
@@ -203,7 +207,9 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     /**
      * 做拦截器的名称是否重复的工作
      */
+    @MainThread
     public void check() {
+        Utils.checkMainThread();
         Set<String> set = new HashSet<>();
         for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
             IComponentHostInterceptor childInterceptor = entry.getValue();

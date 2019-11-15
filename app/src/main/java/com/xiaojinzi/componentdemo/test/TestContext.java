@@ -55,8 +55,6 @@ public interface TestContext {
 
     void addTaskPassMsg(String taskName);
 
-
-
     class CallbackSuccessIsSuccessful extends CallbackAdapter {
 
         @NonNull

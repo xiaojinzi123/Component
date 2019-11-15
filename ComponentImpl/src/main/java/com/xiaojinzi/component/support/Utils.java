@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.support;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -12,6 +13,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
+import com.xiaojinzi.component.error.RouterRuntimeException;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 一个工具类
@@ -182,6 +186,75 @@ public class Utils {
     public static void throwException(@NonNull RuntimeException e) {
         if (Component.isDebug()) {
             throw e;
+        }
+    }
+
+    public static void checkMainThread() {
+        if (!isMainThread()) {
+            throw new RouterRuntimeException("the thread is not main thread!");
+        }
+    }
+
+    /**
+     * 主线程去获取一个东东
+     *
+     * @param callable 回调对象, 可返回一个值
+     * @param <T>      具体返回的值
+     * @return 具体返回的值
+     */
+    @Nullable
+    @AnyThread
+    public static <T> T mainThreadCallable(@NonNull final Callable<T> callable) {
+        if (isMainThread()) {
+            return callable.get();
+        }else {
+            final AtomicReference<T> tAtomicReference = new AtomicReference<>();
+            final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
+            Utils.postActionToMainThreadAnyway(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        tAtomicReference.set(callable.get());
+                    } catch (RuntimeException e) {
+                        exceptionAtomicReference.set(e);
+                    }
+                }
+            });
+            // 线程空转
+            while (tAtomicReference.get() == null && exceptionAtomicReference.get() == null) {
+            }
+            if (exceptionAtomicReference != null) {
+                throw exceptionAtomicReference.get();
+            }
+            return tAtomicReference.get();
+        }
+    }
+
+    @AnyThread
+    @SuppressLint("WrongThread")
+    public static void mainThreadAction(@NonNull final Action action) {
+        if (isMainThread()) {
+            action.run();
+        }else {
+            final AtomicReference<Object> resultAtomicReference = new AtomicReference<>();
+            final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
+            Utils.postActionToMainThreadAnyway(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        action.run();
+                        resultAtomicReference.set(0);
+                    } catch (RuntimeException e) {
+                        exceptionAtomicReference.set(e);
+                    }
+                }
+            });
+            // 线程空转.
+            while (resultAtomicReference.get() == null && exceptionAtomicReference.get() == null) {
+            }
+            if (exceptionAtomicReference.get() != null) {
+                throw exceptionAtomicReference.get();
+            }
         }
     }
 

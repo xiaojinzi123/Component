@@ -15,6 +15,6 @@ public interface Action {
      * @throws Exception 允许执行的时候抛出一个异常
      */
     @MainThread
-    void run() throws Exception;
+    void run();
 
 }

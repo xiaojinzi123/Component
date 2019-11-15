@@ -12,7 +12,6 @@ import org.reactivestreams.Publisher;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableSource;
@@ -57,25 +56,32 @@ public class RxServiceManager {
      */
     @NonNull
     public static <T> Single<T> with(@NonNull final Class<T> tClass) {
-        return Single.fromCallable(new Callable<T>() {
+        return Single.create(new SingleOnSubscribe<T>() {
             @Override
-            public T call() throws Exception {
-                T tempImpl = null;
-                if (Utils.isMainThread()) {
-                    tempImpl = ServiceManager.get(tClass);
-                } else {
-                    // 这段代码如何为空的话会直接抛出异常
-                    tempImpl = blockingGetInChildThread(tClass);
+            public void subscribe(SingleEmitter<T> emitter) throws Exception {
+                try {
+                    T tempImpl = null;
+                    if (Utils.isMainThread()) {
+                        tempImpl = ServiceManager.get(tClass);
+                    } else {
+                        // 这段代码如何为空的话会直接抛出异常
+                        tempImpl = blockingGetInChildThread(tClass);
+                    }
+                    final T serviceImpl = tempImpl;
+                    if (serviceImpl == null) {
+                        throw new ServiceNotFoundException(tClass.getName());
+                    }
+                    if (emitter.isDisposed()) {
+                        return;
+                    }
+                    emitter.onSuccess(proxy(tClass, serviceImpl));
+                } catch (Exception e) {
+                    if (emitter.isDisposed()) {
+                        return;
+                    }
+                    emitter.onError(e);
                 }
-                final T serviceImpl = tempImpl;
-                if (serviceImpl == null) {
-                    throw new ServiceNotFoundException(tClass.getName());
-                }
-                // 这个是为了让每一个错误都能被管控,然后如果用户不想处理的话,我这边都自动忽略掉
-                return proxy(tClass, serviceImpl);
             }
-
-
         });
     }
 

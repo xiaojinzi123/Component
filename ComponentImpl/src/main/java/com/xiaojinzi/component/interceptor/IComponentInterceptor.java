@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.interceptor;
 
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.impl.RouterInterceptor;
@@ -19,6 +20,7 @@ public interface IComponentInterceptor {
      * @return
      */
     @Nullable
+    @MainThread
     RouterInterceptor getByName(@Nullable String name);
 
 }

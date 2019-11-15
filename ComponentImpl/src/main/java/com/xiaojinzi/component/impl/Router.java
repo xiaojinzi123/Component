@@ -1,8 +1,10 @@
 package com.xiaojinzi.component.impl;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.AnyThread;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +16,7 @@ import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.cache.Cache;
 import com.xiaojinzi.component.cache.CacheType;
 import com.xiaojinzi.component.cache.DefaultCacheFactory;
+import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.Utils;
 
@@ -104,6 +107,7 @@ public class Router {
     }
 
     @NonNull
+    @AnyThread
     public static FragmentNavigator with(@NonNull String fragmentFlag) {
         Utils.checkNullPointer(fragmentFlag, "fragmentFlag");
         return new FragmentNavigator(fragmentFlag);
@@ -121,16 +125,27 @@ public class Router {
      * @return 返回一个路由的 Builder
      */
     @NonNull
+    @AnyThread
     public static Navigator with() {
+        if (Component.isLogWhenUseApplication()) {
+            LogUtil.logw(TAG, "you use default 'Application' to launch route. this is not recommended. you should not use 'Application' as far as possible");
+        }
         return new Navigator();
     }
 
     @NonNull
+    @AnyThread
     public static Navigator with(@NonNull Context context) {
+        Utils.checkNullPointer(context, "context");
+        // 如果是 Application 进行提示
+        if (context instanceof Application && Component.isLogWhenUseApplication()) {
+            LogUtil.logw(TAG, "you use 'Application' to launch route. this is not recommended. you should not use 'Application' as far as possible");
+        }
         return new Navigator(context);
     }
 
     @NonNull
+    @AnyThread
     public static Navigator with(@NonNull Fragment fragment) {
         return new Navigator(fragment);
     }
@@ -143,6 +158,7 @@ public class Router {
      * @return
      */
     @NonNull
+    @AnyThread
     public static <T> T withApi(@NonNull Class<T> apiClass) {
         T t = (T) apiClassCache.get(apiClass);
         if (t == null) {
@@ -157,6 +173,7 @@ public class Router {
         return t;
     }
 
+    @AnyThread
     public static boolean isMatchUri(@NonNull Uri uri) {
         return RouterCenter.getInstance().isMatchUri(uri);
     }
@@ -168,6 +185,7 @@ public class Router {
      */
     @MainThread
     public static void cancel(@NonNull Activity act) {
+        Utils.checkMainThread();
         synchronized (mNavigationDisposableList) {
             for (int i = mNavigationDisposableList.size() - 1; i >= 0; i--) {
                 NavigationDisposable disposable = mNavigationDisposableList.get(i);
@@ -186,6 +204,7 @@ public class Router {
      */
     @MainThread
     public static void cancel(@NonNull Fragment fragment) {
+        Utils.checkMainThread();
         synchronized (mNavigationDisposableList) {
             for (int i = mNavigationDisposableList.size() - 1; i >= 0; i--) {
                 NavigationDisposable disposable = mNavigationDisposableList.get(i);

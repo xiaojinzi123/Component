@@ -2,6 +2,7 @@ package com.xiaojinzi.component.impl.interceptor;
 
 import android.app.Application;
 import android.support.annotation.CallSuper;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -47,6 +48,7 @@ abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
 
     @Override
     @NonNull
+    @MainThread
     public List<InterceptorBean> globalInterceptorList() {
         return Collections.emptyList();
     }
@@ -55,6 +57,7 @@ abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
      * 初始化拦截器的集合
      */
     @CallSuper
+    @MainThread
     protected void initInterceptorMap() {
         isInitMap = true;
     }
@@ -74,11 +77,12 @@ abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
         if (!isInitMap) {
             initInterceptorMap();
         }
-        return interceptorMap;
+        return new HashMap<>(interceptorMap);
     }
 
     @Override
     @Nullable
+    @MainThread
     public RouterInterceptor getByName(@Nullable String name) {
         if (name == null) {
             return null;

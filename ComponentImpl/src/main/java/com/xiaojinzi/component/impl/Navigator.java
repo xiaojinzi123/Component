@@ -27,6 +27,7 @@ import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.impl.interceptor.OpenOnceInterceptor;
 import com.xiaojinzi.component.support.Action;
+import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.NavigationDisposable;
@@ -538,7 +539,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 为了拿到 {@link Intent}
      *
      * @param callback 回调方法
-     * @return
      */
     @NonNull
     @AnyThread
@@ -558,7 +558,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 为了拿到 {@link Intent}
      *
      * @param callback 回调方法
-     * @return
      */
     @AnyThread
     public void forwardForIntent(@NonNull final BiCallback<Intent> callback) {
@@ -569,7 +568,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 为了拿到 {@link Intent}
      *
      * @param callback 回调方法
-     * @return
      */
     @NonNull
     @AnyThread
@@ -599,7 +597,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 为了拿 {@link ActivityResult}
      *
      * @param callback 这里是为了拿返回的东西是不可以为空的
-     * @return
      */
     @NonNull
     @AnyThread
@@ -829,12 +826,17 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @AnyThread
     private static void realNavigate(@NonNull final RouterRequest originalRequest,
-                                     @Nullable List<Object> customInterceptors,
+                                     @Nullable final List<Object> customInterceptors,
                                      @NonNull final RouterInterceptor.Callback routerInterceptorCallback) {
 
         // 拿到共有的拦截器
-        List<RouterInterceptor> publicInterceptors = InterceptorCenter.getInstance()
-                .getGlobalInterceptorList();
+        List<RouterInterceptor> publicInterceptors = Utils.mainThreadCallable(new Callable<List<RouterInterceptor>>() {
+            @NonNull
+            @Override
+            public List<RouterInterceptor> get() {
+                return InterceptorCenter.getInstance().getGlobalInterceptorList();
+            }
+        });
         // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
         final List<RouterInterceptor> allInterceptors = new ArrayList(10);
         // 此拦截器用于执行一些整个流程开始之前的事情
@@ -853,7 +855,12 @@ public class Navigator extends RouterRequest.Builder implements Call {
         // 添加共有拦截器
         allInterceptors.addAll(publicInterceptors);
         // 添加自定义拦截器到 allInterceptors 中
-        addCustomInterceptors(originalRequest, customInterceptors, allInterceptors);
+        Utils.mainThreadAction(new Action() {
+            @Override
+            public void run() {
+                addCustomInterceptors(originalRequest, customInterceptors, allInterceptors);
+            }
+        });
         // 扫尾拦截器,内部会添加目标要求执行的拦截器和真正执行跳转的拦截器
         allInterceptors.add(new RouterInterceptor() {
             @Override
@@ -889,6 +896,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param customInterceptors
      * @param currentInterceptors
      */
+    @MainThread
     private static void addCustomInterceptors(@NonNull RouterRequest originalRequest,
                                               @Nullable List<Object> customInterceptors,
                                               List<RouterInterceptor> currentInterceptors) {

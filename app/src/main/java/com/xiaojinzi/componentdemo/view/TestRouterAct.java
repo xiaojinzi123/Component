@@ -494,7 +494,7 @@ public class TestRouterAct extends BaseAct {
                 .resultCodeMatchCall(RESULT_OK)
                 .subscribe(new Action() {
                     @Override
-                    public void run() throws Exception {
+                    public void run() {
                         addInfo("从" + ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK");
                     }
                 }, new Consumer<Throwable>() {
@@ -517,7 +517,7 @@ public class TestRouterAct extends BaseAct {
                 .resultCodeMatchCall(RESULT_OK)
                 .subscribe(new Action() {
                     @Override
-                    public void run() throws Exception {
+                    public void run() {
                         addInfo("从" + ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK");
                     }
                 }, new Consumer<Throwable>() {
@@ -600,18 +600,8 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .putString("tel", "17321174171")
-                .beforJumpAction(new com.xiaojinzi.component.support.Action() {
-                    @Override
-                    public void run() throws Exception {
-                        Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .afterJumpAction(new com.xiaojinzi.component.support.Action() {
-                    @Override
-                    public void run() throws Exception {
-                        Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show();
-                    }
-                })
+                .beforJumpAction(() -> Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show())
+                .afterJumpAction(() -> Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show())
                 .navigate(new CallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {

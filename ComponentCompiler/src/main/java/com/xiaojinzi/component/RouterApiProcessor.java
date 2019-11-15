@@ -122,7 +122,7 @@ public class RouterApiProcessor extends BaseProcessor {
         navigatorTypeMirror = mElements.getTypeElement(ComponentConstants.NAVIGATOR_CLASS_NAME).asType();
         final TypeElement contextTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_CONTEXT);
         contextTypeMirror = contextTypeElement.asType();
-        final TypeElement fragmentTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_V4_FRAGMENT);
+        final TypeElement fragmentTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_FRAGMENT);
         fragmentTypeMirror = fragmentTypeElement.asType();
         final TypeElement activityTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ACTIVITY);
         activityTypeMirror = activityTypeElement.asType();

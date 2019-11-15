@@ -8,7 +8,7 @@ import com.xiaojinzi.component.anno.FragmentAnno;
 
 public class Test2Fragment extends Fragment {
 
-    @FragmentAnno(value = "test2Fragment", singleTon = true)
+    @FragmentAnno(value = "test2Fragment")
     public static Test2Fragment newInstance(@NonNull Bundle bundle) {
         Bundle args = new Bundle();
         args.putAll(bundle);

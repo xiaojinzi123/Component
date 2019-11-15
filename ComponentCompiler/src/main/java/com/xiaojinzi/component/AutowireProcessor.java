@@ -95,7 +95,7 @@ public class AutowireProcessor extends BaseProcessor {
         charsequenceArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(charsequenceTypeMirror));
 
         activityTypeMirror = mElements.getTypeElement(ComponentConstants.ANDROID_ACTIVITY).asType();
-        fragmentTypeMirror = mElements.getTypeElement(ComponentConstants.ANDROID_V4_FRAGMENT).asType();
+        fragmentTypeMirror = mElements.getTypeElement(ComponentConstants.ANDROID_FRAGMENT).asType();
 
     }
 

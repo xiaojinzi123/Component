@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.support;
 
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
 /**
@@ -14,6 +15,7 @@ public interface IComponentCenter<T> {
      *
      * @param t
      */
+    @MainThread
     void register(T t);
 
     /**
@@ -21,6 +23,7 @@ public interface IComponentCenter<T> {
      *
      * @param host
      */
+    @MainThread
     void register(@NonNull String host);
 
     /**
@@ -28,6 +31,7 @@ public interface IComponentCenter<T> {
      *
      * @param t
      */
+    @MainThread
     void unregister(T t);
 
     /**
@@ -35,6 +39,7 @@ public interface IComponentCenter<T> {
      *
      * @param host
      */
+    @MainThread
     void unregister(@NonNull String host);
 
 }
