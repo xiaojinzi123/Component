@@ -3,6 +3,7 @@ package com.xiaojinzi.component.support;
 import android.support.annotation.MainThread;
 
 /**
+ * 一个回调在主线程的 Action
  * time   : 2019/01/07
  *
  * @author : xiaojinzi 30212

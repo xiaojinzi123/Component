@@ -223,7 +223,7 @@ public class Utils {
             // 线程空转
             while (tAtomicReference.get() == null && exceptionAtomicReference.get() == null) {
             }
-            if (exceptionAtomicReference != null) {
+            if (exceptionAtomicReference.get() != null) {
                 throw exceptionAtomicReference.get();
             }
             return tAtomicReference.get();

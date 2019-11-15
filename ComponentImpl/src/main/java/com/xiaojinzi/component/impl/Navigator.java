@@ -1048,44 +1048,39 @@ public class Navigator extends RouterRequest.Builder implements Call {
         public void intercept(final Chain chain) throws Exception {
             // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
             RouterRequest finalRequest = chain.request();
+            // 执行真正路由跳转回出现的异常
+            Exception routeException = null;
             try {
-                // 执行真正路由跳转回出现的异常
-                Exception routeException = null;
+                // 真正执行跳转的逻辑, 失败的话, 备用计划就会启动
+                RouterCenter.getInstance().openUri(finalRequest);
+            } catch (Exception e) { // 错误的话继续下一个拦截器
+                routeException = e;
+                // 继续下一个拦截器
+                chain.proceed(finalRequest);
+            }
+            // 如果正常跳转成功需要执行下面的代码
+            if (routeException == null) {
+                // 成功的回调
+                chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
+            } else {
                 try {
-                    // 真正执行跳转的逻辑, 失败的话, 备用计划就会启动
-                    RouterCenter.getInstance().openUri(finalRequest);
-                } catch (Exception e) { // 错误的话继续下一个拦截器
-                    routeException = e;
-                    // 继续下一个拦截器
-                    chain.proceed(finalRequest);
-                }
-                // 如果正常跳转成功需要执行下面的代码
-                if (routeException == null) {
+                    // 获取路由的降级处理类
+                    RouterDegrade routerDegrade = getRouterDegrade(finalRequest);
+                    if (routerDegrade == null) {
+                        // 抛出异常走 try catch 的逻辑
+                        throw new NavigationFailException("degrade route fail, it's url is " + mOriginalRequest.uri.toString());
+                    }
+                    // 降级跳转
+                    RouterCenter.getInstance().routerDegrade(finalRequest, routerDegrade.onDegrade(finalRequest));
                     // 成功的回调
                     chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
-                } else {
-                    try {
-                        // 获取路由的降级处理类
-                        RouterDegrade routerDegrade = getRouterDegrade(finalRequest);
-                        if (routerDegrade == null) {
-                            // 抛出异常走 try catch 的逻辑
-                            throw new NavigationFailException("degrade route fail, it's url is " + mOriginalRequest.uri.toString());
-                        }
-                        // 降级跳转
-                        RouterCenter.getInstance().routerDegrade(finalRequest, routerDegrade.onDegrade(finalRequest));
-                        // 成功的回调
-                        chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
-                    } catch (Exception ignore) {
-                        // 如果版本足够就添加到异常堆中, 否则忽略降级路由的错误
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            routeException.addSuppressed(ignore);
-                        }
-                        throw routeException;
+                } catch (Exception ignore) {
+                    // 如果版本足够就添加到异常堆中, 否则忽略降级路由的错误
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        routeException.addSuppressed(ignore);
                     }
+                    throw routeException;
                 }
-            } catch (Exception e) {
-                // 错误的回调
-                chain.callback().onError(e);
             }
         }
 
@@ -1093,8 +1088,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
          * 获取降级的处理类
          *
          * @param finalRequest 最终的路由请求
-         * @return
          */
+        @Nullable
         private RouterDegrade getRouterDegrade(@NonNull RouterRequest finalRequest) {
             // 获取所有降级类
             List<RouterDegrade> routerDegradeList = RouterDegradeCenter.getInstance()

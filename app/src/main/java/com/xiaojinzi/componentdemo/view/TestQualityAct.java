@@ -290,18 +290,4 @@ public class TestQualityAct extends BaseAct implements TestContext {
                 .subscribe();
     }
 
-    public void testCrash4(View view) {
-        RxRouter
-                .with(mContext)
-                .host(ModuleConfig.App.NAME)
-                .path(ModuleConfig.App.NOT_FOUND_TEST)
-                .requestCodeRandom()
-                .putString("data", "crashOnAfterEventAction")
-                .afterEventAction(() -> {
-                    throw new NullPointerException("test exception on afterJumpAction");
-                })
-                .activityResultCall()
-                .subscribe();
-    }
-
 }
