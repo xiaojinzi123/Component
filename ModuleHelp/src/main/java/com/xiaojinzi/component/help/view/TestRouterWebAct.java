@@ -44,21 +44,7 @@ public class TestRouterWebAct extends AppCompatActivity {
      */
     @JavascriptInterface
     public void openUrl(final String url) {
-        Router.with(this)
-                .url(url)
-                .forward(new CallbackAdapter() {
-                    @Override
-                    public void onSuccess(@NonNull RouterResult result) {
-                        super.onSuccess(result);
-                        Toast.makeText(TestRouterWebAct.this, "路由成功", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(RouterErrorResult errorResult) {
-                        super.onError(errorResult);
-                        Toast.makeText(TestRouterWebAct.this, "路由失败,class = " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",error msg = " + Utils.getRealMessage(errorResult.getError()), Toast.LENGTH_SHORT).show();
-                    }
-                });
+        Router.with(this).url(url).forward();
     }
 
 }
