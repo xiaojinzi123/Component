@@ -86,7 +86,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigate")
-                        .navigate(new TestContext.CallbackSuccessIsSuccessful(emitter));
+                        .forward(new TestContext.CallbackSuccessIsSuccessful(emitter));
             }
         });
 
@@ -105,7 +105,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigatex")
-                        .navigate(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
+                        .forward(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
             }
         });
 
@@ -122,7 +122,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigatexx")
-                        .navigate(new TestQualityAct.CallbackSuccessIsSuccessful(emitter))
+                        .forward(new TestQualityAct.CallbackSuccessIsSuccessful(emitter))
         );
 
     }
@@ -167,7 +167,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigateWithChildThread")
-                        .navigate(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
+                        .forward(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
             }
         });
 
@@ -186,7 +186,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigateWithChildThreadx")
-                        .navigate(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
+                        .forward(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
             }
         });
 
@@ -205,7 +205,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigateWithChildThreadxx")
-                        .navigate(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
+                        .forward(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
             }
         });
 
@@ -556,7 +556,7 @@ public class SuccessTest implements TestExecutor {
                 Router.with(mContext)
                         .host(ModuleConfig.User.NAME)
                         .path(ModuleConfig.User.PERSON_CENTER_FOR_TEST)
-                        .navigate(new CallbackAdapter() {
+                        .forward(new CallbackAdapter() {
                             @Override
                             public void onSuccess(@NonNull RouterResult result) {
                                 super.onSuccess(result);

@@ -46,7 +46,7 @@ public class TestRouterWebAct extends AppCompatActivity {
     public void openUrl(final String url) {
         Router.with(this)
                 .url(url)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         super.onSuccess(result);
