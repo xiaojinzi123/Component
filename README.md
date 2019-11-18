@@ -164,7 +164,7 @@
 
 ## 版本更新日志
 
-#### v1.7.7.2(计划发布的下个版本, 都是小优化)
+#### v1.7.7.2(优化)
 
 - 计划取消 `FragmentAnno` 注解中的 `singleTon` 属性. 考虑到平常使用 `Fragment` 都是创建一个新的然后使用.
 - 有多人反馈当跳转获取 `ActivityResult` 的时候, 既然可以调用 `requestCodeRandom()` 方法表示随机生成一个 `requestCode`, 那么为何不直接当用户是这种行为的时候, 框架自动生成一个, 不用用户手动调用
@@ -174,7 +174,7 @@
     - 所以总结就是, 框架设计上不会默认帮你调用 `requestCodeRandom()` 方法. 大家不要想了.
 - 当跳转使用 `Application` 的时候, 新增日志的提醒使用用户, 告知他们使用的是 `Application`, 并且告知不推荐使用 `Application`
     - 增加 `Component.closeLogWhenUseApplication();` 方法来关闭警告的日志
-- 优化 `ServiceManager.get(Class)` 内部的获取 `Service` 对象的代码. 让用户自定义的对象肯定在主线程中被创建
+- 优化 `ServiceManager.get(Class)` 内部的获取 `Service` 对象的代码. 让用户自定义的对象肯定在主线程中被创建. 贯彻初期的设计(用户接触的所有地方都是主线程)
 
 #### v1.7.7.1
 
