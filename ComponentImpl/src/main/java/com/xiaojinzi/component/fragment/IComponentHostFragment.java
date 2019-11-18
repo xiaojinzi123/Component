@@ -1,6 +1,7 @@
 package com.xiaojinzi.component.fragment;
 
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.application.IComponentApplication;
 
