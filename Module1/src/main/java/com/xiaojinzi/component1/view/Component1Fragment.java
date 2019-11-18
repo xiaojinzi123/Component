@@ -38,7 +38,7 @@ public class Component1Fragment extends Fragment {
                 Router.with(Component1Fragment.this)
                         .host(ModuleConfig.Module2.NAME)
                         .path(ModuleConfig.Module2.MAIN)
-                        .navigate();
+                        .forward();
             }
         });
         bt_rx_get.setOnClickListener(new View.OnClickListener() {

@@ -85,7 +85,7 @@ public class TestRouterAct extends BaseAct {
                 .with(TestRouterAct.this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_IN_OTHER_MODULE)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_IN_OTHER_MODULE, null);
@@ -106,7 +106,7 @@ public class TestRouterAct extends BaseAct {
                 .putString("data", "normalJump")
                 .putString("name", "cxj")
                 .putInt("age", 25)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "?data=normalJump", null);
@@ -121,12 +121,12 @@ public class TestRouterAct extends BaseAct {
 
     public void normalJumpTwice(View view) {
 
-        RxRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .putString("data", "normalJumpTwice1")
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=normalJumpTwice1", null);
@@ -143,7 +143,7 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .putString("data", "normalJumpTwice2")
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=normalJumpTwice2", null);
@@ -164,7 +164,7 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST)
                 .putString("data", "jumpGetData")
                 .requestCode(123)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=jumpGetData", 123);
@@ -180,7 +180,7 @@ public class TestRouterAct extends BaseAct {
     public void jumpToWeb(View v) {
         Router.with(this)
                 .url("https://www.baidu.com")
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "https://www.baidu.com", null);
@@ -319,17 +319,14 @@ public class TestRouterAct extends BaseAct {
                                 .delay(2, TimeUnit.SECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
-                                .subscribe(new Consumer<String>() {
-                                    @Override
-                                    public void accept(String s) throws Exception {
-                                        dialog.dismiss();
-                                        chain.proceed(chain.request());
-                                    }
+                                .subscribe(s -> {
+                                    dialog.dismiss();
+                                    chain.proceed(chain.request());
                                 });
                     }
                 })
                 .interceptorNames(InterceptorConfig.USER_LOGIN)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=jumpWithInterceptor", 123);
@@ -363,7 +360,7 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST_QUERY)
                 .query("name", "我是小金子")
                 .query("pass", "我是小金子的密码")
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_QUERY + "?name=我是小金子&pass=我是小金子的密码", null);
@@ -395,7 +392,7 @@ public class TestRouterAct extends BaseAct {
         Router
                 .with(this)
                 .url(url)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, url, null);
@@ -413,7 +410,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_LOGIN)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_LOGIN, null);
@@ -431,7 +428,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_DIALOG)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST_DIALOG, null);
@@ -450,7 +447,7 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.Module2.NAME)
                 .path(ModuleConfig.Module2.MAIN)
                 .putString("data", "testGotoKotlin")
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
@@ -469,7 +466,7 @@ public class TestRouterAct extends BaseAct {
                 .with(this)
                 .host(ModuleConfig.Module2.NAME)
                 .path(ModuleConfig.Module2.MAIN)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module2.NAME + "/" + ModuleConfig.Module2.MAIN, null);
@@ -578,7 +575,7 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .interceptors(DialogShowInterceptor.class)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                         // 这里的代码不会被调用
@@ -602,7 +599,7 @@ public class TestRouterAct extends BaseAct {
                 .putString("tel", "17321174171")
                 .beforJumpAction(() -> Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show())
                 .afterJumpAction(() -> Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show())
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                     }
@@ -614,7 +611,7 @@ public class TestRouterAct extends BaseAct {
         Router.with(mContext)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_FRAGMENT_ROUTER)
-                .navigate();
+                .forward();
     }
 
     public void modifyDataWithInteceptor(View view) {
@@ -632,7 +629,7 @@ public class TestRouterAct extends BaseAct {
                             .create();
                     dialog.show();
                 })
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "?data=normalJump", null);

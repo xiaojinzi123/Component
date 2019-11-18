@@ -32,12 +32,11 @@ public interface RouterInterceptor {
      * @param chain 拦截器执行连接器
      */
     @MainThread
-    void intercept(Chain chain) throws Exception;
+    void intercept(@NonNull Chain chain) throws Exception;
 
     /**
      * 执行器
      */
-    @MainThread
     interface Chain {
 
         /**
@@ -46,6 +45,7 @@ public interface RouterInterceptor {
          * @return 返回当前的路由请求对象
          */
         @NonNull
+        @AnyThread
         RouterRequest request();
 
         /**
@@ -54,6 +54,7 @@ public interface RouterInterceptor {
          * @return 返回一个回调对象, 您可以通过这个对象直接结束这个路由请求
          */
         @NonNull
+        @AnyThread
         Callback callback();
 
         /**

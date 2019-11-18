@@ -57,60 +57,45 @@
 等开源的组件化框架,有哪些一样或者更加优秀的点
 
 - [x] 支持多 `Module`
-
 - [x] 支持标准 `URI` 的使用
-
+- [x] 无缝对接 `H5`
+  - [x] `H5` 只需利用 `URL` 即可任意路由到任何界面(只需下面一段统一的跳转. 完全不需要关心目标界面是否需要登陆、定位、权限等.)
+    ```
+    @JavascriptInterface
+    public void openUrl(final String url) {
+        Router.with(this).url(url).forward();
+    }
+    ```
+  - [x] `H5` 发起路由不需要关心目标界面需要做的先决条件(框架的[页面拦截器](https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A#%E9%A1%B5%E9%9D%A2%E6%8B%A6%E6%88%AA%E5%99%A8)已经帮您做完) 
 - [x] 支持原生的跳转动画
-
 - [x] 支持 `Flutter`, `H5` 等混合项目
-
 - [x] 支持跳转 `Fragment`(也就是跨组件获取`Fragment`)
-
-- [x] 支持 `androidx`,几乎没有其他组件化框架支持 `androidx` 的
-
+- [x] 支持 `androidx`, 几乎没有其他组件化框架支持 `androidx` 的
 - [x] 支持业务组件生命周期(被加载和被卸载)
-
 - [x] 整个设计贴近原生,对原生的代码入侵极少,尽最大的可能保留原生的代码
-
 - [x] 支持依赖注入、支持目标界面的路由参数
-
 - [x] 路由拦截器执行线程设计是主线程
-
   - 在路由拦截器的执行线程的设计上,考虑到用户平时书写的 `90%` 代码都是在主线程的,<br/>所以路由拦截器的执行线程也设计为主线程执行,可以让您放心的操作 `UI`、弹框等操作.<br/>同时提供 `Callback` 机制可以在拦截器中做任何耗时的任务<br/>这点绝对是压倒性的优势,不仅整体是 `异步` 的,而且拦截器中能像平常一样写实现的代码
-
 - [x] 配套的 `Idea Plugin` 方便快速浏览,持续会更新此 [插件](https://github.com/xiaojinzi123/RouterGoPlugin)
-
 - [x] 路由的取消,基本上没有路由框架支持路由的取消,这也是一个很大的优势!
-
   - [x] 手动用代码取消某次路由
-
   - [x] 路由自动取消, 当发起路由的 `Fragment` 或者 `Activity` 销毁的时候会取消
-
 - [x] 拦截器,足矣满足所有业务情况(具体看 [拦截器wiki]([https://github.com/xiaojinzi123/Component/wiki/%E6%8B%A6%E6%88%AA%E5%99%A8](https://github.com/xiaojinzi123/Component/wiki/拦截器)))
   - [x] 全局拦截器(针对全部路由)
   - [x] 局部路由拦截器
-    - [x] 页面拦截器(针对所有跳转到某一个界面的路由)
+    - [x] [页面拦截器](https://github.com/xiaojinzi123/Component/wiki/%E6%8B%A6%E6%88%AA%E5%99%A8#%E7%BB%99%E4%BD%A0%E7%9A%84%E6%8B%A6%E6%88%AA%E5%99%A8%E8%B5%B7%E4%B8%80%E4%B8%AA%E5%88%AB%E5%90%8D)(针对所有跳转到某一个界面的路由)
     - [x] 拦截器别名,支持跨模块使用(可以让每一个拦截器都放在自个的模块)
-
 - [x] 跳转
   - [x] 持标准 `URI`
   - [x] 支持自定义 `Intent`, 你可以给任意一个 `Intent` 标记路由, 这个功能很强大!
   - [x] 支持类似 `Retrofit` 接口编程式跳转
   - [x] `Idea Plugin` 强势支持跳转代码和目标界面的来回导航,也支持拦截器的代码使用和声明处的来回导航
-
-- [x] 无缝对接 `H5`
-  - [x] `H5` 只需利用 `URL` 即可任意路由到任何界面
-  - [x] `H5` 发起路由不需要关心目标界面需要做的前期工作(框架的[页面拦截器]([https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A#%E9%A1%B5%E9%9D%A2%E6%8B%A6%E6%88%AA%E5%99%A8](https://github.com/xiaojinzi123/Component/wiki/名词解释#页面拦截器))已经帮您做完) 
-
 - [x] **0** 配置拿到目标界面返回的 `ActivityResult`, 很多框架不支持或者需要入侵 `BaseActivity`. 绝对的优势
   - [ ] 和系统的行为一样,当 `Context` 是 `Application` 或者 `Service 的 Context` 或者 `ContentProvider 的 Context `的时候, **不支持获取ActivityResult**, 如果真的有需要, 你可以使用栈顶的 `Activity` 来充当 `Context`
   - [x] 除第一点说的几个 `Context`, 其他的情况都是支持的,包括 `Dialog` 中获取到的 `Context`.
-
 - [x] 服务发现和路由分开设计
   - 其实这两块本来就是两个方面,我不清楚为什么很多方案中都柔和在一块
-
 - [x] 完美支持 `RxJava2`(使用`rx`库)
-
 - [x] [业务模块单独运行]([https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E5%8D%95%E7%8B%AC%E8%BF%90%E8%A1%8C](https://github.com/xiaojinzi123/Component/wiki/业务组件单独运行))
 
 ## hello world
@@ -167,7 +152,7 @@
 #### v1.7.7.2(优化)
 
 - 计划取消 `FragmentAnno` 注解中的 `singleTon` 属性. 考虑到平常使用 `Fragment` 都是创建一个新的然后使用.
-- 有多人反馈当跳转获取 `ActivityResult` 的时候, 既然可以调用 `requestCodeRandom()` 方法表示随机生成一个 `requestCode`, 那么为何不直接当用户是这种行为的时候, 框架自动生成一个, 不用用户手动调用
+- 框架永远不会帮你隐式调用 `requestCodeRandom()` 的. 有多人反馈当跳转获取 `ActivityResult` 的时候, 既然可以调用 `requestCodeRandom()` 方法表示随机生成一个 `requestCode`, 那么为何不直接当用户是这种行为的时候, 框架自动生成一个, 不用用户手动调用. 下面几点是我的说明.
     - 其实是这样的, 跳转获取 `ActivityResult` 对应着 `startActivityForResult()` 方法和 `onActivityResult` 方法的一整个过程. 
     - 那么作为框架的设计, 我当然可以做到上述的操作. 但是我希望的是用户能明白本质上这是一个 `startActivityForResult()`, 需要 `requestCode`. 所以我这边需要用户关心一下
     - `requestCodeRandom()` 是一个便捷的方式, 但是不能省略, 因为我想让用户知道其实这里是需要 `requestCode` 的. 显示的一个标志
@@ -175,6 +160,10 @@
 - 当跳转使用 `Application` 的时候, 新增日志的提醒使用用户, 告知他们使用的是 `Application`, 并且告知不推荐使用 `Application`
     - 增加 `Component.closeLogWhenUseApplication();` 方法来关闭警告的日志
 - 优化 `ServiceManager.get(Class)` 内部的获取 `Service` 对象的代码. 让用户自定义的对象肯定在主线程中被创建. 贯彻初期的设计(用户接触的所有地方都是主线程)
+- 优化拦截器可能在其他线程初始化的问题
+    - 当你在第一次在子线程中执行跳转的时候, 会有可能让拦截器的创建在子线程
+- 内部所有方法都添加线程的注解, 标记方法的线程范围.
+- 增加对 `Fragment` 的名称的全局唯一性的检测. 当你全局有同名的, 启动的时候调用 `Component.check()` 会报错. 帮助你检查出重名问题.
 
 #### v1.7.7.1
 
