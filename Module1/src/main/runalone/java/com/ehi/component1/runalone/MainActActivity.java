@@ -24,12 +24,7 @@ public class MainActActivity extends BaseAct {
                 .host(ModuleConfig.Component1.NAME)
                 .path(ModuleConfig.Component1.TEST)
                 .interceptorNames(InterceptorConfig.USER_LOGIN)
-                .navigate(new CallbackAdapter(){
-                    @Override
-                    public void onError(@NonNull Exception error) {
-                        super.onError(error);
-                    }
-                });
+                .forward();
     }
 
 }

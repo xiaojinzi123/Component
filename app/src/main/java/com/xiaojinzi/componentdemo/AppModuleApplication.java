@@ -29,7 +29,7 @@ public class AppModuleApplication implements IComponentApplication {
         public void onError(RouterErrorResult errorResult) throws Exception {
             RouterRequest originalRequest = errorResult.getOriginalRequest();
             if (originalRequest == null) {
-                Log.e(tag, "路由失败：没开始就失败了,errorMsg = " + Utils.getRealMessage(errorResult.getError()));
+                Log.e(tag, "路由失败：errorMsg = " + Utils.getRealMessage(errorResult.getError()));
             } else {
                 Log.e(tag, "路由失败：" + originalRequest.uri.toString()
                         + ",errorMsg = " + Utils.getRealMessage(errorResult.getError())

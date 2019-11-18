@@ -19,7 +19,17 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            debuggable = true
+            jniDebuggable = true
+            renderscriptDebuggable = true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable = true
+            jniDebuggable = true
+            renderscriptDebuggable = true
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -42,7 +52,6 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     api project(':ModuleBase')
     api project(':Module1')
     api project(':Module2')
@@ -54,5 +63,8 @@ dependencies {
     } else {
         annotationProcessor project(':ComponentCompiler')
     }
+
+    // 内存检测的
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
 
 }

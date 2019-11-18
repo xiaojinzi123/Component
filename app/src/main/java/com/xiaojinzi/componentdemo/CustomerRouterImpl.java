@@ -16,8 +16,6 @@ import com.xiaojinzi.component.anno.ServiceAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 import com.xiaojinzi.component.support.ParameterSupport;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
@@ -84,12 +82,11 @@ public class CustomerRouterImpl {
 
     @ServiceAnno(value = AnnoMethodService.class)
     public static AnnoMethodService getTestService() {
-        return (AnnoMethodService) Proxy.newProxyInstance(AnnoMethodService.class.getClassLoader(), new Class[]{AnnoMethodService.class}, new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                return "hello msg from proxy class";
-            }
-        });
+        return (AnnoMethodService) Proxy.newProxyInstance(
+                AnnoMethodService.class.getClassLoader(),
+                new Class[]{AnnoMethodService.class},
+                (proxy, method, args) -> "hello msg from proxy class"
+        );
     }
 
 }

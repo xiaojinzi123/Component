@@ -32,7 +32,7 @@ public class TestErrorAct extends AppCompatActivity {
                 .with(this)
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_DIALOG)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         System.out.println("onSuccess");

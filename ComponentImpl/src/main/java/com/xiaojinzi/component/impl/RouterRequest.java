@@ -288,6 +288,9 @@ public class RouterRequest {
 
         /**
          * 跳转成功之后的 Callback
+         * 此时的跳转成功仅代表目标界面启动成功, 不代表跳转拿数据的回调被回调了
+         * 假如你是跳转拿数据的, 当你跳转到 A 界面, 此回调就会回调了,
+         * 当你拿到 Intent 的回调了, 和此回调已经没关系了
          */
         @Nullable
         protected Action afterJumpAction;

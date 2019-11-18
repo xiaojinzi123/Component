@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.interceptor;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -34,6 +35,7 @@ public interface IComponentHostInterceptor extends IComponentInterceptor, ICompo
      * @return
      */
     @NonNull
+    @MainThread
     List<InterceptorBean> globalInterceptorList();
 
     /**

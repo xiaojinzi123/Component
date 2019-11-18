@@ -5,6 +5,10 @@ package com.xiaojinzi.component.error;
  */
 public class RouterRuntimeException extends RuntimeException {
 
+    public RouterRuntimeException(String message) {
+        super(message);
+    }
+
     public RouterRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }

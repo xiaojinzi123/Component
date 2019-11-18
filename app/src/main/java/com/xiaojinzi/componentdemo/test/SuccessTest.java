@@ -87,7 +87,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigate")
-                        .navigate(new TestContext.CallbackSuccessIsSuccessful(emitter));
+                        .forward(new TestContext.CallbackSuccessIsSuccessful(emitter));
             }
         });
 
@@ -106,7 +106,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigatex")
-                        .navigate(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
+                        .forward(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
             }
         });
 
@@ -118,68 +118,41 @@ public class SuccessTest implements TestExecutor {
      * @return
      */
     public Completable testNavigatexx() {
-        return mTestContext.testWrap(new TestContext.TestBack() {
-            @Override
-            public void run(CompletableEmitter emitter) {
+        return mTestContext.testWrap(emitter ->
                 Router.with(mTestContext.dialog().getContext())
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigatexx")
-                        .navigate(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
-            }
-        });
+                        .forward(new TestQualityAct.CallbackSuccessIsSuccessful(emitter))
+        );
 
     }
 
     public Completable rxTestNavigate() {
-        return mTestContext.testWrap(new TestContext.TestBack() {
-            @Override
-            public void run(CompletableEmitter emitter) {
-                RxRouter.with(mTestContext.context())
-                        .host(ModuleConfig.Module1.NAME)
-                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
-                        .putString("data", "rxTestNavigate")
-                        .call()
-                        .subscribe(new Action() {
-                            @Override
-                            public void run() throws Exception {
-                                emitter.onComplete();
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                emitter.onError(throwable);
-                            }
-                        });
-            }
-        });
-
+        return mTestContext.testWrap(emitter -> RxRouter.with(mTestContext.context())
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                .putString("data", "rxTestNavigate")
+                .call()
+                .subscribe(
+                        () -> emitter.onComplete(),
+                        throwable -> emitter.onError(throwable)
+                )
+        );
     }
 
     public Completable rxTestNavigatex() {
-        return mTestContext.testWrap(new TestContext.TestBack() {
-            @Override
-            public void run(CompletableEmitter emitter) {
-                RxRouter.with(mTestContext.fragment())
-                        .host(ModuleConfig.Module1.NAME)
-                        .path(ModuleConfig.Module1.TEST_AUTORETURN)
-                        .putString("data", "rxTestNavigatex")
-                        .call()
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(new Action() {
-                            @Override
-                            public void run() throws Exception {
-                                emitter.onComplete();
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                emitter.onError(throwable);
-                            }
-                        });
-            }
-        });
-
+        return mTestContext.testWrap(emitter -> RxRouter.with(mTestContext.fragment())
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST_AUTORETURN)
+                .putString("data", "rxTestNavigatex")
+                .call()
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        () -> emitter.onComplete(),
+                        throwable -> emitter.onError(throwable)
+                )
+        );
     }
 
     /**
@@ -195,7 +168,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigateWithChildThread")
-                        .navigate(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
+                        .forward(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
             }
         });
 
@@ -214,7 +187,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigateWithChildThreadx")
-                        .navigate(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
+                        .forward(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
             }
         });
 
@@ -233,7 +206,7 @@ public class SuccessTest implements TestExecutor {
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .putString("data", "testNavigateWithChildThreadxx")
-                        .navigate(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
+                        .forward(new TestQualityAct.CallbackSuccessIsSuccessful(emitter));
             }
         });
 
@@ -584,7 +557,7 @@ public class SuccessTest implements TestExecutor {
                 Router.with(mContext)
                         .host(ModuleConfig.User.NAME)
                         .path(ModuleConfig.User.PERSON_CENTER_FOR_TEST)
-                        .navigate(new CallbackAdapter() {
+                        .forward(new CallbackAdapter() {
                             @Override
                             public void onSuccess(@NonNull RouterResult result) {
                                 super.onSuccess(result);

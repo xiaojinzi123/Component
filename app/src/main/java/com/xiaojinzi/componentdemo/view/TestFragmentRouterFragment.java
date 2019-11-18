@@ -79,7 +79,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
         }
     }
 
-    private void rxJumpGetData(){
+    private void rxJumpGetData() {
         RxRouter
                 .with(this)
                 .host("component1")
@@ -87,17 +87,10 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .query("data", "rxJumpGetData")
                 .requestCode(456)
                 .intentCall()
-                .subscribe(new Consumer<Intent>() {
-                    @Override
-                    public void accept(Intent intent) throws Exception {
-                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据成功啦：Data = " + intent.getStringExtra("data"));
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage());
-                    }
-                });
+                .subscribe(
+                        intent -> tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据成功啦：Data = " + intent.getStringExtra("data")),
+                        throwable -> tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage())
+                );
     }
 
     private void normalJump() {
@@ -108,7 +101,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .query("data", "normalJump")
                 .putString("name", "cxj1")
                 .putInt("age", 25)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         addInfo(result, null, "component1/test?data=normalJump", null);
@@ -122,13 +115,13 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
     }
 
     public void testCallbackAfterFinish() {
-        RxRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .putString("tel", "xxx")
                 .interceptors(DialogShowInterceptor.class)
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                     }
@@ -144,7 +137,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
     }
 
     public void testCallbackAfterFinishActivity() {
-        RxRouter
+        Router
                 .with(this)
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
@@ -152,7 +145,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                 .interceptors(new RouterInterceptor() {
                     @Override
                     public void intercept(final Chain chain) throws Exception {
-                        new Thread(){
+                        new Thread() {
                             @Override
                             public void run() {
                                 super.run();
@@ -166,7 +159,7 @@ public class TestFragmentRouterFragment extends Fragment implements View.OnClick
                     }
                 })
                 .interceptors(DialogShowInterceptor.class)
-                .navigate(new CallbackAdapter(){
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {
                         Toast.makeText(Component.getApplication(), "onEvent", Toast.LENGTH_SHORT).show();

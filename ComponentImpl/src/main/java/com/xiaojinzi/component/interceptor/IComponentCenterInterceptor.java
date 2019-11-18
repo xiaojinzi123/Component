@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.interceptor;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.support.IComponentCenter;
@@ -21,6 +22,7 @@ public interface IComponentCenterInterceptor extends IComponentInterceptor, ICom
      * @return 全局的拦截器列表
      */
     @NonNull
+    @MainThread
     List<RouterInterceptor> getGlobalInterceptorList();
 
 }

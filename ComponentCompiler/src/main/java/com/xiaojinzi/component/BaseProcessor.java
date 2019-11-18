@@ -42,10 +42,15 @@ public abstract class BaseProcessor extends AbstractProcessor {
     protected TypeElement mTypeElementString;
     protected TypeElement mTypeElementList;
     protected TypeElement mTypeElementArrayList;
+    protected TypeElement mTypeElementHashMap;
+    protected TypeElement mTypeElementHashSet;
 
     protected ClassName mClassNameString;
     protected ClassName mClassNameList;
     protected ClassName mClassNameArrayList;
+    protected ClassName mClassNameHashMap;
+    protected ClassName mClassNameHashSet;
+    protected ClassName mClassNameKeep;
 
     protected TypeName mTypeNameString;
 
@@ -61,12 +66,18 @@ public abstract class BaseProcessor extends AbstractProcessor {
         mTypeElementString = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_STRING);
         mTypeElementList = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_LIST);
         mTypeElementArrayList = mElements.getTypeElement(ComponentConstants.JAVA_ARRAYLIST);
+        mTypeElementHashMap = mElements.getTypeElement(ComponentConstants.JAVA_HASHMAP);
+        mTypeElementHashSet = mElements.getTypeElement(ComponentConstants.JAVA_HASHSET);
 
         mClassNameString = ClassName.get(mTypeElementString);
         mClassNameList = ClassName.get(mTypeElementList);
         mClassNameArrayList = ClassName.get(mTypeElementArrayList);
+        mClassNameHashMap = ClassName.get(mTypeElementHashMap);
+        mClassNameHashSet = ClassName.get(mTypeElementHashSet);
 
         mTypeNameString = TypeName.get(mTypeElementString.asType());
+
+        mClassNameKeep = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_KEEP));
 
     }
 

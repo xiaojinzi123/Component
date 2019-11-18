@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context=".MainAct">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:textColor="#FF0000"
+        android:textSize="20dp"
+        android:text="特别注意：当前运行的是演示 Module1 单独运行的程序. 完整的示例代码请选择 app 去运行, 而不是当前你运行的 Module1run"
+        android:layout_height="wrap_content" />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment;
 
 import com.xiaojinzi.component.anno.FragmentAnno;
 
-@FragmentAnno(value = "test1Fragment", singleTon = true)
+@FragmentAnno(value = "test1Fragment")
 public class Test1Fragment extends Fragment {
 }
 

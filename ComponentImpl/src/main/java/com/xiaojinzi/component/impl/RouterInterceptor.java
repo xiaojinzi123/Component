@@ -32,12 +32,11 @@ public interface RouterInterceptor {
      * @param chain 拦截器执行连接器
      */
     @MainThread
-    void intercept(Chain chain) throws Exception;
+    void intercept(@NonNull Chain chain) throws Exception;
 
     /**
      * 执行器
      */
-    @MainThread
     interface Chain {
 
         /**
@@ -46,6 +45,7 @@ public interface RouterInterceptor {
          * @return 返回当前的路由请求对象
          */
         @NonNull
+        @AnyThread
         RouterRequest request();
 
         /**
@@ -54,6 +54,7 @@ public interface RouterInterceptor {
          * @return 返回一个回调对象, 您可以通过这个对象直接结束这个路由请求
          */
         @NonNull
+        @AnyThread
         Callback callback();
 
         /**
@@ -69,8 +70,13 @@ public interface RouterInterceptor {
     /**
      * 回调对象,错误和成功的方法均只能调用一次,多次调用只有第一次有用,其他会被忽略
      * 内部的方法可能会在任何线程被调用,
-     * 虽然拦截器 {@link RouterInterceptor#intercept(Chain)} 的方法在主线程执行, 但是内部可以在其他线程去
-     * 调用 {@link Callback} 类中的每一个方法
+     * 虽然拦截器 {@link RouterInterceptor#intercept(Chain)} 的方法在主线程执行,
+     * 但是内部可以在其他线程去调用 {@link RouterInterceptor.Callback} 类中的每一个方法
+     * <p>
+     * 此对象内部是对一次路由的内部回调对象, 保证了回调只会进行一次.
+     * 此对象目前唯一的一个实现类为 {@link com.xiaojinzi.component.impl.Navigator.InterceptorCallback}
+     * 它内部持有 {@link com.xiaojinzi.component.impl.Callback} 对象,
+     * 间接的保证了 {@link com.xiaojinzi.component.impl.Callback} 对象中的方法只被执行一次
      */
     interface Callback {
 
@@ -109,6 +115,14 @@ public interface RouterInterceptor {
          */
         @AnyThread
         boolean isCanceled();
+
+        /**
+         * 是否结束了, 完成和取消都算结束了
+         *
+         * @return
+         */
+        @AnyThread
+        boolean isEnd();
 
     }
 

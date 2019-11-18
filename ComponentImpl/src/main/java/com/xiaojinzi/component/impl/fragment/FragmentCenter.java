@@ -11,7 +11,9 @@ import com.xiaojinzi.component.fragment.IComponentHostFragment;
 import com.xiaojinzi.component.support.ASMUtil;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 模块 Fragment 注册和卸载的总管
@@ -21,7 +23,7 @@ import java.util.Map;
 @CheckClassName
 public class FragmentCenter implements IComponentCenterFragment {
 
-    private Map<String, IComponentHostFragment> moduleServiceMap = new HashMap<>();
+    private Map<String, IComponentHostFragment> moduleFragmentMap = new HashMap<>();
 
     private FragmentCenter() {
     }
@@ -44,13 +46,13 @@ public class FragmentCenter implements IComponentCenterFragment {
         if (service == null) {
             return;
         }
-        moduleServiceMap.put(service.getHost(), service);
+        moduleFragmentMap.put(service.getHost(), service);
         service.onCreate(Component.getApplication());
     }
 
     @Override
     public void register(@NonNull String host) {
-        if (moduleServiceMap.containsKey(host)) {
+        if (moduleFragmentMap.containsKey(host)) {
             return;
         }
         IComponentHostFragment moduleService = findModuleService(host);
@@ -62,13 +64,13 @@ public class FragmentCenter implements IComponentCenterFragment {
         if (moduleService == null) {
             return;
         }
-        moduleServiceMap.remove(moduleService.getHost());
+        moduleFragmentMap.remove(moduleService.getHost());
         moduleService.onDestroy();
     }
 
     @Override
     public void unregister(@NonNull String host) {
-        IComponentHostFragment moduleService = moduleServiceMap.get(host);
+        IComponentHostFragment moduleService = moduleFragmentMap.get(host);
         unregister(moduleService);
     }
 
@@ -87,6 +89,23 @@ public class FragmentCenter implements IComponentCenterFragment {
             // ignore
         }
         return null;
+    }
+
+    public void check() {
+        Set<String> set = new HashSet<>();
+        for (Map.Entry<String, IComponentHostFragment> entry : moduleFragmentMap.entrySet()) {
+            IComponentHostFragment childRouter = entry.getValue();
+            if (childRouter == null || childRouter.getFragmentNameSet() == null) {
+                continue;
+            }
+            Set<String> childRouterSet = childRouter.getFragmentNameSet();
+            for (String key : childRouterSet) {
+                if (set.contains(key)) {
+                    throw new IllegalStateException("the name of Fragment is exist：'" + key + "'");
+                }
+                set.add(key);
+            }
+        }
     }
 
 }

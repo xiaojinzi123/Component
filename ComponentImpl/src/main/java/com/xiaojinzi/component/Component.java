@@ -3,6 +3,8 @@ package com.xiaojinzi.component;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.annotation.AnyThread;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -46,6 +48,11 @@ public class Component {
      */
     private static boolean isInitOptimize = false;
 
+    /**
+     * 当用户使用 Application 发起跳转的时候, 是否提醒它
+     */
+    private static boolean isTipWhenUseApplication = true;
+
     private Component() {
     }
 
@@ -55,6 +62,7 @@ public class Component {
      * @param application App 的 Application
      * @param isDebug     是否是debug模式
      */
+    @MainThread
     public static void init(@NonNull Application application, boolean isDebug) {
         init(application, isDebug, null);
     }
@@ -62,6 +70,7 @@ public class Component {
     /**
      * 打开初始化优化的开关
      */
+    @AnyThread
     public static void openInitOptimize() {
         if (!isInit) {
             throw new RuntimeException("you must init Component first");
@@ -70,12 +79,25 @@ public class Component {
     }
 
     /**
+     * 关闭使用 Application 的日志
+     */
+    @AnyThread
+    public static void closeLogWhenUseApplication() {
+        if (!isInit) {
+            throw new RuntimeException("you must init Component first");
+        }
+        isTipWhenUseApplication = false;
+    }
+
+    /**
      * 初始化
      *
      * @param application App 的 Application
      * @param isDebug     是否是debug模式
      */
+    @MainThread
     public static void init(@NonNull Application application, boolean isDebug, @Nullable String defaultScheme) {
+        Utils.checkMainThread();
         if (isInit) {
             throw new RuntimeException("Component is already init");
         }
@@ -95,6 +117,7 @@ public class Component {
     /**
      * 返回是否是 debug 状态
      */
+    @AnyThread
     public static boolean isDebug() {
         return isDebug;
     }
@@ -102,8 +125,17 @@ public class Component {
     /**
      * 返回是否开启初始化优化
      */
+    @AnyThread
     public static boolean isInitOptimize() {
         return isInitOptimize;
+    }
+
+    /**
+     * 返回是否打印地址当使用 Application 的时候
+     */
+    @AnyThread
+    public static boolean isLogWhenUseApplication() {
+        return isTipWhenUseApplication;
     }
 
     /**
@@ -112,6 +144,7 @@ public class Component {
      * @return Application
      */
     @NonNull
+    @AnyThread
     public static Application getApplication() {
         if (application == null) {
             throw new NullPointerException("the Application is null,do you call Component.init(Application application,boolean isDebug)?");
@@ -133,6 +166,7 @@ public class Component {
      *
      * @param target 目标界面
      */
+    @MainThread
     public static void inject(@NonNull Object target) {
         injectFromBundle(target, null);
     }
@@ -142,6 +176,7 @@ public class Component {
      *
      * @param target 目标界面
      */
+    @MainThread
     public static void injectFromIntent(@NonNull Object target, @Nullable Intent intent) {
         injectFromBundle(target, intent == null ? null : intent.getExtras());
     }
@@ -151,7 +186,9 @@ public class Component {
      *
      * @param target 目标界面
      */
+    @MainThread
     public static void injectFromBundle(@NonNull Object target, @Nullable Bundle bundle) {
+        Utils.checkMainThread();
         Utils.checkNullPointer(target, "target");
         String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;
         try {

@@ -28,11 +28,7 @@ public class CallPhoePermisionInterceptor implements RouterInterceptor {
                     @Override
                     public void onResult(boolean granted) {
                         if (granted) {
-                            try {
-                                chain.proceed(chain.request());
-                            } catch (Exception e) {
-                                chain.callback().onError(new Exception("fail to request call phone permision"));
-                            }
+                            chain.proceed(chain.request());
                         } else {
                             chain.callback().onError(new Exception("fail to request call phone permision"));
                         }

@@ -140,7 +140,7 @@ public class FailureTest implements TestExecutor {
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.NOT_FOUND_TEST)
                 .putString("data", "targetNotFound")
-                .navigate(new CallbackAdapter() {
+                .forward(new CallbackAdapter() {
                     @Override
                     public void onSuccess(@NonNull RouterResult result) {
                         emitter.onError(new NavigationFailException("request should be error"));
