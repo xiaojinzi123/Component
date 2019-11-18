@@ -54,7 +54,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * requestCode 如果等于这个值,就表示是随机生成的
      * 从 1-256 中随机生成一个,如果生成的正好是目前正在用的,会重新生成一个
      */
-    static final Integer RANDOM_REQUSET_CODE = Integer.MIN_VALUE;
+    public static final Integer RANDOM_REQUSET_CODE = Integer.MIN_VALUE;
 
     /**
      * 自定义的拦截器列表,为了保证顺序才用一个集合的
