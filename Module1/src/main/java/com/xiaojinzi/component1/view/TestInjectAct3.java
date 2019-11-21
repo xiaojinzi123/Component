@@ -8,7 +8,7 @@ import com.xiaojinzi.base.bean.User;
 import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.anno.FiledAutowiredAnno;
+import com.xiaojinzi.component.anno.FieldAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
 import com.xiaojinzi.component1.R;
@@ -21,13 +21,13 @@ import com.xiaojinzi.component1.R;
 )
 public class TestInjectAct3 extends BaseAct {
 
-    @FiledAutowiredAnno("testName")
+    @FieldAutowiredAnno("testName")
     String testName;
 
-    @FiledAutowiredAnno("testAge")
+    @FieldAutowiredAnno("testAge")
     int testAge;
 
-    @FiledAutowiredAnno("testUser")
+    @FieldAutowiredAnno("testUser")
     User testUser;
 
     @ServiceAutowiredAnno

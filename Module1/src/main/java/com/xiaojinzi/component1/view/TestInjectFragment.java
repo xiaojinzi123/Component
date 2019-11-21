@@ -9,14 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.anno.FiledAutowiredAnno;
+import com.xiaojinzi.component.anno.FieldAutowiredAnno;
 
 /**
  * 测试注入 Fragment 功能的
  */
 public class TestInjectFragment extends Fragment {
 
-    @FiledAutowiredAnno("name")
+    @FieldAutowiredAnno("name")
     String name;
 
     @Nullable
