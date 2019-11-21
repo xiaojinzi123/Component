@@ -729,6 +729,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
     private NavigationDisposable doNavigateForResult(@NonNull final BiCallback<ActivityResult> biCallback) {
         // 直接 gg
         Utils.checkNullPointer(biCallback, "callback");
+        // 标记此次是需要框架帮助获取 ActivityResult 的
+        this.isForResult = true;
         // 做一个包裹实现至多只能调用一次内部的其中一个方法
         final BiCallback<ActivityResult> biCallbackWrap = new BiCallbackWrap<>(biCallback);
         NavigationDisposable finalNavigationDisposable = null;

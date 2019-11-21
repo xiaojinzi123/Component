@@ -15,6 +15,7 @@ import android.util.SparseArray;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.Utils;
@@ -59,6 +60,15 @@ public class RouterRequest {
      */
     @Nullable
     public final Integer requestCode;
+
+    /**
+     * 框架是否帮助用户跳转拿 {@link ActivityResult}
+     * 有 requestCode 只能说明用户使用了某一个 requestCode,
+     * 会调用 {@link Activity#startActivityForResult(Intent, int)}.
+     * 但是不代表需要框架去帮你获取到 {@link ActivityResult}.
+     * 所以这个值就是标记是否需要框架帮助您去获取 {@link ActivityResult}
+     */
+    public final boolean isForResult;
 
     /**
      * 跳转的时候 options 参数
@@ -209,6 +219,7 @@ public class RouterRequest {
 
         builder.bundle = bundle;
         builder.requestCode = requestCode;
+        builder.isForResult = isForResult;
         builder.options = options;
         // 这里需要新创建一个是因为不可修改的集合不可以给别人
         builder.intentCategories = new ArrayList<>(intentCategories);
@@ -228,6 +239,7 @@ public class RouterRequest {
         context = builder.context;
         fragment = builder.fragment;
         requestCode = builder.requestCode;
+        isForResult = builder.isForResult;
         options = builder.options;
         // 这两个集合是不可以更改的
         intentCategories = Collections.unmodifiableList(builder.intentCategories);
@@ -257,6 +269,8 @@ public class RouterRequest {
 
         @Nullable
         protected Integer requestCode;
+
+        protected boolean isForResult;
 
         @Nullable
         protected Bundle options;
