@@ -10,7 +10,6 @@ import android.widget.Toast;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.impl.Router;
-import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
@@ -86,6 +85,7 @@ public class MainAct extends AppCompatActivity {
                 .with(this)
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.TEST_WEB_ROUTER)
+                .requestCode(123)
                 .forward();
     }
 

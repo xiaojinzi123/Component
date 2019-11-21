@@ -54,7 +54,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * requestCode 如果等于这个值,就表示是随机生成的
      * 从 1-256 中随机生成一个,如果生成的正好是目前正在用的,会重新生成一个
      */
-    static final Integer RANDOM_REQUSET_CODE = Integer.MIN_VALUE;
+    public static final Integer RANDOM_REQUSET_CODE = Integer.MIN_VALUE;
 
     /**
      * 自定义的拦截器列表,为了保证顺序才用一个集合的
@@ -729,6 +729,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
     private NavigationDisposable doNavigateForResult(@NonNull final BiCallback<ActivityResult> biCallback) {
         // 直接 gg
         Utils.checkNullPointer(biCallback, "callback");
+        // 标记此次是需要框架帮助获取 ActivityResult 的
+        this.isForResult = true;
         // 做一个包裹实现至多只能调用一次内部的其中一个方法
         final BiCallback<ActivityResult> biCallbackWrap = new BiCallbackWrap<>(biCallback);
         NavigationDisposable finalNavigationDisposable = null;

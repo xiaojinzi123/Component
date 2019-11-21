@@ -8,11 +8,6 @@ dependencies {
     // https://mvnrepository.com/artifact/org.ow2.asm/asm-all
     implementation group: 'org.ow2.asm', name: 'asm-all', version: '5.2'
     implementation 'com.android.tools.build:gradle:3.3.0'
-    /*if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        compile libs.component_annotation
-    }else {
-        compile project(':ComponentApi')
-    }*/
 }
 repositories {
     mavenCentral()

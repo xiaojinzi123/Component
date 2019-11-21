@@ -176,8 +176,9 @@ public class RouterCenter implements IComponentCenterRouter {
         // 使用 context 跳转 startActivityForResult
         if (request.context != null) {
             Fragment rxFragment = findFragment(request.context);
+            boolean isUseRxFragment = rxFragment != null && request.isForResult;
             Activity rawAct = null;
-            if (rxFragment != null) {
+            if (isUseRxFragment) {
                 rxFragment.startActivityForResult(intent, request.requestCode, request.options);
             } else if ((rawAct = Utils.getActivityFromContext(request.context)) != null) {
                 rawAct.startActivityForResult(intent, request.requestCode, request.options);
@@ -186,7 +187,8 @@ public class RouterCenter implements IComponentCenterRouter {
             }
         } else if (request.fragment != null) { // 使用 Fragment 跳转
             Fragment rxFragment = findFragment(request.fragment);
-            if (rxFragment != null) {
+            boolean isUseRxFragment = rxFragment != null && request.isForResult;
+            if (isUseRxFragment) {
                 rxFragment.startActivityForResult(intent, request.requestCode, request.options);
             } else {
                 request.fragment.startActivityForResult(intent, request.requestCode, request.options);
