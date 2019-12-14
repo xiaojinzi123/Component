@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
  * 这个类表示一次成功路由的返回结果对象
  * time   : 2018/11/10
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class RouterResult {
 

@@ -4,7 +4,7 @@ package com.xiaojinzi.component;
  * 声明一个执行过程出现的需要抛出的异常
  * time   : 2019/02/21
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class ProcessException extends RuntimeException {
 

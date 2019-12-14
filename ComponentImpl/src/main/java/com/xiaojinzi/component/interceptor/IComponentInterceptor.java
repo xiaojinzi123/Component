@@ -9,7 +9,7 @@ import com.xiaojinzi.component.impl.RouterInterceptor;
  * 拦截器顶级接口
  * time   : 2018/12/26
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public interface IComponentInterceptor {
 

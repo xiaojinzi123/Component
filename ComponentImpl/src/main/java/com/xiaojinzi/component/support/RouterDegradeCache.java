@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * 支持缓存自定义的降级处理工具类
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class RouterDegradeCache {
 

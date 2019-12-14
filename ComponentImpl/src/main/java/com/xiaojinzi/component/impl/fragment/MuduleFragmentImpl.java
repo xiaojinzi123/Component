@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * 空实现,每一个模块的 Fragment 生成类需要继承的
  *
- * @author xiaojinzi 30212
+ * @author xiaojinzi
  */
 abstract class MuduleFragmentImpl implements IComponentHostFragment {
 

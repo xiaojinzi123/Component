@@ -95,15 +95,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="testRouterForFragment"
-        android:textAllCaps="false"
-        android:text="跳转Fragment" />
+        android:text="跳转Fragment"
+        android:textAllCaps="false" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="testWebRouter"
-        android:textAllCaps="false"
-        android:text="测试Web跳转" />
+        android:text="测试Web跳转"
+        android:textAllCaps="false" />
 
     <Button
         android:layout_width="match_parent"
@@ -116,5 +116,19 @@
         android:layout_height="wrap_content"
         android:onClick="testQuality"
         android:text="测试代码质量(每次发布这里面的每一项都要通过)" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="intentRouter1"
+        android:text="获取 Intent 发送一个通知, 点击通知出发路由\n使用 Component 自带的默认代理界面"
+        android:textAllCaps="false" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="intentRouter2"
+        android:text="获取 Intent 发送一个通知, 点击通知出发路由\n使用自定义的代理界面(本界面)"
+        android:textAllCaps="false" />
 
 </LinearLayout>

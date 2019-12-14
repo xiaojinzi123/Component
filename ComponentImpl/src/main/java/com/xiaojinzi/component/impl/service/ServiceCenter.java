@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * 模块服务注册和卸载的总管
  *
- * @author xiaojinzi 30212
+ * @author xiaojinzi
  */
 @CheckClassName
 public class ServiceCenter implements IComponentCenterService {

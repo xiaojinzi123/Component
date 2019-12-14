@@ -19,7 +19,7 @@ import com.xiaojinzi.component.impl.RouterRequest;
  * <p>
  * time   : 2019/01/25
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @CheckClassName
 public interface NavigationDisposable {

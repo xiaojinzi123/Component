@@ -3,7 +3,7 @@ package com.xiaojinzi.component.error;
 /**
  * time   : 2019/01/09
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class ServiceInvokeException extends RuntimeException  {
 

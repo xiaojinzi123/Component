@@ -6,7 +6,7 @@ import com.xiaojinzi.component.anno.ServiceAnno;
 /**
  * time   : 2018/12/03
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @ServiceAnno(value = UserService.class)
 public class UserServiceImpl implements UserService {

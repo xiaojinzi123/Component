@@ -34,7 +34,6 @@ public class App extends Application {
         // 忽略一些不想处理的错误
         RxErrorIgnoreUtil.ignoreError();
 
-
         long startTime = System.currentTimeMillis();
         // 装载各个业务组件
         ModuleManager.getInstance().registerArr(

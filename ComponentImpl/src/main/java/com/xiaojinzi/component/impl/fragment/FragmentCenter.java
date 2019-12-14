@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * 模块 Fragment 注册和卸载的总管
  *
- * @author xiaojinzi 30212
+ * @author xiaojinzi
  */
 @CheckClassName
 public class FragmentCenter implements IComponentCenterFragment {

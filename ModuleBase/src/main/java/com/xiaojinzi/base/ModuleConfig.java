@@ -4,7 +4,7 @@ package com.xiaojinzi.base;
  * 组件化的业务组件配置中心
  * time   : 2018/11/27
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class ModuleConfig {
 

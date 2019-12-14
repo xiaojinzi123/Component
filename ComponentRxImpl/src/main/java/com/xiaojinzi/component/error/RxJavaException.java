@@ -4,7 +4,7 @@ package com.xiaojinzi.component.error;
  * 表示使用RxJava发射的错误,cause中是确切的错误对象
  * time   : 2019/01/09
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class RxJavaException extends Exception {
 

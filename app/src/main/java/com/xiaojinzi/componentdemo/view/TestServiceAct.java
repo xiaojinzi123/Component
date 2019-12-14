@@ -84,12 +84,7 @@ public class TestServiceAct extends AppCompatActivity {
 
     public void rxServiceUse1(View view) {
         RxServiceManager.with(AnnoMethodService.class)
-                .map(new Function<AnnoMethodService, String>() {
-                    @Override
-                    public String apply(AnnoMethodService service) throws Exception {
-                        return service.test();
-                    }
-                })
+                .map(service -> service.test())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<String>() {
@@ -107,12 +102,7 @@ public class TestServiceAct extends AppCompatActivity {
 
     public void rxServiceUse2(View view) {
         RxServiceManager.with(Component1Service.class)
-                .flatMap(new Function<Component1Service, SingleSource<String>>() {
-                    @Override
-                    public SingleSource<String> apply(Component1Service service) throws Exception {
-                        return service.testError();
-                    }
-                })
+                .flatMap((Function<Component1Service, SingleSource<String>>) service -> service.testError())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<String>() {

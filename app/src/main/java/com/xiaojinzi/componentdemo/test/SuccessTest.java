@@ -468,13 +468,14 @@ public class SuccessTest implements TestExecutor {
                     @Override
                     public void intercept(RouterInterceptor.Chain chain) throws Exception {
 
-                        android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(chain.request().getRawActivity())
-                                .setMessage("如果您点击确定,传递过去的名称 'testName' 会被修改为 '我是被拦截器修改的 testName'")
-                                .setPositiveButton("确定", (dialog12, which) -> {
-                                })
-                                .setNegativeButton("取消", (dialog1, which) -> {
-                                })
-                                .create();
+                        android.support.v7.app.AlertDialog dialog =
+                                new android.support.v7.app.AlertDialog.Builder(chain.request().getRawOrTopActivity())
+                                        .setMessage("如果您点击确定,传递过去的名称 'testName' 会被修改为 '我是被拦截器修改的 testName'")
+                                        .setPositiveButton("确定", (dialog12, which) -> {
+                                        })
+                                        .setNegativeButton("取消", (dialog1, which) -> {
+                                        })
+                                        .create();
                         dialog.show();
 
                         Completable.complete()

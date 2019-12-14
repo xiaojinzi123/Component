@@ -3,7 +3,7 @@ package com.xiaojinzi.component;
 /**
  * time   : 2018/07/26
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class ComponentConstants {
 

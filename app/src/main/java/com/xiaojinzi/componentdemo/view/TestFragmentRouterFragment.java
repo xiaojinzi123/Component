@@ -28,7 +28,7 @@ import io.reactivex.functions.Consumer;
 /**
  * time   : 2018/12/27
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class TestFragmentRouterFragment extends Fragment implements View.OnClickListener {
 

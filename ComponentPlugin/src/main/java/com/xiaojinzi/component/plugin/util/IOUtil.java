@@ -7,7 +7,7 @@ import java.io.OutputStream;
 /**
  * time   : 2019/10/28
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class IOUtil {
 

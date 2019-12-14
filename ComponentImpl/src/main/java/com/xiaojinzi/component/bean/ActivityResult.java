@@ -9,7 +9,7 @@ import com.xiaojinzi.component.error.ignore.ActivityResultException;
  * activity result 的返回对象,{@link android.app.Activity#onActivityResult(int, int, Intent)}
  * time   : 2018/12/04
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class ActivityResult {
 

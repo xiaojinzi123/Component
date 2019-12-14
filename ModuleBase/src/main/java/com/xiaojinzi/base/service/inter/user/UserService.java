@@ -3,7 +3,7 @@ package com.xiaojinzi.base.service.inter.user;
 /**
  * time   : 2018/12/03
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public interface UserService {
 

@@ -4,7 +4,7 @@ package com.xiaojinzi.component.error;
  * 拦截器的名称已经存在的异常
  * time   : 2019/01/10
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class InterceptorNameExistException extends RuntimeException {
 

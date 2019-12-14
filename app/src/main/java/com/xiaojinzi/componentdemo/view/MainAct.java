@@ -1,14 +1,22 @@
 package com.xiaojinzi.componentdemo.view;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.ProxyIntentBuilder;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
@@ -16,13 +24,34 @@ import com.xiaojinzi.componentdemo.R;
 /**
  * 启动界面
  */
+@RouterAnno(
+        path = "main"
+)
 public class MainAct extends AppCompatActivity {
+
+    public static final String CHANNEL_ID = "ComponentChannel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_act);
         getSupportActionBar().setTitle("组件化方案:(路由、服务、生命周期)");
+        createNotificationChannel();
+        startProxyRouter(getIntent().getExtras());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        startProxyRouter(intent.getExtras());
+    }
+
+    private void startProxyRouter(Bundle bundle) {
+        if (Router.haveProxyIntent(bundle)) {
+            Router.with(this)
+                    .withProxyBundle(bundle)
+                    .forward();
+        }
     }
 
     public void loadAppModule(View v) {
@@ -95,12 +124,63 @@ public class MainAct extends AppCompatActivity {
                 .subscribe();
     }
 
+    public void intentRouter1(View view) {
+        Intent intent = new ProxyIntentBuilder()
+                .host(ModuleConfig.User.NAME)
+                .path(ModuleConfig.User.PERSON_CENTER)
+                .buildProxyIntent();
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.app_icon)
+                .setContentTitle("测试点击跳转")
+                .setContentText("使用默认代理Activity, 点我跳转到用户中心, 框架自动完成登陆过程")
+                .setContentIntent(PendingIntent.getActivity(getApplication(), 0, intent, 0))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        notificationManager.notify(1, builder.build());
+    }
+
+    public void intentRouter2(View view) {
+        Intent intent = new ProxyIntentBuilder()
+                .host(ModuleConfig.User.NAME)
+                .path(ModuleConfig.User.PERSON_CENTER)
+                .proxyActivity(this.getClass())
+                .buildProxyIntent();
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.app_icon)
+                .setContentTitle("测试点击跳转")
+                .setContentText("使用 MainAct 为代理界面, 点我跳转到用户中心, 框架自动完成登陆过程")
+                .setContentIntent(PendingIntent.getActivity(getApplication(), 0, intent, 0))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        notificationManager.notify(1, builder.build());
+    }
+
     public void testService(View view) {
+
         Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_SERVICE)
                 .forward();
+
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Component";
+            String description = "ComponentDesc";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @Override

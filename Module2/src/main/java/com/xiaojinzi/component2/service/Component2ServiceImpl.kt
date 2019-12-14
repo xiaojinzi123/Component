@@ -8,7 +8,7 @@ import com.xiaojinzi.component.anno.ServiceAnno
 /**
  * time   : 2018/12/06
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @ServiceAnno(value = [Component2Service::class], singleTon = false)
 class Component2ServiceImpl : Component2Service {

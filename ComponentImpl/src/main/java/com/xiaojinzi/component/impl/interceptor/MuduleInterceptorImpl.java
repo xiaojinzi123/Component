@@ -20,7 +20,7 @@ import java.util.Set;
  * 拦截器的代码生成类的基本实现
  * time   : 2018/12/26
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
 

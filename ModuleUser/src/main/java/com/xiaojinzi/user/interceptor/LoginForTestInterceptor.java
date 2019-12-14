@@ -23,7 +23,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * time   : 2018/12/03
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @InterceptorAnno(InterceptorConfig.USER_LOGIN_FOR_TEST)
 public class LoginForTestInterceptor implements RouterInterceptor {

@@ -28,7 +28,7 @@ import java.util.Set;
  * 中央拦截器
  * time   : 2018/12/26
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @CheckClassName
 public class InterceptorCenter implements IComponentCenterInterceptor {

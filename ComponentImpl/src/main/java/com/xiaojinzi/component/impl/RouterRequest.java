@@ -14,10 +14,12 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.xiaojinzi.component.Component;
+import com.xiaojinzi.component.ComponentActivityStack;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.Consumer;
+import com.xiaojinzi.component.support.ProxyIntentAct;
 import com.xiaojinzi.component.support.Utils;
 
 import java.io.Serializable;
@@ -37,7 +39,7 @@ import java.util.Set;
  * <p>
  * time   : 2018/11/29
  *
- * @author xiaojinzi 30212
+ * @author xiaojinzi
  */
 @CheckClassName
 public class RouterRequest {
@@ -170,13 +172,33 @@ public class RouterRequest {
     @Nullable
     public final Activity getRawActivity() {
         Activity rawActivity = getActivity();
-        if (rawActivity == null && fragment != null) {
-            rawActivity = fragment.getActivity();
+        if (rawActivity == null) {
+            if (fragment != null) {
+                rawActivity = fragment.getActivity();
+            }
+        }
+        if (rawActivity == null) {
+            return null;
         }
         if (isActivityDestoryed(rawActivity)) {
             return null;
         }
         return rawActivity;
+    }
+
+    /**
+     * 首先调用 {@link #getRawActivity()} 尝试获取此次用户传入的 Context 中是否有关联的 Activity
+     * 如果为空, 则尝试获取运行中的所有 Activity 中顶层的那个
+     * @return
+     */
+    @Nullable
+    public final Activity getRawOrTopActivity() {
+        Activity result = getRawActivity();
+        if (result == null) {
+            // 如果不是为空返回的, 那么必定不是销毁的
+            result = ComponentActivityStack.getInstance().getTopActivity();
+        }
+        return result;
     }
 
     /**
@@ -262,17 +284,6 @@ public class RouterRequest {
     public static class Builder extends URIBuilder {
 
         @Nullable
-        protected Context context;
-
-        @Nullable
-        protected Fragment fragment;
-
-        @Nullable
-        protected Integer requestCode;
-
-        protected boolean isForResult;
-
-        @Nullable
         protected Bundle options;
 
         /**
@@ -289,6 +300,17 @@ public class RouterRequest {
 
         @NonNull
         protected Bundle bundle = new Bundle();
+
+        @Nullable
+        protected Context context;
+
+        @Nullable
+        protected Fragment fragment;
+
+        @Nullable
+        protected Integer requestCode;
+
+        protected boolean isForResult;
 
         @Nullable
         protected Consumer<Intent> intentConsumer;
@@ -330,6 +352,31 @@ public class RouterRequest {
             return this;
         }
 
+        public Builder beforJumpAction(@Nullable Action action) {
+            this.beforJumpAction = action;
+            return this;
+        }
+
+        public Builder afterJumpAction(@Nullable Action action) {
+            this.afterJumpAction = action;
+            return this;
+        }
+
+        public Builder afterErrorAction(@Nullable Action action) {
+            this.afterErrorAction = action;
+            return this;
+        }
+
+        public Builder afterEventAction(@Nullable Action action) {
+            this.afterEventAction = action;
+            return this;
+        }
+
+        public Builder requestCode(@Nullable Integer requestCode) {
+            this.requestCode = requestCode;
+            return this;
+        }
+
         /**
          * 当不是自定义跳转的时候, Intent 由框架生成,所以可以回调这个接口
          * 当自定义跳转,这个回调不会回调的,这是需要注意的点
@@ -361,36 +408,8 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder beforJumpAction(@Nullable Action action) {
-            this.beforJumpAction = action;
-            return this;
-        }
-
-        public Builder afterJumpAction(@Nullable Action action) {
-            this.afterJumpAction = action;
-            return this;
-        }
-
-        public Builder afterErrorAction(@Nullable Action action) {
-            this.afterErrorAction = action;
-            return this;
-        }
-
-        public Builder afterEventAction(@Nullable Action action) {
-            this.afterEventAction = action;
-            return this;
-        }
-
-        public Builder requestCode(@Nullable Integer requestCode) {
-            this.requestCode = requestCode;
-            return this;
-        }
-
         /**
          * 用于 API >= 16 的时候,调用 {@link Activity#startActivity(Intent, Bundle)}
-         *
-         * @param options
-         * @return
          */
         public Builder options(@Nullable Bundle options) {
             this.options = options;
@@ -399,27 +418,32 @@ public class RouterRequest {
 
         @Override
         public Builder url(@NonNull String url) {
-            return (Builder) super.url(url);
+            super.url(url);
+            return this;
         }
 
         @Override
         public Builder scheme(@NonNull String scheme) {
-            return (Builder) super.scheme(scheme);
+            super.scheme(scheme);
+            return this;
         }
 
         @Override
         public Builder hostAndPath(@NonNull String hostAndPath) {
-            return (Builder) super.hostAndPath(hostAndPath);
+            super.hostAndPath(hostAndPath);
+            return this;
         }
 
         @Override
         public Builder host(@NonNull String host) {
-            return (Builder) super.host(host);
+            super.host(host);
+            return this;
         }
 
         @Override
         public Builder path(@Nullable String path) {
-            return (Builder) super.path(path);
+            super.path(path);
+            return this;
         }
 
         public Builder putBundle(@NonNull String key, @Nullable Bundle bundle) {
@@ -575,37 +599,44 @@ public class RouterRequest {
 
         @Override
         public Builder query(@NonNull String queryName, @Nullable String queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+            super.query(queryName, queryValue);
+            return this;
         }
 
         @Override
         public Builder query(@NonNull String queryName, boolean queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+            super.query(queryName, queryValue);
+            return this;
         }
 
         @Override
         public Builder query(@NonNull String queryName, byte queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+            super.query(queryName, queryValue);
+            return this;
         }
 
         @Override
         public Builder query(@NonNull String queryName, int queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+            super.query(queryName, queryValue);
+            return this;
         }
 
         @Override
         public Builder query(@NonNull String queryName, float queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+            super.query(queryName, queryValue);
+            return this;
         }
 
         @Override
         public Builder query(@NonNull String queryName, long queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+            super.query(queryName, queryValue);
+            return this;
         }
 
         @Override
         public Builder query(@NonNull String queryName, double queryValue) {
-            return (Builder) super.query(queryName, queryValue);
+            super.query(queryName, queryValue);
+            return this;
         }
 
         /**

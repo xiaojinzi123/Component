@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.AnyThread;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.xiaojinzi.component.cache.CacheType;
 import com.xiaojinzi.component.cache.DefaultCacheFactory;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.NavigationDisposable;
+import com.xiaojinzi.component.support.ProxyIntentAct;
 import com.xiaojinzi.component.support.Utils;
 
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * <p>
  * time   : 2018/07/26
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @CheckClassName
 public class Router {
@@ -176,6 +178,16 @@ public class Router {
     @AnyThread
     public static boolean isMatchUri(@NonNull Uri uri) {
         return RouterCenter.getInstance().isMatchUri(uri);
+    }
+
+    /**
+     * 是否有代理的 {@link android.content.Intent}
+     */
+    public static boolean haveProxyIntent(@Nullable Bundle bundle) {
+        if (bundle == null) {
+            return false;
+        }
+        return bundle.getBoolean(ProxyIntentAct.EXTRA_PROXY_INTENT);
     }
 
     /**

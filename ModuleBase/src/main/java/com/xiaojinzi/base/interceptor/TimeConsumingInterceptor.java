@@ -6,7 +6,7 @@ import com.xiaojinzi.component.impl.RouterInterceptor;
  * 耗时拦截器
  * time   : 2018/12/04
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class TimeConsumingInterceptor implements RouterInterceptor {
     @Override

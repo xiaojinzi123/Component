@@ -12,7 +12,7 @@ import com.xiaojinzi.component.impl.RouterInterceptor;
  * 使用条件注解可以让这个拦截器只在 debug 的时候生效
  * time   : 2019/02/19
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @GlobalInterceptorAnno
 @ConditionalAnno(conditions = MonitorInterceptor.OnCondition.class)

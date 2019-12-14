@@ -5,7 +5,7 @@ package com.xiaojinzi.component.error.ignore;
  *
  * time   : 2018/11/11
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class TargetActivityNotFoundException extends RuntimeException {
 

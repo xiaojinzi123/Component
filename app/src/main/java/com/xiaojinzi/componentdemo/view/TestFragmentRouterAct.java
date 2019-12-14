@@ -13,7 +13,7 @@ import com.xiaojinzi.componentdemo.R;
 /**
  * time   : 2018/12/27
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @RouterAnno(
         path = ModuleConfig.App.TEST_FRAGMENT_ROUTER,

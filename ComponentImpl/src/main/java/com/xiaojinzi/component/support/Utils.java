@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 一个工具类
  * time   : 2019/01/25
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class Utils {
 

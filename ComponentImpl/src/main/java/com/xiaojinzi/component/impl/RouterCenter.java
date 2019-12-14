@@ -41,7 +41,7 @@ import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
  * 实际的跳转也是这里实现的,当有模块的注册和反注册发生的时候
  * 总路由表会有响应的变化
  *
- * @author xiaojinzi 30212
+ * @author xiaojinzi
  * @hide
  */
 @CheckClassName
