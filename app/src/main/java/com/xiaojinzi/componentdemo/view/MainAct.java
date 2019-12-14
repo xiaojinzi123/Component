@@ -154,7 +154,7 @@ public class MainAct extends AppCompatActivity {
                 .setContentText("使用 MainAct 为代理界面, 点我跳转到用户中心, 框架自动完成登陆过程")
                 .setContentIntent(PendingIntent.getActivity(getApplication(), 0, intent, 0))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        notificationManager.notify(1, builder.build());
+        notificationManager.notify(2, builder.build());
     }
 
     public void testService(View view) {
