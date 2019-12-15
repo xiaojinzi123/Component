@@ -13,7 +13,7 @@ import com.xiaojinzi.component.anno.support.CheckClassName;
  * 2.{@link #onError(RouterErrorResult)} --> {@link #onEvent(RouterResult, RouterErrorResult)}
  * 3.被取消的时候：{@link #onCancel(RouterRequest)}
  *
- * @author xiaojinzi 30212
+ * @author xiaojinzi
  */
 @CheckClassName
 public interface Callback extends OnRouterError, OnRouterCancel {

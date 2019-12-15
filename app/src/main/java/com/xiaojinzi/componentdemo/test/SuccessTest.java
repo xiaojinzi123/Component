@@ -2,6 +2,7 @@ package com.xiaojinzi.componentdemo.test;
 
 import android.app.Activity;
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
@@ -469,7 +470,8 @@ public class SuccessTest implements TestExecutor {
                     @Override
                     public void intercept(RouterInterceptor.Chain chain) throws Exception {
 
-                        AlertDialog dialog = new AlertDialog.Builder(chain.request().getRawActivity())
+                        AlertDialog dialog = new AlertDialog
+                                .Builder(chain.request().getRawOrTopActivity())
                                 .setMessage("如果您点击确定,传递过去的名称 'testName' 会被修改为 '我是被拦截器修改的 testName'")
                                 .setPositiveButton("确定", (dialog12, which) -> {
                                 })

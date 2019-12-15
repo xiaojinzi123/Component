@@ -5,7 +5,7 @@ import androidx.annotation.MainThread;
 /**
  * time   : 2018/11/27
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @MainThread
 public interface Component2Service {

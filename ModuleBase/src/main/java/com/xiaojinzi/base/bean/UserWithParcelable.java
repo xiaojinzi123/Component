@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * time   : 2019/01/24
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class UserWithParcelable implements Parcelable {
 

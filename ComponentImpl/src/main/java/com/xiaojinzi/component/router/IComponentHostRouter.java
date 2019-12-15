@@ -10,7 +10,7 @@ import java.util.Map;
  * 组件之间实现跳转的接口
  * <p>
  * time   : 2018/07/26
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public interface IComponentHostRouter {
 

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.CLASS)
-public @interface FiledAutowiredAnno {
+public @interface FieldAutowiredAnno {
 
     /**
      * 需要注入的 Key：

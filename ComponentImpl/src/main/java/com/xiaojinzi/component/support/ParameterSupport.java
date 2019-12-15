@@ -18,7 +18,7 @@ import java.util.Set;
  * {@link #getQueryBoolean(Bundle, String)} 您可以用 getQueryXXX 之类的方法
  * time   : 2019/01/24
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @CheckClassName
 public class ParameterSupport {

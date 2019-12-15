@@ -22,7 +22,7 @@ import io.reactivex.schedulers.Schedulers;
  * 来使用
  * time   : 2018/12/04
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class DialogShowInterceptor implements RouterInterceptor {
 

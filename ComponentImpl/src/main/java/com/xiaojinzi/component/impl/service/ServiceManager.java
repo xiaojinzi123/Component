@@ -16,7 +16,7 @@ import java.util.Map;
  * 服务的容器,使用这个服务容器你需要判断获取到的服务是否为空,对于使用者来说还是比较不方便的
  * 建议使用 Service 扩展的版本 RxService
  *
- * @author xiaojinzi 30212
+ * @author xiaojinzi
  */
 @CheckClassName
 public class ServiceManager {

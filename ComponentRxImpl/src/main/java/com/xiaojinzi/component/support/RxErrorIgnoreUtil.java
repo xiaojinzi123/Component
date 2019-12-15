@@ -18,7 +18,7 @@ import io.reactivex.plugins.RxJavaPlugins;
  * 结合 RxJava 之后需要忽略的错误
  * time   : 2019/02/20
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class RxErrorIgnoreUtil {
 

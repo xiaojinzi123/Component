@@ -20,7 +20,7 @@ import io.reactivex.SingleOnSubscribe;
  * 这里都能帮您自动过滤掉,如果你写了错误处理,则会回调给您
  * time   : 2019/10/12
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class RxFragmentManager {
 

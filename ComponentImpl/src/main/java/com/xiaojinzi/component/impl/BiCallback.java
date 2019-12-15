@@ -13,7 +13,7 @@ import com.xiaojinzi.component.support.Utils;
  * <p>
  * 详细的请查看 {@link Callback}
  *
- * @author xiaojinzi 30212
+ * @author xiaojinzi
  */
 @CheckClassName
 public interface BiCallback<T> extends OnRouterCancel, OnRouterError {

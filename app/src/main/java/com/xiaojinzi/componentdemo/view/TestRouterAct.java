@@ -623,7 +623,7 @@ public class TestRouterAct extends BaseAct {
                 .query("name", "我是小金子")
                 .query("pass", "我是小金子的密码")
                 .interceptors((RouterInterceptor) chain -> {
-                    AlertDialog dialog = new AlertDialog.Builder(chain.request().getRawActivity())
+                    AlertDialog dialog = new AlertDialog.Builder(chain.request().getRawOrTopActivity())
                             .setMessage("如果您点击确定,传递过去的名称 '我是小金子' 会被修改为 '我是被拦截器修改的小金子'")
                             .setPositiveButton("确定", (dialog12, which) -> chain.proceed(chain.request().toBuilder().query("name", "被拦截器修改的小金子").build()))
                             .setNegativeButton("取消", (dialog1, which) -> chain.proceed(chain.request()))

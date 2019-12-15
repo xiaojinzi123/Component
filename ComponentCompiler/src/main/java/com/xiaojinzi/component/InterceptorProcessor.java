@@ -40,7 +40,7 @@ import javax.tools.Diagnostic;
  * 处理拦截器的注解驱动器,目的是为了处理 {@link GlobalInterceptorAnno} 和 {@link InterceptorAnno}
  * time   : 2018/12/26
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @AutoService(Processor.class)
 @SupportedOptions("HOST")

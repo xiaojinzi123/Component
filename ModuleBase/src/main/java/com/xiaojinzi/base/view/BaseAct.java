@@ -17,7 +17,7 @@ import io.reactivex.disposables.CompositeDisposable;
 /**
  * time   : 2018/12/27
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class BaseAct extends AppCompatActivity {
 

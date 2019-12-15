@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Fragment 的容器
  *
- * @author xiaojinzi 30212
+ * @author xiaojinzi
  */
 @CheckClassName
 public class FragmentManager {

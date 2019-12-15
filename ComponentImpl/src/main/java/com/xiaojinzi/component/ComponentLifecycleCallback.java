@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.support.LogUtil;
 
 /**
  * 注册的声明周期回调,用于取消一些调用,这些调用在界面销毁之后
@@ -26,6 +27,7 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        ComponentActivityStack.getInstance().pushActivity(activity);
         // 目前不支持 Activity,所以写的时候Activity 必须继承 FragmentActivity
         if (activity instanceof FragmentActivity) {
             FragmentActivity fragmentActivity = (FragmentActivity) activity;
@@ -61,6 +63,7 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
 
     @Override
     public void onActivityDestroyed(Activity activity) {
+        ComponentActivityStack.getInstance().removeActivity(activity);
         Router.cancel(activity);
     }
 

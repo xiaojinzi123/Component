@@ -8,7 +8,7 @@ import com.xiaojinzi.component.anno.support.CheckClassName;
  * 懒加载设计
  * time   : 2018/11/27
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @CheckClassName
 public interface Callable<T> {

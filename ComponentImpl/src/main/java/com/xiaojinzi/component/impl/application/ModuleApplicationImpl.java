@@ -16,7 +16,7 @@ import java.util.List;
  * {@link ComponentUtil#IMPL_OUTPUT_PKG}
  * 和 {@link ComponentUtil#MODULE_APPLICATION_IMPL_CLASS_NAME} 上
  *
- * @author xiaojinzi 30212
+ * @author xiaojinzi
  */
 abstract class ModuleApplicationImpl implements IComponentHostApplication {
 

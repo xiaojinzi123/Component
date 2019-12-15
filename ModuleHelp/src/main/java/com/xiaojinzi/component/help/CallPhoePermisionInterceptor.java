@@ -5,6 +5,7 @@ import android.Manifest;
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.util.PermissionsCallback;
 import com.xiaojinzi.base.util.PermissionsUtil;
+import com.xiaojinzi.component.ComponentActivityStack;
 import com.xiaojinzi.component.anno.ConditionalAnno;
 import com.xiaojinzi.component.anno.InterceptorAnno;
 import com.xiaojinzi.component.condition.Condition;
@@ -22,7 +23,7 @@ public class CallPhoePermisionInterceptor implements RouterInterceptor {
 
     @Override
     public void intercept(final Chain chain) throws Exception {
-        PermissionsUtil.with(chain.request().getRawContext())
+        PermissionsUtil.with(chain.request().getRawOrTopActivity())
                 .request(Manifest.permission.CALL_PHONE)
                 .execute(new PermissionsCallback() {
                     @Override

@@ -11,7 +11,7 @@ import io.reactivex.functions.Consumer;
  * <p>
  * time   : 2018/11/20
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class RxErrorConsumer<T extends Throwable> implements Consumer<T> {
 

@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * time   : 2018/12/03
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class User implements Serializable, Parcelable {
 

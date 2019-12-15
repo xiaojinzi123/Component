@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import androidx.annotation.AnyThread;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
@@ -12,12 +13,14 @@ import androidx.fragment.app.Fragment;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.cache.Cache;
 import com.xiaojinzi.component.cache.CacheType;
 import com.xiaojinzi.component.cache.DefaultCacheFactory;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.NavigationDisposable;
+import com.xiaojinzi.component.support.ProxyIntentAct;
 import com.xiaojinzi.component.support.Utils;
 
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * <p>
  * time   : 2018/07/26
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @CheckClassName
 public class Router {
@@ -108,6 +111,12 @@ public class Router {
 
     @NonNull
     @AnyThread
+    public static ProxyIntentBuilder newProxyIntentBuilder() {
+        return new ProxyIntentBuilder();
+    }
+
+    @NonNull
+    @AnyThread
     public static FragmentNavigator with(@NonNull String fragmentFlag) {
         Utils.checkNullPointer(fragmentFlag, "fragmentFlag");
         return new FragmentNavigator(fragmentFlag);
@@ -176,6 +185,16 @@ public class Router {
     @AnyThread
     public static boolean isMatchUri(@NonNull Uri uri) {
         return RouterCenter.getInstance().isMatchUri(uri);
+    }
+
+    /**
+     * 是否有代理的 {@link android.content.Intent}
+     */
+    public static boolean haveProxyIntent(@Nullable Bundle bundle) {
+        if (bundle == null) {
+            return false;
+        }
+        return bundle.getBoolean(ProxyIntentAct.EXTRA_PROXY_INTENT);
     }
 
     /**

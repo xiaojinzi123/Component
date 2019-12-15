@@ -31,6 +31,7 @@ import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.NavigationDisposable;
+import com.xiaojinzi.component.support.ProxyIntentAct;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.support.RouterRequestHelp;
 import com.xiaojinzi.component.support.Utils;
@@ -70,6 +71,11 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 标记这个 builder 是否已经被使用了,使用过了就不能使用了
      */
     protected boolean isFinish = false;
+
+    /**
+     * 是否自动取消
+     */
+    protected boolean autoCancel = true;
 
     public Navigator() {
     }
@@ -122,51 +128,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return this;
     }
 
-    @Override
-    public Navigator intentConsumer(@Nullable Consumer<Intent> intentConsumer) {
-        return (Navigator) super.intentConsumer(intentConsumer);
-    }
-
-    @Override
-    public Navigator addIntentFlags(@Nullable Integer... flags) {
-        return (Navigator) super.addIntentFlags(flags);
-    }
-
-    @Override
-    public Navigator addIntentCategories(@Nullable String... categories) {
-        return (Navigator) super.addIntentCategories(categories);
-    }
-
-    @Override
-    public Navigator beforJumpAction(@Nullable Action action) {
-        return (Navigator) super.beforJumpAction(action);
-    }
-
-    @Override
-    public Navigator afterJumpAction(@Nullable Action action) {
-        return (Navigator) super.afterJumpAction(action);
-    }
-
-    @Override
-    public Navigator afterErrorAction(@Nullable Action action) {
-        return (Navigator) super.afterErrorAction(action);
-    }
-
-    @Override
-    public Navigator afterEventAction(@Nullable Action action) {
-        return (Navigator) super.afterEventAction(action);
-    }
-
-    @Override
-    public Navigator requestCode(@Nullable Integer requestCode) {
-        return (Navigator) super.requestCode(requestCode);
-    }
-
-    @Override
-    public Navigator options(@Nullable Bundle options) {
-        return (Navigator) super.options(options);
-    }
-
     /**
      * requestCode 会随机的生成
      */
@@ -174,214 +135,358 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return requestCode(RANDOM_REQUSET_CODE);
     }
 
+    public Navigator autoCancel(boolean autoCancel) {
+        this.autoCancel = autoCancel;
+        return this;
+    }
+
+    /**
+     * 当您使用 {@link ProxyIntentBuilder} 构建了一个 {@link Intent} 之后.
+     * 此 {@link Intent} 的跳转目标是一个代理的界面. 具体是
+     * {@link ProxyIntentAct} 或者是用户你自己自定义的 {@link Class<Activity>}
+     * 携带的参数是是真正的目标的信息. 比如：
+     * {@link ProxyIntentAct#EXTRA_PROXY_INTENT_URL} 表示目标的 url
+     * {@link ProxyIntentAct#EXTRA_PROXY_INTENT_BUNDLE} 表示跳转到真正的目标的 {@link Bundle} 数据
+     * ......
+     * 当你自定义了代理界面, 那你可以使用{@link Router#with()} 或者  {@link Router#with(Context)} 或者
+     * {@link Router#with(Fragment)} 得到一个 {@link Navigator}
+     * 然后你就可以使用{@link Navigator#withProxyBundle(Bundle)} 直接导入跳转到真正目标所需的各种参数, 然后
+     * 直接发起跳转, 通过条用 {@link Navigator#forward()} 等方法
+     * 示例代码：
+     * <pre class="prettyprint">
+     * public class XXXProxyActivity extends Activity {
+     *     ...
+     *     protected void onCreate(Bundle savedInstanceState) {
+     *         super.onCreate(savedInstanceState);
+     *         Router.with(this)
+     *               .withProxyBundle(getIntent().getExtras())
+     *               .forward();
+     *     }
+     *     ...
+     * }
+     * </pre>
+     *
+     * @see ProxyIntentAct
+     */
+    public Navigator withProxyBundle(@NonNull Bundle bundle) {
+        Utils.checkNullPointer(bundle, "bundle");
+        String reqUrl = bundle.getString(ProxyIntentAct.EXTRA_PROXY_INTENT_URL);
+        Bundle reqBundle = bundle.getBundle(ProxyIntentAct.EXTRA_PROXY_INTENT_BUNDLE);
+        Bundle reqOptions = bundle.getBundle(ProxyIntentAct.EXTRA_PROXY_INTENT_OPTIONS);
+        ArrayList<Integer> reqFlags = bundle.getIntegerArrayList(ProxyIntentAct.EXTRA_PROXY_INTENT_FLAGS);
+        ArrayList<String> reqCategories = bundle.getStringArrayList(ProxyIntentAct.EXTRA_PROXY_INTENT_CATEGORIES);
+        super.url(reqUrl);
+        super.putAll(reqBundle);
+        super.options(reqOptions);
+        super.addIntentFlags(reqFlags.toArray(new Integer[0]));
+        super.addIntentCategories(reqCategories.toArray(new String[0]));
+        return this;
+    }
+
+    @Override
+    public Navigator intentConsumer(@Nullable Consumer<Intent> intentConsumer) {
+        super.intentConsumer(intentConsumer);
+        return this;
+    }
+
+    @Override
+    public Navigator addIntentFlags(@Nullable Integer... flags) {
+        super.addIntentFlags(flags);
+        return this;
+    }
+
+    @Override
+    public Navigator addIntentCategories(@Nullable String... categories) {
+        super.addIntentCategories(categories);
+        return this;
+    }
+
+    @Override
+    public Navigator beforJumpAction(@Nullable Action action) {
+        super.beforJumpAction(action);
+        return this;
+    }
+
+    @Override
+    public Navigator afterJumpAction(@Nullable Action action) {
+        super.afterJumpAction(action);
+        return this;
+    }
+
+    @Override
+    public Navigator afterErrorAction(@Nullable Action action) {
+        super.afterErrorAction(action);
+        return this;
+    }
+
+    @Override
+    public Navigator afterEventAction(@Nullable Action action) {
+        super.afterEventAction(action);
+        return this;
+    }
+
+    @Override
+    public Navigator requestCode(@Nullable Integer requestCode) {
+        super.requestCode(requestCode);
+        return this;
+    }
+
+    @Override
+    public Navigator options(@Nullable Bundle options) {
+        super.options(options);
+        return this;
+    }
+
     @Override
     public Navigator url(@NonNull String url) {
-        return (Navigator) super.url(url);
+        super.url(url);
+        return this;
     }
 
     @Override
     public Navigator scheme(@NonNull String scheme) {
-        return (Navigator) super.scheme(scheme);
+        super.scheme(scheme);
+        return this;
     }
 
     @Override
     public Navigator hostAndPath(@NonNull String hostAndPath) {
-        return (Navigator) super.hostAndPath(hostAndPath);
+        super.hostAndPath(hostAndPath);
+        return this;
     }
 
     @Override
     public Navigator host(@NonNull String host) {
-        return (Navigator) super.host(host);
+        super.host(host);
+        return this;
     }
 
     @Override
     public Navigator path(@Nullable String path) {
-        return (Navigator) super.path(path);
+        super.path(path);
+        return this;
     }
 
     @Override
     public Navigator putBundle(@NonNull String key, @Nullable Bundle bundle) {
-        return (Navigator) super.putBundle(key, bundle);
+        super.putBundle(key, bundle);
+        return this;
     }
 
     @Override
     public Navigator putAll(@NonNull Bundle bundle) {
-        return (Navigator) super.putAll(bundle);
+        super.putAll(bundle);
+        return this;
     }
 
     @Override
     public Navigator putCharSequence(@NonNull String key, @Nullable CharSequence value) {
-        return (Navigator) super.putCharSequence(key, value);
+        super.putCharSequence(key, value);
+        return this;
     }
 
     @Override
     public Navigator putCharSequenceArray(@NonNull String key, @Nullable CharSequence[] value) {
-        return (Navigator) super.putCharSequenceArray(key, value);
+        super.putCharSequenceArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putCharSequenceArrayList(@NonNull String key, @Nullable ArrayList<CharSequence> value) {
-        return (Navigator) super.putCharSequenceArrayList(key, value);
+        super.putCharSequenceArrayList(key, value);
+        return this;
     }
 
     @Override
     public Navigator putByte(@NonNull String key, @Nullable byte value) {
-        return (Navigator) super.putByte(key, value);
+        super.putByte(key, value);
+        return this;
     }
 
     @Override
     public Navigator putByteArray(@NonNull String key, @Nullable byte[] value) {
-        return (Navigator) super.putByteArray(key, value);
+        super.putByteArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putChar(@NonNull String key, @Nullable char value) {
-        return (Navigator) super.putChar(key, value);
+        super.putChar(key, value);
+        return this;
     }
 
     @Override
     public Navigator putCharArray(@NonNull String key, @Nullable char[] value) {
-        return (Navigator) super.putCharArray(key, value);
+        super.putCharArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putBoolean(@NonNull String key, @Nullable boolean value) {
-        return (Navigator) super.putBoolean(key, value);
+        super.putBoolean(key, value);
+        return this;
     }
 
     @Override
     public Navigator putBooleanArray(@NonNull String key, @Nullable boolean[] value) {
-        return (Navigator) super.putBooleanArray(key, value);
+        super.putBooleanArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putString(@NonNull String key, @Nullable String value) {
-        return (Navigator) super.putString(key, value);
+        super.putString(key, value);
+        return this;
     }
 
     @Override
     public Navigator putStringArray(@NonNull String key, @Nullable String[] value) {
-        return (Navigator) super.putStringArray(key, value);
+        super.putStringArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putStringArrayList(@NonNull String key, @Nullable ArrayList<String> value) {
-        return (Navigator) super.putStringArrayList(key, value);
+        super.putStringArrayList(key, value);
+        return this;
     }
 
     @Override
     public Navigator putShort(@NonNull String key, @Nullable short value) {
-        return (Navigator) super.putShort(key, value);
+        super.putShort(key, value);
+        return this;
     }
 
     @Override
     public Navigator putShortArray(@NonNull String key, @Nullable short[] value) {
-        return (Navigator) super.putShortArray(key, value);
+        super.putShortArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putInt(@NonNull String key, @Nullable int value) {
-        return (Navigator) super.putInt(key, value);
+        super.putInt(key, value);
+        return this;
     }
 
     @Override
     public Navigator putIntArray(@NonNull String key, @Nullable int[] value) {
-        return (Navigator) super.putIntArray(key, value);
+        super.putIntArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putIntegerArrayList(@NonNull String key, @Nullable ArrayList<Integer> value) {
-        return (Navigator) super.putIntegerArrayList(key, value);
+        super.putIntegerArrayList(key, value);
+        return this;
     }
 
     @Override
     public Navigator putLong(@NonNull String key, @Nullable long value) {
-        return (Navigator) super.putLong(key, value);
+        super.putLong(key, value);
+        return this;
     }
 
     @Override
     public Navigator putLongArray(@NonNull String key, @Nullable long[] value) {
-        return (Navigator) super.putLongArray(key, value);
+        super.putLongArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putFloat(@NonNull String key, @Nullable float value) {
-        return (Navigator) super.putFloat(key, value);
+        super.putFloat(key, value);
+        return this;
     }
 
     @Override
     public Navigator putFloatArray(@NonNull String key, @Nullable float[] value) {
-        return (Navigator) super.putFloatArray(key, value);
+        super.putFloatArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putDouble(@NonNull String key, @Nullable double value) {
-        return (Navigator) super.putDouble(key, value);
+        super.putDouble(key, value);
+        return this;
     }
 
     @Override
     public Navigator putDoubleArray(@NonNull String key, @Nullable double[] value) {
-        return (Navigator) super.putDoubleArray(key, value);
+        super.putDoubleArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putParcelable(@NonNull String key, @Nullable Parcelable value) {
-        return (Navigator) super.putParcelable(key, value);
+        super.putParcelable(key, value);
+        return this;
     }
 
     @Override
     public Navigator putParcelableArray(@NonNull String key, @Nullable Parcelable[] value) {
-        return (Navigator) super.putParcelableArray(key, value);
+        super.putParcelableArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putParcelableArrayList(@NonNull String key, @Nullable ArrayList<? extends Parcelable> value) {
-        return (Navigator) super.putParcelableArrayList(key, value);
+        super.putParcelableArrayList(key, value);
+        return this;
     }
 
     @Override
     public Navigator putSparseParcelableArray(@NonNull String key, @Nullable SparseArray<? extends Parcelable> value) {
-        return (Navigator) super.putSparseParcelableArray(key, value);
+        super.putSparseParcelableArray(key, value);
+        return this;
     }
 
     @Override
     public Navigator putSerializable(@NonNull String key, @Nullable Serializable value) {
-        return (Navigator) super.putSerializable(key, value);
+        super.putSerializable(key, value);
+        return this;
     }
 
     @Override
     public Navigator query(@NonNull String queryName, @Nullable String queryValue) {
-        return (Navigator) super.query(queryName, queryValue);
+        super.query(queryName, queryValue);
+        return this;
     }
 
     @Override
     public Navigator query(@NonNull String queryName, boolean queryValue) {
-        return (Navigator) super.query(queryName, queryValue);
+        super.query(queryName, queryValue);
+        return this;
     }
 
     @Override
     public Navigator query(@NonNull String queryName, byte queryValue) {
-        return (Navigator) super.query(queryName, queryValue);
+        super.query(queryName, queryValue);
+        return this;
     }
 
     @Override
     public Navigator query(@NonNull String queryName, int queryValue) {
-        return (Navigator) super.query(queryName, queryValue);
+        super.query(queryName, queryValue);
+        return this;
     }
 
     @Override
     public Navigator query(@NonNull String queryName, float queryValue) {
-        return (Navigator) super.query(queryName, queryValue);
+        super.query(queryName, queryValue);
+        return this;
     }
 
     @Override
     public Navigator query(@NonNull String queryName, long queryValue) {
-        return (Navigator) super.query(queryName, queryValue);
+        super.query(queryName, queryValue);
+        return this;
     }
 
     @Override
     public Navigator query(@NonNull String queryName, double queryValue) {
-        return (Navigator) super.query(queryName, queryValue);
+        super.query(queryName, queryValue);
+        return this;
     }
 
     @Override
@@ -653,11 +758,11 @@ public class Navigator extends RouterRequest.Builder implements Call {
             // 创建整个拦截器到最终跳转需要使用的 Callback
             interceptorCallback = new InterceptorCallback(originalRequest, callback);
             // Fragment 的销毁的自动取消
-            if (originalRequest.fragment != null) {
+            if (autoCancel && originalRequest.fragment != null) {
                 Router.mNavigationDisposableList.add(interceptorCallback);
             }
             // Activity 的自动取消
-            if (Utils.getActivityFromContext(originalRequest.context) != null) {
+            if (autoCancel && Utils.getActivityFromContext(originalRequest.context) != null) {
                 Router.mNavigationDisposableList.add(interceptorCallback);
             }
             // 真正的去执行路由
@@ -729,6 +834,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
     private NavigationDisposable doNavigateForResult(@NonNull final BiCallback<ActivityResult> biCallback) {
         // 直接 gg
         Utils.checkNullPointer(biCallback, "callback");
+        // 标记此次是需要框架帮助获取 ActivityResult 的
+        this.isForResult = true;
         // 做一个包裹实现至多只能调用一次内部的其中一个方法
         final BiCallback<ActivityResult> biCallbackWrap = new BiCallbackWrap<>(biCallback);
         NavigationDisposable finalNavigationDisposable = null;

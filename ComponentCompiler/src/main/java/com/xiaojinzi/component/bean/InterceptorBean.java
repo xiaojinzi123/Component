@@ -7,7 +7,7 @@ import javax.lang.model.element.Element;
 /**
  * time   : 2018/12/26
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 @CheckClassName
 public class InterceptorBean {

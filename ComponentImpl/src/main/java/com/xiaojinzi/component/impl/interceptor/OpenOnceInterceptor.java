@@ -13,7 +13,7 @@ import com.xiaojinzi.component.impl.RouterInterceptor;
  *
  * time   : 2019/01/23
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class OpenOnceInterceptor implements RouterInterceptor {
 

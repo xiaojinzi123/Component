@@ -1,2 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.xiaojinzi.component" />
+    package="com.xiaojinzi.component">
+
+    <application>
+        <activity
+            android:name=".support.ProxyIntentAct"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
+    </application>
+
+</manifest>

@@ -11,7 +11,7 @@ import com.xiaojinzi.component1.BuildConfig;
 /**
  * time   : 2019/01/21
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class App extends Application {
 

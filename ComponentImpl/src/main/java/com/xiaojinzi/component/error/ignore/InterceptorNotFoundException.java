@@ -3,7 +3,7 @@ package com.xiaojinzi.component.error.ignore;
 /**
  * time   : 2019/01/10
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class InterceptorNotFoundException extends RuntimeException {
 

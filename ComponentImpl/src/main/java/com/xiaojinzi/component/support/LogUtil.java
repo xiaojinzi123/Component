@@ -11,7 +11,7 @@ import com.xiaojinzi.component.Component;
  * 用于打印日志
  * time   : 2019/01/25
  *
- * @author : xiaojinzi 30212
+ * @author : xiaojinzi
  */
 public class LogUtil {
 
