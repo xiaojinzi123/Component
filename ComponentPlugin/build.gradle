@@ -17,7 +17,7 @@ sourceCompatibility = "7"
 targetCompatibility = "7"
 
 group='com.xiaojinzi.component'
-version="${versions.component_plugin_version}"
+version="${versions.component_plugin_upload_version}"
 archivesBaseName='component-plugin'
 
 uploadArchives{
