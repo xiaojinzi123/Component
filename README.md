@@ -154,6 +154,7 @@
 - 为了满足有些场景是需要先拿到 `Intent` 的, 特别设计了创建代理 `Intent` 的功能. 具体[点击查看](https://github.com/xiaojinzi123/Component/wiki/ProxyIntent)
 - 修复 `Router` 跳转拿 `ActivityResult` 和 `Router` 跳转只填写 `requestCode` 产生的 `requestCode` 混乱的问题.ps: 之前的版本你们别混用就不会出问题
 - 修复 `FieldAutowiredAnno` 正确拼写, 之前为：`FiledAutowiredAnno`
+- 修复 `Gradle` 插件中复制 `Jar` 的 `bug`
 
 #### v1.7.7.2(优化)
 
