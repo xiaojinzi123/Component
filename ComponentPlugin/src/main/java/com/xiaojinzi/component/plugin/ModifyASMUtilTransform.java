@@ -23,6 +23,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
 
 public class ModifyASMUtilTransform extends BaseTransform {
 
@@ -78,70 +79,76 @@ public class ModifyASMUtilTransform extends BaseTransform {
         // OutputProvider管理输出路径，如果消费型输入为空，你会发现OutputProvider == null
         TransformOutputProvider outputProvider = transformInvocation.getOutputProvider();
 
-        for (TransformInput input : inputs) {
-            for (JarInput jarInput : input.getJarInputs()) {
-                File dest = outputProvider.getContentLocation(
-                        jarInput.getFile().getAbsolutePath(),
-                        jarInput.getContentTypes(),
-                        jarInput.getScopes(),
-                        Format.JAR);
-                File destJarFile = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString() + "_" + jarInput.getFile().getName());
-                if (destJarFile.exists()) {
+        try {
+            for (TransformInput input : inputs) {
+                for (JarInput jarInput : input.getJarInputs()) {
+                    File dest = outputProvider.getContentLocation(
+                            jarInput.getFile().getAbsolutePath(),
+                            jarInput.getContentTypes(),
+                            jarInput.getScopes(),
+                            Format.JAR);
+                    File destJarFile = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString() + "_" + jarInput.getFile().getName());
+                    if (destJarFile.exists()) {
+                        destJarFile.delete();
+                    }
+
+                    JarFile jarFile = new JarFile(jarInput.getFile());
+                    Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
+
+                    JarOutputStream jarOutputStream = new JarOutputStream(
+                            new FileOutputStream(destJarFile)
+                    );
+                    while (jarEntryEnumeration.hasMoreElements()) {
+                        JarEntry jarEntry = jarEntryEnumeration.nextElement();
+                        String entryName = jarEntry.getName();
+                        // 如果是目标工具类, 就换成手动生成的
+                        if ("com/xiaojinzi/component/support/ASMUtil.class".equals(entryName)) {
+                            byte[] bytes = ASMUtilClassGen.getBytes(
+                                    applicationMap, interceptorMap, routerMap,
+                                    routerDegradeMap, serviceMap, fragmentMap
+                            );
+                            // 生成到桌面用来测试
+                            /*FileOutputStream fileOutputStream = new FileOutputStream(new File("/Users/xiaojinzi/Desktop/test.class"));
+                            fileOutputStream.write(bytes);
+                            fileOutputStream.close();*/
+                            ZipEntry asmUtiZipEntry = new ZipEntry(jarEntry.getName());
+                            asmUtiZipEntry.setSize(bytes.length);
+                            CRC32 crc = new CRC32();
+                            crc.update(bytes);
+                            asmUtiZipEntry.setCrc(crc.getValue());
+                            jarOutputStream.putNextEntry(asmUtiZipEntry);
+                            jarOutputStream.write(bytes);
+                        } else {
+                            ZipEntry zipEntry = new ZipEntry(jarEntry);
+                            zipEntry.setCompressedSize(-1);
+                            jarOutputStream.putNextEntry(zipEntry);
+                            InputStream inputStream = jarFile.getInputStream(zipEntry);
+                            IOUtil.readAndWrite(inputStream, jarOutputStream);
+                            inputStream.close();
+                        }
+                        jarOutputStream.closeEntry();
+                    }
+                    jarOutputStream.close();
+                    FileUtils.copyFile(destJarFile, dest);
+                    // 删除文件
                     destJarFile.delete();
                 }
-
-                JarFile jarFile = new JarFile(jarInput.getFile());
-                Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
-
-                JarOutputStream jarOutputStream = new JarOutputStream(
-                        new FileOutputStream(destJarFile)
-                );
-                while (jarEntryEnumeration.hasMoreElements()) {
-                    JarEntry jarEntry = jarEntryEnumeration.nextElement();
-                    String entryName = jarEntry.getName();
-                    // 如果是目标工具类, 就换成手动生成的
-                    if ("com/xiaojinzi/component/support/ASMUtil.class".equals(entryName)) {
-
-                        byte[] bytes = ASMUtilClassGen.getBytes(
-                                applicationMap, interceptorMap, routerMap,
-                                routerDegradeMap, serviceMap, fragmentMap
-                        );
-
-                        // 生成到桌面用来测试
-                        /*FileOutputStream fileOutputStream = new FileOutputStream(new File("/Users/xiaojinzi/Desktop/test.class"));
-                        fileOutputStream.write(bytes);
-                        fileOutputStream.close();*/
-
-                        JarEntry asmUtiJarEntry = new JarEntry(jarEntry.getName());
-                        asmUtiJarEntry.setSize(bytes.length);
-                        CRC32 crc = new CRC32();
-                        crc.update(bytes);
-                        asmUtiJarEntry.setCrc(crc.getValue());
-                        jarOutputStream.putNextEntry(asmUtiJarEntry);
-                        jarOutputStream.write(bytes);
-
-                    } else {
-                        jarOutputStream.putNextEntry(jarEntry);
-                        InputStream inputStream = jarFile.getInputStream(jarEntry);
-                        IOUtil.readAndWrite(inputStream, jarOutputStream);
-                        inputStream.close();
-                    }
-                    jarOutputStream.closeEntry();
+                for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
+                    File dest = outputProvider.getContentLocation(directoryInput.getName(),
+                            directoryInput.getContentTypes(), directoryInput.getScopes(),
+                            Format.DIRECTORY);
+                    File directoryInputFile = directoryInput.getFile();
+                    // printFile(directoryInputFile);
+                    //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
+                    FileUtils.copyDirectory(directoryInputFile, dest);
                 }
-                jarOutputStream.close();
-                FileUtils.copyFile(destJarFile, dest);
-                // 删除文件
-                destJarFile.delete();
+
+
             }
-            for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
-                File dest = outputProvider.getContentLocation(directoryInput.getName(),
-                        directoryInput.getContentTypes(), directoryInput.getScopes(),
-                        Format.DIRECTORY);
-                File directoryInputFile = directoryInput.getFile();
-                // printFile(directoryInputFile);
-                //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
-                FileUtils.copyDirectory(directoryInputFile, dest);
-            }
+        } catch (Exception e) {
+            System.out.println("-----------------" + e.getMessage());
+            e.printStackTrace(System.out);
+            throw e;
         }
 
     }
