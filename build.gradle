@@ -23,9 +23,9 @@ buildscript {
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-            classpath "com.github.xiaojinzi123.Component:component-plugin:${versions.component_version}"
+            classpath "com.github.xiaojinzi123.Component:component-plugin:${versions.component_plugin_version}"
         }else {
-            classpath "com.xiaojinzi.component:component-plugin:${versions.component_version}"
+            classpath "com.xiaojinzi.component:component-plugin:${versions.component_plugin_version}"
         }
     }
 }

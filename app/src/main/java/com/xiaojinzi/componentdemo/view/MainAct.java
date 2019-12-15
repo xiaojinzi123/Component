@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +18,13 @@ import android.widget.Toast;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.bean.ActivityResult;
+import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.ProxyIntentBuilder;
 import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.RouterErrorResult;
+import com.xiaojinzi.component.impl.RouterRequest;
+import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
@@ -46,7 +53,7 @@ public class MainAct extends AppCompatActivity {
         startProxyRouter(intent.getExtras());
     }
 
-    private void startProxyRouter(Bundle bundle) {
+    private void startProxyRouter(@Nullable Bundle bundle) {
         if (Router.haveProxyIntent(bundle)) {
             Router.with(this)
                     .withProxyBundle(bundle)
@@ -125,7 +132,8 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void intentRouter1(View view) {
-        Intent intent = new ProxyIntentBuilder()
+
+        Intent intent = Router.newProxyIntentBuilder()
                 .host(ModuleConfig.User.NAME)
                 .path(ModuleConfig.User.PERSON_CENTER)
                 .buildProxyIntent();
@@ -141,7 +149,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void intentRouter2(View view) {
-        Intent intent = new ProxyIntentBuilder()
+        Intent intent = Router.newProxyIntentBuilder()
                 .host(ModuleConfig.User.NAME)
                 .path(ModuleConfig.User.PERSON_CENTER)
                 .proxyActivity(this.getClass())
@@ -164,7 +172,6 @@ public class MainAct extends AppCompatActivity {
                 .host(ModuleConfig.App.NAME)
                 .path(ModuleConfig.App.TEST_SERVICE)
                 .forward();
-
     }
 
     private void createNotificationChannel() {

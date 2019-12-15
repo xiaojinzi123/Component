@@ -149,6 +149,12 @@
 
 ## 版本更新日志
 
+#### v1.7.7.3(功能+优化)
+
+- 为了满足有些场景是需要先拿到 `Intent` 的, 特别设计了创建代理 `Intent` 的功能. 具体[点击查看](https://github.com/xiaojinzi123/Component/wiki/ProxyIntent)
+- 修复 `Router` 跳转拿 `ActivityResult` 和 `Router` 跳转只填写 `requestCode` 产生的 `requestCode` 混乱的问题.ps: 之前的版本你们别混用就不会出问题
+- 修复 `FieldAutowiredAnno` 正确拼写, 之前为：`FiledAutowiredAnno`
+
 #### v1.7.7.2(优化)
 
 - 计划取消 `FragmentAnno` 注解中的 `singleTon` 属性. 考虑到平常使用 `Fragment` 都是创建一个新的然后使用.
@@ -221,7 +227,7 @@
 - 源码中增加单独运行模块 `Module1` 的范例,通过新建了一个 `Module1Run` 的 `Module` 去运行
 
 #### v1.7.3.0
-- 支持属性的注入, 使用 `@FiledAutowireAnno` 注解
+- 支持属性的注入, 使用 `@FieldAutowiredAnno` 注解
 - 支持 `Service` 的注入, 使用 `@ServiceAutowireAnno` 注解
 - 使用 `Component.inject(this)` 注入属性和 `Service`
 

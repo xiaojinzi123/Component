@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.cache.Cache;
 import com.xiaojinzi.component.cache.CacheType;
@@ -106,6 +107,12 @@ public class Router {
             return;
         }
         routerListeners.remove(listener);
+    }
+
+    @NonNull
+    @AnyThread
+    public static ProxyIntentBuilder newProxyIntentBuilder() {
+        return new ProxyIntentBuilder();
     }
 
     @NonNull
