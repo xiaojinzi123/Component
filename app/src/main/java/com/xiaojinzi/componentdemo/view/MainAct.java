@@ -140,6 +140,7 @@ public class MainAct extends AppCompatActivity {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.app_icon)
                 .setContentTitle("测试点击跳转")
                 .setContentText("使用默认代理Activity, 点我跳转到用户中心, 框架自动完成登陆过程")
@@ -157,6 +158,7 @@ public class MainAct extends AppCompatActivity {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.app_icon)
                 .setContentTitle("测试点击跳转")
                 .setContentText("使用 MainAct 为代理界面, 点我跳转到用户中心, 框架自动完成登陆过程")
