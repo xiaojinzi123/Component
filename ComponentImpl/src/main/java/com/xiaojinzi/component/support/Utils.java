@@ -74,6 +74,7 @@ public class Utils {
      * @param throwable
      * @return
      */
+    @Nullable
     public static String getRealMessage(@NonNull Throwable throwable) {
         while (throwable.getCause() != null) {
             throwable = throwable.getCause();
@@ -84,15 +85,29 @@ public class Utils {
     /**
      * 获取真实的错误对象,有时候一个 {@link Throwable#cause} 就是自己本身,下面的代码看上去是死循环了
      * 但是 {@link Throwable#getCause()} 方法内部做了判断
-     *
-     * @param throwable
-     * @return
      */
+    @Nullable
     public static Throwable getRealThrowable(@NonNull Throwable throwable) {
         while (throwable.getCause() != null) {
             throwable = throwable.getCause();
         }
         return throwable;
+    }
+
+    /**
+     * 是否是由于某一个错误引起的
+     */
+    public static boolean isCauseBy(@NonNull Throwable throwable, @NonNull Class<? extends Throwable> clazz) {
+        if (throwable.getClass() == clazz) {
+            return true;
+        }
+        while (throwable.getClass() != null) {
+            throwable = throwable.getCause();
+            if (throwable.getClass() == clazz) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -207,7 +222,7 @@ public class Utils {
     public static <T> T mainThreadCallable(@NonNull final Callable<T> callable) {
         if (isMainThread()) {
             return callable.get();
-        }else {
+        } else {
             final AtomicReference<T> tAtomicReference = new AtomicReference<>();
             final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
             Utils.postActionToMainThreadAnyway(new Runnable() {
@@ -235,7 +250,7 @@ public class Utils {
     public static void mainThreadAction(@NonNull final Action action) {
         if (isMainThread()) {
             action.run();
-        }else {
+        } else {
             final AtomicReference<Object> resultAtomicReference = new AtomicReference<>();
             final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
             Utils.postActionToMainThreadAnyway(new Runnable() {
