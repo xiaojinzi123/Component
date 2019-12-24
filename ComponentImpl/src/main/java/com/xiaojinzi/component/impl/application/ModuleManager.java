@@ -123,7 +123,7 @@ public class ModuleManager implements IComponentCenterApplication {
     @Nullable
     public static IComponentHostApplication findModuleApplication(@NonNull String host) {
         IComponentHostApplication result = null;
-        if (Component.isInitOptimize()) {
+        if (Component.getConfig().isOptimizeInit()) {
             LogUtil.log("Componnet", host + " loaded by bytecode");
             result = ASMUtil.findModuleApplicationAsmImpl(host);
         }else {

@@ -39,11 +39,11 @@ public interface IComponentRouter {
     /**
      * 获取这个目标要执行的页面拦截器
      *
-     * @param uri
      * @return 返回此界面的页面拦截器
      * @throws Exception
      */
     @NonNull
+    @MainThread
     List<RouterInterceptor> listPageInterceptors(@NonNull Uri uri) throws Exception;
 
     /**
@@ -54,6 +54,7 @@ public interface IComponentRouter {
      * @throws Exception
      */
     @NonNull
+    @MainThread
     List<RouterInterceptor> listDegradeInterceptors(@NonNull Uri uri) throws Exception;
 
 }

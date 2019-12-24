@@ -171,7 +171,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     public IComponentHostInterceptor findModuleInterceptor(String host) {
         Utils.checkMainThread();
         try {
-            if (Component.isInitOptimize()) {
+            if (Component.getConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleInterceptorAsmImpl(host);
             }else {
                 Class<? extends IComponentHostInterceptor> clazz = null;

@@ -102,7 +102,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     public Navigator interceptors(RouterInterceptor... interceptorArr) {
-        Utils.checkNullPointer(interceptorArr, "interceptorArr");
+        Utils.debugCheckNullPointer(interceptorArr, "interceptorArr");
         if (interceptorArr != null) {
             lazyInitCustomInterceptors(interceptorArr.length);
             customInterceptors.addAll(Arrays.asList(interceptorArr));
@@ -111,7 +111,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     public Navigator interceptors(Class<? extends RouterInterceptor>... interceptorClassArr) {
-        Utils.checkNullPointer(interceptorClassArr, "interceptorClassArr");
+        Utils.debugCheckNullPointer(interceptorClassArr, "interceptorClassArr");
         if (interceptorClassArr != null) {
             lazyInitCustomInterceptors(interceptorClassArr.length);
             customInterceptors.addAll(Arrays.asList(interceptorClassArr));
@@ -120,7 +120,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     public Navigator interceptorNames(String... interceptorNameArr) {
-        Utils.checkNullPointer(interceptorNameArr, "interceptorNameArr");
+        Utils.debugCheckNullPointer(interceptorNameArr, "interceptorNameArr");
         if (interceptorNameArr != null) {
             lazyInitCustomInterceptors(interceptorNameArr.length);
             customInterceptors.addAll(Arrays.asList(interceptorNameArr));
@@ -707,6 +707,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @AnyThread
     @CheckResult
     public NavigationDisposable navigateForResult(@NonNull final BiCallback<ActivityResult> callback) {
+        Utils.checkNullPointer(callback, "callback");
         return realNavigateForResult(callback);
     }
 
@@ -803,7 +804,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @NonNull
     @AnyThread
     private NavigationDisposable realNavigateForResult(@NonNull final BiCallback<ActivityResult> callback) {
-
+        Utils.checkNullPointer(callback, "callback");
         final NavigationDisposable.ProxyNavigationDisposableImpl proxyDisposable =
                 new NavigationDisposable.ProxyNavigationDisposableImpl();
         // 主线程执行
@@ -833,7 +834,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @MainThread
     private NavigationDisposable doNavigateForResult(@NonNull final BiCallback<ActivityResult> biCallback) {
         // 直接 gg
-        Utils.checkNullPointer(biCallback, "callback");
+        Utils.checkNullPointer(biCallback, "biCallback");
         // 标记此次是需要框架帮助获取 ActivityResult 的
         this.isForResult = true;
         // 做一个包裹实现至多只能调用一次内部的其中一个方法
@@ -936,7 +937,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
                                      @Nullable final List<Object> customInterceptors,
                                      @NonNull final RouterInterceptor.Callback routerInterceptorCallback) {
 
-        // 拿到共有的拦截器
+        // 拿到用户定义的共有的拦截器
+        // 这里是因为第一次创建拦截器需要在主线程上, 所以需要这样
         List<RouterInterceptor> publicInterceptors = Utils.mainThreadCallable(new Callable<List<RouterInterceptor>>() {
             @NonNull
             @Override
@@ -956,12 +958,13 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 chain.proceed(chain.request());
             }
         });
-        // 添加内置拦截器,目前就一个内置拦截器,而且必须在其他功能拦截器的前面,因为这个拦截器内部有一个时间的记录
-        // 保证一秒内就只能打开一个相同的界面
-        allInterceptors.add(OpenOnceInterceptor.getInstance());
+        if (Component.getConfig().isUseRouteRepeatCheckInterceptor()) {
+            allInterceptors.add(OpenOnceInterceptor.getInstance());
+        }
         // 添加共有拦截器
         allInterceptors.addAll(publicInterceptors);
         // 添加自定义拦截器到 allInterceptors 中
+        // 这里是因为第一次创建拦截器需要在主线程上, 所以需要这样
         Utils.mainThreadAction(new Action() {
             @Override
             public void run() {

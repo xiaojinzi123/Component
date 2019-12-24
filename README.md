@@ -1,9 +1,9 @@
 **相信 Component 能成为最优秀的那个框架!**
 
-从 **17** 年下旬就用在公司的产品上了. 虽然不像淘宝那样庞大. 但是日活也有好几万, Activity 界面也有 200+, 
-经过这么久的洗礼, Component 早就度过了初期的艰难阶段. 现在 Component 越来越稳定也越来越好. 
-同时作者也希望 Componeng 能一直保持活力, 本着解决用户 Bug 放在首位, 为用户服务为己任. 相信 Component
-会持续在组件化方面保持领先. 并且之后也会不断发现用户的需求, 然后迭代. 希望你们能积极的提 issue, 
+从 **17** 年下旬就用在公司的产品上了. 虽然不像巨型 `App` 那样庞大. 但是日活也有好几万, `Activity` 界面也有 `200+`, 
+经过这么久的洗礼, `Component` 早就度过了初期的艰难阶段. 现在 `Component` 越来越稳定也越来越好. 
+同时作者也希望 `Component` 能一直保持活力, 本着解决用户 Bug 放在首位, 为用户服务为己任. 相信 `Component`
+会持续在组件化方面保持领先. 并且之后也会不断发现用户的需求, 然后迭代. 希望你们能积极的提 `issue`, 
 告诉我你们在组件化方面的困恼!
 
 如果您选择了 `Component`, 可以的话留下您的 `App` 名称或者公司名称, 我做一个展示, 不甚感激~~~
@@ -11,10 +11,10 @@
 很多选型的人有这么个疑问: 有了 `ARouter` 为啥要有 `Component`. 
 我这里在这里做一个回答.
 
-`ARouter` 是最早出现的组件化的一个实现方案, 早不一定最好. 很多人看见 `ARouter` star 的数量和阿里出的框架就会产生莫名的信任.基本都会优先选择 `ARouter`. 
+`ARouter` 是最早出现的组件化的一个实现方案, 早不一定最好. 很多人看见 `ARouter` `star` 的数量和阿里出的框架就会产生莫名的信任.基本都会优先选择 `ARouter`. 
 组件化方案不同于一个简单的 `UI` 库、控件库, 作为技术选型的你应该做一个比较深入的了解, 然后选择你认为好的、合适的.
 
-可以说到目前为止, 基于 'URI' 方面的所有路由框架中(`ARouter`、`WMRouter`、`ActivityRouter` ...) `Component` 是最强大和完善的组件化框架.
+可以说到目前为止, 基于 `URI` 方面的所有路由框架中(`ARouter`、`WMRouter`、`ActivityRouter` ...) `Component` 是最强大和完善的组件化框架.
 
 选择一个更好、更全面的、更稳定、更有发展前景的框架更是你们技术团队或者技术负责人要做的事情!
 
@@ -149,6 +149,10 @@
 
 ## 版本更新日志
 
+#### v1.7.7.4
+
+- 所有的配置整改. 统一使用 `Config` 类来配置. 初始化方式改变了. `Component.init(boolean, Config);`
+
 #### v1.7.7.3(功能+优化)
 
 - 为了满足有些场景是需要先拿到 `Intent` 的, 特别设计了创建代理 `Intent` 的功能. 具体[点击查看](https://github.com/xiaojinzi123/Component/wiki/ProxyIntent)
@@ -176,10 +180,10 @@
 
 - 所有生成的类上都增加 @Keep 注解
 - 错误回调整理(优化如下的问题)
-    - 当获取目标界面 ActiivtyResult 的时候, 如果前置或者后置方法出错了, 那么错误信息不会被打印 
+    - 当获取目标界面 `ActiivtyResult` 的时候, 如果前置或者后置方法出错了, 那么错误信息不会被打印 
 
 #### v1.7.7
-- `Component` 中增加一个方法 `Component.openInitOptimize()`, 调用了之后, 初始化的实现就会变成使用 ASM 技术实现的, 反之使用反射
+- `Component` 的配置类中增加一个方法 `optimizeInit(boolean)`, 默认是 `false`, 如果设置为 `true`, 初始化的实现就会变成使用 `ASM` 技术实现的, 反之使用反射
     - 其实两者性能几乎无差别, 不是极致优化的情况下, 我建议还是别用
 - `Gradle Plugin`
     - 在之前版本的基础上, 增加一个 `Gradle Plugin`, 用来加快启动的速度. 具体问题请看 [issue](https://github.com/xiaojinzi123/Component/issues/26)
@@ -187,10 +191,10 @@
     - 当然了使用 `Gradle` 插件也会带来一定的未知的风险, 当有任何问题产生的时候, 请第一时间禁用此插件来排查是否是此插件引起的. 
     - 如果是插件引起的问题, 请您禁用此插件, 请放心, 不会对你代码造成任何的影响. 可以的话把问题反馈给我. 谢谢
 - `Idea Plugin` 修复对 `RxRouter` 的图标显示问题
-- `Idea Plugin` 不在支持 AS3.4, 最低支持 AS3.5
+- `Idea Plugin` 不在支持 `AS3.4`, 最低支持 `AS3.5`
 
 #### v1.7.6.2
-- 全部的 `navigate` 方法都增加了 @CheckResult 注解, 提示使用者此方法是有返回值的, 不要返回值你可以使用对应的 `forward` 方法
+- 全部的 `navigate` 方法都增加了 `@CheckResult` 注解, 提示使用者此方法是有返回值的, 不要返回值你可以使用对应的 `forward` 方法
 
 #### v1.7.6.1
 - 增加全套的 `forward` 方法, 没有 `NavigationDisposable` 返回值
@@ -198,29 +202,29 @@
 #### v1.7.6
 - 增加"路由" `Fragment` 的功能(其实就是针对`Fragment`做的一个更简单的获取方式)
     - 任意一个 `Fragment` 使用 `@FragmentAnno` 标记即可
-    - 如何使用请看, 路由的 wiki [跳转 Fragment](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-Fragment)
-- 增加 RxRouter 对路由 Fragment 的支持, 返回的是 Single<Fragment>
-- 重命名 RxService 为 RxServiceManager
-- 重命名 Service 为 ServiceManager
+    - 如何使用请看, 路由的 `wiki` [跳转 Fragment](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-Fragment)
+- 增加 `RxRouter` 对路由 `Fragment` 的支持, 返回的是 `Single<Fragment>`
+- 重命名 `RxService` 为 `RxServiceManager`
+- 重命名 `Service` 为 `ServiceManager`
 
 #### v1.7.5.1 
 - 属性注入增加方法 `Component.inject(Object target, Intent intent)` 以便在 `onNewIntent` 方法中使用
-- 升级 RxJava 版本到 2.2.13
+- 升级 `RxJava` 版本到 `2.2.13`
 - 升级其他库的版本至最新
 
-#### v1.7.5
+#### v1.7.5`
 - 纠正接口 `IComponentApplication` 中 `onDestory` 方法的拼写错误, 正确为 `onDestroy`
-- 新增 afterEventAction, 表示跳转成功或者失败之后的回调, 不允许抛出异常, 会导致奔溃
-- 新增 afterErrorAction, 表示跳转失败之后的回调, 不允许抛出异常, 会导致奔溃
+- 新增 `afterEventAction`, 表示跳转成功或者失败之后的回调, 不允许抛出异常, 会导致奔溃
+- 新增 `afterErrorAction`, 表示跳转失败之后的回调, 不允许抛出异常, 会导致奔溃
 - 修改内置的同样的路由请求在一秒内只能启动一次的错误日志的输出形式
 - 重构几个 `Action` 这块用户自定义的这块的执行顺序
 - 路由 `Api` 增加 `AfterErrorActionAnno` 和 `AfterEventActionAnno` 注解
 
 #### v1.7.4
-- Router.with() 方法支持空参数的形式了, 这种形式默认会使用 `Application` 作为 `Context`, 作者虽然支持了这种形式, 但是不建议平时使用的时候故意使用 `Application`. 因为当你没有用路由框架的之前, 你通常也会使用当前 `Activity Context` 的, 所以作者呼吁大家, 在有 `Activity Context` 的时候, 建议传入 `Activity` 的 `Context`
+- `Router.with()` 方法支持空参数的形式了, 这种形式默认会使用 `Application` 作为 `Context`, 作者虽然支持了这种形式, 但是不建议平时使用的时候故意使用 `Application`. 因为当你没有用路由框架的之前, 你通常也会使用当前 `Activity Context` 的, 所以作者呼吁大家, 在有 `Activity Context` 的时候, 建议传入 `Activity` 的 `Context`
 
 #### v1.7.3.2
-- 路由跳转的进阶版路由 Api 支持返回 RxJava 的 Observable 啦, 支持 `Single`, `Completeable`
+- 路由跳转的进阶版路由 `Api` 支持返回 `RxJava` 的 `Observable` 啦, 支持 `Single`, `Completeable`
 
 #### v1.7.3.1
 - 修复 `Fragment` 无法自动注入的 `Bug`
@@ -245,13 +249,13 @@
 - 支持路由 Api 中 `Activity Options` 的使用, 使用 `@OptionsAnno` 标记参数即可
 
 #### v1.7.1
-- 完善支持路由 api 的使用方式
-- 删除自定义跳转返回 void 的功能
-- 跳转增加支持 flag 和 category 的支持
+- 完善支持路由 `api` 的使用方式
+- 删除自定义跳转返回 `void` 的功能
+- 跳转增加支持 `flag` 和 `category` 的支持
 
 #### v1.7.0
 - 取消支持自定义跳转的时候方法的参数可以自定义的功能
-- 支持了全部属性的界面注入功能,通过 ParameterSupport.inject(this) 即可完成注入
+- 支持了全部属性的界面注入功能,通过 `Component.inject(this)` 即可完成注入
 
 #### v1.6.1
 - 修复无法支持 `requestCode` 的问题

@@ -357,7 +357,7 @@ public class RouterCenter implements IComponentCenterRouter {
     @Nullable
     public IComponentHostRouter findUiRouter(String host) {
         try {
-            if (Component.isInitOptimize()) {
+            if (Component.getConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleRouterAsmImpl(host);
             } else {
                 Class<? extends IComponentHostRouter> clazz = null;
