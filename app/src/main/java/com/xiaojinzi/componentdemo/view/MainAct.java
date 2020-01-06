@@ -28,6 +28,13 @@ import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.Single;
+import io.reactivex.functions.Function;
+
 /**
  * 启动界面
  */
@@ -168,7 +175,6 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testService(View view) {
-
         Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)
