@@ -3,35 +3,22 @@ package com.xiaojinzi.componentdemo.view;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
-
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.bean.ActivityResult;
-import com.xiaojinzi.component.impl.BiCallback;
-import com.xiaojinzi.component.impl.ProxyIntentBuilder;
 import com.xiaojinzi.component.impl.Router;
-import com.xiaojinzi.component.impl.RouterErrorResult;
-import com.xiaojinzi.component.impl.RouterRequest;
-import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
-
-import io.reactivex.subjects.BehaviorSubject;
 
 /**
  * 启动界面

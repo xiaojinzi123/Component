@@ -79,19 +79,6 @@ public class RxRouter extends Router {
         return new RxNavigator(fragment);
     }
 
-    public static class RxFragmentNavigator extends FragmentNavigator {
-
-        public RxFragmentNavigator(@NonNull String fragmentFlag) {
-            super(fragmentFlag);
-        }
-
-        @NonNull
-        public Single<Fragment> call() {
-            return RxFragmentManager.with(fragmentFlag, bundle);
-        }
-
-    }
-
     public static class RxNavigator extends Navigator {
 
         private RxNavigator() {

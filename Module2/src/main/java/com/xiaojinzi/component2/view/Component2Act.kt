@@ -6,6 +6,7 @@ import com.xiaojinzi.base.view.BaseAct
 import com.xiaojinzi.component.Component
 import com.xiaojinzi.component.anno.FieldAutowiredAnno
 import com.xiaojinzi.component.anno.RouterAnno
+import com.xiaojinzi.component.impl.Router
 import com.xiaojinzi.component2.R
 import kotlinx.android.synthetic.main.component2_act.*
 
@@ -28,6 +29,9 @@ class Component2Act : BaseAct() {
         setContentView(R.layout.component2_act)
         Component.inject(this);
         tv_data.text = data;
+        val fragment = Router
+                .with(ModuleConfig.Module1.TEST_FRAGMENT)
+                .navigate()
     }
 
 }
