@@ -32,6 +32,18 @@ class Component2Act : BaseAct() {
         val fragment = Router
                 .with(ModuleConfig.Module1.TEST_FRAGMENT)
                 .navigate()
+
+        Router
+                .with(this)
+                .host(ModuleConfig.Module2.NAME)
+                .path(ModuleConfig.Module2.MAIN)
+                .forward()
+
+        Router.with(this)
+                .host(ModuleConfig.Module1.NAME)
+                .path(ModuleConfig.Module1.TEST)
+                .forward()
+
     }
 
 }
