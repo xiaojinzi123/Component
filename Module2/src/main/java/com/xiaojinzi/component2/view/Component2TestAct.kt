@@ -6,7 +6,8 @@ import com.xiaojinzi.component.anno.RouterAnno
 import com.xiaojinzi.component2.R
 
 @RouterAnno(
-        path = "test"
+        path = "test",
+        interceptorNames = ["testInterceptor"]
 )
 class Component2TestAct : AppCompatActivity() {
 
