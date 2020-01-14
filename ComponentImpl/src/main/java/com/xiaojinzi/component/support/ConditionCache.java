@@ -6,11 +6,10 @@ import android.support.annotation.Nullable;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.cache.ClassCache;
-import com.xiaojinzi.component.condition.Condition;
 import com.xiaojinzi.component.error.CreateInterceptorException;
 
 /**
- * 条件的缓存 {@link com.xiaojinzi.component.condition.Condition}
+ * 条件的缓存 {@link Condition}
  * <p>
  * time   : 2018/12/03
  *

@@ -1,4 +1,4 @@
-package com.xiaojinzi.component.bean;
+package com.xiaojinzi.component.support;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;

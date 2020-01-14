@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.xiaojinzi.component.Component;
+import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.bean.RouterBean;
@@ -283,7 +284,7 @@ public class RouterCenter implements IComponentCenterRouter {
         Activity act = Utils.getActivityFromContext(context);
         if (act instanceof FragmentActivity) {
             FragmentManager ft = ((FragmentActivity) act).getSupportFragmentManager();
-            result = ft.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+            result = ft.findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
         }
         return result;
     }
@@ -292,7 +293,7 @@ public class RouterCenter implements IComponentCenterRouter {
     private Fragment findFragment(Fragment fragment) {
         Fragment result = null;
         if (fragment != null) {
-            result = fragment.getChildFragmentManager().findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+            result = fragment.getChildFragmentManager().findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
         }
         return result;
     }

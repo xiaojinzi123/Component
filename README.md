@@ -6,7 +6,7 @@
 会持续在组件化方面保持领先. 并且之后也会不断发现用户的需求, 然后迭代. 希望你们能积极的提 `issue`, 
 告诉我你们在组件化方面的困恼!
 
-如果您选择了 `Component`, 可以的话留下您的 `App` 名称或者公司名称, 我做一个展示, 不甚感激~~~
+如果您选择了 `Component`, 可以的话留下您的 `App` 名称或者公司名称, 我做一个展示, 不甚感激~~~. 如果可以的话, 请点个 `star`
 
 很多选型的人有这么个疑问: 有了 `ARouter` 为啥要有 `Component`. 
 我这里在这里做一个回答.
@@ -56,6 +56,7 @@
 组件化方案真的有很多,那么这个组件化方案优秀在哪里？相比于 `ARouter`、`WMRouter`、`ActivityRouter`、`CC`、`DDComponent`
 等开源的组件化框架,有哪些一样或者更加优秀的点
 
+- [X] 支持获取目标的 `ProxyIntent`
 - [x] 支持多 `Module`
 - [x] 支持标准 `URI` 的使用
 - [x] 无缝对接 `H5`
@@ -152,6 +153,10 @@
 #### v1.7.7.4(开发中)
 
 - 所有的配置整改. 统一使用 `Config` 类来配置. 初始化方式改变了. `Component.init(boolean, Config);`
+- `Router.with(Context).withProxyBundle` 更名为 `Router.with(Context).proxyBundle`
+- OnRouterCancel 和 OnRouterError 的包名更改为 com.xiaojinzi.component.support
+- com.xiaojinzi.component.condition.Condition 更名为 com.xiaojinzi.component.support.Condition
+- com.xiaojinzi.component.bean.CustomerIntentCall 更名为 com.xiaojinzi.component.support.CustomerIntentCall
 
 #### v1.7.7.3(功能+优化)
 

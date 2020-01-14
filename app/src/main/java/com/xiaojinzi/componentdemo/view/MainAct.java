@@ -48,7 +48,7 @@ public class MainAct extends AppCompatActivity {
     private void startProxyRouter(@Nullable Bundle bundle) {
         if (Router.haveProxyIntent(bundle)) {
             Router.with(this)
-                    .withProxyBundle(bundle)
+                    .proxyBundle(bundle)
                     .forward();
         }
     }

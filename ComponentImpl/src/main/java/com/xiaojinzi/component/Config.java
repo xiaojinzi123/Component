@@ -7,6 +7,8 @@ import com.xiaojinzi.component.support.Utils;
 
 /**
  * 这是组件化的一个配置类
+ *
+ * @see Component#init(boolean, Config)
  */
 public class Config {
 

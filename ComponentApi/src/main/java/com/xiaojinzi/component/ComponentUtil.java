@@ -11,11 +11,6 @@ public class ComponentUtil {
     }
 
     /**
-     * 当使用 Fragment 或者 Context 中有这个 tag 的 fragment,那么就会最终用这个实现跳转
-     */
-    public static final String FRAGMENT_TAG = "RouterRxFragment";
-
-    /**
      * 1.这是注解驱动器生成类的时候的目录
      * 2.这也是一些写好的实现类的包名字,不要轻易更改,如果要更改,请仔细比对
      * ComponentApiImpl 模块的实现类的位置

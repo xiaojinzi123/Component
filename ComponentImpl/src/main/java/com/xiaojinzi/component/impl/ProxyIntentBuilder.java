@@ -1,6 +1,7 @@
 package com.xiaojinzi.component.impl;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 用于构建一个 {@link Intent}, 详情请看 {@link Navigator#withProxyBundle(Bundle)}
+ * 用于构建一个 {@link Intent}, 详情请看 {@link Navigator#proxyBundle(Bundle)}
  */
 public class ProxyIntentBuilder extends RouterRequest.URIBuilder {
 
@@ -300,7 +301,7 @@ public class ProxyIntentBuilder extends RouterRequest.URIBuilder {
      * 跳转的目标:
      * 1. 当你没有指定的时候, 默认是 {@link ProxyIntentAct}, 此界面会自动处理, 并帮助您跳转到目标界面. 全程无感知
      * 2. 当你指定了一个 {@link Activity} 的时候, 则此 {@link Intent} 跳转目标为你自定义的 {@link Activity}
-     * 你可以使用 {@link Router}
+     * 你可以使用 {@link Router#with(Context)} 方法获取一个 {@link Navigator}, 然后使用 {@link Navigator#proxyBundle(Bundle)}
      */
     @NonNull
     public Intent buildProxyIntent() {

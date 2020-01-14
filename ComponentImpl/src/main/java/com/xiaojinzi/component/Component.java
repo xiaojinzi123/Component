@@ -42,6 +42,8 @@ public class Component {
 
     /**
      * 初始化
+     *
+     * @see Config
      */
     @MainThread
     public static void init(boolean isDebug, @NonNull Config config) {
@@ -59,7 +61,7 @@ public class Component {
 
     @NonNull
     @AnyThread
-    public static Config getConfig(){
+    public static Config getConfig() {
         return mConfig;
     }
 
@@ -83,7 +85,7 @@ public class Component {
         return mConfig.getApplication();
     }
 
-    private static void checkInit(){
+    private static void checkInit() {
         if (mConfig == null) {
             throw new RuntimeException("you must init Component first!");
         }

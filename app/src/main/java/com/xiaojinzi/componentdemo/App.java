@@ -12,19 +12,9 @@ import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
 public class App extends Application {
 
-    @NonNull
-    private static Application mApp;
-
-    @NonNull
-    public static Application getApp() {
-        return mApp;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
-
-        mApp = this;
 
         // 初始化组件化相关
         Component.init(

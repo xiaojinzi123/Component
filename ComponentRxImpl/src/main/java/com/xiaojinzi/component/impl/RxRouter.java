@@ -18,7 +18,6 @@ import com.xiaojinzi.component.error.ignore.ActivityResultException;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
-import com.xiaojinzi.component.impl.fragment.RxFragmentManager;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.NavigationDisposable;
