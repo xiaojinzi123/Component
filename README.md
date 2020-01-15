@@ -68,7 +68,7 @@
 - [x] 服务发现(跨模块调用)和路由分开设计
       - 其实这两块本来就是两个方面,我不清楚为什么很多方案中都柔和在一块
 - [x] [业务模块单独运行]([https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E5%8D%95%E7%8B%AC%E8%BF%90%E8%A1%8C](https://github.com/xiaojinzi123/Component/wiki/业务组件单独运行))
-- 路由跳转功能
+- [x] 路由跳转功能
     - [X] 支持获取目标的 `ProxyIntent`
     - [x] 支持标准 `URI` 的使用
     - [x] 无缝对接 `H5`
