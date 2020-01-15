@@ -126,7 +126,7 @@ public class ModuleManager implements IComponentCenterApplication {
         if (Component.getConfig().isOptimizeInit()) {
             LogUtil.log("Componnet", host + " loaded by bytecode");
             result = ASMUtil.findModuleApplicationAsmImpl(host);
-        }else {
+        } else {
             LogUtil.log("Componnet", host + " loaded by reflection");
             if (result == null) {
                 try {

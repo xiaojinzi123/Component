@@ -87,6 +87,7 @@ public class RouterCenter implements IComponentCenterRouter {
      * @param request             路由请求对象
      * @param routerDegradeIntent 一个降级的 Intent
      */
+    @MainThread
     public void routerDegrade(@NonNull RouterRequest request, @NonNull Intent routerDegradeIntent) throws Exception {
         String uriString = request.uri.toString();
         if (routerDegradeIntent == null) {
@@ -144,11 +145,11 @@ public class RouterCenter implements IComponentCenterRouter {
     /**
      * 拿到 Intent 之后真正的跳转
      *
-     * @param request
-     * @param intent
+     * @param request 请求对象
+     * @param intent  Intent
      */
+    @MainThread
     private void doStartIntent(@NonNull RouterRequest request, Intent intent) throws Exception {
-
         // 前置工作
         // 所有的参数存到 Intent 中
         intent.putExtras(request.bundle);
