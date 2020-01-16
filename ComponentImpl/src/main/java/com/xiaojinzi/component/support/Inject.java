@@ -3,8 +3,9 @@ package com.xiaojinzi.component.support;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import android.app.Activity;
-import androidx.app.Fragment;
 
 import com.xiaojinzi.component.anno.support.CheckClassName;
 
