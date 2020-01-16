@@ -155,6 +155,9 @@
 #### v1.7.8(不兼容版本更新)
 
 - 所有的配置整改. 统一使用 `Config` 类来配置. 初始化方式改变了. `Component.init(boolean, Config);`
+    - 配置中增加 tipWhenUseApplication(boolean) 方法, 用来提醒使用者当使用者使用了 Application 作为 Context, 默认为 true
+    - 配置中增加 useRouteRepeatCheckInterceptor(boolean) 让使用者来控制是否使用内置的放抖动的跳转重复检查, 默认为 true
+    - Config 类为建造者模式, 整理了以前几个配置, 同时也为以后的配置增多提供了很好的扩展
 - `Router.with(Context).withProxyBundle` 更名为 `Router.with(Context).proxyBundle`
 - OnRouterCancel 和 OnRouterError 的包名更改为 com.xiaojinzi.component.support
 - com.xiaojinzi.component.condition.Condition 更名为 com.xiaojinzi.component.support.Condition
