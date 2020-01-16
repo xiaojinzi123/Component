@@ -17,8 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import android.util.SparseArray;
 
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.RouterRxFragment;
+import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.error.ignore.ActivityResultException;
@@ -102,7 +101,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     public Navigator interceptors(RouterInterceptor... interceptorArr) {
-        Utils.checkNullPointer(interceptorArr, "interceptorArr");
+        Utils.debugCheckNullPointer(interceptorArr, "interceptorArr");
         if (interceptorArr != null) {
             lazyInitCustomInterceptors(interceptorArr.length);
             customInterceptors.addAll(Arrays.asList(interceptorArr));
@@ -111,7 +110,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     public Navigator interceptors(Class<? extends RouterInterceptor>... interceptorClassArr) {
-        Utils.checkNullPointer(interceptorClassArr, "interceptorClassArr");
+        Utils.debugCheckNullPointer(interceptorClassArr, "interceptorClassArr");
         if (interceptorClassArr != null) {
             lazyInitCustomInterceptors(interceptorClassArr.length);
             customInterceptors.addAll(Arrays.asList(interceptorClassArr));
@@ -120,7 +119,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     public Navigator interceptorNames(String... interceptorNameArr) {
-        Utils.checkNullPointer(interceptorNameArr, "interceptorNameArr");
+        Utils.debugCheckNullPointer(interceptorNameArr, "interceptorNameArr");
         if (interceptorNameArr != null) {
             lazyInitCustomInterceptors(interceptorNameArr.length);
             customInterceptors.addAll(Arrays.asList(interceptorNameArr));
@@ -150,7 +149,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * ......
      * 当你自定义了代理界面, 那你可以使用{@link Router#with()} 或者  {@link Router#with(Context)} 或者
      * {@link Router#with(Fragment)} 得到一个 {@link Navigator}
-     * 然后你就可以使用{@link Navigator#withProxyBundle(Bundle)} 直接导入跳转到真正目标所需的各种参数, 然后
+     * 然后你就可以使用{@link Navigator#proxyBundle(Bundle)} 直接导入跳转到真正目标所需的各种参数, 然后
      * 直接发起跳转, 通过条用 {@link Navigator#forward()} 等方法
      * 示例代码：
      * <pre class="prettyprint">
@@ -159,7 +158,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      *     protected void onCreate(Bundle savedInstanceState) {
      *         super.onCreate(savedInstanceState);
      *         Router.with(this)
-     *               .withProxyBundle(getIntent().getExtras())
+     *               .proxyBundle(getIntent().getExtras())
      *               .forward();
      *     }
      *     ...
@@ -168,7 +167,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      *
      * @see ProxyIntentAct
      */
-    public Navigator withProxyBundle(@NonNull Bundle bundle) {
+    public Navigator proxyBundle(@NonNull Bundle bundle) {
         Utils.checkNullPointer(bundle, "bundle");
         String reqUrl = bundle.getString(ProxyIntentAct.EXTRA_PROXY_INTENT_URL);
         Bundle reqBundle = bundle.getBundle(ProxyIntentAct.EXTRA_PROXY_INTENT_BUNDLE);
@@ -707,6 +706,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @AnyThread
     @CheckResult
     public NavigationDisposable navigateForResult(@NonNull final BiCallback<ActivityResult> callback) {
+        Utils.checkNullPointer(callback, "callback");
         return realNavigateForResult(callback);
     }
 
@@ -803,7 +803,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @NonNull
     @AnyThread
     private NavigationDisposable realNavigateForResult(@NonNull final BiCallback<ActivityResult> callback) {
-
+        Utils.checkNullPointer(callback, "callback");
         final NavigationDisposable.ProxyNavigationDisposableImpl proxyDisposable =
                 new NavigationDisposable.ProxyNavigationDisposableImpl();
         // 主线程执行
@@ -833,7 +833,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @MainThread
     private NavigationDisposable doNavigateForResult(@NonNull final BiCallback<ActivityResult> biCallback) {
         // 直接 gg
-        Utils.checkNullPointer(biCallback, "callback");
+        Utils.checkNullPointer(biCallback, "biCallback");
         // 标记此次是需要框架帮助获取 ActivityResult 的
         this.isForResult = true;
         // 做一个包裹实现至多只能调用一次内部的其中一个方法
@@ -850,14 +850,14 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 fm = ((FragmentActivity) Utils.getActivityFromContext(context)).getSupportFragmentManager();
             }
             // 寻找是否添加过 Fragment
-            RouterRxFragment findRxFragment = (RouterRxFragment) fm.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+            RouterFragment findRxFragment = (RouterFragment) fm.findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
             if (findRxFragment == null) {
-                findRxFragment = new RouterRxFragment();
+                findRxFragment = new RouterFragment();
                 fm.beginTransaction()
-                        .add(findRxFragment, ComponentUtil.FRAGMENT_TAG)
+                        .add(findRxFragment, ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG)
                         .commitAllowingStateLoss();
             }
-            final RouterRxFragment rxFragment = findRxFragment;
+            final RouterFragment rxFragment = findRxFragment;
             // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
             // 导航拿到 NavigationDisposable 对象
             // 可能是一个 空实现
@@ -896,8 +896,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
             });
             // 现在可以检测 requestCode 是否重复,除了 RxRouter 之外的地方使用同一个 requestCode 是可以的
-            // 因为 RxRouter 的 requestCode 是直接配合 RouterRxFragment 使用的
-            // 其他地方是用不到 RouterRxFragment,所以可以重复
+            // 因为 RxRouter 的 requestCode 是直接配合 RouterFragment 使用的
+            // 其他地方是用不到 RouterFragment,所以可以重复
             boolean isExist = Help.isExist(finalNavigationDisposable.originalRequest());
             if (isExist) { // 如果存在直接返回错误给 callback
                 throw new NavigationFailException("request&result code is " +
@@ -936,7 +936,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
                                      @Nullable final List<Object> customInterceptors,
                                      @NonNull final RouterInterceptor.Callback routerInterceptorCallback) {
 
-        // 拿到共有的拦截器
+        // 拿到用户定义的共有的拦截器
+        // 这里是因为第一次创建拦截器需要在主线程上, 所以需要这样
         List<RouterInterceptor> publicInterceptors = Utils.mainThreadCallable(new Callable<List<RouterInterceptor>>() {
             @NonNull
             @Override
@@ -956,12 +957,13 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 chain.proceed(chain.request());
             }
         });
-        // 添加内置拦截器,目前就一个内置拦截器,而且必须在其他功能拦截器的前面,因为这个拦截器内部有一个时间的记录
-        // 保证一秒内就只能打开一个相同的界面
-        allInterceptors.add(OpenOnceInterceptor.getInstance());
+        if (Component.getConfig().isUseRouteRepeatCheckInterceptor()) {
+            allInterceptors.add(OpenOnceInterceptor.getInstance());
+        }
         // 添加共有拦截器
         allInterceptors.addAll(publicInterceptors);
         // 添加自定义拦截器到 allInterceptors 中
+        // 这里是因为第一次创建拦截器需要在主线程上, 所以需要这样
         Utils.mainThreadAction(new Action() {
             @Override
             public void run() {
@@ -1327,7 +1329,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     private static class Help {
 
         /**
-         * 和{@link RouterRxFragment} 配套使用
+         * 和{@link RouterFragment} 配套使用
          */
         private static Set<String> mRequestCodeSet = new HashSet<>();
 

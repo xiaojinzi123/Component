@@ -8,7 +8,7 @@ import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.service.inter.user.UserService;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.anno.FieldAutowiredAnno;
+import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
 import com.xiaojinzi.component1.R;
@@ -26,7 +26,7 @@ public class TestInjectAct4 extends BaseAct {
 
     TextView tv_name;
 
-    @FieldAutowiredAnno("name")
+    @AttrValueAutowiredAnno("name")
     String name = compareStr;
 
     @ServiceAutowiredAnno

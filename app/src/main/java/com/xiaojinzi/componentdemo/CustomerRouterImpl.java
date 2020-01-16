@@ -35,6 +35,7 @@ public class CustomerRouterImpl {
             path = ModuleConfig.System.CALL_PHONE,
             interceptorNames = InterceptorConfig.HELP_CALLPHOEPERMISION
     )
+    @NonNull
     public static Intent callPhoneIntent(@NonNull RouterRequest request) {
         String tel = ParameterSupport.getString(request.bundle, "tel");
         if (TextUtils.isEmpty(tel)) {
@@ -56,6 +57,7 @@ public class CustomerRouterImpl {
             path = ModuleConfig.System.TAKE_PHONE,
             interceptorNames = InterceptorConfig.HELP_CAMERAPERMISION
     )
+    @NonNull
     public static Intent takePictureIntent(@NonNull RouterRequest request) {
         Intent intent = new Intent();
         // 指定开启系统相机的Action
@@ -74,6 +76,7 @@ public class CustomerRouterImpl {
             host = ModuleConfig.System.NAME,
             path = ModuleConfig.System.SYSTEM_APP_DETAIL
     )
+    @NonNull
     public static Intent appDetail(@NonNull RouterRequest request) {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + request.getRawContext().getPackageName()));

@@ -1,4 +1,4 @@
-package com.xiaojinzi.component;
+package com.xiaojinzi.component.impl;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
@@ -13,16 +13,22 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 跳转界面拿数据结合 RxJava2 的 Fragment
- * 同一个 RouterRxFragment 内承载的路由请求的 requestCode 不能同时相同,单个重复是可以的,同一个
- * requestCode 被连续使用两次,这两次的路由都在进行中,这种情况是被明确禁止的
+ *
+ * 为了完成跳转拿 {@link ActivityResult} 的功能, 需要预埋一个 {@link Fragment}
+ * 此 {@link Fragment} 是不可见的, 它的主要作用：
+ * 1. 用作跳转的
+ * 2. 用作接受 {@link Fragment#onActivityResult(int, int, Intent)} 的回调的值
+ *
+ * 当发出多个路由的之后, 有可能多个 {@link RouterRequest} 对象中的 {@link RouterRequest#requestCode}
+ * 是一致的, 那么就会造成 {@link ActivityResult} 回调的时候出现不对应的问题.
+ * 这个问题在 {@link com.xiaojinzi.component.impl.Navigator.Help#isExist(RouterRequest)} 方法中
+ * 得以保证
  * <p>
  * time   : 2018/11/03
  *
  * @author : xiaojinzi
- * @hide
  */
-public final class RouterRxFragment extends Fragment {
+public final class RouterFragment extends Fragment {
 
     @NonNull
     private Map<RouterRequest, Consumer<ActivityResult>> singleEmitterMap = new HashMap<>();

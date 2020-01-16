@@ -63,6 +63,13 @@ public class ModifyASMUtilTransform extends BaseTransform {
      */
     private Map<String, String> fragmentMap = new HashMap<>();
 
+    private String mAsmUtilOutputPathStr;
+
+    public ModifyASMUtilTransform(String asmUtilOutputPathStr) {
+        super();
+        mAsmUtilOutputPathStr = asmUtilOutputPathStr;
+    }
+
     @Override
     public String getName() {
         return "ComponentPlugin";
@@ -107,10 +114,18 @@ public class ModifyASMUtilTransform extends BaseTransform {
                                     applicationMap, interceptorMap, routerMap,
                                     routerDegradeMap, serviceMap, fragmentMap
                             );
+                            try {
+                                if (mAsmUtilOutputPathStr != null && !"".equals(mAsmUtilOutputPathStr)) {
+                                    File file = new File(mAsmUtilOutputPathStr);
+                                    file.delete();
+                                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                                    fileOutputStream.write(bytes);
+                                    fileOutputStream.close();
+                                }
+                            } catch (Exception ignore) {
+                                // ignore
+                            }
                             // 生成到桌面用来测试
-                            /*FileOutputStream fileOutputStream = new FileOutputStream(new File("/Users/xiaojinzi/Desktop/test.class"));
-                            fileOutputStream.write(bytes);
-                            fileOutputStream.close();*/
                             ZipEntry asmUtiZipEntry = new ZipEntry(jarEntry.getName());
                             asmUtiZipEntry.setSize(bytes.length);
                             CRC32 crc = new CRC32();

@@ -11,7 +11,7 @@ import com.xiaojinzi.base.bean.UserWithSerializable;
 import com.xiaojinzi.base.service.inter.app.AnnoMethodService;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.anno.FieldAutowiredAnno;
+import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
 import com.xiaojinzi.component1.R;
@@ -27,71 +27,71 @@ import java.util.ArrayList;
 public class TestInjectAct2 extends BaseAct {
 
     // 基本数据类型
-    @FieldAutowiredAnno("data40")
+    @AttrValueAutowiredAnno("data40")
     String data40;
-    @FieldAutowiredAnno("data41")
+    @AttrValueAutowiredAnno("data41")
     CharSequence data41;
-    @FieldAutowiredAnno("data42")
+    @AttrValueAutowiredAnno("data42")
     byte data42;
-    @FieldAutowiredAnno("data43")
+    @AttrValueAutowiredAnno("data43")
     char data43;
-    @FieldAutowiredAnno("data44")
+    @AttrValueAutowiredAnno("data44")
     boolean data44;
-    @FieldAutowiredAnno("data45")
+    @AttrValueAutowiredAnno("data45")
     short data45;
-    @FieldAutowiredAnno("data46")
+    @AttrValueAutowiredAnno("data46")
     int data46;
-    @FieldAutowiredAnno("data47")
+    @AttrValueAutowiredAnno("data47")
     long data47;
-    @FieldAutowiredAnno("data48")
+    @AttrValueAutowiredAnno("data48")
     float data48;
-    @FieldAutowiredAnno("data49")
+    @AttrValueAutowiredAnno("data49")
     double data49;
 
 
     // ArrayList 的几种类型
 
-    @FieldAutowiredAnno("data30")
+    @AttrValueAutowiredAnno("data30")
     ArrayList<CharSequence> data30;
-    @FieldAutowiredAnno("data31")
+    @AttrValueAutowiredAnno("data31")
     ArrayList<String> data31;
-    @FieldAutowiredAnno("data32")
+    @AttrValueAutowiredAnno("data32")
     ArrayList<Integer> data32;
-    @FieldAutowiredAnno("data13")
+    @AttrValueAutowiredAnno("data13")
     ArrayList<Parcelable> data33;
 
     // array 的几种类型
 
-    @FieldAutowiredAnno("data1")
+    @AttrValueAutowiredAnno("data1")
     byte[] data1;
-    @FieldAutowiredAnno("data2")
+    @AttrValueAutowiredAnno("data2")
     char[] data2;
-    @FieldAutowiredAnno("data3")
+    @AttrValueAutowiredAnno("data3")
     String[] data3;
-    @FieldAutowiredAnno("data4")
+    @AttrValueAutowiredAnno("data4")
     short[] data4;
-    @FieldAutowiredAnno("data5")
+    @AttrValueAutowiredAnno("data5")
     int[] data5;
-    @FieldAutowiredAnno("data6")
+    @AttrValueAutowiredAnno("data6")
     long[] data6;
-    @FieldAutowiredAnno("data7")
+    @AttrValueAutowiredAnno("data7")
     float[] data7;
-    @FieldAutowiredAnno("data8")
+    @AttrValueAutowiredAnno("data8")
     double[] data8;
-    @FieldAutowiredAnno("data9")
+    @AttrValueAutowiredAnno("data9")
     boolean[] data9;
-    @FieldAutowiredAnno("data10")
+    @AttrValueAutowiredAnno("data10")
     Parcelable[] data10;
-    @FieldAutowiredAnno("data11")
+    @AttrValueAutowiredAnno("data11")
     CharSequence[] data11;
 
     // 其他的类型
 
-    @FieldAutowiredAnno("data12")
+    @AttrValueAutowiredAnno("data12")
     User data12;
-    @FieldAutowiredAnno("data13")
+    @AttrValueAutowiredAnno("data13")
     UserWithSerializable data13;
-    @FieldAutowiredAnno("data14")
+    @AttrValueAutowiredAnno("data14")
     UserWithParcelable data14;
 
     /**

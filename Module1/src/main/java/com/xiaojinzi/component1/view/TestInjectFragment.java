@@ -10,14 +10,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.anno.FieldAutowiredAnno;
+import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 
 /**
  * 测试注入 Fragment 功能的
  */
 public class TestInjectFragment extends Fragment {
 
-    @FieldAutowiredAnno("name")
+    @AttrValueAutowiredAnno("name")
     String name;
 
     @Nullable

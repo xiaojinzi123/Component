@@ -6,6 +6,8 @@ import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.support.Function;
+import com.xiaojinzi.component.support.OnRouterCancel;
+import com.xiaojinzi.component.support.OnRouterError;
 import com.xiaojinzi.component.support.Utils;
 
 /**
@@ -33,7 +35,7 @@ public interface BiCallback<T> extends OnRouterCancel, OnRouterError {
      * @param <T>
      * @param <R>
      */
-    abstract class Map<T, R> implements BiCallback<T>,Function<T, R> {
+    abstract class Map<T, R> implements BiCallback<T>, Function<T, R> {
 
         @NonNull
         private BiCallback targetBiCallback;

@@ -5,30 +5,25 @@ import androidx.annotation.NonNull;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.Component;
+import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
 public class App extends Application {
 
-    @NonNull
-    private static Application mApp;
-
-    @NonNull
-    public static Application getApp() {
-        return mApp;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
 
-        mApp = this;
-
         // 初始化组件化相关
-        Component.init(this, BuildConfig.DEBUG);
-        // 打开 Gradle 初始化优化开关
-        Component.openInitOptimize();
+        Component.init(
+                BuildConfig.DEBUG,
+                Config.with(this)
+                        .defaultScheme("router")
+                        .optimizeInit(true)
+                        .build()
+        );
         // 关闭使用 Application 的日志, 可以不用调用, 提醒用户尽量避免使用 Application 进行跳转
         // Component.closeLogWhenUseApplication();
         // 忽略一些不想处理的错误

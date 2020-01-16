@@ -3,6 +3,8 @@ package com.xiaojinzi.component.support;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import android.app.Activity;
+import androidx.app.Fragment;
 
 import com.xiaojinzi.component.anno.support.CheckClassName;
 
@@ -13,18 +15,25 @@ import com.xiaojinzi.component.anno.support.CheckClassName;
 public interface Inject<T> {
 
     /**
-     * 注入控件
+     * 注入属性值, Bundle 从 {@link Activity#getIntent()} 和 {@link Fragment#getArguments()} 中来
      *
-     * @param target 目标界面
+     * @param target 目标
      */
-    void inject(@NonNull T target);
+    void injectAttrValue(@NonNull T target);
 
     /**
      * 注入属性值
      *
-     * @param target 目标界面
+     * @param target 目标
      * @param bundle 数据源的 bundle
      */
-    void inject(@NonNull T target, @NonNull Bundle bundle);
+    void injectAttrValue(@NonNull T target, @NonNull Bundle bundle);
+
+    /**
+     * 注入 Service
+     *
+     * @param target 目标
+     */
+    void injectService(@NonNull T target);
 
 }

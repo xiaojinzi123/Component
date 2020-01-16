@@ -32,26 +32,10 @@ public class Component {
     private static boolean isDebug = false;
 
     /**
-     * 全局的 Application
+     * 配置对象
      */
-    private static Application application = null;
+    private static Config mConfig = null;
 
-    /**
-     * 默认的 scheme
-     */
-    private static String defaultScheme = "router";
-
-    /**
-     * 初始化优化的开关.
-     * 默认是 false, 初始化的时候采用反射的形式
-     * 当是 true 的时候, 初始化的时候,
-     */
-    private static boolean isInitOptimize = false;
-
-    /**
-     * 当用户使用 Application 发起跳转的时候, 是否提醒它
-     */
-    private static boolean isTipWhenUseApplication = true;
 
     private Component() {
     }
@@ -59,59 +43,26 @@ public class Component {
     /**
      * 初始化
      *
-     * @param application App 的 Application
-     * @param isDebug     是否是debug模式
+     * @see Config
      */
     @MainThread
-    public static void init(@NonNull Application application, boolean isDebug) {
-        init(application, isDebug, null);
-    }
-
-    /**
-     * 打开初始化优化的开关
-     */
-    @AnyThread
-    public static void openInitOptimize() {
-        if (!isInit) {
-            throw new RuntimeException("you must init Component first");
-        }
-        isInitOptimize = true;
-    }
-
-    /**
-     * 关闭使用 Application 的日志
-     */
-    @AnyThread
-    public static void closeLogWhenUseApplication() {
-        if (!isInit) {
-            throw new RuntimeException("you must init Component first");
-        }
-        isTipWhenUseApplication = false;
-    }
-
-    /**
-     * 初始化
-     *
-     * @param application App 的 Application
-     * @param isDebug     是否是debug模式
-     */
-    @MainThread
-    public static void init(@NonNull Application application, boolean isDebug, @Nullable String defaultScheme) {
-        Utils.checkMainThread();
+    public static void init(boolean isDebug, @NonNull Config config) {
         if (isInit) {
-            throw new RuntimeException("Component is already init");
+            throw new RuntimeException("you have init Component already!");
         }
-        if (application == null) {
-            throw new NullPointerException("the Application is null");
-        }
-        Component.application = application;
+        Utils.checkMainThread();
+        Utils.checkNullPointer(config, "config");
         Component.isDebug = isDebug;
-        if (defaultScheme != null && !defaultScheme.isEmpty()) {
-            Component.defaultScheme = defaultScheme;
-        }
+        mConfig = config;
         // 注册
-        application.registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
+        mConfig.getApplication().registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
         isInit = true;
+    }
+
+    @NonNull
+    @AnyThread
+    public static Config getConfig() {
+        return mConfig;
     }
 
     /**
@@ -119,23 +70,7 @@ public class Component {
      */
     @AnyThread
     public static boolean isDebug() {
-        return isDebug;
-    }
-
-    /**
-     * 返回是否开启初始化优化
-     */
-    @AnyThread
-    public static boolean isInitOptimize() {
-        return isInitOptimize;
-    }
-
-    /**
-     * 返回是否打印地址当使用 Application 的时候
-     */
-    @AnyThread
-    public static boolean isLogWhenUseApplication() {
-        return isTipWhenUseApplication;
+        return Component.isDebug;
     }
 
     /**
@@ -146,59 +81,63 @@ public class Component {
     @NonNull
     @AnyThread
     public static Application getApplication() {
-        if (application == null) {
-            throw new NullPointerException("the Application is null,do you call Component.init(Application application,boolean isDebug)?");
+        checkInit();
+        return mConfig.getApplication();
+    }
+
+    private static void checkInit() {
+        if (mConfig == null) {
+            throw new RuntimeException("you must init Component first!");
         }
-        return application;
     }
 
-    /**
-     * 获取默认的 scheme
-     *
-     * @return
-     */
-    public static String getDefaultScheme() {
-        return defaultScheme;
-    }
-
-    /**
-     * 找到实现类,执行注入
-     *
-     * @param target 目标界面
-     */
     @MainThread
     public static void inject(@NonNull Object target) {
-        injectFromBundle(target, null);
+        inject(target, null, true, true);
+    }
+
+    @MainThread
+    public static void injectAttrValueFromIntent(@NonNull Object target, @Nullable Intent intent) {
+        injectAttrValueFromBundle(target, intent == null ? null : intent.getExtras());
+    }
+
+    @MainThread
+    public static void injectAttrValueFromBundle(@NonNull Object target, @Nullable Bundle bundle) {
+        inject(target, bundle, true, false);
+    }
+
+    @MainThread
+    public static void injectService(@NonNull Object target) {
+        inject(target, null, false, true);
     }
 
     /**
-     * 找到实现类,执行注入
+     * 注入功能
      *
-     * @param target 目标界面
+     * @param target              目标, 可能是任意的类
+     * @param bundle              属性注入的 Bundle 数据提供者
+     * @param isAutoWireAttrValue 是否注入属性值
+     * @param isAutoWireService   是否注入 Service
      */
     @MainThread
-    public static void injectFromIntent(@NonNull Object target, @Nullable Intent intent) {
-        injectFromBundle(target, intent == null ? null : intent.getExtras());
-    }
-
-    /**
-     * 找到实现类,执行注入
-     *
-     * @param target 目标界面
-     */
-    @MainThread
-    public static void injectFromBundle(@NonNull Object target, @Nullable Bundle bundle) {
+    private static void inject(@NonNull Object target, @Nullable Bundle bundle, boolean isAutoWireAttrValue, boolean isAutoWireService) {
         Utils.checkMainThread();
         Utils.checkNullPointer(target, "target");
         String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;
         try {
             Class<?> targetInjectClass = Class.forName(injectClassName);
             Inject inject = (Inject) targetInjectClass.newInstance();
-            if (bundle == null) {
-                inject.inject(target);
-            } else {
-                inject.inject(target, bundle);
+            if (isAutoWireService) {
+                inject.injectService(target);
             }
+            if (isAutoWireAttrValue) {
+                if (bundle == null) {
+                    inject.injectAttrValue(target);
+                } else {
+                    inject.injectAttrValue(target, bundle);
+                }
+            }
+
         } catch (Exception ignore) {
             LogUtil.log(target.getClass().getName(), "field inject fail");
         }

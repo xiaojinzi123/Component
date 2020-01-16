@@ -227,7 +227,7 @@ public class SuccessTest implements TestExecutor {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "testGetActivityResult")
-                        .navigateForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
+                        .forwardForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
             }
         });
     }
@@ -246,7 +246,7 @@ public class SuccessTest implements TestExecutor {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "testGetActivityResultx")
-                        .navigateForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
+                        .forwardForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
             }
         });
     }
@@ -265,7 +265,7 @@ public class SuccessTest implements TestExecutor {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "testGetActivityResultxx")
-                        .navigateForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
+                        .forwardForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
             }
         });
     }
@@ -284,7 +284,7 @@ public class SuccessTest implements TestExecutor {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "testGetActivityResultWithChildThread")
-                        .navigateForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
+                        .forwardForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
             }
         });
     }
@@ -303,7 +303,7 @@ public class SuccessTest implements TestExecutor {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "testGetActivityResultWithChildThreadx")
-                        .navigateForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
+                        .forwardForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
             }
         });
     }
@@ -322,7 +322,7 @@ public class SuccessTest implements TestExecutor {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "testGetActivityResultWithChildThreadxx")
-                        .navigateForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
+                        .forwardForResult(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
             }
         });
     }
@@ -341,7 +341,7 @@ public class SuccessTest implements TestExecutor {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "testGetIntent")
-                        .navigateForIntent(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
+                        .forwardForIntent(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
             }
         });
     }
@@ -362,7 +362,7 @@ public class SuccessTest implements TestExecutor {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "testGetIntent1")
-                        .navigateForIntentAndResultCodeMatch(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter), Activity.RESULT_OK);
+                        .forwardForIntentAndResultCodeMatch(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter), Activity.RESULT_OK);
             }
         });
     }
@@ -376,7 +376,7 @@ public class SuccessTest implements TestExecutor {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "testGetResultCode")
-                        .navigateForResultCode(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
+                        .forwardForResultCode(new TestQualityAct.BiCallbackSuccessIsSuccessful(emitter));
             }
         });
     }
@@ -390,7 +390,7 @@ public class SuccessTest implements TestExecutor {
                         .path(ModuleConfig.Module1.TEST_AUTORETURN)
                         .requestCode(123)
                         .putString("data", "testResultCodeMatch")
-                        .navigateForResultCodeMatch(new TestQualityAct.CallbackSuccessIsSuccessful(emitter), Activity.RESULT_OK);
+                        .forwardForResultCodeMatch(new TestQualityAct.CallbackSuccessIsSuccessful(emitter), Activity.RESULT_OK);
             }
         });
     }

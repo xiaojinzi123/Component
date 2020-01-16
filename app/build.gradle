@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.xiaojinzi.component.plugin'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.android_compile_sdk
@@ -49,6 +52,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     api project(':ModuleBase')
     api project(':Module1')
     api project(':Module2')
@@ -56,9 +62,9 @@ dependencies {
     api project(':ModuleUser')
 
     if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
-        annotationProcessor androidxLibs.component_compiler
+        kapt androidxLibs.component_compiler
     } else {
-        annotationProcessor project(':ComponentCompiler')
+        kapt project(':ComponentCompiler')
     }
 
     // 内存检测的

@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.xiaojinzi.component.Component;
+import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.bean.RouterBean;
@@ -91,6 +92,7 @@ public class RouterCenter implements IComponentCenterRouter {
      * @param request             路由请求对象
      * @param routerDegradeIntent 一个降级的 Intent
      */
+    @MainThread
     public void routerDegrade(@NonNull RouterRequest request, @NonNull Intent routerDegradeIntent) throws Exception {
         String uriString = request.uri.toString();
         if (routerDegradeIntent == null) {
@@ -148,11 +150,11 @@ public class RouterCenter implements IComponentCenterRouter {
     /**
      * 拿到 Intent 之后真正的跳转
      *
-     * @param request
-     * @param intent
+     * @param request 请求对象
+     * @param intent  Intent
      */
+    @MainThread
     private void doStartIntent(@NonNull RouterRequest request, Intent intent) throws Exception {
-
         // 前置工作
         // 所有的参数存到 Intent 中
         intent.putExtras(request.bundle);
@@ -288,7 +290,7 @@ public class RouterCenter implements IComponentCenterRouter {
         Activity act = Utils.getActivityFromContext(context);
         if (act instanceof FragmentActivity) {
             FragmentManager ft = ((FragmentActivity) act).getSupportFragmentManager();
-            result = ft.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+            result = ft.findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
         }
         return result;
     }
@@ -297,7 +299,7 @@ public class RouterCenter implements IComponentCenterRouter {
     private Fragment findFragment(Fragment fragment) {
         Fragment result = null;
         if (fragment != null) {
-            result = fragment.getChildFragmentManager().findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+            result = fragment.getChildFragmentManager().findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
         }
         return result;
     }
@@ -362,7 +364,7 @@ public class RouterCenter implements IComponentCenterRouter {
     @Nullable
     public IComponentHostRouter findUiRouter(String host) {
         try {
-            if (Component.isInitOptimize()) {
+            if (Component.getConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleRouterAsmImpl(host);
             } else {
                 Class<? extends IComponentHostRouter> clazz = null;

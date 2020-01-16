@@ -1,9 +1,10 @@
-package com.xiaojinzi.component.impl;
+package com.xiaojinzi.component.support;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.support.NavigationDisposable;
 
 /**

@@ -20,7 +20,6 @@ import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.Consumer;
-import com.xiaojinzi.component.support.ProxyIntentAct;
 import com.xiaojinzi.component.support.Utils;
 
 import java.io.Serializable;
@@ -697,7 +696,7 @@ public class RouterRequest {
                 host(hostAndPath.substring(0, index));
                 path(hostAndPath.substring(index + 1));
             } else {
-                Utils.throwException(new IllegalArgumentException(hostAndPath + " is invalid"));
+                Utils.debugThrowException(new IllegalArgumentException(hostAndPath + " is invalid"));
             }
             return this;
         }
@@ -715,9 +714,6 @@ public class RouterRequest {
 
         public URIBuilder query(@NonNull String queryName, @Nullable String queryValue) {
             Utils.checkStringNullPointer(queryName, "queryName");
-            if (queryValue == null) {
-                queryValue = "";
-            }
             queryMap.put(queryName, queryValue);
             return this;
         }
@@ -759,7 +755,7 @@ public class RouterRequest {
                 Uri.Builder uriBuilder = new Uri.Builder();
                 uriBuilder
                         .scheme(TextUtils.isEmpty(builder.scheme) ?
-                                Component.getDefaultScheme() : builder.scheme)
+                                Component.getConfig().getDefaultScheme() : builder.scheme)
                         // host 一定不能为空
                         .authority(
                                 Utils.checkStringNullPointer(

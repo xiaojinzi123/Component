@@ -14,7 +14,12 @@ public class ComponentPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         BaseAppModuleExtension appModuleExtension =  (BaseAppModuleExtension)project.getProperties().get("android");
-        appModuleExtension.registerTransform(new ModifyASMUtilTransform());
+        Object asmUtilOutputPath = project.findProperty("component_asm_util_class_output_path");
+        String asmUtilOutputPathStr = null;
+        if (asmUtilOutputPath instanceof String) {
+            asmUtilOutputPathStr = (String) asmUtilOutputPath;
+        }
+        appModuleExtension.registerTransform(new ModifyASMUtilTransform(asmUtilOutputPathStr));
     }
 
 }

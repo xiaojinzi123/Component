@@ -45,22 +45,7 @@ public class ProxyIntentAct extends FragmentActivity {
         }
         // 发起跳转
         Router.with(launchActivity)
-                /*.interceptors(new RouterInterceptor() {
-                    @Override
-                    public void intercept(@NonNull final Chain chain) throws Exception {
-                        new Thread(){
-                            @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(2000);
-                                } catch (InterruptedException e) {
-                                }
-                                chain.proceed(chain.request());
-                            }
-                        }.start();
-                    }
-                })*/
-                .withProxyBundle(bundle)
+                .proxyBundle(bundle)
                 .afterEventAction(new Action() {
                     @Override
                     public void run() {

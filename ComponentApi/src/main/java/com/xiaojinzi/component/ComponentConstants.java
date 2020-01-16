@@ -10,6 +10,11 @@ public class ComponentConstants {
     private ComponentConstants() {
     }
 
+    /**
+     * 当使用 Fragment 或者 Context 中有这个 tag 的 fragment,那么就会最终用这个实现跳转
+     */
+    public static final String ACTIVITY_RESULT_FRAGMENT_TAG = "TAG_FOR_ROUTER_GET_ACTIVITY_RESULT";
+
     // System interface
 
     public static final String APPLCATON_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.application.IComponentApplication";
@@ -37,7 +42,7 @@ public class ComponentConstants {
     public static final String CONDITIONCACHE_CLASS_NAME = "com.xiaojinzi.component.support.ConditionCache";
     public static final String ROUTER_BEAN_CLASS_NAME = "com.xiaojinzi.component.bean.RouterBean";
     public static final String ROUTER_DEGRADE_BEAN_CLASS_NAME = "com.xiaojinzi.component.bean.RouterDegradeBean";
-    public static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.xiaojinzi.component.bean.CustomerIntentCall";
+    public static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.xiaojinzi.component.support.CustomerIntentCall";
     public static final String FRAGMENT_MANAGER_CALL_CLASS_NAME = "com.xiaojinzi.component.impl.fragment.FragmentManager";
     public static final String FRAGMENT_CENTER_CALL_CLASS_NAME = "com.xiaojinzi.component.impl.fragment.FragmentCenter";
     public static final String CALLABLE_CLASS_NAME = "com.xiaojinzi.component.support.Callable";

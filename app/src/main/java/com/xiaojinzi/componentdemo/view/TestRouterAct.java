@@ -195,26 +195,6 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void rxJumpGetData(View view) {
-
-        /*RxRouter
-                .with(this)
-                .host(ModuleConfig.Module1.NAME)
-                .path(ModuleConfig.Module1.TEST)
-                .putString("data", "rxJumpGetData")
-                .requestCode(456)
-                .intentCall()
-                .subscribe(new Consumer<Intent>() {
-                    @Override
-                    public void accept(Intent intent) throws Exception {
-                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据成功啦：Data = " + intent.getStringExtra("data"));
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage());
-                    }
-                });*/
-
         Router.withApi(Module1Api.class)
                 .toTestView(this, "rxJumpGetDataWithApiMethod", new BiCallback.BiCallbackAdapter<Intent>() {
                     @Override
@@ -228,7 +208,6 @@ public class TestRouterAct extends BaseAct {
                         tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=456,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + errorResult.getError().getClass().getSimpleName() + " ,errorMsg = " + errorResult.getError().getMessage());
                     }
                 });
-
     }
 
     public void rxJumpGetDataAfterLogin(View view) {
@@ -240,17 +219,10 @@ public class TestRouterAct extends BaseAct {
                 .putString("data", "rxJumpGetDataAfterLogin")
                 .requestCode(333)
                 .intentCall()
-                .subscribe(new Consumer<Intent>() {
-                    @Override
-                    public void accept(Intent intent) throws Exception {
-                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=333,目标:component1/test?data=rxJumpGetData,获取目标页面数据成功啦：Data = " + intent.getStringExtra("data"));
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=333,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage());
-                    }
-                });
+                .subscribe(
+                        intent -> tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=333,目标:component1/test?data=rxJumpGetData,获取目标页面数据成功啦：Data = " + intent.getStringExtra("data")),
+                        throwable -> tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=333,目标:component1/test?data=rxJumpGetData,获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage())
+                );
     }
 
     public void rxJumpGetDataStartWithTask(final View view) {
@@ -289,17 +261,10 @@ public class TestRouterAct extends BaseAct {
                     }
                 })
                 .compose(transformer)
-                .subscribe(new Consumer<Intent>() {
-                    @Override
-                    public void accept(Intent intent) throws Exception {
-                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=789,目标:component1/test?data=rxJumpGetData,执行耗时任务后获取目标页面数据成功啦：Data = " + intent.getStringExtra("data"));
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=789,目标:component1/test?data=rxJumpGetData,执行耗时任务后获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage());
-                    }
-                });
+                .subscribe(
+                        intent -> tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=789,目标:component1/test?data=rxJumpGetData,执行耗时任务后获取目标页面数据成功啦：Data = " + intent.getStringExtra("data")),
+                        throwable -> tv_detail.setText(tv_detail.getText() + "\n\nrequestCode=789,目标:component1/test?data=rxJumpGetData,执行耗时任务后获取目标页面数据失败,error = " + throwable.getClass().getSimpleName() + " ,errorMsg = " + throwable.getMessage())
+                );
 
     }
 
@@ -310,21 +275,18 @@ public class TestRouterAct extends BaseAct {
                 .path(ModuleConfig.Module1.TEST)
                 .putString("data", "jumpWithInterceptor")
                 .requestCode(123)
-                .interceptors(new RouterInterceptor() {
-                    @Override
-                    public void intercept(final Chain chain) throws Exception {
-                        final ProgressDialog dialog = ProgressDialog.show(chain.request().getRawContext(), "温馨提示", "耗时操作进行中,2秒后结束", true, false);
-                        dialog.show();
-                        Single
-                                .fromCallable(() -> "test")
-                                .delay(2, TimeUnit.SECONDS)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeOn(Schedulers.io())
-                                .subscribe(s -> {
-                                    dialog.dismiss();
-                                    chain.proceed(chain.request());
-                                });
-                    }
+                .interceptors(chain -> {
+                    final ProgressDialog dialog = ProgressDialog.show(chain.request().getRawContext(), "温馨提示", "耗时操作进行中,2秒后结束", true, false);
+                    dialog.show();
+                    Single
+                            .fromCallable(() -> "test")
+                            .delay(2, TimeUnit.SECONDS)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(s -> {
+                                dialog.dismiss();
+                                chain.proceed(chain.request());
+                            });
                 })
                 .interceptorNames(InterceptorConfig.USER_LOGIN)
                 .forward(new CallbackAdapter() {

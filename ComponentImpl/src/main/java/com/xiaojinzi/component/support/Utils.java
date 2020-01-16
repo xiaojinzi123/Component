@@ -52,8 +52,6 @@ public class Utils {
 
     /**
      * 在主线程执行任务,和上面的方法唯一的区别就是一定是post过去的
-     *
-     * @param r
      */
     public static void postActionToMainThreadAnyway(@NonNull Runnable r) {
         h.post(r);
@@ -61,8 +59,6 @@ public class Utils {
 
     /**
      * 是否是主线程
-     *
-     * @return
      */
     public static boolean isMainThread() {
         return Thread.currentThread() == Looper.getMainLooper().getThread();
@@ -74,6 +70,7 @@ public class Utils {
      * @param throwable
      * @return
      */
+    @Nullable
     public static String getRealMessage(@NonNull Throwable throwable) {
         while (throwable.getCause() != null) {
             throwable = throwable.getCause();
@@ -82,12 +79,10 @@ public class Utils {
     }
 
     /**
-     * 获取真实的错误对象,有时候一个 {@link Throwable#cause} 就是自己本身,下面的代码看上去是死循环了
+     * 获取真实的错误对象,有时候一个 {@link Throwable#getCause()} 就是自己本身,下面的代码看上去是死循环了
      * 但是 {@link Throwable#getCause()} 方法内部做了判断
-     *
-     * @param throwable
-     * @return
      */
+    @Nullable
     public static Throwable getRealThrowable(@NonNull Throwable throwable) {
         while (throwable.getCause() != null) {
             throwable = throwable.getCause();
@@ -96,41 +91,44 @@ public class Utils {
     }
 
     /**
-     * 检查字符串是否为空,如果为空就在 debug 的时候崩溃,release 不崩溃但是路由失败
-     *
-     * @param value
-     * @param parameterName
-     * @return
+     * 是否是由于某一个错误引起的
+     */
+    public static boolean isCauseBy(@NonNull Throwable throwable, @NonNull Class<? extends Throwable> clazz) {
+        if (throwable.getClass() == clazz) {
+            return true;
+        }
+        while (throwable.getClass() != null) {
+            throwable = throwable.getCause();
+            if (throwable.getClass() == clazz) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 检查字符串是否为空
      */
     public static String checkStringNullPointer(@Nullable String value, @NonNull String parameterName) {
-        if (Component.isDebug() && (value == null || value.isEmpty())) {
-            throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL);
-        }
-        return value;
+        return checkStringNullPointer(value, parameterName, null);
     }
 
     /**
-     * 检查字符串是否为空,如果为空就在 debug 的时候崩溃,release 不崩溃但是路由失败
-     *
-     * @param value
-     * @param parameterName
-     * @param desc
-     * @return
+     * 检查字符串是否为空
      */
-    public static String checkStringNullPointer(@Nullable String value, @NonNull String parameterName, @Nullable String desc) {
-        if (Component.isDebug() && (value == null || value.isEmpty())) {
-            throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL + (desc == null ? "" : "," + desc));
+    public static String checkStringNullPointer(@Nullable String value,
+                                                     @NonNull String parameterName,
+                                                     @Nullable String desc) {
+        if (value == null || value.isEmpty()) {
+            throw new NullPointerException(
+                    STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL + (desc == null ? "" : "," + desc)
+            );
         }
         return value;
     }
 
     /**
-     * 检查对象是否为空,如果为空就在 debug 的时候崩溃,release 不崩溃但是路由失败
-     *
-     * @param value
-     * @param parameterName
-     * @param <T>
-     * @return
+     * 检查对象是否为空
      */
     public static <T> T checkNullPointer(@Nullable T value, @NonNull String parameterName) {
         if (Component.isDebug() && value == null) {
@@ -140,10 +138,17 @@ public class Utils {
     }
 
     /**
+     * 检查对象是否为空,如果为空就在 debug 的时候崩溃,release 不崩溃但是路由失败
+     */
+    public static <T> T debugCheckNullPointer(@Nullable T value, @NonNull String parameterName) {
+        if (Component.isDebug() && value == null) {
+            throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL);
+        }
+        return value;
+    }
+
+    /**
      * 是否内存过低
-     *
-     * @param activityManager
-     * @return
      */
     public static boolean isLowMemoryDevice(@NonNull ActivityManager activityManager) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -183,7 +188,7 @@ public class Utils {
         return realActivity;
     }
 
-    public static void throwException(@NonNull RuntimeException e) {
+    public static void debugThrowException(@NonNull RuntimeException e) {
         if (Component.isDebug()) {
             throw e;
         }
@@ -207,7 +212,7 @@ public class Utils {
     public static <T> T mainThreadCallable(@NonNull final Callable<T> callable) {
         if (isMainThread()) {
             return callable.get();
-        }else {
+        } else {
             final AtomicReference<T> tAtomicReference = new AtomicReference<>();
             final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
             Utils.postActionToMainThreadAnyway(new Runnable() {
@@ -235,7 +240,7 @@ public class Utils {
     public static void mainThreadAction(@NonNull final Action action) {
         if (isMainThread()) {
             action.run();
-        }else {
+        } else {
             final AtomicReference<Object> resultAtomicReference = new AtomicReference<>();
             final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
             Utils.postActionToMainThreadAnyway(new Runnable() {

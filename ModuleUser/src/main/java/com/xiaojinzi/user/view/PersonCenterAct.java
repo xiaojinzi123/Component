@@ -8,6 +8,14 @@ import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.user.R;
 
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Function;
+
 @RouterAnno(
         path = ModuleConfig.User.PERSON_CENTER,
         interceptorNames = InterceptorConfig.USER_LOGIN,

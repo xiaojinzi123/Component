@@ -13,9 +13,7 @@ import com.xiaojinzi.component1.R;
  */
 @RouterAnno(
         path = ModuleConfig.Module1.TEST_LOGIN,
-        interceptorNames = {
-                InterceptorConfig.USER_LOGIN
-        }
+        interceptorNames = InterceptorConfig.USER_LOGIN
 )
 public class Component1TestLoginAct extends AppCompatActivity {
 

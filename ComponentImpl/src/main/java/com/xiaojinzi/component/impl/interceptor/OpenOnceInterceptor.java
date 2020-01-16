@@ -2,6 +2,7 @@ package com.xiaojinzi.component.impl.interceptor;
 
 import android.net.Uri;
 
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 
@@ -43,7 +44,9 @@ public class OpenOnceInterceptor implements RouterInterceptor {
         // 调试的情况下可能会失效,因为你断点打到这里慢慢的往下走那么可能时间已经过了一秒,就失去了限制的作用
         long currentTime = System.currentTimeMillis();
         // 如果匹配了
-        if (currentHost.equals(preHost) && currentPath.equals(prePath) && (currentTime - preTargetTime) < 1000) {
+        if (currentHost.equals(preHost) &&
+                currentPath.equals(prePath) &&
+                (currentTime - preTargetTime) < Component.getConfig().getRouteRepeatCheckDuration()) {
             chain.callback().onError(new NavigationFailException("same request can't launch twice in a second, target uri is：" + uri.toString()));
         } else {
             preHost = currentHost;
