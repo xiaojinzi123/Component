@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.service.inter.user.UserService;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.anno.FieldAutowiredAnno;
+import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
 import com.xiaojinzi.component1.R;
 
 /**
@@ -21,73 +23,73 @@ public class TestInjectAct1 extends BaseAct {
 
     public static final int defaultValue = -1;
 
-    @FieldAutowiredAnno("valueString")
+    @AttrValueAutowiredAnno("valueString")
     String valueString;
 
-    @FieldAutowiredAnno("valueStringDefault")
+    @AttrValueAutowiredAnno("valueStringDefault")
     String valueStringDefault = "hello";
 
-    @FieldAutowiredAnno("valueByte")
+    @AttrValueAutowiredAnno("valueByte")
     byte valueByte;
-    @FieldAutowiredAnno("valueByteDefalut")
+    @AttrValueAutowiredAnno("valueByteDefalut")
     byte valueByteDefalut = defaultValue;
-    @FieldAutowiredAnno("valueByteBox")
+    @AttrValueAutowiredAnno("valueByteBox")
     Byte valueByteBox;
-    @FieldAutowiredAnno("valueByteBoxDefalut")
+    @AttrValueAutowiredAnno("valueByteBoxDefalut")
     Byte valueByteBoxDefalut = defaultValue;
 
-    @FieldAutowiredAnno("valueShort")
+    @AttrValueAutowiredAnno("valueShort")
     short valueShort;
-    @FieldAutowiredAnno("valueShortDefalut")
+    @AttrValueAutowiredAnno("valueShortDefalut")
     short valueShortDefalut = defaultValue;
-    @FieldAutowiredAnno("valueShortBox")
+    @AttrValueAutowiredAnno("valueShortBox")
     Short valueShortBox;
-    @FieldAutowiredAnno("valueShortBoxDefalut")
+    @AttrValueAutowiredAnno("valueShortBoxDefalut")
     Short valueShortBoxDefalut = defaultValue;
 
-    @FieldAutowiredAnno("valueInt")
+    @AttrValueAutowiredAnno("valueInt")
     int valueInt;
-    @FieldAutowiredAnno("valueIntDefalut")
+    @AttrValueAutowiredAnno("valueIntDefalut")
     int valueIntDefalut = defaultValue;
-    @FieldAutowiredAnno("valueIntBox")
+    @AttrValueAutowiredAnno("valueIntBox")
     Integer valueIntBox;
-    @FieldAutowiredAnno("valueIntBoxDefalut")
+    @AttrValueAutowiredAnno("valueIntBoxDefalut")
     Integer valueIntBoxDefalut = defaultValue;
 
-    @FieldAutowiredAnno("valueLong")
+    @AttrValueAutowiredAnno("valueLong")
     long valueLong;
-    @FieldAutowiredAnno("valueLongDefalut")
+    @AttrValueAutowiredAnno("valueLongDefalut")
     long valueLongDefalut = defaultValue;
-    @FieldAutowiredAnno("valueLongBox")
+    @AttrValueAutowiredAnno("valueLongBox")
     Long valueLongBox;
-    @FieldAutowiredAnno("valueLongBoxDefalut")
+    @AttrValueAutowiredAnno("valueLongBoxDefalut")
     Long valueLongBoxDefalut = Long.valueOf(defaultValue);
 
-    @FieldAutowiredAnno("valueFloat")
+    @AttrValueAutowiredAnno("valueFloat")
     float valueFloat;
-    @FieldAutowiredAnno("valueFloatDefalut")
+    @AttrValueAutowiredAnno("valueFloatDefalut")
     float valueFloatDefalut = defaultValue;
-    @FieldAutowiredAnno("valueFloatBox")
+    @AttrValueAutowiredAnno("valueFloatBox")
     Float valueFloatBox;
-    @FieldAutowiredAnno("valueFloatBoxDefalut")
+    @AttrValueAutowiredAnno("valueFloatBoxDefalut")
     Float valueFloatBoxDefalut = Float.valueOf(defaultValue);
 
-    @FieldAutowiredAnno("valueDouble")
+    @AttrValueAutowiredAnno("valueDouble")
     double valueDouble;
-    @FieldAutowiredAnno("valueDoubleDefalut")
+    @AttrValueAutowiredAnno("valueDoubleDefalut")
     double valueDoubleDefalut = defaultValue;
-    @FieldAutowiredAnno("valueDoubleBox")
+    @AttrValueAutowiredAnno("valueDoubleBox")
     Double valueDoubleBox;
-    @FieldAutowiredAnno("valueDoubleBoxDefalut")
+    @AttrValueAutowiredAnno("valueDoubleBoxDefalut")
     Double valueDoubleBoxDefalut = Double.valueOf(defaultValue);
 
-    @FieldAutowiredAnno("valueBoolean")
+    @AttrValueAutowiredAnno("valueBoolean")
     boolean valueBoolean;
-    @FieldAutowiredAnno("valueBooleanDefalut")
+    @AttrValueAutowiredAnno("valueBooleanDefalut")
     boolean valueBooleanDefalut = true;
-    @FieldAutowiredAnno("valueBooleanBox")
+    @AttrValueAutowiredAnno("valueBooleanBox")
     Boolean valueBooleanBox;
-    @FieldAutowiredAnno("valueBooleanBoxDefalut")
+    @AttrValueAutowiredAnno("valueBooleanBoxDefalut")
     Boolean valueBooleanBoxDefalut = true;
 
     @Override

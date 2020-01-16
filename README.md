@@ -152,13 +152,21 @@
 
 ## 版本更新日志
 
-#### v1.7.7.4(开发中)
+#### v1.7.8(不兼容版本更新)
 
 - 所有的配置整改. 统一使用 `Config` 类来配置. 初始化方式改变了. `Component.init(boolean, Config);`
 - `Router.with(Context).withProxyBundle` 更名为 `Router.with(Context).proxyBundle`
 - OnRouterCancel 和 OnRouterError 的包名更改为 com.xiaojinzi.component.support
 - com.xiaojinzi.component.condition.Condition 更名为 com.xiaojinzi.component.support.Condition
 - com.xiaojinzi.component.bean.CustomerIntentCall 更名为 com.xiaojinzi.component.support.CustomerIntentCall
+- 注入属性和 `Service` 不兼容优化. 目的是注入属性的值和注入 Service 两个功能更加的明确. 并且提供聚合和分开的方法供用户自由选择
+    - Component.inject(Object) 功能不变
+    - Component.injectFromIntent(Object, Intent) 更名为 injectAttrValueFromIntent(Object, Intent). 内部去除了注入 `Service` 的功能
+    - Component.injectFromBundle(Object, Intent) 更名为 injectAttrValueFromBundle(Object, Intent). 内部去除了注入 `Service` 的功能
+    - 新增方法 Component.injectService(Object), 用来注入 `Service`
+- 注解 @FieldValueAutowiredAnno 更名为 @AttrValueAutowiredAnno. 不兼容的更新
+- 更新若干库到最新
+    - RxJava 版本升级到 2.2.17
 
 #### v1.7.7.3(功能+优化)
 

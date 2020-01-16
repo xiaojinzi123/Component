@@ -124,10 +124,10 @@ public class ModuleManager implements IComponentCenterApplication {
     public static IComponentHostApplication findModuleApplication(@NonNull String host) {
         IComponentHostApplication result = null;
         if (Component.getConfig().isOptimizeInit()) {
-            LogUtil.log("Componnet", host + " loaded by bytecode");
+            LogUtil.log("Componnet", host + " will try to load by bytecode");
             result = ASMUtil.findModuleApplicationAsmImpl(host);
         } else {
-            LogUtil.log("Componnet", host + " loaded by reflection");
+            LogUtil.log("Componnet", host + " will try to load by reflection");
             if (result == null) {
                 try {
                     // 先找正常的

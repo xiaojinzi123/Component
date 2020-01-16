@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.anno.FieldAutowiredAnno;
+import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component1.R;
 
@@ -19,9 +19,9 @@ import com.xiaojinzi.component1.R;
 )
 public class TestPutQueryWithUrlAct extends BaseAct {
 
-    @FieldAutowiredAnno("nameFromUrl")
+    @AttrValueAutowiredAnno("nameFromUrl")
     String nameFromUrl;
-    @FieldAutowiredAnno("nameFromPutQuery")
+    @AttrValueAutowiredAnno("nameFromPutQuery")
     String nameFromPutQuery;
 
     @Override

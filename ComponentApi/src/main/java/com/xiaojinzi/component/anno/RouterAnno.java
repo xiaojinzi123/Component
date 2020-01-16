@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
  * 而你自己通过 RouterRequest.bundle.getStringExtra("name") 则获取不到, 所以获取参数尽量使用
  * ParameterSupport 类, 这样可以支持获取到 query 中的值, 当然你也可以使用自动注入功能
  * Component.inject(this) 即可, 不过这样要配合注解使用:
- * {@link FieldAutowiredAnno} 和 {@link ServiceAutowiredAnno}
+ * {@link AttrValueAutowiredAnno} 和 {@link ServiceAutowiredAnno}
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)
