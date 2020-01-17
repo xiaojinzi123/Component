@@ -5,10 +5,9 @@ import android.Manifest;
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.util.PermissionsCallback;
 import com.xiaojinzi.base.util.PermissionsUtil;
-import com.xiaojinzi.component.ComponentActivityStack;
 import com.xiaojinzi.component.anno.ConditionalAnno;
 import com.xiaojinzi.component.anno.InterceptorAnno;
-import com.xiaojinzi.component.condition.Condition;
+import com.xiaojinzi.component.support.Condition;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 
 /**

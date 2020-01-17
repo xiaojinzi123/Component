@@ -18,7 +18,6 @@ import com.xiaojinzi.component.error.ignore.ActivityResultException;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
-import com.xiaojinzi.component.impl.fragment.RxFragmentManager;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.NavigationDisposable;
@@ -77,19 +76,6 @@ public class RxRouter extends Router {
      */
     public static RxNavigator with(@NonNull Fragment fragment) {
         return new RxNavigator(fragment);
-    }
-
-    public static class RxFragmentNavigator extends FragmentNavigator {
-
-        public RxFragmentNavigator(@NonNull String fragmentFlag) {
-            super(fragmentFlag);
-        }
-
-        @NonNull
-        public Single<Fragment> call() {
-            return RxFragmentManager.with(fragmentFlag, bundle);
-        }
-
     }
 
     public static class RxNavigator extends Navigator {

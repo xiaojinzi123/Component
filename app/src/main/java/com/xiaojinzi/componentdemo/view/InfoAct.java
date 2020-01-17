@@ -9,6 +9,9 @@ import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RouterAnno(
         path = ModuleConfig.App.INFO
 )
@@ -16,12 +19,9 @@ public class InfoAct extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.info_act);
-
+        super.onCreate(savedInstanceState);setContentView(R.layout.info_act);
         String data = ParameterSupport.getString(getIntent(), "data");
         ((TextView) findViewById(R.id.tv)).setText(data);
-
     }
 
 }

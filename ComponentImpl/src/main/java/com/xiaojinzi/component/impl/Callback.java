@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.support.OnRouterCancel;
+import com.xiaojinzi.component.support.OnRouterError;
 
 /**
  * 当路由完成的时候,回调这个接口,这时候的完成不一定是成功的,可能是失败的,成功和失败都表示完成

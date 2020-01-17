@@ -7,6 +7,7 @@ import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
+import com.xiaojinzi.component.support.CustomerIntentCall;
 
 import java.util.Collections;
 import java.util.List;

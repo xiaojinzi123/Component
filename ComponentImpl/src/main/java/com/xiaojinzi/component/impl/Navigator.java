@@ -17,8 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.RouterRxFragment;
+import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.error.ignore.ActivityResultException;
@@ -150,7 +149,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * ......
      * 当你自定义了代理界面, 那你可以使用{@link Router#with()} 或者  {@link Router#with(Context)} 或者
      * {@link Router#with(Fragment)} 得到一个 {@link Navigator}
-     * 然后你就可以使用{@link Navigator#withProxyBundle(Bundle)} 直接导入跳转到真正目标所需的各种参数, 然后
+     * 然后你就可以使用{@link Navigator#proxyBundle(Bundle)} 直接导入跳转到真正目标所需的各种参数, 然后
      * 直接发起跳转, 通过条用 {@link Navigator#forward()} 等方法
      * 示例代码：
      * <pre class="prettyprint">
@@ -159,7 +158,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      *     protected void onCreate(Bundle savedInstanceState) {
      *         super.onCreate(savedInstanceState);
      *         Router.with(this)
-     *               .withProxyBundle(getIntent().getExtras())
+     *               .proxyBundle(getIntent().getExtras())
      *               .forward();
      *     }
      *     ...
@@ -168,7 +167,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      *
      * @see ProxyIntentAct
      */
-    public Navigator withProxyBundle(@NonNull Bundle bundle) {
+    public Navigator proxyBundle(@NonNull Bundle bundle) {
         Utils.checkNullPointer(bundle, "bundle");
         String reqUrl = bundle.getString(ProxyIntentAct.EXTRA_PROXY_INTENT_URL);
         Bundle reqBundle = bundle.getBundle(ProxyIntentAct.EXTRA_PROXY_INTENT_BUNDLE);
@@ -851,14 +850,14 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 fm = ((FragmentActivity) Utils.getActivityFromContext(context)).getSupportFragmentManager();
             }
             // 寻找是否添加过 Fragment
-            RouterRxFragment findRxFragment = (RouterRxFragment) fm.findFragmentByTag(ComponentUtil.FRAGMENT_TAG);
+            RouterFragment findRxFragment = (RouterFragment) fm.findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
             if (findRxFragment == null) {
-                findRxFragment = new RouterRxFragment();
+                findRxFragment = new RouterFragment();
                 fm.beginTransaction()
-                        .add(findRxFragment, ComponentUtil.FRAGMENT_TAG)
+                        .add(findRxFragment, ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG)
                         .commitAllowingStateLoss();
             }
-            final RouterRxFragment rxFragment = findRxFragment;
+            final RouterFragment rxFragment = findRxFragment;
             // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
             // 导航拿到 NavigationDisposable 对象
             // 可能是一个 空实现
@@ -897,8 +896,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
             });
             // 现在可以检测 requestCode 是否重复,除了 RxRouter 之外的地方使用同一个 requestCode 是可以的
-            // 因为 RxRouter 的 requestCode 是直接配合 RouterRxFragment 使用的
-            // 其他地方是用不到 RouterRxFragment,所以可以重复
+            // 因为 RxRouter 的 requestCode 是直接配合 RouterFragment 使用的
+            // 其他地方是用不到 RouterFragment,所以可以重复
             boolean isExist = Help.isExist(finalNavigationDisposable.originalRequest());
             if (isExist) { // 如果存在直接返回错误给 callback
                 throw new NavigationFailException("request&result code is " +
@@ -1330,7 +1329,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     private static class Help {
 
         /**
-         * 和{@link RouterRxFragment} 配套使用
+         * 和{@link RouterFragment} 配套使用
          */
         private static Set<String> mRequestCodeSet = new HashSet<>();
 

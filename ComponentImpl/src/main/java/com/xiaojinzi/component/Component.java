@@ -8,6 +8,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.Inject;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.Utils;
@@ -42,6 +43,8 @@ public class Component {
 
     /**
      * 初始化
+     *
+     * @see Config 初始化的配置对象
      */
     @MainThread
     public static void init(boolean isDebug, @NonNull Config config) {
@@ -54,12 +57,15 @@ public class Component {
         mConfig = config;
         // 注册
         mConfig.getApplication().registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
+        if (mConfig.isOptimizeInit() && mConfig.isAutoRegisterModule()) {
+            ModuleManager.getInstance().autoRegister();
+        }
         isInit = true;
     }
 
     @NonNull
     @AnyThread
-    public static Config getConfig(){
+    public static Config getConfig() {
         return mConfig;
     }
 
@@ -83,52 +89,61 @@ public class Component {
         return mConfig.getApplication();
     }
 
-    private static void checkInit(){
+    private static void checkInit() {
         if (mConfig == null) {
             throw new RuntimeException("you must init Component first!");
         }
     }
 
-    /**
-     * 找到实现类,执行注入
-     *
-     * @param target 目标界面
-     */
     @MainThread
     public static void inject(@NonNull Object target) {
-        injectFromBundle(target, null);
+        inject(target, null, true, true);
+    }
+
+    @MainThread
+    public static void injectAttrValueFromIntent(@NonNull Object target, @Nullable Intent intent) {
+        injectAttrValueFromBundle(target, intent == null ? null : intent.getExtras());
+    }
+
+    @MainThread
+    public static void injectAttrValueFromBundle(@NonNull Object target, @Nullable Bundle bundle) {
+        inject(target, bundle, true, false);
+    }
+
+    @MainThread
+    public static void injectService(@NonNull Object target) {
+        inject(target, null, false, true);
     }
 
     /**
-     * 找到实现类,执行注入
+     * 注入功能
      *
-     * @param target 目标界面
+     * @param target              目标, 可能是任意的类
+     * @param bundle              属性注入的 Bundle 数据提供者
+     * @param isAutoWireAttrValue 是否注入属性值
+     * @param isAutoWireService   是否注入 Service
      */
     @MainThread
-    public static void injectFromIntent(@NonNull Object target, @Nullable Intent intent) {
-        injectFromBundle(target, intent == null ? null : intent.getExtras());
-    }
-
-    /**
-     * 找到实现类,执行注入
-     *
-     * @param target 目标界面
-     */
-    @MainThread
-    public static void injectFromBundle(@NonNull Object target, @Nullable Bundle bundle) {
+    private static void inject(@NonNull Object target, @Nullable Bundle bundle, boolean isAutoWireAttrValue, boolean isAutoWireService) {
         Utils.checkMainThread();
         Utils.checkNullPointer(target, "target");
         String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;
         try {
             Class<?> targetInjectClass = Class.forName(injectClassName);
             Inject inject = (Inject) targetInjectClass.newInstance();
-            if (bundle == null) {
-                inject.inject(target);
-            } else {
-                inject.inject(target, bundle);
+            if (isAutoWireService) {
+                inject.injectService(target);
             }
+            if (isAutoWireAttrValue) {
+                if (bundle == null) {
+                    inject.injectAttrValue(target);
+                } else {
+                    inject.injectAttrValue(target, bundle);
+                }
+            }
+
         } catch (Exception ignore) {
-            LogUtil.log(target.getClass().getName(), "field inject fail");
+            LogUtil.log(target.getClass().getName() + " field inject fail");
         }
     }
 

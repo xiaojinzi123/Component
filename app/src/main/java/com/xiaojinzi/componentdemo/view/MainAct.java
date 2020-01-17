@@ -13,7 +13,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
-
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.anno.RouterAnno;
@@ -49,7 +48,7 @@ public class MainAct extends AppCompatActivity {
     private void startProxyRouter(@Nullable Bundle bundle) {
         if (Router.haveProxyIntent(bundle)) {
             Router.with(this)
-                    .withProxyBundle(bundle)
+                    .proxyBundle(bundle)
                     .forward();
         }
     }

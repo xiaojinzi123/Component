@@ -35,7 +35,7 @@ public interface RouterInterceptor {
     void intercept(@NonNull Chain chain) throws Exception;
 
     /**
-     * 执行器
+     * 拦截器的执行器
      */
     interface Chain {
 

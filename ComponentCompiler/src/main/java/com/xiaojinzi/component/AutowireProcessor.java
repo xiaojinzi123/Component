@@ -8,7 +8,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.xiaojinzi.component.anno.FieldAutowiredAnno;
+import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -39,7 +39,7 @@ import javax.lang.model.type.TypeMirror;
 @AutoService(Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 // 针对指定注解起作用
-@SupportedAnnotationTypes({ComponentUtil.FIELDAUTOWIREDANNO_CLASS_NAME, ComponentUtil.SERVICEAUTOWIREDANNO_CLASS_NAME})
+@SupportedAnnotationTypes({ComponentUtil.ATTR_VALUE_AUTOWIREDANNO_CLASS_NAME, ComponentUtil.SERVICEAUTOWIREDANNO_CLASS_NAME})
 public class AutowireProcessor extends BaseProcessor {
 
     private TypeElement charsequenceTypeElement;
@@ -102,7 +102,7 @@ public class AutowireProcessor extends BaseProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         if (CollectionUtils.isNotEmpty(set)) {
-            final Set<? extends Element> filedAutowiredElements = roundEnvironment.getElementsAnnotatedWith(FieldAutowiredAnno.class);
+            final Set<? extends Element> filedAutowiredElements = roundEnvironment.getElementsAnnotatedWith(AttrValueAutowiredAnno.class);
             final Set<? extends Element> serviceAutowiredElements = roundEnvironment.getElementsAnnotatedWith(ServiceAutowiredAnno.class);
             final Set<Element> annotatedElements = new HashSet<>();
             annotatedElements.addAll(filedAutowiredElements);
@@ -169,8 +169,9 @@ public class AutowireProcessor extends BaseProcessor {
                 .classBuilder(className + ComponentConstants.INJECT_SUFFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addSuperinterface(ParameterizedTypeName.get(injectClassName, TypeName.get(mElements.getTypeElement(fullClassName).asType())))
-                .addMethod(injectMethodForView(targetClass))
-                .addMethod(injectMethod(targetClass, parameterFieldSet))
+                .addMethod(injectAttrValueMethod1(targetClass, parameterFieldSet))
+                .addMethod(injectAttrValueMethod2(targetClass, parameterFieldSet))
+                .addMethod(injectServiceMethod(targetClass, parameterFieldSet))
                 .addAnnotation(mClassNameKeep);
         try {
             JavaFile.builder(pkg, classBuilder.build()
@@ -180,9 +181,9 @@ public class AutowireProcessor extends BaseProcessor {
         }
     }
 
-    private MethodSpec injectMethodForView(TypeElement targetClass) {
+    private MethodSpec injectAttrValueMethod1(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
         MethodSpec.Builder methodBuilder = MethodSpec
-                .methodBuilder("inject")
+                .methodBuilder("injectAttrValue")
                 .addJavadoc("属性注入\n")
                 .addParameter(
                         ParameterSpec
@@ -192,16 +193,16 @@ public class AutowireProcessor extends BaseProcessor {
                 .addModifiers(Modifier.PUBLIC);
         // 如果是 Activity
         if (mTypes.isSubtype(targetClass.asType(), activityTypeMirror)) {
-            methodBuilder.addStatement("inject(target, target.getIntent().getExtras())");
+            methodBuilder.addStatement("injectAttrValue(target, target.getIntent().getExtras())");
         } else if (mTypes.isSubtype(targetClass.asType(), fragmentTypeMirror)) {
-            methodBuilder.addStatement("inject(target, target.getArguments())");
+            methodBuilder.addStatement("injectAttrValue(target, target.getArguments())");
         }
         return methodBuilder.build();
     }
 
-    private MethodSpec injectMethod(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
+    private MethodSpec injectAttrValueMethod2(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
         MethodSpec.Builder methodBuilder = MethodSpec
-                .methodBuilder("inject")
+                .methodBuilder("injectAttrValue")
                 .addJavadoc("属性注入\n")
                 .addParameter(
                         ParameterSpec
@@ -214,18 +215,14 @@ public class AutowireProcessor extends BaseProcessor {
                                 .build()
                 )
                 .addModifiers(Modifier.PUBLIC);
-        boolean isAutowireParameter = true;
-        // 如果是 Activity
-        if (mTypes.isSubtype(targetClass.asType(), activityTypeMirror)) {
-        } else if (mTypes.isSubtype(targetClass.asType(), fragmentTypeMirror)) {
-        } else {
-            isAutowireParameter = false;
-        }
+        methodBuilder.beginControlFlow("if(bundle == null)");
+        methodBuilder.addStatement("return");
+        methodBuilder.endControlFlow();
+        // 循环没一个要注入的字段
         for (VariableElement variableElement : parameterFieldSet) {
             // 生成一个不重复的参数名字
             String parameterName = "target." + variableElement.getSimpleName();
             generateParameterCodeForInject(
-                    isAutowireParameter,
                     variableElement, methodBuilder,
                     parameterName, "bundle"
             );
@@ -233,74 +230,95 @@ public class AutowireProcessor extends BaseProcessor {
         return methodBuilder.build();
     }
 
-    public void generateParameterCodeForInject(boolean isAutowireParameter,
-                                               VariableElement variableElement,
+    private MethodSpec injectServiceMethod(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
+        MethodSpec.Builder methodBuilder = MethodSpec
+                .methodBuilder("injectService")
+                .addJavadoc("属性注入\n")
+                .addParameter(
+                        ParameterSpec
+                                .builder(TypeName.get(targetClass.asType()), "target")
+                                .build()
+                )
+                .addModifiers(Modifier.PUBLIC);
+        // 循环没一个要注入的字段
+        for (VariableElement variableElement : parameterFieldSet) {
+            // 生成一个不重复的参数名字
+            String parameterName = "target." + variableElement.getSimpleName();
+            generateParameterCodeForInjectService(
+                    variableElement, methodBuilder,
+                    parameterName
+            );
+        }
+        return methodBuilder.build();
+    }
+
+    public void generateParameterCodeForInject(VariableElement variableElement,
                                                MethodSpec.Builder methodBuilder,
                                                String parameterName,
                                                String bundleCallStr) {
-        ServiceAutowiredAnno serviceAutowiredAnno = variableElement.getAnnotation(ServiceAutowiredAnno.class);
-        FieldAutowiredAnno fieldAutowiredAnno = variableElement.getAnnotation(FieldAutowiredAnno.class);
+
+        AttrValueAutowiredAnno attrValueAutowiredAnno = variableElement.getAnnotation(AttrValueAutowiredAnno.class);
 
         TypeMirror variableTypeMirror = variableElement.asType();
         TypeName parameterTypeName = ClassName.get(variableTypeMirror);
 
-        if (isAutowireParameter && fieldAutowiredAnno != null) {
+        if (attrValueAutowiredAnno != null) {
             if (parameterTypeName.equals(mClassNameString)) { // 如果是一个 String
-                methodBuilder.addStatement("$N = $T.getString($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getString($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (parameterTypeName.equals(charsequenceTypeName)) { // 如果是一个 charsequence
-                methodBuilder.addStatement("$N = $T.getCharSequence($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getCharSequence($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (parameterTypeName.equals(ClassName.CHAR) || parameterTypeName.equals(ClassName.CHAR.box())) { // 如果是一个 char or Char
-                methodBuilder.addStatement("$N = $T.getChar($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getChar($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (parameterTypeName.equals(ClassName.BYTE) || parameterTypeName.equals(ClassName.BYTE.box())) { // 如果是一个byte or Byte
-                methodBuilder.addStatement("$N = $T.getByte($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getByte($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (parameterTypeName.equals(ClassName.SHORT) || parameterTypeName.equals(ClassName.SHORT.box())) { // 如果是一个short or Short
-                methodBuilder.addStatement("$N = $T.getShort($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getShort($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (parameterTypeName.equals(ClassName.INT) || parameterTypeName.equals(ClassName.INT.box())) { // 如果是一个int or Integer
-                methodBuilder.addStatement("$N = $T.getInt($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getInt($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (parameterTypeName.equals(ClassName.LONG) || parameterTypeName.equals(ClassName.LONG.box())) { // 如果是一个long or Long
-                methodBuilder.addStatement("$N = $T.getLong($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getLong($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (parameterTypeName.equals(ClassName.FLOAT) || parameterTypeName.equals(ClassName.FLOAT.box())) { // 如果是一个float or Float
-                methodBuilder.addStatement("$N = $T.getFloat($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getFloat($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (parameterTypeName.equals(ClassName.DOUBLE) || parameterTypeName.equals(ClassName.DOUBLE.box())) { // 如果是一个double or Double
-                methodBuilder.addStatement("$N = $T.getDouble($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getDouble($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (parameterTypeName.equals(ClassName.BOOLEAN) || parameterTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是一个boolean or Boolean
-                methodBuilder.addStatement("$N = $T.getBoolean($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getBoolean($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (stringArrayListParameterizedTypeName.equals(TypeName.get(variableTypeMirror))) {
-                methodBuilder.addStatement("$N = $T.getStringArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getStringArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (integerArrayListParameterizedTypeName.equals(TypeName.get(variableTypeMirror))) {
-                methodBuilder.addStatement("$N = $T.getIntegerArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getIntegerArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (parcelableArrayListParameterizedTypeName.equals(TypeName.get(variableTypeMirror))) {
-                methodBuilder.addStatement("$N = $T.getParcelableArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getParcelableArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (charsequenceArrayListParameterizedTypeName.equals(TypeName.get(variableTypeMirror))) {
-                methodBuilder.addStatement("$N = $T.getCharSequenceArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                methodBuilder.addStatement("$N = $T.getCharSequenceArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (variableTypeMirror instanceof ArrayType) {
                 ArrayType parameterArrayType = (ArrayType) variableTypeMirror;
                 TypeName parameterComponentTypeName = ClassName.get(parameterArrayType.getComponentType());
                 // 如果是一个 String[]
                 if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
-                    methodBuilder.addStatement("$N = $T.getStringArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getStringArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterArrayType.getComponentType().equals(charsequenceTypeElement.asType())) {
-                    methodBuilder.addStatement("$N = $T.getCharSequenceArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getCharSequenceArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
-                    methodBuilder.addStatement("$N = $T.getStringArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getStringArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterComponentTypeName.equals(ClassName.BYTE) || parameterComponentTypeName.equals(ClassName.BYTE.box())) { // 如果是 byte
-                    methodBuilder.addStatement("$N = $T.getByteArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getByteArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterComponentTypeName.equals(ClassName.CHAR) || parameterComponentTypeName.equals(ClassName.CHAR.box())) { // 如果是 char
-                    methodBuilder.addStatement("$N = $T.getCharArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getCharArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterComponentTypeName.equals(ClassName.SHORT) || parameterComponentTypeName.equals(ClassName.SHORT.box())) { // 如果是 short
-                    methodBuilder.addStatement("$N = $T.getShortArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getShortArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterComponentTypeName.equals(ClassName.INT) || parameterComponentTypeName.equals(ClassName.INT.box())) { // 如果是 int
-                    methodBuilder.addStatement("$N = $T.getIntArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getIntArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterComponentTypeName.equals(ClassName.LONG) || parameterComponentTypeName.equals(ClassName.LONG.box())) { // 如果是 long
-                    methodBuilder.addStatement("$N = $T.getLongArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getLongArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterComponentTypeName.equals(ClassName.FLOAT) || parameterComponentTypeName.equals(ClassName.FLOAT.box())) { // 如果是 float
-                    methodBuilder.addStatement("$N = $T.getFloatArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getFloatArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterComponentTypeName.equals(ClassName.DOUBLE) || parameterComponentTypeName.equals(ClassName.DOUBLE.box())) { // 如果是 double
-                    methodBuilder.addStatement("$N = $T.getDoubleArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getDoubleArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterComponentTypeName.equals(ClassName.BOOLEAN) || parameterComponentTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是 boolean
-                    methodBuilder.addStatement("$N = $T.getBooleanArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getBooleanArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (mTypes.isSubtype(parameterArrayType.getComponentType(), parcelableTypeMirror)) {  // 如果是 Parcelable
-                    methodBuilder.addStatement("$N = $T.getParcelableArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, fieldAutowiredAnno.value(), parameterName);
+                    methodBuilder.addStatement("$N = $T.getParcelableArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else {
                     throw new ProcessException("can't to resolve unknow type parameter(" + variableElement.getEnclosingElement().getSimpleName() + "#" + variableElement.getSimpleName().toString() + ")");
                 }
@@ -309,22 +327,38 @@ public class AutowireProcessor extends BaseProcessor {
                 methodBuilder.addStatement("boolean $N = false", isHaveValueName);
                 // 优先获取 parcelable
                 if (mTypes.isSubtype(variableTypeMirror, parcelableTypeMirror)) {
-                    methodBuilder.beginControlFlow("if ($N.containsKey($S) && $N.getParcelable($S) != null)", bundleCallStr, fieldAutowiredAnno.value(), bundleCallStr, fieldAutowiredAnno.value());
-                    methodBuilder.addStatement("$N = ($T) $N.getParcelable($S)", parameterName, variableTypeMirror, bundleCallStr, fieldAutowiredAnno.value());
+                    methodBuilder.beginControlFlow("if ($N.containsKey($S) && $N.getParcelable($S) != null)", bundleCallStr, attrValueAutowiredAnno.value(), bundleCallStr, attrValueAutowiredAnno.value());
+                    methodBuilder.addStatement("$N = ($T) $N.getParcelable($S)", parameterName, variableTypeMirror, bundleCallStr, attrValueAutowiredAnno.value());
                     methodBuilder.addStatement("$N = true", isHaveValueName);
                     methodBuilder.endControlFlow();
                 }
                 if (mTypes.isSubtype(variableTypeMirror, serializableTypeMirror)) {
-                    methodBuilder.beginControlFlow("if (!$N && $N.containsKey($S) && $N.getSerializable($S) != null) ", isHaveValueName, bundleCallStr, fieldAutowiredAnno.value(), bundleCallStr, fieldAutowiredAnno.value());
-                    methodBuilder.addStatement("$N = ($T) $N.getSerializable($S)", parameterName, variableTypeMirror, bundleCallStr, fieldAutowiredAnno.value());
+                    methodBuilder.beginControlFlow("if (!$N && $N.containsKey($S) && $N.getSerializable($S) != null) ", isHaveValueName, bundleCallStr, attrValueAutowiredAnno.value(), bundleCallStr, attrValueAutowiredAnno.value());
+                    methodBuilder.addStatement("$N = ($T) $N.getSerializable($S)", parameterName, variableTypeMirror, bundleCallStr, attrValueAutowiredAnno.value());
                     methodBuilder.endControlFlow();
                 }
             }
-        } else if (serviceAutowiredAnno != null) {
+        }
+
+    }
+
+    public void generateParameterCodeForInjectService(
+                                               VariableElement variableElement,
+                                               MethodSpec.Builder methodBuilder,
+                                               String parameterName) {
+
+        ServiceAutowiredAnno serviceAutowiredAnno = variableElement.getAnnotation(ServiceAutowiredAnno.class);
+
+        TypeMirror variableTypeMirror = variableElement.asType();
+        TypeName parameterTypeName = ClassName.get(variableTypeMirror);
+
+        if (serviceAutowiredAnno != null) {
             methodBuilder.addComment("may be null here");
             methodBuilder.addStatement("$N = $T.get($T.class)", parameterName, serviceTypeElement, parameterTypeName);
         }
 
     }
+
+
 
 }

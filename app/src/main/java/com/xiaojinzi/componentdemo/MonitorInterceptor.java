@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.xiaojinzi.component.anno.ConditionalAnno;
 import com.xiaojinzi.component.anno.GlobalInterceptorAnno;
-import com.xiaojinzi.component.condition.Condition;
+import com.xiaojinzi.component.support.Condition;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 
 /**

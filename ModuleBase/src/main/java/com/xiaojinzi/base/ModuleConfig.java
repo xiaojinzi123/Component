@@ -65,6 +65,7 @@ public class ModuleConfig {
         public static final String TEST_INJECT3 = "testInject3";
         public static final String TEST_INJECT4 = "testInject4";
         public static final String TEST_PUT_QUERY_WITH_URL = "testPutQueryWithUrl";
+        public static final String TEST_FRAGMENT = "component1.fragment";
 
     }
 
