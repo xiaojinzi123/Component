@@ -8,6 +8,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.Inject;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.Utils;
@@ -43,7 +44,7 @@ public class Component {
     /**
      * 初始化
      *
-     * @see Config
+     * @see Config 初始化的配置对象
      */
     @MainThread
     public static void init(boolean isDebug, @NonNull Config config) {
@@ -56,6 +57,9 @@ public class Component {
         mConfig = config;
         // 注册
         mConfig.getApplication().registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
+        if (mConfig.isOptimizeInit()) {
+            ModuleManager.getInstance().autoRegister();
+        }
         isInit = true;
     }
 

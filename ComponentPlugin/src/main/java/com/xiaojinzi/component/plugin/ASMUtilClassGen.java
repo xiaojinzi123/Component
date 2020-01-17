@@ -24,6 +24,7 @@ public class ASMUtilClassGen implements Opcodes {
         );
 
         writeStructureMethod(cw);
+        writeModuleNameMethod(cw, applicationMap);
         writeApplicationMethod(cw, applicationMap);
         writeInterceptorMethod(cw, interceptorMap);
         writeRouterMethod(cw, routerMap);
@@ -48,6 +49,47 @@ public class ASMUtilClassGen implements Opcodes {
         methodVisitor.visitLocalVariable("this", "Lcom/xiaojinzi/component/support/ASMUtil;", null, label0, label1, 0);
         methodVisitor.visitMaxs(1, 1);
         methodVisitor.visitEnd();
+    }
+
+    private static void writeModuleNameMethod(ClassVisitor cw, Map<String, String> applicationMap) {
+
+        MethodVisitor methodVisitor = cw.visitMethod(ACC_PUBLIC | ACC_STATIC,
+                "getModuleNames", "()Ljava/util/List;", "()Ljava/util/List<Ljava/lang/String;>;", null);
+        methodVisitor.visitCode();
+        // 开始的标记
+        Label labelStart = new Label();
+        // 标记开始
+        methodVisitor.visitLabel(labelStart);
+        // 创建 对象 : List<String> result = new ArrayList<>();
+        methodVisitor.visitTypeInsn(NEW, "java/util/ArrayList");
+        methodVisitor.visitInsn(DUP);
+        methodVisitor.visitMethodInsn(INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V", false);
+        methodVisitor.visitVarInsn(ASTORE, 0);
+
+        // 开始的标记
+        Label label1 = new Label();
+
+        Set<Map.Entry<String, String>> entries = applicationMap.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            // 拿到名称
+            String name = entry.getKey();
+
+            methodVisitor.visitVarInsn(ALOAD, 0);
+            methodVisitor.visitLdcInsn(name);
+            methodVisitor.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
+            methodVisitor.visitInsn(POP);
+
+        }
+
+        methodVisitor.visitVarInsn(ALOAD, 0);
+        methodVisitor.visitInsn(ARETURN);
+
+        // 结束的标记
+        Label labelEnd = new Label();
+        methodVisitor.visitLabel(labelEnd);
+        methodVisitor.visitLocalVariable("result", "Ljava/util/List;", "Ljava/util/List<Ljava/lang/String;>;", label1, labelEnd, 0);
+        methodVisitor.visitEnd();
+
     }
 
     private static void writeApplicationMethod(ClassVisitor cw, Map<String, String> applicationMap) {

@@ -16,6 +16,7 @@ import com.xiaojinzi.component.support.Utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,6 +77,17 @@ public class ModuleManager implements IComponentCenterApplication {
     }
 
     /**
+     * 自动注册, 需要开启 {@link com.xiaojinzi.component.Config.Builder#optimizeInit(boolean)}
+     * 表示使用 Gradle 插件优化初始化
+     */
+    public void autoRegister() {
+        List<String> moduleNames = ASMUtil.getModuleNames();
+        if (moduleNames != null && !moduleNames.isEmpty()) {
+            registerArr(moduleNames.toArray(new String[0]));
+        }
+    }
+
+    /**
      * 注册业务模块, 可以传多个名称
      *
      * @param hosts host 的名称数组
@@ -124,10 +136,10 @@ public class ModuleManager implements IComponentCenterApplication {
     public static IComponentHostApplication findModuleApplication(@NonNull String host) {
         IComponentHostApplication result = null;
         if (Component.getConfig().isOptimizeInit()) {
-            LogUtil.log("Componnet", host + " will try to load by bytecode");
+            LogUtil.log("Componnet", "\"" + host + "\" will try to load by bytecode");
             result = ASMUtil.findModuleApplicationAsmImpl(host);
         } else {
-            LogUtil.log("Componnet", host + " will try to load by reflection");
+            LogUtil.log("Componnet", "\"" + host + "\" will try to load by reflection");
             if (result == null) {
                 try {
                     // 先找正常的
