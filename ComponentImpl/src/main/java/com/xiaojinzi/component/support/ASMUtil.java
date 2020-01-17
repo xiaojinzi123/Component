@@ -1,6 +1,5 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.support.CheckClassName;
@@ -63,9 +62,8 @@ public class ASMUtil {
     @Nullable
     public static List<String> getModuleNames() {
         List<String> result = new ArrayList<>();
-        result.add("user");
-        result.add("module1");
-        result.add("help");
+        // 示例代码
+        // result.add("user");
         return result;
     }
 
