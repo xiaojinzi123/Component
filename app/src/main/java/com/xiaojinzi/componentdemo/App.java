@@ -24,6 +24,7 @@ public class App extends Application {
                 Config.with(this)
                         .defaultScheme("router")
                         .optimizeInit(true)
+                        .autoRegisterModule(true)
                         .build()
         );
         // 装载各个业务组件
@@ -35,7 +36,7 @@ public class App extends Application {
         );*/
         long endTime = System.currentTimeMillis();
 
-        LogUtil.log("Componnet", "---------------------------------耗时：" + (endTime - startTime));
+        LogUtil.log("---------------------------------耗时：" + (endTime - startTime));
 
         // 忽略一些不想处理的错误
         RxErrorIgnoreUtil.ignoreError();

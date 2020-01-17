@@ -18,6 +18,7 @@ public class Config {
     private String defaultScheme;
 
     private boolean isOptimizeInit;
+    private boolean isAutoRegisterModule;
     private boolean isTipWhenUseApplication;
     private boolean isUseRouteRepeatCheckInterceptor = true;
     private long routeRepeatCheckDuration = 1000;
@@ -25,6 +26,7 @@ public class Config {
     private Config(@NonNull Builder builder) {
         this.application = builder.application;
         this.isOptimizeInit = builder.isOptimizeInit;
+        this.isAutoRegisterModule = builder.isAutoRegisterModule;
         this.isTipWhenUseApplication = builder.isTipWhenUseApplication;
         this.defaultScheme = builder.defaultScheme;
         this.isUseRouteRepeatCheckInterceptor = builder.isUseRouteRepeatCheckInterceptor;
@@ -43,6 +45,10 @@ public class Config {
 
     public boolean isOptimizeInit() {
         return isOptimizeInit;
+    }
+
+    public boolean isAutoRegisterModule() {
+        return isAutoRegisterModule;
     }
 
     public boolean isTipWhenUseApplication() {
@@ -67,6 +73,7 @@ public class Config {
         private Application application;
         private String defaultScheme = "router";
         private boolean isOptimizeInit = false;
+        private boolean isAutoRegisterModule = false;
         private boolean isTipWhenUseApplication = true;
         private boolean isUseRouteRepeatCheckInterceptor = true;
         private long routeRepeatCheckDuration = 1000;
@@ -86,6 +93,11 @@ public class Config {
 
         public Builder optimizeInit(boolean isOptimizeInit) {
             this.isOptimizeInit = isOptimizeInit;
+            return this;
+        }
+
+        public Builder autoRegisterModule(boolean isAutoRegisterModule) {
+            this.isAutoRegisterModule = isAutoRegisterModule;
             return this;
         }
 
@@ -117,6 +129,11 @@ public class Config {
             // 参数检查
             Utils.checkNullPointer(this.application, "application");
             Utils.checkNullPointer(this.defaultScheme, "application");
+            if (this.isAutoRegisterModule) {
+                if (!this.isOptimizeInit) {
+                    throw new UnsupportedOperationException("you must call optimizeInit(true) method");
+                }
+            }
             if (isUsed) {
                 throw new UnsupportedOperationException("this builder only can build once!");
             }

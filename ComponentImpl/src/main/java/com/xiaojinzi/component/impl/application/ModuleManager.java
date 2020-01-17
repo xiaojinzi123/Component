@@ -55,6 +55,9 @@ public class ModuleManager implements IComponentCenterApplication {
 
     @Override
     public void register(@NonNull IComponentHostApplication moduleApp) {
+        if (moduleApplicationMap.containsKey(moduleApp.getHost())) {
+            LogUtil.loge("The module \"" + moduleApp.getHost() + "\" is already registered");
+        }
         moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
         moduleApp.onCreate(Component.getApplication());
     }
@@ -81,6 +84,9 @@ public class ModuleManager implements IComponentCenterApplication {
      * 表示使用 Gradle 插件优化初始化
      */
     public void autoRegister() {
+        if (!Component.getConfig().isOptimizeInit()) {
+            LogUtil.logw("you can't use this method to register module. Because you not turn on 'optimizeInit' by calling method 'Config.Builder.optimizeInit(true)' when you init");
+        }
         List<String> moduleNames = ASMUtil.getModuleNames();
         if (moduleNames != null && !moduleNames.isEmpty()) {
             registerArr(moduleNames.toArray(new String[0]));
@@ -136,10 +142,10 @@ public class ModuleManager implements IComponentCenterApplication {
     public static IComponentHostApplication findModuleApplication(@NonNull String host) {
         IComponentHostApplication result = null;
         if (Component.getConfig().isOptimizeInit()) {
-            LogUtil.log("Componnet", "\"" + host + "\" will try to load by bytecode");
+            LogUtil.log("\"" + host + "\" will try to load by bytecode");
             result = ASMUtil.findModuleApplicationAsmImpl(host);
         } else {
-            LogUtil.log("Componnet", "\"" + host + "\" will try to load by reflection");
+            LogUtil.log("\"" + host + "\" will try to load by reflection");
             if (result == null) {
                 try {
                     // 先找正常的

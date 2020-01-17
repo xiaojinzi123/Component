@@ -57,7 +57,7 @@ public class Component {
         mConfig = config;
         // 注册
         mConfig.getApplication().registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
-        if (mConfig.isOptimizeInit()) {
+        if (mConfig.isOptimizeInit() && mConfig.isAutoRegisterModule()) {
             ModuleManager.getInstance().autoRegister();
         }
         isInit = true;
@@ -143,7 +143,7 @@ public class Component {
             }
 
         } catch (Exception ignore) {
-            LogUtil.log(target.getClass().getName(), "field inject fail");
+            LogUtil.log(target.getClass().getName() + " field inject fail");
         }
     }
 
