@@ -92,6 +92,12 @@ public class ProxyIntentBuilder extends RouterRequest.URIBuilder {
     }
 
     @Override
+    public ProxyIntentBuilder userInfo(@NonNull String userInfo) {
+        super.userInfo(userInfo);
+        return this;
+    }
+
+    @Override
     public ProxyIntentBuilder host(@NonNull String host) {
         super.host(host);
         return this;

@@ -255,6 +255,12 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
+    public Navigator userInfo(@NonNull String userInfo) {
+        super.userInfo(userInfo);
+        return this;
+    }
+
+    @Override
     public Navigator host(@NonNull String host) {
         super.host(host);
         return this;

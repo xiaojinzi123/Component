@@ -23,6 +23,7 @@ import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RequestCodeAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
 import com.xiaojinzi.component.anno.router.UseInteceptorAnno;
+import com.xiaojinzi.component.anno.router.UserInfoAnno;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -226,6 +227,7 @@ public class RouterApiProcessor extends BaseProcessor {
         // 方法的一个调用 path,出错的时候展示用
         String methodPath = executableElement.getEnclosingElement().getSimpleName() + "#" + executableElement.getSimpleName();
 
+        UserInfoAnno userInfoAnnotation = executableElement.getAnnotation(UserInfoAnno.class);
         HostAnno hostAnnotation = executableElement.getAnnotation(HostAnno.class);
         PathAnno pathAnnotation = executableElement.getAnnotation(PathAnno.class);
         HostAndPathAnno hostAndPathAnnotation = executableElement.getAnnotation(HostAndPathAnno.class);
@@ -240,6 +242,7 @@ public class RouterApiProcessor extends BaseProcessor {
         // intent category
         CategoryAnno categoryAnnotation = executableElement.getAnnotation(CategoryAnno.class);
 
+        String userInfo = userInfoAnnotation == null ? null : userInfoAnnotation.value();
         String host = hostAnnotation == null ? defaultHost : hostAnnotation.value();
         String path = pathAnnotation == null ? null : pathAnnotation.value();
         String hostAndPath = hostAndPathAnnotation == null ? null : hostAndPathAnnotation.value();
@@ -489,6 +492,11 @@ public class RouterApiProcessor extends BaseProcessor {
         } else {
             args.add("");
             // throw new ProcessException("do you forget to add a 'Context' or 'Activity' or 'android.support.v4.app.Fragment' parameter to method(" + methodPath + ") ?");
+        }
+
+        if (userInfo != null) {
+            routerStatement.append("\n.userInfo($S)");
+            args.add(userInfo);
         }
 
         // host 和 path

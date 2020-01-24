@@ -95,10 +95,6 @@ public class ComponentUtil {
         return new String(ch);
     }
 
-    public static String hostSolve(String host) {
-
-    }
-
     public static String genRouterApiImplClassName(Class apiClass) {
         return apiClass.getName() + UIROUTERAPI;
     }

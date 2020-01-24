@@ -85,4 +85,10 @@ public class ComponentConstants {
      */
     public static final String INJECT_SUFFIX = "_inject";
 
+    /**
+     * 整串字符串放到 https://jex.im/regulex 就可以看到效果
+     */
+    public static final String HOST_REGEX =
+            "^([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*$";
+
 }

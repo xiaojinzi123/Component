@@ -1,8 +1,8 @@
 package com.xiaojinzi.component.support;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.app.Activity;
 import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.component.anno.support.CheckClassName;
@@ -34,5 +34,12 @@ public interface Inject<T> {
      * @param target 目标
      */
     void injectService(@NonNull T target);
+
+    /**
+     * 注入 Uri
+     *
+     * @param target 目标
+     */
+    void injectUri(@NonNull T target);
 
 }

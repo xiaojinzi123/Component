@@ -116,10 +116,12 @@ public class RouterRequest {
      * 1. {@link android.app.Application}
      * 2. {@link Activity}
      * <p>
-     * 如果返回的是 {@link Activity} 的 {@link Context}, 当 {@link Activity} 销毁了就会返回 null
+     * 如果返回的是 {@link Activity} 的 {@link Context},
+     * 当 {@link Activity} 销毁了就会返回 null
      * 另外就是返回 {@link android.app.Application}
      *
-     * @return {@link Context}, 可能为 null
+     * @return {@link Context}, 可能为 null, null 就只有一种情况就是界面销毁了.
+     * 构建 {@link RouterRequest} 的时候已经保证了
      */
     @Nullable
     public final Context getRawContext() {
@@ -188,6 +190,7 @@ public class RouterRequest {
     /**
      * 首先调用 {@link #getRawActivity()} 尝试获取此次用户传入的 Context 中是否有关联的 Activity
      * 如果为空, 则尝试获取运行中的所有 Activity 中顶层的那个
+     *
      * @return
      */
     @Nullable
@@ -434,6 +437,12 @@ public class RouterRequest {
         }
 
         @Override
+        public Builder userInfo(@NonNull String userInfo) {
+            super.userInfo(userInfo);
+            return this;
+        }
+
+        @Override
         public Builder host(@NonNull String host) {
             super.host(host);
             return this;
@@ -662,6 +671,9 @@ public class RouterRequest {
         @Nullable
         protected String scheme;
 
+        @Nullable
+        protected String userInfo;
+
         @NonNull
         protected String host;
 
@@ -697,6 +709,12 @@ public class RouterRequest {
             } else {
                 Utils.debugThrowException(new IllegalArgumentException(hostAndPath + " is invalid"));
             }
+            return this;
+        }
+
+        public URIBuilder userInfo(@NonNull String userInfo) {
+            Utils.checkStringNullPointer(userInfo, "userInfo");
+            this.userInfo = userInfo;
             return this;
         }
 
@@ -752,16 +770,25 @@ public class RouterRequest {
             Uri result = null;
             if (builder.url == null) {
                 Uri.Builder uriBuilder = new Uri.Builder();
-                uriBuilder
-                        .scheme(TextUtils.isEmpty(builder.scheme) ?
-                                Component.getConfig().getDefaultScheme() : builder.scheme)
-                        // host 一定不能为空
-                        .authority(
+                StringBuffer authoritySB = new StringBuffer();
+                if (userInfo != null || !"".equals(userInfo)) {
+                    authoritySB
+                            .append(Uri.encode(userInfo))
+                            .append("@");
+                }
+                authoritySB.append(
+                        Uri.encode(
                                 Utils.checkStringNullPointer(
                                         builder.host, "host",
                                         "do you forget call host() to set host?"
                                 )
                         )
+                );
+                uriBuilder
+                        .scheme(TextUtils.isEmpty(builder.scheme) ?
+                                Component.getConfig().getDefaultScheme() : builder.scheme)
+                        // host 一定不能为空
+                        .encodedAuthority(authoritySB.toString())
                         .path(
                                 Utils.checkStringNullPointer(
                                         builder.path, "path",

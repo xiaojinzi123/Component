@@ -7,6 +7,7 @@ import com.xiaojinzi.component.anno.router.AfterActionAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
+import com.xiaojinzi.component.anno.router.UserInfoAnno;
 import com.xiaojinzi.component.support.Action;
 
 import io.reactivex.Completable;
@@ -15,6 +16,7 @@ import io.reactivex.Completable;
 @HostAnno(ModuleConfig.App.NAME)
 public interface AppApi {
 
+    @UserInfoAnno("xiaojinzi")
     @PathAnno(ModuleConfig.App.TEST_ROUTER)
     void goToTestRouter(@AfterActionAnno Action afterAction);
 

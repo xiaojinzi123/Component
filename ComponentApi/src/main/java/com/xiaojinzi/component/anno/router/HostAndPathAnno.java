@@ -6,10 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 这是一个标识某一个接口方法是对应哪个 host 和 path
+ * 详情解释请看 {@link UserInfoAnno}
  *
+ * @see UserInfoAnno
  * @see HostAnno
  * @see PathAnno
+ * @see HostAndPathAnno
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)

@@ -20,11 +20,11 @@ import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
-import com.xiaojinzi.component.support.ASMUtil;
-import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.router.IComponentCenterRouter;
 import com.xiaojinzi.component.router.IComponentHostRouter;
+import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.ParameterSupport;
+import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.support.Utils;
 
 import java.util.ArrayList;
@@ -122,17 +122,14 @@ public class RouterCenter implements IComponentCenterRouter {
             throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nRouter.with(Context) or Router.with(Fragment)");
         }
         // do startActivity
-        Context context = request.getRawContext();
+        Context rawContext = request.getRawContext();
         // 如果 Context 和 Fragment 中的 Context 都是 null
-        if (context == null) {
+        if (rawContext == null) {
             throw new NavigationFailException("is your fragment or Activity is Destoried?");
         }
-        // 转化 query 到 bundle,这句话不能随便放,因为这句话之前是因为拦截器可以修改 routerRequest 对象中的参数或者整个对象
-        // 所以直接当所有拦截器都执行完毕的时候,在确定要跳转了,这个 query 参数可以往 bundle 里面存了
-        ParameterSupport.putQueryBundleToBundle(request.bundle, request.uri);
         Intent intent = null;
         if (target.getTargetClass() != null) {
-            intent = new Intent(context, target.getTargetClass());
+            intent = new Intent(rawContext, target.getTargetClass());
         } else if (target.getCustomerIntentCall() != null) {
             intent = target.getCustomerIntentCall().get(request);
         }
@@ -151,7 +148,14 @@ public class RouterCenter implements IComponentCenterRouter {
     @MainThread
     private void doStartIntent(@NonNull RouterRequest request, Intent intent) throws Exception {
         // 前置工作
-        // 所有的参数存到 Intent 中
+
+        // 转化 query 到 bundle,这句话不能随便放
+        // 因为这句话之前是因为拦截器可以修改 routerRequest 对象中的参数或者整个对象
+        // 所以直接当所有拦截器都执行完毕的时候,在确定要跳转了
+        // 这个 query 参数可以往 bundle 里面存了
+        ParameterSupport.putQueryBundleToBundle(request.bundle, request.uri);
+        ParameterSupport.putUriStringToBundle(request.bundle, request.uri);
+        // 然后把 Uri 塞进一个特殊的 key 中
         intent.putExtras(request.bundle);
         // 把用户的 flags 和 categories 都设置进来
         for (String intentCategory : request.intentCategories) {
@@ -297,15 +301,6 @@ public class RouterCenter implements IComponentCenterRouter {
             result = fragment.getChildFragmentManager().findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
         }
         return result;
-    }
-
-    @Nullable
-    private Fragment findFragment(@NonNull RouterRequest request) {
-        Fragment fragment = findFragment(request.context);
-        if (fragment == null) {
-            fragment = findFragment(request.fragment);
-        }
-        return fragment;
     }
 
     @Override

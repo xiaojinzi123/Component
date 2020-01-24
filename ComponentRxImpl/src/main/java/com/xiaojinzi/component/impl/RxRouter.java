@@ -176,6 +176,12 @@ public class RxRouter extends Router {
         }
 
         @Override
+        public RxNavigator userInfo(@NonNull String userInfo) {
+            super.userInfo(userInfo);
+            return this;
+        }
+
+        @Override
         public RxNavigator host(@NonNull String host) {
             super.host(host);
             return this;

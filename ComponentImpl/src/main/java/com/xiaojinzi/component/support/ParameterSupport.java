@@ -59,7 +59,31 @@ public class ParameterSupport {
      * 所有query的值都会被存在 bundle 中的这个 key 对应的内置 bundle 中
      * 也就是： bundle.bundle
      */
-    public static final String KEY_BUNDLE = "RouterQueryBundle";
+    public static final String KEY_URI_QUERY_BUNDLE = "_componentQueryBundle";
+    public static final String KEY_URI = "_ComponentRouterUri";
+
+    public static void putQueryBundleToBundle(@NonNull Bundle bundle, @NonNull Uri uri) {
+        Bundle routerParameterBundle = new Bundle();
+        Set<String> queryParameterNames = uri.getQueryParameterNames();
+        if (queryParameterNames != null) {
+            for (String key : queryParameterNames) {
+                String value = uri.getQueryParameter(key);
+                routerParameterBundle.putString(key, value);
+            }
+        }
+        bundle.putBundle(KEY_URI_QUERY_BUNDLE, routerParameterBundle);
+    }
+
+    public static void putUriStringToBundle(@NonNull Bundle bundle, @NonNull Uri uri) {
+        bundle.putString(KEY_URI, uri.toString());
+    }
+
+    @Nullable
+    public static String getUriFromBundle(@NonNull Bundle bundle) {
+        return bundle.getString(KEY_URI);
+    }
+
+    // ==========================================查询 query 的方法开始 ==============================
 
     @Nullable
     public static String getQueryString(@NonNull Intent intent, @NonNull String key) {
@@ -81,7 +105,7 @@ public class ParameterSupport {
         if (bundle == null) {
             return defaultValue;
         }
-        Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
+        Bundle routerParameterBundle = bundle.getBundle(KEY_URI_QUERY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
@@ -112,7 +136,7 @@ public class ParameterSupport {
         if (bundle == null) {
             return defaultValue;
         }
-        Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
+        Bundle routerParameterBundle = bundle.getBundle(KEY_URI_QUERY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
@@ -148,7 +172,7 @@ public class ParameterSupport {
         if (bundle == null) {
             return defaultValue;
         }
-        Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
+        Bundle routerParameterBundle = bundle.getBundle(KEY_URI_QUERY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
@@ -185,7 +209,7 @@ public class ParameterSupport {
         if (bundle == null) {
             return defaultValue;
         }
-        Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
+        Bundle routerParameterBundle = bundle.getBundle(KEY_URI_QUERY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
@@ -221,7 +245,7 @@ public class ParameterSupport {
         if (bundle == null) {
             return defaultValue;
         }
-        Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
+        Bundle routerParameterBundle = bundle.getBundle(KEY_URI_QUERY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
@@ -258,7 +282,7 @@ public class ParameterSupport {
         if (bundle == null) {
             return defaultValue;
         }
-        Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
+        Bundle routerParameterBundle = bundle.getBundle(KEY_URI_QUERY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
@@ -294,7 +318,7 @@ public class ParameterSupport {
         if (bundle == null) {
             return defaultValue;
         }
-        Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
+        Bundle routerParameterBundle = bundle.getBundle(KEY_URI_QUERY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
@@ -330,7 +354,7 @@ public class ParameterSupport {
         if (bundle == null) {
             return defaultValue;
         }
-        Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
+        Bundle routerParameterBundle = bundle.getBundle(KEY_URI_QUERY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
@@ -366,7 +390,7 @@ public class ParameterSupport {
         if (bundle == null) {
             return defaultValue;
         }
-        Bundle routerParameterBundle = bundle.getBundle(KEY_BUNDLE);
+        Bundle routerParameterBundle = bundle.getBundle(KEY_URI_QUERY_BUNDLE);
         if (routerParameterBundle == null) {
             return defaultValue;
         }
@@ -384,23 +408,6 @@ public class ParameterSupport {
         } catch (Exception ignore) {
             return defaultValue;
         }
-    }
-
-    /**
-     * @param bundle
-     * @param uri
-     * @hide
-     */
-    public static void putQueryBundleToBundle(@NonNull Bundle bundle, @NonNull Uri uri) {
-        Bundle routerParameterBundle = new Bundle();
-        Set<String> queryParameterNames = uri.getQueryParameterNames();
-        if (queryParameterNames != null) {
-            for (String key : queryParameterNames) {
-                String value = uri.getQueryParameter(key);
-                routerParameterBundle.putString(key, value);
-            }
-        }
-        bundle.putBundle(KEY_BUNDLE, routerParameterBundle);
     }
 
     // ==========================================上面都是查询 query 的方法 ==============================
