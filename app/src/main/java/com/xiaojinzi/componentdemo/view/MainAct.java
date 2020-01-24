@@ -163,7 +163,6 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testService(View view) {
-
         Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)
