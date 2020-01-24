@@ -86,9 +86,6 @@ public class ComponentUtil {
 
     /**
      * 首字母小写
-     *
-     * @param str
-     * @return
      */
     public static String firstCharUpperCase(String str) {
         char[] ch = str.toCharArray();
@@ -96,6 +93,10 @@ public class ComponentUtil {
             ch[0] = (char) (ch[0] - 32);
         }
         return new String(ch);
+    }
+
+    public static String hostSolve(String host) {
+
     }
 
     public static String genRouterApiImplClassName(Class apiClass) {

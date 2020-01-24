@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name="com.xiaojinzi.componentdemo.App"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
@@ -18,15 +18,37 @@
             android:name="host_app"
             android:value="app" />
 
-        <activity android:name="com.xiaojinzi.componentdemo.view.module1.TestInOtherModuleAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.TestQualityAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.TestErrorAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.InfoAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.TestServiceAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.TestRouterAct" />
-        <activity android:name="com.xiaojinzi.componentdemo.view.TestFragmentRouterAct" />
+        <activity android:name=".view.ProxyAct">
+            <intent-filter>
+                <data
+                    android:scheme="component" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".view.ProxyAct1">
+            <intent-filter>
+                <data
+                    android:scheme="component" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".view.module1.TestInOtherModuleAct" />
+        <activity android:name=".view.TestQualityAct" />
+        <activity android:name=".view.TestErrorAct" />
+        <activity android:name=".view.InfoAct" />
+        <activity android:name=".view.TestServiceAct" />
+        <activity android:name=".view.TestRouterAct" />
+        <activity android:name=".view.TestFragmentRouterAct" />
         <activity
-            android:name="com.xiaojinzi.componentdemo.view.MainAct"
+            android:name=".view.MainAct"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
