@@ -18,7 +18,6 @@ import com.xiaojinzi.base.router.Module1Api;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.anno.UriAutowiredAnno;
 import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
@@ -27,6 +26,7 @@ import com.xiaojinzi.component.impl.RouterRequest;
 import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.support.CallbackAdapter;
+import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
 import java.util.concurrent.TimeUnit;
@@ -53,16 +53,14 @@ public class TestRouterAct extends BaseAct {
 
     private TextView tv_detail;
 
-    @UriAutowiredAnno
-    String uri;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Component.inject(this);
+
         setContentView(R.layout.test_router_act);
         getSupportActionBar().setTitle("高级路由测试");
         tv_detail = findViewById(R.id.tv_detail);
+
     }
 
     private void addInfo(@NonNull String info) {

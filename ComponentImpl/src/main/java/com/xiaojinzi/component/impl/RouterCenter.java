@@ -179,6 +179,7 @@ public class RouterCenter implements IComponentCenterRouter {
             }
             return;
         }
+
         // 使用 context 跳转 startActivityForResult
         if (request.context != null) {
             Fragment rxFragment = findFragment(request.context);

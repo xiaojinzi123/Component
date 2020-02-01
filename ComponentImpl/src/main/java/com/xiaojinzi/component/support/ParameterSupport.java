@@ -60,7 +60,7 @@ public class ParameterSupport {
      * 也就是： bundle.bundle
      */
     public static final String KEY_URI_QUERY_BUNDLE = "_componentQueryBundle";
-    public static final String KEY_URI = "_ComponentRouterUri";
+    public static final String KEY_URI = "_componentRouterUri";
 
     public static void putQueryBundleToBundle(@NonNull Bundle bundle, @NonNull Uri uri) {
         Bundle routerParameterBundle = new Bundle();
@@ -79,8 +79,53 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static String getUriFromBundle(@NonNull Bundle bundle) {
-        return bundle.getString(KEY_URI);
+    public static Uri getUriIgnoreError(@NonNull Intent intent) {
+        try {
+            String uriStr = getUriAsString(intent);
+            return uriStr == null ? null : Uri.parse(uriStr);
+        } catch (Exception ignore) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static Uri getUri(@NonNull Intent intent) {
+        String uriStr = getUriAsString(intent);
+        return uriStr == null ? null : Uri.parse(uriStr);
+    }
+
+    @Nullable
+    public static Uri getUriIgnoreError(@NonNull Bundle bundle) {
+        try {
+            String uriStr = getUriAsString(bundle);
+            return uriStr == null ? null : Uri.parse(uriStr);
+        } catch (Exception ignore) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static Uri getUri(@NonNull Bundle bundle) {
+        String uriStr = getUriAsString(bundle);
+        return uriStr == null ? null : Uri.parse(uriStr);
+    }
+
+    @Nullable
+    public static String getUriAsString(@NonNull Bundle bundle) {
+        return bundle == null ? null : bundle.getString(KEY_URI);
+    }
+
+    @Nullable
+    public static String getUriAsString(@NonNull Intent intent) {
+        if (intent == null) {
+            return null;
+        }else {
+            if (intent.getExtras() == null) {
+                return null;
+            }else {
+                return intent.getExtras().getString(KEY_URI);
+            }
+        }
     }
 
     // ==========================================查询 query 的方法开始 ==============================

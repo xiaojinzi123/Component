@@ -158,6 +158,7 @@
 - `ModuleManager` 类中增加 `autoRegister()` 方法, 可以自动加载所有的模块
     - 前提是你使用 Gradle 插件, 并且配置中 optimizeInit 开关已经打开
 - 配置中增加开关, 控制是否在初始化的时候自动加载所有模块. 这样子可以进一步省略配置的代码量
+- `ParameterSupport` 增加对 `Uri` 的获取. 
 
 #### v1.7.8(不兼容版本更新)
 

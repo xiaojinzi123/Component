@@ -35,11 +35,4 @@ public interface Inject<T> {
      */
     void injectService(@NonNull T target);
 
-    /**
-     * 注入 Uri
-     *
-     * @param target 目标
-     */
-    void injectUri(@NonNull T target);
-
 }

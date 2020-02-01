@@ -72,6 +72,7 @@ public class ComponentUtil {
     public static final String PARAMETERANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ParameterAnno";
     public static final String ATTR_VALUE_AUTOWIREDANNO_CLASS_NAME = "com.xiaojinzi.component.anno.AttrValueAutowiredAnno";
     public static final String SERVICEAUTOWIREDANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ServiceAutowiredAnno";
+    public static final String URIAUTOWIREDANNO_CLASS_NAME = "com.xiaojinzi.component.anno.UriAutowiredAnno";
     public static final String ROUTERAPIANNO_CLASS_NAME = "com.xiaojinzi.component.anno.router.RouterApiAnno";
 
 

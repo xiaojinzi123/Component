@@ -97,7 +97,7 @@ public class Component {
 
     @MainThread
     public static void inject(@NonNull Object target) {
-        inject(target, null, true, true, true);
+        inject(target, null, true, true);
     }
 
     @MainThread
@@ -107,17 +107,17 @@ public class Component {
 
     @MainThread
     public static void injectAttrValueFromBundle(@NonNull Object target, @Nullable Bundle bundle) {
-        inject(target, bundle, true, false, false);
+        inject(target, bundle, true, false);
     }
 
     @MainThread
     public static void injectService(@NonNull Object target) {
-        inject(target, null, false, true, false);
+        inject(target, null, false, true);
     }
 
     @MainThread
     public static void injectUri(@NonNull Object target) {
-        inject(target, null, false, false, true);
+        inject(target, null, false, false);
     }
 
     /**
@@ -131,8 +131,7 @@ public class Component {
     @MainThread
     private static void inject(@NonNull Object target, @Nullable Bundle bundle,
                                boolean isAutoWireAttrValue,
-                               boolean isAutoWireService,
-                               boolean isAutoWireUri) {
+                               boolean isAutoWireService) {
         Utils.checkMainThread();
         Utils.checkNullPointer(target, "target");
         String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;
@@ -142,17 +141,14 @@ public class Component {
             if (isAutoWireService) {
                 inject.injectService(target);
             }
-            if (isAutoWireUri) {
-                inject.injectUri(target);
-            }
             if (isAutoWireAttrValue) {
                 if (bundle == null) {
                     inject.injectAttrValue(target);
                 } else {
+                    Utils.checkNullPointer(bundle, "bundle");
                     inject.injectAttrValue(target, bundle);
                 }
             }
-
         } catch (Exception ignore) {
             LogUtil.log("field '" + target.getClass().getName() + "' inject fail");
         }

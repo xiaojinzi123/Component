@@ -10,7 +10,6 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
-import com.xiaojinzi.component.anno.UriAutowiredAnno;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -40,7 +39,10 @@ import javax.lang.model.type.TypeMirror;
 @AutoService(Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 // 针对指定注解起作用
-@SupportedAnnotationTypes({ComponentUtil.ATTR_VALUE_AUTOWIREDANNO_CLASS_NAME, ComponentUtil.SERVICEAUTOWIREDANNO_CLASS_NAME})
+@SupportedAnnotationTypes({
+        ComponentUtil.ATTR_VALUE_AUTOWIREDANNO_CLASS_NAME,
+        ComponentUtil.SERVICEAUTOWIREDANNO_CLASS_NAME,
+})
 public class AutowireProcessor extends BaseProcessor {
 
     private TypeElement charsequenceTypeElement;
@@ -102,16 +104,12 @@ public class AutowireProcessor extends BaseProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        System.out.println("autoWired");
         if (CollectionUtils.isNotEmpty(set)) {
             final Set<? extends Element> filedAutowiredElements = roundEnvironment.getElementsAnnotatedWith(AttrValueAutowiredAnno.class);
             final Set<? extends Element> serviceAutowiredElements = roundEnvironment.getElementsAnnotatedWith(ServiceAutowiredAnno.class);
-            final Set<? extends Element> uriAutowiredElements = roundEnvironment.getElementsAnnotatedWith(UriAutowiredAnno.class);
-            System.out.println("uriAutowiredElements = " + uriAutowiredElements.size());
             final Set<Element> annotatedElements = new HashSet<>();
             annotatedElements.addAll(filedAutowiredElements);
             annotatedElements.addAll(serviceAutowiredElements);
-            annotatedElements.addAll(uriAutowiredElements);
             final Set<VariableElement> fieldElements = new HashSet<>();
             for (Element element : annotatedElements) {
                 // 必须标记的是一个类的字段,这个才会被处理
@@ -158,9 +156,6 @@ public class AutowireProcessor extends BaseProcessor {
 
     /**
      * 创建某个类的Inject实现
-     *
-     * @param targetClass
-     * @param parameterFieldSet
      */
     private void createInjectClass(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
         // 拿到注解类的全类名
@@ -177,7 +172,6 @@ public class AutowireProcessor extends BaseProcessor {
                 .addMethod(injectAttrValueMethod1(targetClass, parameterFieldSet))
                 .addMethod(injectAttrValueMethod2(targetClass, parameterFieldSet))
                 .addMethod(injectServiceMethod(targetClass, parameterFieldSet))
-                .addMethod(injectUriMethod(targetClass, parameterFieldSet))
                 .addAnnotation(mClassNameKeep);
         try {
             JavaFile.builder(pkg, classBuilder.build()
@@ -253,28 +247,6 @@ public class AutowireProcessor extends BaseProcessor {
             generateParameterCodeForInjectService(
                     variableElement, methodBuilder,
                     parameterName
-            );
-        }
-        return methodBuilder.build();
-    }
-
-    private MethodSpec injectUriMethod(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
-        MethodSpec.Builder methodBuilder = MethodSpec
-                .methodBuilder("injectUri")
-                .addJavadoc("Uri注入\n")
-                .addParameter(
-                        ParameterSpec
-                                .builder(TypeName.get(targetClass.asType()), "target")
-                                .build()
-                )
-                .addModifiers(Modifier.PUBLIC);
-        // 循环没一个要注入的字段
-        for (VariableElement variableElement : parameterFieldSet) {
-            // 生成一个不重复的参数名字
-            String parameterName = "target." + variableElement.getSimpleName();
-            generateParameterCodeForInjectUri(
-                    variableElement, methodBuilder,
-                    parameterName, "bundle"
             );
         }
         return methodBuilder.build();
@@ -383,20 +355,6 @@ public class AutowireProcessor extends BaseProcessor {
         if (serviceAutowiredAnno != null) {
             methodBuilder.addComment("may be null here");
             methodBuilder.addStatement("$N = $T.get($T.class)", parameterName, serviceTypeElement, parameterTypeName);
-        }
-
-    }
-
-    public void generateParameterCodeForInjectUri(
-            VariableElement variableElement,
-            MethodSpec.Builder methodBuilder,
-            String parameterName,
-            String bundleCallStr) {
-
-        UriAutowiredAnno uriAutowiredAnno = variableElement.getAnnotation(UriAutowiredAnno.class);
-        if (uriAutowiredAnno != null) {
-            methodBuilder.addComment("may be null here");
-            methodBuilder.addStatement("$N = $T.getUriFromBundle($N)", parameterName, parameterSupportTypeMirror, bundleCallStr);
         }
 
     }
