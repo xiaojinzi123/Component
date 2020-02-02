@@ -761,8 +761,6 @@ public class RouterRequest {
 
         /**
          * 构建一个 {@link Uri},如果构建失败会抛出异常
-         *
-         * @return
          */
         @NonNull
         public Uri buildURI() {
@@ -814,8 +812,6 @@ public class RouterRequest {
 
         /**
          * 构建一个URL,如果构建失败会抛出异常
-         *
-         * @return
          */
         @NonNull
         public String buildURL() {

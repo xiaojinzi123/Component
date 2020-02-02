@@ -14,8 +14,6 @@ public @interface FlagAnno {
 
     /**
      * 表示 Intent 需要添加的 Flag
-     *
-     * @return
      */
     int[] value();
 

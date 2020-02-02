@@ -19,8 +19,6 @@ public @interface RequestCodeAnno {
      * requestCode 的值
      * 如果标记在方法上 value 值没有表示随机生成一个
      * 如果标记在参数上,则 value 的值不起作用
-     *
-     * @return
      */
     int value() default Integer.MIN_VALUE;
 

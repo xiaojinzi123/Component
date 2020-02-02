@@ -19,8 +19,6 @@ public @interface HostAndPathAnno {
 
     /**
      * 表示路由的 host + path
-     *
-     * @return
      */
     String value();
 
