@@ -1,12 +1,9 @@
 package com.xiaojinzi.componentdemo;
 
 import android.app.Application;
-import android.support.annotation.NonNull;
 
-import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.Config;
-import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
@@ -23,7 +20,9 @@ public class App extends Application {
                 BuildConfig.DEBUG,
                 Config.with(this)
                         .defaultScheme("router")
+                        // 开启启动优化, 必须配套使用 Gradle 插件
                         .optimizeInit(true)
+                        // 自动加载所有模块
                         .autoRegisterModule(true)
                         .build()
         );
@@ -38,7 +37,8 @@ public class App extends Application {
 
         LogUtil.log("---------------------------------耗时：" + (endTime - startTime));
 
-        // 忽略一些不想处理的错误
+        // 如果你依赖了 rx 版本, 请加上这句配置. 忽略一些不想处理的错误
+        // 如果不是 rx 的版本, 请忽略
         RxErrorIgnoreUtil.ignoreError();
 
         if (BuildConfig.DEBUG) {

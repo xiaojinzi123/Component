@@ -115,11 +115,6 @@ public class Component {
         inject(target, null, false, true);
     }
 
-    @MainThread
-    public static void injectUri(@NonNull Object target) {
-        inject(target, null, false, false);
-    }
-
     /**
      * 注入功能
      *
