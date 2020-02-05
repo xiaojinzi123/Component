@@ -312,6 +312,9 @@ public class RouterRequest {
         @Nullable
         protected Integer requestCode;
 
+        /**
+         * 是否是跳转拿 {@link ActivityResult} 的
+         */
         protected boolean isForResult;
 
         @Nullable
