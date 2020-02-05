@@ -15,7 +15,7 @@ public class FragmentNavigator {
     @NonNull
     protected String fragmentFlag;
 
-    @NonNull
+    @Nullable
     protected Bundle bundle;
 
     public FragmentNavigator(@NonNull String fragmentFlag) {

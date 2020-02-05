@@ -53,6 +53,12 @@ public class FragmentManager {
 
     @Nullable
     @AnyThread
+    public static Fragment get(@NonNull final String flag) {
+        return get(flag, null);
+    }
+
+    @Nullable
+    @AnyThread
     public static Fragment get(@NonNull final String flag, @Nullable final Bundle bundle) {
         Utils.checkNullPointer(flag, "fragment flag");
         return Utils.mainThreadCallable(new Callable<Fragment>() {

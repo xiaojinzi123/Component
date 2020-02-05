@@ -101,7 +101,11 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouterForFragment(View view) {
-        Fragment fragment = Router.with("component1.fragment").navigate();
+        Bundle bundle = new Bundle();
+        bundle.putInt("age",26);
+        Fragment fragment = Router
+                .with("component1.fragment")
+                .navigate();
         if (fragment == null) {
             Toast.makeText(this, "没有找到 'component1.fragment' 对应的 Fragment", Toast.LENGTH_SHORT).show();
         } else {
