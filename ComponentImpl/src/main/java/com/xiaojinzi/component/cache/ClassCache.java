@@ -5,6 +5,9 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.support.CheckClassName;
 
+/**
+ * Class 的缓存的工具类
+ */
 @CheckClassName
 public class ClassCache {
 
@@ -15,10 +18,12 @@ public class ClassCache {
         classCache.put(clazz, o);
     }
 
+    @Nullable
     public static synchronized final <T> T get(@NonNull Class clazz) {
         return (T) classCache.get(clazz);
     }
 
+    @Nullable
     public static synchronized final <T> T remove(@NonNull Class clazz) {
         return (T) classCache.remove(clazz);
     }

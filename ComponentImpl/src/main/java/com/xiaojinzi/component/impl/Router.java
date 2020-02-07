@@ -3,7 +3,6 @@ package com.xiaojinzi.component.impl;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.AnyThread;
 import android.support.annotation.MainThread;
@@ -14,9 +13,7 @@ import android.support.v4.app.Fragment;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.anno.support.CheckClassName;
-import com.xiaojinzi.component.cache.Cache;
-import com.xiaojinzi.component.cache.CacheType;
-import com.xiaojinzi.component.cache.DefaultCacheFactory;
+import com.xiaojinzi.component.cache.ClassCache;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.ProxyIntentAct;
@@ -48,13 +45,7 @@ public class Router {
     /**
      * 类的标志
      */
-    public static final String TAG = "Router";
-
-    /**
-     * 拦截器 Class --> RouterInterceptor 的缓存
-     */
-    private static final Cache<Class, Object> apiClassCache =
-            DefaultCacheFactory.INSTANCE.build(CacheType.CLASS_CACHE);
+    public static final String TAG = "-------- Router --------";
 
     /**
      * 空实现,里头都是不能调用的方法
@@ -168,12 +159,12 @@ public class Router {
     @NonNull
     @AnyThread
     public static <T> T withApi(@NonNull Class<T> apiClass) {
-        T t = (T) apiClassCache.get(apiClass);
+        T t = (T) ClassCache.get(apiClass);
         if (t == null) {
             String className = ComponentUtil.genRouterApiImplClassName(apiClass);
             try {
                 t = (T) Class.forName(className).newInstance();
-                apiClassCache.put(apiClass, t);
+                ClassCache.put(apiClass, t);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -181,19 +172,14 @@ public class Router {
         return t;
     }
 
-    @AnyThread
-    public static boolean isMatchUri(@NonNull Uri uri) {
-        return RouterCenter.getInstance().isMatchUri(uri);
-    }
-
     /**
      * 是否有代理的 {@link android.content.Intent}
      */
-    public static boolean haveProxyIntent(@Nullable Bundle bundle) {
+    public static boolean isProxyIntentExist(@Nullable Bundle bundle) {
         if (bundle == null) {
             return false;
         }
-        return bundle.getBoolean(ProxyIntentAct.EXTRA_PROXY_INTENT);
+        return bundle.getBoolean(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT);
     }
 
     /**

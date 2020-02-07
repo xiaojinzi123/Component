@@ -153,7 +153,7 @@
 
 ## 版本更新日志
 
-#### v1.7.8.1(兼容1.7.8+) --> 开发中~~~~
+#### v1.7.8.1(开发中~~~~)
 
 - `ModuleManager` 类中增加 `autoRegister()` 方法, 可以自动加载所有的模块
     - 前提是你使用 Gradle 插件, 并且配置中 optimizeInit 开关已经打开
@@ -161,6 +161,7 @@
 - `ParameterSupport` 增加对 `Uri` 的获取. 
 - 跳转支持 `Uri` 中的 `UserInfo`. 接口的路由跳转中同样也支持了, 使用 `@UserInfoAnno` 即可
 - 修复 `@FragmentAnno` 标记在类上的时候的传值问题, 详见 `issue` [#51](https://github.com/xiaojinzi123/Component/issues/51)
+- Router 中的方法 `haveProxyIntent` 改名为 `isProxyIntentExist`
 
 #### v1.7.8(不兼容版本更新)
 

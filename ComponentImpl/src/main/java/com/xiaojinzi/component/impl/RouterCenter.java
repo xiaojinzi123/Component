@@ -38,6 +38,11 @@ import java.util.Set;
 import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
 
 /**
+ * 请注意:
+ * 请勿在项目中使用此类, 此类的 Api 不供项目使用, 仅供框架内部使用.
+ * 即使你在项目中能引用到此类并且调用到 Api, 也不是你想要的效果. 所以请不要使用.
+ * 尤其是方法 {@link #isMatchUri(Uri)}
+ * <p>
  * 中央路由,挂载着多个子路由表,这里有总路由表
  * 实际的跳转也是这里实现的,当有模块的注册和反注册发生的时候
  * 总路由表会有响应的变化
@@ -99,8 +104,7 @@ public class RouterCenter implements IComponentCenterRouter {
     /**
      * content 参数和 fragment 参数必须有一个有值的
      *
-     * @param request
-     * @return
+     * @param request 路由请求对象
      */
     @MainThread
     private void doOpenUri(@NonNull final RouterRequest request) throws Exception {
@@ -250,6 +254,7 @@ public class RouterCenter implements IComponentCenterRouter {
      * @param uri
      * @return
      */
+    @Nullable
     private String getTargetUrl(@NonNull Uri uri) {
         // "/component1/test" 不含host
         String targetPath = uri.getPath();
@@ -280,9 +285,6 @@ public class RouterCenter implements IComponentCenterRouter {
 
     /**
      * 找到那个 Activity 中隐藏的一个 Fragment,如果找的到就会用这个 Fragment 拿来跳转
-     *
-     * @param context
-     * @return
      */
     @Nullable
     private Fragment findFragment(Context context) {

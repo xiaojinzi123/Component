@@ -46,8 +46,4 @@ public class ConditionCache {
         return t;
     }
 
-    public static synchronized void removeCache(@NonNull Class<? extends Condition> tClass) {
-        ClassCache.remove(tClass);
-    }
-
 }

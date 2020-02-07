@@ -144,8 +144,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 此 {@link Intent} 的跳转目标是一个代理的界面. 具体是
      * {@link ProxyIntentAct} 或者是用户你自己自定义的 {@link Class<Activity>}
      * 携带的参数是是真正的目标的信息. 比如：
-     * {@link ProxyIntentAct#EXTRA_PROXY_INTENT_URL} 表示目标的 url
-     * {@link ProxyIntentAct#EXTRA_PROXY_INTENT_BUNDLE} 表示跳转到真正的目标的 {@link Bundle} 数据
+     * {@link ProxyIntentAct#EXTRA_ROUTER_PROXY_INTENT_URL} 表示目标的 url
+     * {@link ProxyIntentAct#EXTRA_ROUTER_PROXY_INTENT_BUNDLE} 表示跳转到真正的目标的 {@link Bundle} 数据
      * ......
      * 当你自定义了代理界面, 那你可以使用{@link Router#with()} 或者  {@link Router#with(Context)} 或者
      * {@link Router#with(Fragment)} 得到一个 {@link Navigator}
@@ -169,11 +169,11 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     public Navigator proxyBundle(@NonNull Bundle bundle) {
         Utils.checkNullPointer(bundle, "bundle");
-        String reqUrl = bundle.getString(ProxyIntentAct.EXTRA_PROXY_INTENT_URL);
-        Bundle reqBundle = bundle.getBundle(ProxyIntentAct.EXTRA_PROXY_INTENT_BUNDLE);
-        Bundle reqOptions = bundle.getBundle(ProxyIntentAct.EXTRA_PROXY_INTENT_OPTIONS);
-        ArrayList<Integer> reqFlags = bundle.getIntegerArrayList(ProxyIntentAct.EXTRA_PROXY_INTENT_FLAGS);
-        ArrayList<String> reqCategories = bundle.getStringArrayList(ProxyIntentAct.EXTRA_PROXY_INTENT_CATEGORIES);
+        String reqUrl = bundle.getString(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_URL);
+        Bundle reqBundle = bundle.getBundle(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_BUNDLE);
+        Bundle reqOptions = bundle.getBundle(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_OPTIONS);
+        ArrayList<Integer> reqFlags = bundle.getIntegerArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_FLAGS);
+        ArrayList<String> reqCategories = bundle.getStringArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_CATEGORIES);
         super.url(reqUrl);
         super.putAll(reqBundle);
         super.options(reqOptions);

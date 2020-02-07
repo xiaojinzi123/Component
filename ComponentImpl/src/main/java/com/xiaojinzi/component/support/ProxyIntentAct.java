@@ -19,12 +19,12 @@ import com.xiaojinzi.component.impl.Router;
  */
 public class ProxyIntentAct extends FragmentActivity {
 
-    public static final String EXTRA_PROXY_INTENT = "proxy_intent";
-    public static final String EXTRA_PROXY_INTENT_URL = "proxy_intent_url";
-    public static final String EXTRA_PROXY_INTENT_BUNDLE = "proxy_intent_bundle";
-    public static final String EXTRA_PROXY_INTENT_OPTIONS = "proxy_intent_options";
-    public static final String EXTRA_PROXY_INTENT_FLAGS = "proxy_intent_flags";
-    public static final String EXTRA_PROXY_INTENT_CATEGORIES = "proxy_intent_categories";
+    public static final String EXTRA_ROUTER_PROXY_INTENT = "router_proxy_intent";
+    public static final String EXTRA_ROUTER_PROXY_INTENT_URL = "router_proxy_intent_url";
+    public static final String EXTRA_ROUTER_PROXY_INTENT_BUNDLE = "router_proxy_intent_bundle";
+    public static final String EXTRA_ROUTER_PROXY_INTENT_OPTIONS = "router_proxy_intent_options";
+    public static final String EXTRA_ROUTER_PROXY_INTENT_FLAGS = "router_proxy_intent_flags";
+    public static final String EXTRA_ROUTER_PROXY_INTENT_CATEGORIES = "router_proxy_intent_categories";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
