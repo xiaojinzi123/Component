@@ -15,7 +15,7 @@ import android.support.v4.app.FragmentManager;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.bean.RouterBean;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
@@ -52,7 +52,7 @@ import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
  * @author xiaojinzi
  * @hide
  */
-@CheckClassName
+@CheckClassNameAnno
 public class RouterCenter implements IComponentCenterRouter {
 
     /**

@@ -3,14 +3,14 @@ package com.xiaojinzi.component.support;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 /**
  * 单例形式
  *
  * @param <T>
  */
-@CheckClassName
+@CheckClassNameAnno
 public abstract class SingletonFunction1<T, R> implements Function1<T, R> {
 
     @Nullable

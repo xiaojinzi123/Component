@@ -3,12 +3,12 @@ package com.xiaojinzi.component.cache;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 /**
  * Class 的缓存的工具类
  */
-@CheckClassName
+@CheckClassNameAnno
 public class ClassCache {
 
     private static final Cache<Class, Object> classCache =

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.cache.ClassCache;
 import com.xiaojinzi.component.error.CreateInterceptorException;
 
@@ -15,7 +15,7 @@ import com.xiaojinzi.component.error.CreateInterceptorException;
  *
  * @author : xiaojinzi
  */
-@CheckClassName
+@CheckClassNameAnno
 public class ConditionCache {
 
     private ConditionCache() {

@@ -2,7 +2,7 @@ package com.xiaojinzi.component.support;
 
 import android.support.annotation.NonNull;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 /**
  * 懒加载设计
@@ -10,7 +10,7 @@ import com.xiaojinzi.component.anno.support.CheckClassName;
  *
  * @author : xiaojinzi
  */
-@CheckClassName
+@CheckClassNameAnno
 public interface Callable<T> {
 
     /**

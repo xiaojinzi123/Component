@@ -18,7 +18,7 @@ import android.util.SparseArray;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentConstants;
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.error.ignore.ActivityResultException;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
@@ -47,7 +47,7 @@ import java.util.Set;
  * 这个类一部分功能应该是 {@link Router} 的构建者对象的功能,但是这里面更多的为导航的功能
  * 写了很多代码,所以名字就不叫 Builder 了
  */
-@CheckClassName
+@CheckClassNameAnno
 public class Navigator extends RouterRequest.Builder implements Call {
 
     /**

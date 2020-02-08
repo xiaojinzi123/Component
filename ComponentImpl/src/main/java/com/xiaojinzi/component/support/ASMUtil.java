@@ -2,7 +2,7 @@ package com.xiaojinzi.component.support;
 
 import android.support.annotation.Nullable;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.application.IComponentHostApplication;
 import com.xiaojinzi.component.fragment.IComponentHostFragment;
 import com.xiaojinzi.component.impl.application.ModuleManager;
@@ -51,7 +51,7 @@ import java.util.List;
  *
  * @author xiaojinzi
  */
-@CheckClassName("ComponentPlugin 插件的模块需要关注class 的名称和包名的变化")
+@CheckClassNameAnno("ComponentPlugin 插件的模块需要关注class 的名称和包名的变化")
 public class ASMUtil {
 
     /**

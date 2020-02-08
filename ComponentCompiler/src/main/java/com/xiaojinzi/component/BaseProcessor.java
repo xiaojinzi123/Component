@@ -39,12 +39,14 @@ public abstract class BaseProcessor extends AbstractProcessor {
     protected Types mTypes;
     protected Elements mElements;
 
+    protected TypeElement mTypeElementComponentGeneratedAnno;
     protected TypeElement mTypeElementString;
     protected TypeElement mTypeElementList;
     protected TypeElement mTypeElementArrayList;
     protected TypeElement mTypeElementHashMap;
     protected TypeElement mTypeElementHashSet;
 
+    protected ClassName mClassNameComponentGeneratedAnno;
     protected ClassName mClassNameString;
     protected ClassName mClassNameList;
     protected ClassName mClassNameArrayList;
@@ -63,8 +65,11 @@ public abstract class BaseProcessor extends AbstractProcessor {
         mTypes = processingEnv.getTypeUtils();
         mElements = processingEnv.getElementUtils();
 
-        mTypeElementString = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_STRING);
-        mTypeElementList = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_LIST);
+        mTypeElementComponentGeneratedAnno = mElements.getTypeElement(ComponentConstants.COMPONENT_GENERATED_ANNO_CLASS_NAME);
+        mClassNameComponentGeneratedAnno = ClassName.get(mTypeElementComponentGeneratedAnno);
+
+        mTypeElementString = mElements.getTypeElement(ComponentConstants.JAVA_STRING);
+        mTypeElementList = mElements.getTypeElement(ComponentConstants.JAVA_LIST);
         mTypeElementArrayList = mElements.getTypeElement(ComponentConstants.JAVA_ARRAYLIST);
         mTypeElementHashMap = mElements.getTypeElement(ComponentConstants.JAVA_HASHMAP);
         mTypeElementHashSet = mElements.getTypeElement(ComponentConstants.JAVA_HASHSET);

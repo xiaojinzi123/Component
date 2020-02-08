@@ -33,7 +33,7 @@ public class LoginForTestInterceptor implements RouterInterceptor {
 
     @Override
     public void intercept(final Chain chain) throws Exception {
-        final Context context = chain.request().getRawContext();
+        final Context context = chain.request().getRawOrTopActivity();
         UserService userService = ServiceManager.get(UserService.class);
         if (chain.request().uri.toString().contains("user/login")) {
             chain.proceed(chain.request());

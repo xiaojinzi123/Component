@@ -167,12 +167,13 @@ public class AutowireProcessor extends BaseProcessor {
         String className = fullClassName.substring(lastPointIndex + 1);
         TypeSpec.Builder classBuilder = TypeSpec
                 .classBuilder(className + ComponentConstants.INJECT_SUFFIX)
+                .addAnnotation(mClassNameKeep)
+                .addAnnotation(mClassNameComponentGeneratedAnno)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addSuperinterface(ParameterizedTypeName.get(injectClassName, TypeName.get(mElements.getTypeElement(fullClassName).asType())))
                 .addMethod(injectAttrValueMethod1(targetClass, parameterFieldSet))
                 .addMethod(injectAttrValueMethod2(targetClass, parameterFieldSet))
-                .addMethod(injectServiceMethod(targetClass, parameterFieldSet))
-                .addAnnotation(mClassNameKeep);
+                .addMethod(injectServiceMethod(targetClass, parameterFieldSet));
         try {
             JavaFile.builder(pkg, classBuilder.build()
             ).indent("    ").build().writeTo(mFiler);

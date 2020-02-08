@@ -15,7 +15,7 @@ import android.util.SparseArray;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentActivityStack;
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.Consumer;
@@ -40,7 +40,7 @@ import java.util.Set;
  *
  * @author xiaojinzi
  */
-@CheckClassName
+@CheckClassNameAnno
 public class RouterRequest {
 
     @Nullable

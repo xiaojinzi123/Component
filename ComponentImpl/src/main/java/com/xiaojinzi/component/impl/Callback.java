@@ -4,7 +4,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.OnRouterCancel;
 import com.xiaojinzi.component.support.OnRouterError;
 
@@ -17,7 +17,7 @@ import com.xiaojinzi.component.support.OnRouterError;
  *
  * @author xiaojinzi
  */
-@CheckClassName
+@CheckClassNameAnno
 public interface Callback extends OnRouterError, OnRouterCancel {
 
     /**

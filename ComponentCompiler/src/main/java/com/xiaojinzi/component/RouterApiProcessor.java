@@ -191,6 +191,7 @@ public class RouterApiProcessor extends BaseProcessor {
         final ClassName superClass = ClassName.get(typeElement);
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(cn)
                 .addAnnotation(mClassNameKeep)
+                .addAnnotation(mClassNameComponentGeneratedAnno)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
                 .addSuperinterface(superClass);

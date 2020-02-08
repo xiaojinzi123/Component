@@ -4,7 +4,7 @@ import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.Utils;
 
@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author xiaojinzi
  */
-@CheckClassName
+@CheckClassNameAnno
 public class ServiceManager {
 
     private ServiceManager() {
