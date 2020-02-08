@@ -1,7 +1,6 @@
 package com.xiaojinzi.component.impl;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.AnyThread;
@@ -14,7 +13,6 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.anno.support.CheckClassName;
 import com.xiaojinzi.component.cache.ClassCache;
-import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.ProxyIntentAct;
 import com.xiaojinzi.component.support.Utils;
@@ -126,9 +124,6 @@ public class Router {
     @NonNull
     @AnyThread
     public static Navigator with() {
-        if (Component.getConfig().isTipWhenUseApplication()) {
-            LogUtil.logw(TAG, "you use default 'Application' to launch route. this is not recommended. you should not use 'Application' as far as possible");
-        }
         return new Navigator();
     }
 
@@ -136,10 +131,6 @@ public class Router {
     @AnyThread
     public static Navigator with(@NonNull Context context) {
         Utils.checkNullPointer(context, "context");
-        // 如果是 Application 进行提示
-        if (context instanceof Application && Component.getConfig().isTipWhenUseApplication()) {
-            LogUtil.logw(TAG, "you use 'Application' to launch route. this is not recommended. you should not use 'Application' as far as possible");
-        }
         return new Navigator(context);
     }
 

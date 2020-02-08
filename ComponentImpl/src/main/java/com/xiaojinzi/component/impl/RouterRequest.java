@@ -258,8 +258,7 @@ public class RouterRequest {
     }
 
     private RouterRequest(@NonNull Builder builder) {
-        Uri result = builder.buildURI();
-        this.uri = result;
+        this.uri = builder.buildURI();
         context = builder.context;
         fragment = builder.fragment;
         requestCode = builder.requestCode;

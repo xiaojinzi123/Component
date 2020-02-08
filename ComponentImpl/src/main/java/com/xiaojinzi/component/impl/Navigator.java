@@ -500,12 +500,15 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
-     * 使用默认的 Application Context, 并且添加 {@link Intent#FLAG_ACTIVITY_NEW_TASK} 标记
+     * 使用默认的 {@link android.app.Application} 作为
+     * {@link Context}. 使用默认的 {@link android.app.Application}
+     * 会添加 {@link Intent#FLAG_ACTIVITY_NEW_TASK} 标记
      */
-    private void useDefaultApplication() {
+    private void useDefaultContext() {
         // 如果 Context 和 Fragment 都是空的,使用默认的 Application
         if (context == null && fragment == null) {
             context = Component.getApplication();
+            // 配套加上 New_Task 的标志
             addIntentFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
     }
@@ -754,7 +757,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         InterceptorCallback interceptorCallback = null;
         try {
             // 如果用户没填写 Context 或者 Fragment 默认使用 Application
-            useDefaultApplication();
+            useDefaultContext();
             // 路由前的检查
             onCheck();
             // 标记这个 builder 已经不能使用了

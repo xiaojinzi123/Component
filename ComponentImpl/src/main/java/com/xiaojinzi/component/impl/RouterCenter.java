@@ -1,6 +1,7 @@
 package com.xiaojinzi.component.impl;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.router.IComponentCenterRouter;
 import com.xiaojinzi.component.router.IComponentHostRouter;
 import com.xiaojinzi.component.support.ASMUtil;
+import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.support.Utils;
@@ -170,6 +172,14 @@ public class RouterCenter implements IComponentCenterRouter {
         }
         if (request.intentConsumer != null) {
             request.intentConsumer.accept(intent);
+        }
+
+        if (request.context instanceof Application &&
+                Component.getConfig().isTipWhenUseApplication()) {
+            LogUtil.logw(
+                    Router.TAG,
+                    "you use 'Application' to launch Activity. this is not recommended. you should not use 'Application' as far as possible"
+            );
         }
 
         // 如果是普通的启动界面
