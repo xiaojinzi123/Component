@@ -1177,11 +1177,11 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static ArrayList<Parcelable> getParcelableArrayList(@Nullable Bundle bundle, @NonNull String key, @Nullable ArrayList<Parcelable> defaultValue) {
+    public static <T extends Parcelable> ArrayList<T> getParcelableArrayList(@Nullable Bundle bundle, @NonNull String key, @Nullable ArrayList<T> defaultValue) {
         if (bundle == null) {
             return defaultValue;
         }
-        ArrayList<Parcelable> value = null;
+        ArrayList<T> value = null;
         if (bundle.containsKey(key)) {
             value = bundle.getParcelableArrayList(key);
         } else {

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.bean.SubParcelable;
 import com.xiaojinzi.base.bean.User;
 import com.xiaojinzi.base.bean.UserWithParcelable;
 import com.xiaojinzi.base.bean.UserWithSerializable;
@@ -57,8 +58,12 @@ public class TestInjectAct2 extends BaseAct {
     ArrayList<String> data31;
     @AttrValueAutowiredAnno("data32")
     ArrayList<Integer> data32;
-    @AttrValueAutowiredAnno("data13")
+    @AttrValueAutowiredAnno("data33")
     ArrayList<Parcelable> data33;
+    @AttrValueAutowiredAnno("data34")
+    ArrayList<UserWithParcelable> data34;
+    @AttrValueAutowiredAnno("data35")
+    ArrayList<SubParcelable> data35;
 
     // array 的几种类型
 
