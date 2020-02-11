@@ -15,12 +15,26 @@ import com.xiaojinzi.component.Component;
  */
 public class LogUtil {
 
+    public static final String TAG = "-------- Component --------";
+
     private LogUtil() {
     }
 
     @AnyThread
+    public static void loge(@NonNull String message) {
+        loge(TAG, message);
+    }
+
+    @AnyThread
+    public static void loge(@NonNull String tag, @NonNull String message) {
+        if (Component.isDebug()) {
+            Log.e(tag, message);
+        }
+    }
+
+    @AnyThread
     public static void logw(@NonNull String message) {
-        logw("Component", message);
+        logw(TAG, message);
     }
 
     @AnyThread
@@ -32,7 +46,7 @@ public class LogUtil {
 
     @AnyThread
     public static void log(@NonNull String message) {
-        log("Component", message);
+        log(TAG, message);
     }
 
     @AnyThread

@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.bean;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 import javax.lang.model.element.Element;
 
@@ -9,7 +9,7 @@ import javax.lang.model.element.Element;
  *
  * @author : xiaojinzi
  */
-@CheckClassName
+@CheckClassNameAnno
 public class InterceptorBean {
 
     public static final int GLOBAL_INTERCEPTOR = 0;

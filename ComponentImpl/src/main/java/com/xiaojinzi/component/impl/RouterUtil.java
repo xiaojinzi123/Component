@@ -46,7 +46,11 @@ class RouterUtil {
     @MainThread
     private static void cancelCallbackOnMainThread(@Nullable RouterRequest request,
                                                    @Nullable final OnRouterCancel callback) {
-        LogUtil.log(Router.TAG, "route canceled：" + request.uri.toString());
+        if (request == null) {
+            LogUtil.log(Router.TAG, "route canceled, request is null!");
+        }else {
+            LogUtil.log(Router.TAG, "route canceled：" + request.uri.toString());
+        }
         if (callback == null) {
             return;
         }
@@ -112,7 +116,7 @@ class RouterUtil {
                                                     @NonNull final RouterResult result) {
         Utils.checkNullPointer(result, "result");
         LogUtil.log(Router.TAG, "route success：" + result.getOriginalRequest().uri.toString());
-        // 如果请求的界面已经gg了
+        // 如果请求的界面已经 GG 了
         if (isRequestUnavailabled(result.getOriginalRequest())) {
             return;
         }
@@ -132,7 +136,7 @@ class RouterUtil {
     public static void deliveryListener(@Nullable final RouterResult successResult,
                                         @Nullable final RouterErrorResult errorResult,
                                         @Nullable final RouterRequest cancelRequest) {
-        Utils.postActionToMainThread(new Runnable() {
+        Utils.postActionToMainThreadAnyway(new Runnable() {
             @Override
             public void run() {
                 deliveryListenerOnMainThread(successResult, errorResult, cancelRequest);

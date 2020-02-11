@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.Function1;
 import com.xiaojinzi.component.support.Utils;
@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * @author xiaojinzi
  */
-@CheckClassName
+@CheckClassNameAnno
 public class FragmentManager {
 
     private FragmentManager() {
@@ -50,6 +50,12 @@ public class FragmentManager {
     @AnyThread
     public static void unregister(@NonNull String flag) {
         map.remove(flag);
+    }
+
+    @Nullable
+    @AnyThread
+    public static Fragment get(@NonNull final String flag) {
+        return get(flag, null);
     }
 
     @Nullable

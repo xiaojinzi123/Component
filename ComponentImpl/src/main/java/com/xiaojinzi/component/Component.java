@@ -8,6 +8,7 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.Inject;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.Utils;
@@ -43,7 +44,7 @@ public class Component {
     /**
      * 初始化
      *
-     * @see Config
+     * @see Config 初始化的配置对象
      */
     @MainThread
     public static void init(boolean isDebug, @NonNull Config config) {
@@ -56,6 +57,9 @@ public class Component {
         mConfig = config;
         // 注册
         mConfig.getApplication().registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
+        if (mConfig.isOptimizeInit() && mConfig.isAutoRegisterModule()) {
+            ModuleManager.getInstance().autoRegister();
+        }
         isInit = true;
     }
 
@@ -120,7 +124,9 @@ public class Component {
      * @param isAutoWireService   是否注入 Service
      */
     @MainThread
-    private static void inject(@NonNull Object target, @Nullable Bundle bundle, boolean isAutoWireAttrValue, boolean isAutoWireService) {
+    private static void inject(@NonNull Object target, @Nullable Bundle bundle,
+                               boolean isAutoWireAttrValue,
+                               boolean isAutoWireService) {
         Utils.checkMainThread();
         Utils.checkNullPointer(target, "target");
         String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;
@@ -134,12 +140,12 @@ public class Component {
                 if (bundle == null) {
                     inject.injectAttrValue(target);
                 } else {
+                    Utils.checkNullPointer(bundle, "bundle");
                     inject.injectAttrValue(target, bundle);
                 }
             }
-
         } catch (Exception ignore) {
-            LogUtil.log(target.getClass().getName(), "field inject fail");
+            LogUtil.log("field '" + target.getClass().getName() + "' inject fail");
         }
     }
 

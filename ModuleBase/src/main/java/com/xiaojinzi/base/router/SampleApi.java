@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.SparseArray;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.bean.SubCharSequence;
+import com.xiaojinzi.base.bean.SubParcelable;
 import com.xiaojinzi.base.bean.User;
 import com.xiaojinzi.base.bean.UserWithParcelable;
 import com.xiaojinzi.base.bean.UserWithSerializable;
@@ -144,20 +147,20 @@ public interface SampleApi {
      */
     @PathAnno(ModuleConfig.Module1.TEST)
     void test111(Context context,
-                @ParameterAnno("data1") String data1,
-                @ParameterAnno("data2") byte data2,
-                @ParameterAnno("data3") short data3,
-                @ParameterAnno("data4") int data4,
-                @ParameterAnno("data5") long data5,
-                @ParameterAnno("data6") float data6,
-                @ParameterAnno("data7") double data7,
-                @ParameterAnno("data8") User data8,
-                @ParameterAnno("data9") UserWithParcelable data9,
-                @ParameterAnno("data10") UserWithSerializable data10,
-                @ParameterAnno("data11") CharSequence data11,
-                @ParameterAnno("data12") Bundle data12,
-                Bundle data13,
-                Callback callback);
+                 @ParameterAnno("data1") String data1,
+                 @ParameterAnno("data2") byte data2,
+                 @ParameterAnno("data3") short data3,
+                 @ParameterAnno("data4") int data4,
+                 @ParameterAnno("data5") long data5,
+                 @ParameterAnno("data6") float data6,
+                 @ParameterAnno("data7") double data7,
+                 @ParameterAnno("data8") User data8,
+                 @ParameterAnno("data9") UserWithParcelable data9,
+                 @ParameterAnno("data10") UserWithSerializable data10,
+                 @ParameterAnno("data11") CharSequence data11,
+                 @ParameterAnno("data12") Bundle data12,
+                 Bundle data13,
+                 Callback callback);
 
     /**
      * 测试数组
@@ -165,27 +168,68 @@ public interface SampleApi {
     @NavigateAnno
     @PathAnno(ModuleConfig.Module1.TEST)
     void test112(Context context,
-                @ParameterAnno("data1") byte[] data1,
-                @ParameterAnno("data2") char[] data2,
-                @ParameterAnno("data3") String[] data3,
-                @ParameterAnno("data4") short[] data4,
-                @ParameterAnno("data5") int[] data5,
-                @ParameterAnno("data6") long[] data6,
-                @ParameterAnno("data7") float[] data7,
-                @ParameterAnno("data8") double[] data8,
-                @ParameterAnno("data9") boolean[] data9,
-                @ParameterAnno("data10") Parcelable[] data10,
-                @ParameterAnno("data11") CharSequence[] data11,
-                Callback callback);
+                 @ParameterAnno("data1") byte[] data1,
+                 @ParameterAnno("data2") char[] data2,
+                 @ParameterAnno("data3") String[] data3,
+                 @ParameterAnno("data4") short[] data4,
+                 @ParameterAnno("data5") int[] data5,
+                 @ParameterAnno("data6") long[] data6,
+                 @ParameterAnno("data7") float[] data7,
+                 @ParameterAnno("data8") double[] data8,
+                 @ParameterAnno("data9") boolean[] data9,
+                 @ParameterAnno("data10") Parcelable[] data10,
+                 @ParameterAnno("data10") UserWithParcelable[] data101,
+                 @ParameterAnno("data11") CharSequence[] data11,
+                 Callback callback);
 
     @NavigateAnno
     @PathAnno(ModuleConfig.Module1.TEST)
     NavigationDisposable test113(Context context,
-                                @ParameterAnno("data1") ArrayList<String> stringArrayList,
-                                @ParameterAnno("data2") ArrayList<Integer> integerArrayList,
-                                @ParameterAnno("data3") ArrayList<Parcelable> parcelableArrayList,
-                                @ParameterAnno("data4") ArrayList<CharSequence> charSequenceArrayList,
-                                Callback callback);
+                                 @ParameterAnno("data1") ArrayList<String> stringArrayList,
+                                 @ParameterAnno("data2") ArrayList<Integer> integerArrayList,
+                                 @ParameterAnno("data3") ArrayList<UserWithParcelable> parcelableArrayList,
+                                 @ParameterAnno("data4") ArrayList<CharSequence> charSequenceArrayList,
+                                 @ParameterAnno("data5") SparseArray<Parcelable> parcelableSparseArray,
+                                 @ParameterAnno("data6") SparseArray<UserWithParcelable> userParcelableSparseArray,
+                                 Callback callback);
+
+    @PathAnno(ModuleConfig.Module1.TEST_INJECT2)
+    void test114(Activity activity,
+                 @ParameterAnno("data1") byte[] data1,
+                 @ParameterAnno("data2") char[] data2,
+                 @ParameterAnno("data3") String[] data3,
+                 @ParameterAnno("data4") short[] data4,
+                 @ParameterAnno("data5") int[] data5,
+                 @ParameterAnno("data6") long[] data6,
+                 @ParameterAnno("data7") float[] data7,
+                 @ParameterAnno("data8") double[] data8,
+                 @ParameterAnno("data9") boolean[] data9,
+                 @ParameterAnno("data10") Parcelable[] data10,
+                 @ParameterAnno("data101") UserWithParcelable[] data101,
+                 @ParameterAnno("data11") CharSequence[] data11,
+                 @ParameterAnno("data40") String data40,
+                 @ParameterAnno("data41") CharSequence data41,
+                 @ParameterAnno("data42") byte data42,
+                 @ParameterAnno("data43") char data43,
+                 @ParameterAnno("data44") boolean data44,
+                 @ParameterAnno("data45") short data45,
+                 @ParameterAnno("data46") int data46,
+                 @ParameterAnno("data47") long data47,
+                 @ParameterAnno("data48") float data48,
+                 @ParameterAnno("data49") double data49,
+                 @ParameterAnno("data30") ArrayList<CharSequence> data30,
+                 @ParameterAnno("data31") ArrayList<String> data31,
+                 @ParameterAnno("data32") ArrayList<Integer> data32,
+                 @ParameterAnno("data33") ArrayList<Parcelable> data33,
+                 @ParameterAnno("data34") ArrayList<UserWithParcelable> data34,
+                 @ParameterAnno("data35") ArrayList<SubParcelable> data35,
+                 @ParameterAnno("data36") SparseArray<Parcelable> data36,
+                 @ParameterAnno("data37") SparseArray<UserWithParcelable> data37,
+                 @ParameterAnno("data38") SparseArray<SubParcelable> data38,
+                 @ParameterAnno("data12") User data12,
+                 @ParameterAnno("data13") UserWithSerializable data13,
+                 @ParameterAnno("data14") UserWithParcelable data14
+    );
 
 
 }

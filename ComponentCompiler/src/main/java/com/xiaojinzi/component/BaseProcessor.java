@@ -39,15 +39,20 @@ public abstract class BaseProcessor extends AbstractProcessor {
     protected Types mTypes;
     protected Elements mElements;
 
+    protected TypeElement mTypeElementComponentGeneratedAnno;
     protected TypeElement mTypeElementString;
+    protected TypeElement mTypeElementInteger;
     protected TypeElement mTypeElementList;
     protected TypeElement mTypeElementArrayList;
+    protected TypeElement mTypeElementSparseArray;
     protected TypeElement mTypeElementHashMap;
     protected TypeElement mTypeElementHashSet;
 
+    protected ClassName mClassNameComponentGeneratedAnno;
     protected ClassName mClassNameString;
     protected ClassName mClassNameList;
     protected ClassName mClassNameArrayList;
+    protected ClassName mClassNameSparseArray;
     protected ClassName mClassNameHashMap;
     protected ClassName mClassNameHashSet;
     protected ClassName mClassNameKeep;
@@ -63,15 +68,21 @@ public abstract class BaseProcessor extends AbstractProcessor {
         mTypes = processingEnv.getTypeUtils();
         mElements = processingEnv.getElementUtils();
 
-        mTypeElementString = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_STRING);
-        mTypeElementList = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_LIST);
+        mTypeElementComponentGeneratedAnno = mElements.getTypeElement(ComponentConstants.COMPONENT_GENERATED_ANNO_CLASS_NAME);
+        mClassNameComponentGeneratedAnno = ClassName.get(mTypeElementComponentGeneratedAnno);
+
+        mTypeElementString = mElements.getTypeElement(ComponentConstants.JAVA_STRING);
+        mTypeElementInteger = mElements.getTypeElement(ComponentConstants.JAVA_INTEGER);
+        mTypeElementList = mElements.getTypeElement(ComponentConstants.JAVA_LIST);
         mTypeElementArrayList = mElements.getTypeElement(ComponentConstants.JAVA_ARRAYLIST);
+        mTypeElementSparseArray = mElements.getTypeElement(ComponentConstants.ANDROID_SPARSEARRAY);
         mTypeElementHashMap = mElements.getTypeElement(ComponentConstants.JAVA_HASHMAP);
         mTypeElementHashSet = mElements.getTypeElement(ComponentConstants.JAVA_HASHSET);
 
         mClassNameString = ClassName.get(mTypeElementString);
         mClassNameList = ClassName.get(mTypeElementList);
         mClassNameArrayList = ClassName.get(mTypeElementArrayList);
+        mClassNameSparseArray = ClassName.get(mTypeElementSparseArray);
         mClassNameHashMap = ClassName.get(mTypeElementHashMap);
         mClassNameHashSet = ClassName.get(mTypeElementHashSet);
 

@@ -1,3 +1,4 @@
+
 **相信 Component 能成为最优秀的那个框架!**
 
 从 **17** 年下旬就用在公司的产品上了. 虽然不像巨型 `App` 那样庞大. 但是日活也有好几万, `Activity` 界面也有 `200+`, 
@@ -152,9 +153,26 @@
 
 ## 版本更新日志
 
+#### v1.7.9
+
+- `ModuleManager` 类中增加 `autoRegister()` 方法, 可以自动加载所有的模块
+    - 前提是你使用 Gradle 插件, 并且配置中 optimizeInit 开关已经打开
+- 配置中增加开关, 控制是否在初始化的时候自动加载所有模块. 这样子可以进一步省略配置的代码量
+- `ParameterSupport` 增加对 `Uri` 的获取. 
+- 跳转支持 `Uri` 中的 `UserInfo`. 接口的路由跳转中同样也支持了, 使用 `@UserInfoAnno` 即可
+- 修复 `@FragmentAnno` 标记在类上的时候的传值问题, 详见 `issue` [#51](https://github.com/xiaojinzi123/Component/issues/51)
+- Router 中的方法 `haveProxyIntent` 改名为 `isProxyIntentExist`
+- 修复自动注入 ArrayList<T extends Parcelable> 类型的参数错误的问题
+- 支持注入 Uri 中的数组的值
+- 自动注入支持 SparseArray<? extends Parcelable> 类型
+- ParameterSupport 增加 getSparseParcelableArray 方法
+
 #### v1.7.8(不兼容版本更新)
 
 - 所有的配置整改. 统一使用 `Config` 类来配置. 初始化方式改变了. `Component.init(boolean, Config);`
+    - 配置中增加 tipWhenUseApplication(boolean) 方法, 用来提醒使用者当使用者使用了 Application 作为 Context, 默认为 true
+    - 配置中增加 useRouteRepeatCheckInterceptor(boolean) 让使用者来控制是否使用内置的放抖动的跳转重复检查, 默认为 true
+    - Config 类为建造者模式, 整理了以前几个配置, 同时也为以后的配置增多提供了很好的扩展
 - `Router.with(Context).withProxyBundle` 更名为 `Router.with(Context).proxyBundle`
 - OnRouterCancel 和 OnRouterError 的包名更改为 com.xiaojinzi.component.support
 - com.xiaojinzi.component.condition.Condition 更名为 com.xiaojinzi.component.support.Condition

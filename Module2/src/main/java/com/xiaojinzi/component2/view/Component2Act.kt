@@ -30,6 +30,7 @@ class Component2Act : BaseAct() {
         setContentView(R.layout.component2_act)
         Component.inject(this);
         tv_data.text = data;
+
         val fragment = Router
                 .with(ModuleConfig.Module1.TEST_FRAGMENT)
                 .navigate()

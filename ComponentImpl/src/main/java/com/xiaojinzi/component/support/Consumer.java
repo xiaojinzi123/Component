@@ -2,14 +2,14 @@ package com.xiaojinzi.component.support;
 
 import androidx.annotation.NonNull;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 /**
  * 表示一个接受一个参数的接口
  *
  * @param <T>
  */
-@CheckClassName
+@CheckClassNameAnno
 public interface Consumer<T> {
 
     /**

@@ -1,6 +1,5 @@
 package com.xiaojinzi.componentdemo.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,8 +21,6 @@ import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.componentdemo.R;
-
-import io.reactivex.functions.Consumer;
 
 /**
  * time   : 2018/12/27

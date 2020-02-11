@@ -1,6 +1,7 @@
 package com.xiaojinzi.component.impl;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,17 +20,18 @@ import androidx.fragment.app.FragmentManager;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.bean.RouterBean;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
-import com.xiaojinzi.component.support.ASMUtil;
-import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.router.IComponentCenterRouter;
 import com.xiaojinzi.component.router.IComponentHostRouter;
+import com.xiaojinzi.component.support.ASMUtil;
+import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.ParameterSupport;
+import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.support.Utils;
 
 import java.util.ArrayList;
@@ -43,6 +45,11 @@ import java.util.Set;
 import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
 
 /**
+ * 请注意:
+ * 请勿在项目中使用此类, 此类的 Api 不供项目使用, 仅供框架内部使用.
+ * 即使你在项目中能引用到此类并且调用到 Api, 也不是你想要的效果. 所以请不要使用.
+ * 尤其是方法 {@link #isMatchUri(Uri)}
+ * <p>
  * 中央路由,挂载着多个子路由表,这里有总路由表
  * 实际的跳转也是这里实现的,当有模块的注册和反注册发生的时候
  * 总路由表会有响应的变化
@@ -50,7 +57,7 @@ import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
  * @author xiaojinzi
  * @hide
  */
-@CheckClassName
+@CheckClassNameAnno
 public class RouterCenter implements IComponentCenterRouter {
 
     /**
@@ -104,8 +111,7 @@ public class RouterCenter implements IComponentCenterRouter {
     /**
      * content 参数和 fragment 参数必须有一个有值的
      *
-     * @param request
-     * @return
+     * @param request 路由请求对象
      */
     @MainThread
     private void doOpenUri(@NonNull final RouterRequest request) throws Exception {
@@ -127,17 +133,14 @@ public class RouterCenter implements IComponentCenterRouter {
             throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nRouter.with(Context) or Router.with(Fragment)");
         }
         // do startActivity
-        Context context = request.getRawContext();
+        Context rawContext = request.getRawContext();
         // 如果 Context 和 Fragment 中的 Context 都是 null
-        if (context == null) {
+        if (rawContext == null) {
             throw new NavigationFailException("is your fragment or Activity is Destoried?");
         }
-        // 转化 query 到 bundle,这句话不能随便放,因为这句话之前是因为拦截器可以修改 routerRequest 对象中的参数或者整个对象
-        // 所以直接当所有拦截器都执行完毕的时候,在确定要跳转了,这个 query 参数可以往 bundle 里面存了
-        ParameterSupport.putQueryBundleToBundle(request.bundle, request.uri);
         Intent intent = null;
         if (target.getTargetClass() != null) {
-            intent = new Intent(context, target.getTargetClass());
+            intent = new Intent(rawContext, target.getTargetClass());
         } else if (target.getCustomerIntentCall() != null) {
             intent = target.getCustomerIntentCall().get(request);
         }
@@ -156,7 +159,14 @@ public class RouterCenter implements IComponentCenterRouter {
     @MainThread
     private void doStartIntent(@NonNull RouterRequest request, Intent intent) throws Exception {
         // 前置工作
-        // 所有的参数存到 Intent 中
+
+        // 转化 query 到 bundle,这句话不能随便放
+        // 因为这句话之前是因为拦截器可以修改 routerRequest 对象中的参数或者整个对象
+        // 所以直接当所有拦截器都执行完毕的时候,在确定要跳转了
+        // 这个 query 参数可以往 bundle 里面存了
+        ParameterSupport.putQueryBundleToBundle(request.bundle, request.uri);
+        ParameterSupport.putUriStringToBundle(request.bundle, request.uri);
+        // 然后把 Uri 塞进一个特殊的 key 中
         intent.putExtras(request.bundle);
         // 把用户的 flags 和 categories 都设置进来
         for (String intentCategory : request.intentCategories) {
@@ -167,6 +177,14 @@ public class RouterCenter implements IComponentCenterRouter {
         }
         if (request.intentConsumer != null) {
             request.intentConsumer.accept(intent);
+        }
+
+        if (request.context instanceof Application &&
+                Component.getConfig().isTipWhenUseApplication()) {
+            LogUtil.logw(
+                    Router.TAG,
+                    "you use 'Application' to launch Activity. this is not recommended. you should not use 'Application' as far as possible"
+            );
         }
 
         // 如果是普通的启动界面
@@ -180,6 +198,7 @@ public class RouterCenter implements IComponentCenterRouter {
             }
             return;
         }
+
         // 使用 context 跳转 startActivityForResult
         if (request.context != null) {
             Fragment rxFragment = findFragment(request.context);
@@ -250,6 +269,7 @@ public class RouterCenter implements IComponentCenterRouter {
      * @param uri
      * @return
      */
+    @Nullable
     private String getTargetUrl(@NonNull Uri uri) {
         // "/component1/test" 不含host
         String targetPath = uri.getPath();
@@ -280,9 +300,6 @@ public class RouterCenter implements IComponentCenterRouter {
 
     /**
      * 找到那个 Activity 中隐藏的一个 Fragment,如果找的到就会用这个 Fragment 拿来跳转
-     *
-     * @param context
-     * @return
      */
     @Nullable
     private Fragment findFragment(Context context) {
@@ -302,15 +319,6 @@ public class RouterCenter implements IComponentCenterRouter {
             result = fragment.getChildFragmentManager().findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
         }
         return result;
-    }
-
-    @Nullable
-    private Fragment findFragment(@NonNull RouterRequest request) {
-        Fragment fragment = findFragment(request.context);
-        if (fragment == null) {
-            fragment = findFragment(request.fragment);
-        }
-        return fragment;
     }
 
     @Override

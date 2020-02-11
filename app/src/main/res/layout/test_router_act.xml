@@ -197,6 +197,14 @@
                     android:textAllCaps="false"
                     android:textSize="@dimen/test_router_textsize" />
 
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="testInjectAll"
+                    android:text="测试全部参数注入"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/test_router_textsize" />
+
             </com.xiaojinzi.componentdemo.view.XFlowLayout>
 
         </androidx.core.widget.NestedScrollView>

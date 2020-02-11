@@ -2,9 +2,9 @@ package com.xiaojinzi.component.support;
 
 import androidx.annotation.NonNull;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
-@CheckClassName
+@CheckClassNameAnno
 public interface Function1<T, R> {
 
     /**

@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -48,7 +49,7 @@ public class MainAct extends AppCompatActivity {
     }
 
     private void startProxyRouter(@Nullable Bundle bundle) {
-        if (Router.haveProxyIntent(bundle)) {
+        if (Router.isProxyIntentExist(bundle)) {
             Router.with(this)
                     .proxyBundle(bundle)
                     .forward();
@@ -102,7 +103,11 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouterForFragment(View view) {
-        Fragment fragment = Router.with("component1.fragment").navigate();
+        Bundle bundle = new Bundle();
+        bundle.putInt("age",26);
+        Fragment fragment = Router
+                .with("component1.fragment")
+                .navigate();
         if (fragment == null) {
             Toast.makeText(this, "没有找到 'component1.fragment' 对应的 Fragment", Toast.LENGTH_SHORT).show();
         } else {
@@ -162,7 +167,6 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testService(View view) {
-
         Router
                 .with(this)
                 .host(ModuleConfig.App.NAME)

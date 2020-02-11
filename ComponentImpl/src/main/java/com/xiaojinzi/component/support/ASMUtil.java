@@ -2,7 +2,7 @@ package com.xiaojinzi.component.support;
 
 import androidx.annotation.Nullable;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.application.IComponentHostApplication;
 import com.xiaojinzi.component.fragment.IComponentHostFragment;
 import com.xiaojinzi.component.impl.application.ModuleManager;
@@ -10,6 +10,9 @@ import com.xiaojinzi.component.interceptor.IComponentHostInterceptor;
 import com.xiaojinzi.component.router.IComponentHostRouter;
 import com.xiaojinzi.component.router.IComponentHostRouterDegrade;
 import com.xiaojinzi.component.service.IComponentHostService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 下面的方法都是空方法, 如果用户用了 Gradele 插件去配置各个模块的名称, 那么下面的空方法都会被 Gradle 插件
@@ -48,8 +51,21 @@ import com.xiaojinzi.component.service.IComponentHostService;
  *
  * @author xiaojinzi
  */
-@CheckClassName("ComponentPlugin 插件的模块需要关注class 的名称和包名的变化")
+@CheckClassNameAnno("ComponentPlugin 插件的模块需要关注class 的名称和包名的变化")
 public class ASMUtil {
+
+    /**
+     * 获取所有模块的名称, 内部的实现由于 Gradle 插件修改字节码实现
+     *
+     * @return 返回所有模块的名称
+     */
+    @Nullable
+    public static List<String> getModuleNames() {
+        List<String> result = new ArrayList<>();
+        // 示例代码
+        // result.add("user");
+        return result;
+    }
 
     /**
      * 获取生命周期的模块管理类

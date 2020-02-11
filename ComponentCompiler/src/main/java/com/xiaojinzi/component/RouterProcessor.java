@@ -172,6 +172,7 @@ public class RouterProcessor extends BaseHostProcessor {
         MethodSpec initMapMethod = generateInitMapMethod();
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 .addAnnotation(mClassNameKeep)
+                .addAnnotation(mClassNameComponentGeneratedAnno)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
                 .superclass(superClass)

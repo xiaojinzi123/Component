@@ -4,7 +4,9 @@ signature 是签名文件, 文件的密码都是 123456, 或者 xiaojinzi
 
 - 简单走一下各个跳转的流程
 - 走完全部的测试用例
-- 修改 dependencies.gradle 中的版本号
+- 修改 dependencies.gradle 中 gradle plugin 的版本号
+- 生成一个 gradle plugin 插件.
+- 修改 dependencies.gradle 中 Component 的版本号
 - 合并代码到 Master 分支
 - 打上 Tag, 比如：v1.7.5.1
 - 推送 master 到远程

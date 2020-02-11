@@ -3,14 +3,14 @@ package com.xiaojinzi.component.support;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 /**
  * 单例服务,这是注册服务默认的形式
  *
  * @param <T>
  */
-@CheckClassName
+@CheckClassNameAnno
 public abstract class SingletonCallable<T> implements Callable<T> {
 
     @Nullable

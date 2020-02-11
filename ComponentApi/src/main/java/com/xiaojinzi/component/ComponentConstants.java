@@ -17,6 +17,7 @@ public class ComponentConstants {
 
     // System interface
 
+    public static final String COMPONENT_GENERATED_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.support.ComponentGeneratedAnno";
     public static final String APPLCATON_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.application.IComponentApplication";
     public static final String INTERCEPTOR_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.impl.RouterInterceptor";
     public static final String ROUTERCENTER_CLASS_NAME = "com.xiaojinzi.component.impl.RouterCenter";
@@ -60,10 +61,12 @@ public class ComponentConstants {
     public static final String ANDROID_ANNOTATION_NONNULL = "androidx.annotation.NonNull";
     public static final String ANDROID_ANNOTATION_KEEP = "androidx.annotation.Keep";
     public static final String ANDROID_BUNDLE = "android.os.Bundle";
+    public static final String ANDROID_SPARSEARRAY = "android.util.SparseArray";
 
     public static final String JAVA_CLASS = "java.lang.Class";
     public static final String JAVA_EXCEPTION = "java.lang.Exception";
     public static final String JAVA_STRING = "java.lang.String";
+    public static final String JAVA_INTEGER = "java.lang.Integer";
     public static final String JAVA_MAP = "java.util.Map";
     public static final String JAVA_LIST = "java.util.List";
     public static final String JAVA_COLLECTIONS = "java.util.Collections";
@@ -84,5 +87,11 @@ public class ComponentConstants {
      * 默认的目标字段注入的class后缀
      */
     public static final String INJECT_SUFFIX = "_inject";
+
+    /**
+     * 整串字符串放到 https://jex.im/regulex 就可以看到效果
+     */
+    public static final String HOST_REGEX =
+            "^([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*$";
 
 }

@@ -7,14 +7,14 @@ import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.support.NavigationDisposable;
 
 /**
  * 这个对象表示一个可调用的路由跳转
  */
-@CheckClassName
+@CheckClassNameAnno
 public interface Call {
 
     /**

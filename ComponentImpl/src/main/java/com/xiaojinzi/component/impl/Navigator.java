@@ -18,7 +18,7 @@ import android.util.SparseArray;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentConstants;
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.error.ignore.ActivityResultException;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
@@ -47,7 +47,7 @@ import java.util.Set;
  * 这个类一部分功能应该是 {@link Router} 的构建者对象的功能,但是这里面更多的为导航的功能
  * 写了很多代码,所以名字就不叫 Builder 了
  */
-@CheckClassName
+@CheckClassNameAnno
 public class Navigator extends RouterRequest.Builder implements Call {
 
     /**
@@ -144,8 +144,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 此 {@link Intent} 的跳转目标是一个代理的界面. 具体是
      * {@link ProxyIntentAct} 或者是用户你自己自定义的 {@link Class<Activity>}
      * 携带的参数是是真正的目标的信息. 比如：
-     * {@link ProxyIntentAct#EXTRA_PROXY_INTENT_URL} 表示目标的 url
-     * {@link ProxyIntentAct#EXTRA_PROXY_INTENT_BUNDLE} 表示跳转到真正的目标的 {@link Bundle} 数据
+     * {@link ProxyIntentAct#EXTRA_ROUTER_PROXY_INTENT_URL} 表示目标的 url
+     * {@link ProxyIntentAct#EXTRA_ROUTER_PROXY_INTENT_BUNDLE} 表示跳转到真正的目标的 {@link Bundle} 数据
      * ......
      * 当你自定义了代理界面, 那你可以使用{@link Router#with()} 或者  {@link Router#with(Context)} 或者
      * {@link Router#with(Fragment)} 得到一个 {@link Navigator}
@@ -169,11 +169,11 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     public Navigator proxyBundle(@NonNull Bundle bundle) {
         Utils.checkNullPointer(bundle, "bundle");
-        String reqUrl = bundle.getString(ProxyIntentAct.EXTRA_PROXY_INTENT_URL);
-        Bundle reqBundle = bundle.getBundle(ProxyIntentAct.EXTRA_PROXY_INTENT_BUNDLE);
-        Bundle reqOptions = bundle.getBundle(ProxyIntentAct.EXTRA_PROXY_INTENT_OPTIONS);
-        ArrayList<Integer> reqFlags = bundle.getIntegerArrayList(ProxyIntentAct.EXTRA_PROXY_INTENT_FLAGS);
-        ArrayList<String> reqCategories = bundle.getStringArrayList(ProxyIntentAct.EXTRA_PROXY_INTENT_CATEGORIES);
+        String reqUrl = bundle.getString(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_URL);
+        Bundle reqBundle = bundle.getBundle(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_BUNDLE);
+        Bundle reqOptions = bundle.getBundle(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_OPTIONS);
+        ArrayList<Integer> reqFlags = bundle.getIntegerArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_FLAGS);
+        ArrayList<String> reqCategories = bundle.getStringArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_CATEGORIES);
         super.url(reqUrl);
         super.putAll(reqBundle);
         super.options(reqOptions);
@@ -251,6 +251,12 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @Override
     public Navigator hostAndPath(@NonNull String hostAndPath) {
         super.hostAndPath(hostAndPath);
+        return this;
+    }
+
+    @Override
+    public Navigator userInfo(@NonNull String userInfo) {
+        super.userInfo(userInfo);
         return this;
     }
 
@@ -494,12 +500,15 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
-     * 使用默认的 Application Context, 并且添加 {@link Intent#FLAG_ACTIVITY_NEW_TASK} 标记
+     * 使用默认的 {@link android.app.Application} 作为
+     * {@link Context}. 使用默认的 {@link android.app.Application}
+     * 会添加 {@link Intent#FLAG_ACTIVITY_NEW_TASK} 标记
      */
-    private void useDefaultApplication() {
+    private void useDefaultContext() {
         // 如果 Context 和 Fragment 都是空的,使用默认的 Application
         if (context == null && fragment == null) {
             context = Component.getApplication();
+            // 配套加上 New_Task 的标志
             addIntentFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
     }
@@ -748,7 +757,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         InterceptorCallback interceptorCallback = null;
         try {
             // 如果用户没填写 Context 或者 Fragment 默认使用 Application
-            useDefaultApplication();
+            useDefaultContext();
             // 路由前的检查
             onCheck();
             // 标记这个 builder 已经不能使用了

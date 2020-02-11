@@ -92,6 +92,12 @@ public class ProxyIntentBuilder extends RouterRequest.URIBuilder {
     }
 
     @Override
+    public ProxyIntentBuilder userInfo(@NonNull String userInfo) {
+        super.userInfo(userInfo);
+        return this;
+    }
+
+    @Override
     public ProxyIntentBuilder host(@NonNull String host) {
         super.host(host);
         return this;
@@ -306,12 +312,12 @@ public class ProxyIntentBuilder extends RouterRequest.URIBuilder {
     @NonNull
     public Intent buildProxyIntent() {
         Intent intent = new Intent(Component.getApplication(), proxyActivity);
-        intent.putExtra(ProxyIntentAct.EXTRA_PROXY_INTENT, true);
-        intent.putExtra(ProxyIntentAct.EXTRA_PROXY_INTENT_URL, buildURL());
-        intent.putExtra(ProxyIntentAct.EXTRA_PROXY_INTENT_BUNDLE, this.bundle);
-        intent.putExtra(ProxyIntentAct.EXTRA_PROXY_INTENT_OPTIONS, this.options);
-        intent.putExtra(ProxyIntentAct.EXTRA_PROXY_INTENT_FLAGS, new ArrayList<>(this.intentFlags));
-        intent.putExtra(ProxyIntentAct.EXTRA_PROXY_INTENT_CATEGORIES, new ArrayList<>(this.intentCategories));
+        intent.putExtra(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT, true);
+        intent.putExtra(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_URL, buildURL());
+        intent.putExtra(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_BUNDLE, this.bundle);
+        intent.putExtra(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_OPTIONS, this.options);
+        intent.putExtra(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_FLAGS, new ArrayList<>(this.intentFlags));
+        intent.putExtra(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_CATEGORIES, new ArrayList<>(this.intentCategories));
         return intent;
     }
 

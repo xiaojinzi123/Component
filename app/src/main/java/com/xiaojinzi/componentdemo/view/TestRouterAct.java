@@ -4,18 +4,25 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.bean.SubParcelable;
+import com.xiaojinzi.base.bean.User;
+import com.xiaojinzi.base.bean.UserWithParcelable;
+import com.xiaojinzi.base.bean.UserWithSerializable;
+import com.xiaojinzi.base.bean.UserWithSubParcelable;
 import com.xiaojinzi.base.interceptor.DialogShowInterceptor;
 import com.xiaojinzi.base.router.Module1Api;
+import com.xiaojinzi.base.router.SampleApi;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.RouterAnno;
@@ -27,8 +34,11 @@ import com.xiaojinzi.component.impl.RouterRequest;
 import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.support.CallbackAdapter;
+import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
@@ -56,9 +66,11 @@ public class TestRouterAct extends BaseAct {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.test_router_act);
         getSupportActionBar().setTitle("高级路由测试");
         tv_detail = findViewById(R.id.tv_detail);
+
     }
 
     private void addInfo(@NonNull String info) {
@@ -603,6 +615,102 @@ public class TestRouterAct extends BaseAct {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "data=normalJump", null);
                     }
                 });
+    }
+
+    public void testInjectAll(View view) {
+
+        SparseArray<UserWithParcelable> sparseArray1 = new SparseArray();
+        SparseArray<Parcelable> sparseArray2 = new SparseArray();
+        SparseArray<SubParcelable> sparseArray3 = new SparseArray();
+
+        sparseArray1.put(2, new UserWithParcelable());
+        sparseArray1.put(1, new UserWithParcelable());
+        sparseArray1.put(3, new UserWithParcelable());
+        sparseArray2.put(1, new UserWithParcelable());
+        sparseArray2.put(2, new UserWithParcelable());
+        sparseArray2.put(3, new UserWithParcelable());
+        sparseArray3.put(1, new UserWithSubParcelable());
+        sparseArray3.put(2, new UserWithSubParcelable());
+        sparseArray3.put(3, new UserWithSubParcelable());
+
+        Router.withApi(SampleApi.class)
+                .test114(
+                        this,
+                        new byte[]{1,2,3},
+                        new char[]{'1', '2', '3'},
+                        new String[]{"1", "2", "3"},
+                        new short[]{1,2,3},
+                        new int[]{1,2,3},
+                        new long[]{1,2,3},
+                        new float[]{1,2,3},
+                        new double[]{1,2,3},
+                        new boolean[]{true, false, true},
+                        new Parcelable[]{
+                                new UserWithParcelable(),
+                                new UserWithParcelable(),
+                                new UserWithParcelable()
+                        },
+                        new UserWithParcelable[]{
+                                new UserWithParcelable(),
+                                new UserWithParcelable(),
+                                new UserWithParcelable()
+                        },
+                        new CharSequence[]{
+                                "1", "2", "3"
+                        },
+                        "1 2 3",
+                        "1 2 3 ",
+                        (byte)1,
+                        '1',
+                        true,
+                        (short)1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        "1", "2", "3"
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        "1", "2", "3"
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        1 ,2 ,3
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        new UserWithParcelable(),
+                                        new UserWithParcelable(),
+                                        new UserWithParcelable()
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        new UserWithParcelable(),
+                                        new UserWithParcelable(),
+                                        new UserWithParcelable()
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        new UserWithSubParcelable(),
+                                        new UserWithSubParcelable(),
+                                        new UserWithSubParcelable()
+                                )
+                        ),
+                        sparseArray2,
+                        sparseArray1,
+                        sparseArray3,
+                        new User(),
+                        new UserWithSerializable(),
+                        new UserWithParcelable()
+                );
     }
 
 }

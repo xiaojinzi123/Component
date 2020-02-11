@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.error.InterceptorNameExistException;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.interceptor.IComponentCenterInterceptor;
@@ -30,7 +30,7 @@ import java.util.Set;
  *
  * @author : xiaojinzi
  */
-@CheckClassName
+@CheckClassNameAnno
 public class InterceptorCenter implements IComponentCenterInterceptor {
 
     private InterceptorCenter() {

@@ -73,8 +73,4 @@ public class RouterDegradeCache {
         return null;
     }
 
-    public static synchronized void removeCache(@NonNull Class<? extends RouterDegrade> tClass) {
-        ClassCache.remove(tClass);
-    }
-
 }

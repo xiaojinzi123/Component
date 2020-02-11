@@ -16,8 +16,6 @@ public @interface AttrValueAutowiredAnno {
 
     /**
      * 需要注入的 Key：
-     *
-     * @return
      */
     String value();
 

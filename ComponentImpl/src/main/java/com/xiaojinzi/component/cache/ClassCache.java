@@ -4,9 +4,12 @@ package com.xiaojinzi.component.cache;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
-@CheckClassName
+/**
+ * Class 的缓存的工具类
+ */
+@CheckClassNameAnno
 public class ClassCache {
 
     private static final Cache<Class, Object> classCache =
@@ -16,10 +19,12 @@ public class ClassCache {
         classCache.put(clazz, o);
     }
 
+    @Nullable
     public static synchronized final <T> T get(@NonNull Class clazz) {
         return (T) classCache.get(clazz);
     }
 
+    @Nullable
     public static synchronized final <T> T remove(@NonNull Class clazz) {
         return (T) classCache.remove(clazz);
     }

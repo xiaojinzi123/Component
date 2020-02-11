@@ -103,6 +103,7 @@ public class RouterDegradeProcessor extends BaseHostProcessor {
         MethodSpec initListMethod = generateInitListMethod();
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 .addAnnotation(mClassNameKeep)
+                .addAnnotation(mClassNameComponentGeneratedAnno)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
                 .addJavadoc(componentHost + "路由降级的模块\n")

@@ -3,8 +3,10 @@ package com.xiaojinzi.component1.view;
 import android.os.Bundle;
 import android.os.Parcelable;
 import androidx.annotation.Nullable;
+import android.util.SparseArray;
 
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.bean.SubParcelable;
 import com.xiaojinzi.base.bean.User;
 import com.xiaojinzi.base.bean.UserWithParcelable;
 import com.xiaojinzi.base.bean.UserWithSerializable;
@@ -14,6 +16,7 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
+import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.component1.R;
 
 import java.util.ArrayList;
@@ -26,7 +29,37 @@ import java.util.ArrayList;
 )
 public class TestInjectAct2 extends BaseAct {
 
+    // array 的几种类型
+
+    @AttrValueAutowiredAnno("data1")
+    byte[] data1;
+    @AttrValueAutowiredAnno("data2")
+    char[] data2;
+    @AttrValueAutowiredAnno("data3")
+    String[] data3;
+    @AttrValueAutowiredAnno("data4")
+    short[] data4;
+    @AttrValueAutowiredAnno("data5")
+    int[] data5;
+    @AttrValueAutowiredAnno("data6")
+    long[] data6;
+    @AttrValueAutowiredAnno("data7")
+    float[] data7;
+    @AttrValueAutowiredAnno("data8")
+    double[] data8;
+    @AttrValueAutowiredAnno("data9")
+    boolean[] data9;
+
+    @AttrValueAutowiredAnno("data10")
+    Parcelable[] data10;
+    // 不支持注入的类型
+    /*@AttrValueAutowiredAnno("data101")
+    UserWithParcelable[] data101;*/
+    @AttrValueAutowiredAnno("data11")
+    CharSequence[] data11;
+
     // 基本数据类型
+
     @AttrValueAutowiredAnno("data40")
     String data40;
     @AttrValueAutowiredAnno("data41")
@@ -57,33 +90,21 @@ public class TestInjectAct2 extends BaseAct {
     ArrayList<String> data31;
     @AttrValueAutowiredAnno("data32")
     ArrayList<Integer> data32;
-    @AttrValueAutowiredAnno("data13")
+
+    // Parcelable 的一些类型
+    @AttrValueAutowiredAnno("data33")
     ArrayList<Parcelable> data33;
+    @AttrValueAutowiredAnno("data34")
+    ArrayList<UserWithParcelable> data34;
+    @AttrValueAutowiredAnno("data35")
+    ArrayList<SubParcelable> data35;
 
-    // array 的几种类型
-
-    @AttrValueAutowiredAnno("data1")
-    byte[] data1;
-    @AttrValueAutowiredAnno("data2")
-    char[] data2;
-    @AttrValueAutowiredAnno("data3")
-    String[] data3;
-    @AttrValueAutowiredAnno("data4")
-    short[] data4;
-    @AttrValueAutowiredAnno("data5")
-    int[] data5;
-    @AttrValueAutowiredAnno("data6")
-    long[] data6;
-    @AttrValueAutowiredAnno("data7")
-    float[] data7;
-    @AttrValueAutowiredAnno("data8")
-    double[] data8;
-    @AttrValueAutowiredAnno("data9")
-    boolean[] data9;
-    @AttrValueAutowiredAnno("data10")
-    Parcelable[] data10;
-    @AttrValueAutowiredAnno("data11")
-    CharSequence[] data11;
+    @AttrValueAutowiredAnno("data36")
+    SparseArray<Parcelable> data36;
+    @AttrValueAutowiredAnno("data37")
+    SparseArray<UserWithParcelable> data37;
+    @AttrValueAutowiredAnno("data38")
+    SparseArray<SubParcelable> data38;
 
     // 其他的类型
 
@@ -105,6 +126,7 @@ public class TestInjectAct2 extends BaseAct {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.component1_test_inject_parameter_act);
         Component.inject(this);
+        System.out.println("注入了");
     }
 
 }

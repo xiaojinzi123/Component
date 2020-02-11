@@ -13,16 +13,12 @@ import java.lang.annotation.Target;
 public @interface UseInteceptorAnno {
 
     /**
-     * 表示路由的 host
-     *
-     * @return
+     * 拦截器的名称
      */
     String[] names() default {};
 
     /**
-     * 使用的类
-     *
-     * @return
+     * 拦截器的 class
      */
     Class[] classes() default {};
 

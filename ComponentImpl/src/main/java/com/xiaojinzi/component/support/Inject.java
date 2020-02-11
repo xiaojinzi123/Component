@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.support;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,12 +8,12 @@ import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
 
-import com.xiaojinzi.component.anno.support.CheckClassName;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 /**
  * 每一个生成的类都应该实现这个接口
  */
-@CheckClassName
+@CheckClassNameAnno
 public interface Inject<T> {
 
     /**
