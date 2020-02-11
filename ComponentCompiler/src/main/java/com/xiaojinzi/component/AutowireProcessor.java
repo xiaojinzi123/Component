@@ -32,6 +32,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -291,23 +292,20 @@ public class AutowireProcessor extends BaseProcessor {
                 methodBuilder.addStatement("$N = $T.getIntegerArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
             } else if (charsequenceArrayListParameterizedTypeName.equals(TypeName.get(variableTypeMirror))) {
                 methodBuilder.addStatement("$N = $T.getCharSequenceArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
-            } else if(parameterTypeName instanceof ParameterizedTypeName){ // 处理泛型
-                ParameterizedTypeName parameterizedTypeName = (ParameterizedTypeName) parameterTypeName;
-                if (arrayListClassName.equals(parameterizedTypeName.rawType)) { // 如果外面是 ArrayList
-                    List<TypeName> typeArguments = parameterizedTypeName.typeArguments;
-                    if (typeArguments.size() == 1) { // 处理泛型个数是一个的
-                        if (typeArguments.get(0) instanceof ClassName) {
-                            ClassName targetParameterizedClassName = (ClassName) typeArguments.get(0);
-                            TypeElement targetParameterizedTypeElement = mElements.getTypeElement(targetParameterizedClassName.toString());
-                            if (targetParameterizedTypeElement != null) {
-                                if (mTypes.isSubtype(targetParameterizedTypeElement.asType(), parcelableTypeMirror)) { // 如果是 Parcelable 的子类
-                                    methodBuilder.addStatement("$N = $T.getParcelableArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
-                                }
+            } else if (variableTypeMirror instanceof DeclaredType) {
+                DeclaredType declaredType = (DeclaredType) variableTypeMirror;
+                if (declaredType.asElement() instanceof TypeElement) {
+                    TypeElement typeElement = (TypeElement) declaredType.asElement();
+                    if (arrayListClassName.equals(ClassName.get(typeElement))) { // 如果外面是 ArrayList
+                        List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
+                        if (typeArguments.size() == 1) { // 处理泛型个数是一个的
+                            if (mTypes.isSubtype(typeArguments.get(0), parcelableTypeMirror)) { // 如果是 Parcelable 的子类
+                                methodBuilder.addStatement("$N = $T.getParcelableArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                             }
                         }
                     }
                 }
-            }else if (variableTypeMirror instanceof ArrayType) {
+            } else if (variableTypeMirror instanceof ArrayType) {
                 ArrayType parameterArrayType = (ArrayType) variableTypeMirror;
                 TypeName parameterComponentTypeName = ClassName.get(parameterArrayType.getComponentType());
                 // 如果是一个 String[]
