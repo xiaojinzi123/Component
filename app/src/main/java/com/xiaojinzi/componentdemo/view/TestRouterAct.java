@@ -617,7 +617,7 @@ public class TestRouterAct extends BaseAct {
                 });
     }
 
-    public void testInjectAll() {
+    public void testInjectAll(View view) {
 
         SparseArray<UserWithParcelable> sparseArray1 = new SparseArray();
         SparseArray<Parcelable> sparseArray2 = new SparseArray();

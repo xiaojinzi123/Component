@@ -52,8 +52,6 @@ public class TestInjectAct2 extends BaseAct {
 
     @AttrValueAutowiredAnno("data10")
     Parcelable[] data10;
-    @AttrValueAutowiredAnno("data101")
-    UserWithParcelable[] data101;
     @AttrValueAutowiredAnno("data11")
     CharSequence[] data11;
 

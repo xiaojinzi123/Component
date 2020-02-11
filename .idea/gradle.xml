@@ -17,12 +17,12 @@
             <option value="$PROJECT_DIR$/ComponentPlugin" />
             <option value="$PROJECT_DIR$/ComponentRxImpl" />
             <option value="$PROJECT_DIR$/Module1" />
+            <option value="$PROJECT_DIR$/Module1run" />
             <option value="$PROJECT_DIR$/Module2" />
             <option value="$PROJECT_DIR$/ModuleBase" />
             <option value="$PROJECT_DIR$/ModuleHelp" />
             <option value="$PROJECT_DIR$/ModuleUser" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/module1run" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
