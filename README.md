@@ -153,7 +153,7 @@
 
 ## 版本更新日志
 
-#### v1.7.9(开发中~~~~)
+#### v1.7.9
 
 - `ModuleManager` 类中增加 `autoRegister()` 方法, 可以自动加载所有的模块
     - 前提是你使用 Gradle 插件, 并且配置中 optimizeInit 开关已经打开
