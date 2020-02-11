@@ -61,10 +61,12 @@ public class ComponentConstants {
     public static final String ANDROID_ANNOTATION_NONNULL = "android.support.annotation.NonNull";
     public static final String ANDROID_ANNOTATION_KEEP = "android.support.annotation.Keep";
     public static final String ANDROID_BUNDLE = "android.os.Bundle";
+    public static final String ANDROID_SPARSEARRAY = "android.util.SparseArray";
 
     public static final String JAVA_CLASS = "java.lang.Class";
     public static final String JAVA_EXCEPTION = "java.lang.Exception";
     public static final String JAVA_STRING = "java.lang.String";
+    public static final String JAVA_INTEGER = "java.lang.Integer";
     public static final String JAVA_MAP = "java.util.Map";
     public static final String JAVA_LIST = "java.util.List";
     public static final String JAVA_COLLECTIONS = "java.util.Collections";

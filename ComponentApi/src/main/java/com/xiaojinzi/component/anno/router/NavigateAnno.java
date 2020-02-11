@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 标记一个方法的跳转类型
+ * 标记一个方法的跳转类型. 默认可省略
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)

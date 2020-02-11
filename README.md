@@ -153,7 +153,7 @@
 
 ## 版本更新日志
 
-#### v1.7.8.1(开发中~~~~)
+#### v1.7.9(开发中~~~~)
 
 - `ModuleManager` 类中增加 `autoRegister()` 方法, 可以自动加载所有的模块
     - 前提是你使用 Gradle 插件, 并且配置中 optimizeInit 开关已经打开
@@ -163,6 +163,9 @@
 - 修复 `@FragmentAnno` 标记在类上的时候的传值问题, 详见 `issue` [#51](https://github.com/xiaojinzi123/Component/issues/51)
 - Router 中的方法 `haveProxyIntent` 改名为 `isProxyIntentExist`
 - 修复自动注入 ArrayList<T extends Parcelable> 类型的参数错误的问题
+- 支持注入 Uri 中的数组的值
+- 自动注入支持 SparseArray<? extends Parcelable> 类型
+- ParameterSupport 增加 getSparseParcelableArray 方法
 
 #### v1.7.8(不兼容版本更新)
 

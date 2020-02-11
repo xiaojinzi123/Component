@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.SparseArray;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -1323,28 +1325,67 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static ArrayList<Parcelable> getParcelableArrayList(@NonNull Intent intent, @NonNull String key) {
+    public static <T extends Parcelable> ArrayList<T> getParcelableArrayList(@NonNull Intent intent, @NonNull String key) {
         return getParcelableArrayList(intent, key, null);
     }
 
     @Nullable
-    public static ArrayList<Parcelable> getParcelableArrayList(@NonNull Intent intent, @NonNull String key, ArrayList<Parcelable> defaultValue) {
+    public static <T extends Parcelable> ArrayList<T> getParcelableArrayList(@NonNull Intent intent,
+                                                                             @NonNull String key,
+                                                                             ArrayList<T> defaultValue) {
         return getParcelableArrayList(intent.getExtras(), key, defaultValue);
     }
 
     @Nullable
-    public static ArrayList<Parcelable> getParcelableArrayList(@Nullable Bundle bundle, @NonNull String key) {
+    public static <T extends Parcelable> ArrayList<T> getParcelableArrayList(@Nullable Bundle bundle,
+                                                                             @NonNull String key) {
         return getParcelableArrayList(bundle, key, null);
     }
 
     @Nullable
-    public static <T extends Parcelable> ArrayList<T> getParcelableArrayList(@Nullable Bundle bundle, @NonNull String key, @Nullable ArrayList<T> defaultValue) {
+    public static <T extends Parcelable> ArrayList<T> getParcelableArrayList(@Nullable Bundle bundle,
+                                                                             @NonNull String key,
+                                                                             @Nullable ArrayList<T> defaultValue) {
         if (bundle == null) {
             return defaultValue;
         }
         ArrayList<T> value = null;
         if (bundle.containsKey(key)) {
             value = bundle.getParcelableArrayList(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static <T extends Parcelable> SparseArray<T> getSparseParcelableArray(@NonNull Intent intent, @NonNull String key) {
+        return getSparseParcelableArray(intent, key, null);
+    }
+
+    @Nullable
+    public static <T extends Parcelable> SparseArray<T> getSparseParcelableArray(@NonNull Intent intent,
+                                                                                 @NonNull String key,
+                                                                                 SparseArray<T> defaultValue) {
+        return getSparseParcelableArray(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static <T extends Parcelable> SparseArray<T> getSparseParcelableArray(@Nullable Bundle bundle,
+                                                                                 @NonNull String key) {
+        return getSparseParcelableArray(bundle, key, null);
+    }
+
+    @Nullable
+    public static <T extends Parcelable> SparseArray<T> getSparseParcelableArray(@Nullable Bundle bundle,
+                                                                                 @NonNull String key,
+                                                                                 @Nullable SparseArray<T> defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        SparseArray<T> value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getSparseParcelableArray(key);
         } else {
             value = defaultValue;
         }
@@ -1379,6 +1420,76 @@ public class ParameterSupport {
             } else {
                 value = defaultValue;
             }
+        }
+        return value;
+    }
+
+    @Nullable
+    public static <T extends Parcelable> T getParcelable(@NonNull Intent intent,
+                                                         @NonNull String key) {
+        return getParcelable(intent, key, null);
+    }
+
+    @Nullable
+    public static <T extends Parcelable> T getParcelable(@NonNull Intent intent,
+                                                         @NonNull String key,
+                                                         @Nullable T defaultValue) {
+        return getParcelable(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static <T extends Parcelable> T getParcelable(@Nullable Bundle bundle,
+                                                         @NonNull String key) {
+        return getParcelable(bundle, key, null);
+    }
+
+    @Nullable
+    public static <T extends Parcelable> T getParcelable(@Nullable Bundle bundle,
+                                                         @NonNull String key,
+                                                         @Nullable T defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        T value = null;
+        if (bundle.containsKey(key)) {
+            value = bundle.getParcelable(key);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    @Nullable
+    public static <T extends  Serializable> T getSerializable(@NonNull Intent intent,
+                                                         @NonNull String key) {
+        return getSerializable(intent, key, null);
+    }
+
+    @Nullable
+    public static <T extends  Serializable> T getSerializable(@NonNull Intent intent,
+                                                         @NonNull String key,
+                                                         @Nullable T defaultValue) {
+        return getSerializable(intent.getExtras(), key, defaultValue);
+    }
+
+    @Nullable
+    public static <T extends  Serializable> T getSerializable(@Nullable Bundle bundle,
+                                                         @NonNull String key) {
+        return getSerializable(bundle, key, null);
+    }
+
+    @Nullable
+    public static <T extends  Serializable> T getSerializable(@Nullable Bundle bundle,
+                                                             @NonNull String key,
+                                                             @Nullable T defaultValue) {
+        if (bundle == null) {
+            return defaultValue;
+        }
+        T value = null;
+        if (bundle.containsKey(key)) {
+            value = (T) bundle.getSerializable(key);
+        } else {
+            value = defaultValue;
         }
         return value;
     }

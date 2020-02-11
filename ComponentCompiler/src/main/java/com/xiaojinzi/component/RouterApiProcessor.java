@@ -46,6 +46,7 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 
@@ -85,13 +86,13 @@ public class RouterApiProcessor extends BaseProcessor {
     private TypeMirror navigatorTypeMirror;
     private TypeMirror contextTypeMirror;
     private TypeMirror fragmentTypeMirror;
-    private TypeMirror activityTypeMirror;
     private TypeMirror serializableTypeMirror;
     private TypeMirror parcelableTypeMirror;
     private TypeMirror bundleTypeMirror;
     private ParameterizedTypeName stringArrayListParameterizedTypeName;
     private ParameterizedTypeName integerArrayListParameterizedTypeName;
     private ParameterizedTypeName parcelableArrayListParameterizedTypeName;
+    private ParameterizedTypeName parcelableSparseArrayParameterizedTypeName;
     private ParameterizedTypeName charsequenceArrayListParameterizedTypeName;
     private ParameterizedTypeName intentComsumerParameterizedTypeName;
 
@@ -125,8 +126,6 @@ public class RouterApiProcessor extends BaseProcessor {
         contextTypeMirror = contextTypeElement.asType();
         final TypeElement fragmentTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_FRAGMENT);
         fragmentTypeMirror = fragmentTypeElement.asType();
-        final TypeElement activityTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ACTIVITY);
-        activityTypeMirror = activityTypeElement.asType();
         final TypeElement serializableTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_SERIALIZABLE);
         serializableTypeMirror = serializableTypeElement.asType();
         final TypeElement parcelableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_PARCELABLE);
@@ -136,6 +135,7 @@ public class RouterApiProcessor extends BaseProcessor {
         stringArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, mClassNameString);
         integerArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, ClassName.INT.box());
         parcelableArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(parcelableTypeMirror));
+        parcelableSparseArrayParameterizedTypeName = ParameterizedTypeName.get(mClassNameSparseArray, TypeName.get(parcelableTypeMirror));
         charsequenceArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(charsequenceTypeMirror));
         intentComsumerParameterizedTypeName = ParameterizedTypeName.get(
                 ClassName.get(mElements.getTypeElement(ComponentConstants.CONSUMER_CLASS_NAME)),
@@ -345,15 +345,45 @@ public class RouterApiProcessor extends BaseProcessor {
                     parameterStatement.append("\n.putDouble($S,$N)");
                 } else if (parameterTypeName.equals(ClassName.BOOLEAN) || parameterTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是 boolean
                     parameterStatement.append("\n.putBoolean($S,$N)");
-                } else if (stringArrayListParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) {
-                    parameterStatement.append("\n.putStringArrayList($S,$N)");
-                } else if (integerArrayListParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) {
-                    parameterStatement.append("\n.putIntegerArrayList($S,$N)");
-                } else if (parcelableArrayListParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) {
-                    parameterStatement.append("\n.putParcelableArrayList($S,$N)");
-                } else if (charsequenceArrayListParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) {
-                    parameterStatement.append("\n.putCharSequenceArrayList($S,$N)");
-                } else if (parameterTypeMirror instanceof ArrayType) {
+                } else if (parameterTypeMirror instanceof DeclaredType) {
+                    DeclaredType declaredType = (DeclaredType) parameterTypeMirror;
+                    System.out.println("kkkk = " + mTypeElementArrayList);
+                    System.out.println("kkkk = " + declaredType.asElement().asType());
+                    System.out.println("kkkk = " + mTypeElementArrayList.asType().equals(declaredType.asElement().asType()));
+                    if (mTypeElementArrayList.asType().equals(declaredType.asElement().asType())) { // 如果外层是 ArrayList
+                        // 泛型的类型
+                        List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
+                        if (typeArguments.size() == 1) {
+                            if (mTypeElementString.asType().equals(typeArguments.get(0))) { // 如果是 String
+                                parameterStatement.append("\n.putStringArrayList($S,$N)");
+                            } else if (mTypeElementInteger.asType().equals(typeArguments.get(0))) { // 如果是 Integer
+                                parameterStatement.append("\n.putIntegerArrayList($S,$N)");
+                            } else if (mTypes.isSubtype(typeArguments.get(0), parcelableTypeMirror)) { // 如果是 Parcelable 及其子类
+                                parameterStatement.append("\n.putParcelableArrayList($S,$N)");
+                            } else if (charsequenceTypeMirror.equals(typeArguments.get(0))) { // 如果是 CharSequence
+                                parameterStatement.append("\n.putCharSequenceArrayList($S,$N)");
+                            } else {
+                                throw new ProcessException("can't to resolve unknow type parameter(" + methodPath + "#" + parameter.getSimpleName().toString() + ")");
+                            }
+                        } else {
+                            throw new ProcessException("can't to resolve unknow type parameter(" + methodPath + "#" + parameter.getSimpleName().toString() + ")");
+                        }
+                    } else if (mTypeElementSparseArray.asType().equals(declaredType.asElement().asType())) { // 如果是 SparseArray
+                        // 泛型的类型
+                        List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
+                        if (mTypes.isSubtype(typeArguments.get(0), parcelableTypeMirror)) { // 如果是 Parcelable 及其子类
+                            parameterStatement.append("\n.putSparseParcelableArray($S,$N)");
+                        } else {
+                            throw new ProcessException("can't to resolve unknow type parameter(" + methodPath + "#" + parameter.getSimpleName().toString() + ")");
+                        }
+                    } else if (mTypes.isSubtype(parameterTypeMirror, parcelableTypeMirror)) {  // 如果是 Parcelable
+                        parameterStatement.append("\n.putParcelable($S,$N)");
+                    } else if (mTypes.isSubtype(parameterTypeMirror, serializableTypeMirror)) {  // 如果是 Serializable
+                        parameterStatement.append("\n.putSerializable($S,$N)");
+                    } else {
+                        throw new ProcessException("can't to resolve unknow type parameter(" + methodPath + "#" + parameter.getSimpleName().toString() + ")");
+                    }
+                } else if (parameterTypeMirror instanceof ArrayType) { // 如果是数组 []
                     ArrayType parameterArrayType = (ArrayType) parameterTypeMirror;
                     TypeName parameterComponentTypeName = ClassName.get(parameterArrayType.getComponentType());
                     // 如果是一个 String[]
@@ -384,10 +414,6 @@ public class RouterApiProcessor extends BaseProcessor {
                     } else {
                         throw new ProcessException("can't to resolve unknow type parameter(" + methodPath + "#" + parameter.getSimpleName().toString() + ")");
                     }
-                } else if (mTypes.isSubtype(parameterTypeMirror, parcelableTypeMirror)) {  // 如果是 Parcelable
-                    parameterStatement.append("\n.putParcelable($S,$N)");
-                } else if (mTypes.isSubtype(parameterTypeMirror, serializableTypeMirror)) {  // 如果是 Serializable
-                    parameterStatement.append("\n.putSerializable($S,$N)");
                 } else {
                     throw new ProcessException("can't to resolve unknow type parameter(" + methodPath + "#" + parameter.getSimpleName().toString() + ")");
                 }

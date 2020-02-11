@@ -4,17 +4,25 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.bean.SubParcelable;
+import com.xiaojinzi.base.bean.User;
+import com.xiaojinzi.base.bean.UserWithParcelable;
+import com.xiaojinzi.base.bean.UserWithSerializable;
+import com.xiaojinzi.base.bean.UserWithSubParcelable;
 import com.xiaojinzi.base.interceptor.DialogShowInterceptor;
 import com.xiaojinzi.base.router.Module1Api;
+import com.xiaojinzi.base.router.SampleApi;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.RouterAnno;
@@ -29,6 +37,8 @@ import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
@@ -605,6 +615,102 @@ public class TestRouterAct extends BaseAct {
                         addInfo(null, errorResult.getError(), ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "data=normalJump", null);
                     }
                 });
+    }
+
+    public void testInjectAll() {
+
+        SparseArray<UserWithParcelable> sparseArray1 = new SparseArray();
+        SparseArray<Parcelable> sparseArray2 = new SparseArray();
+        SparseArray<SubParcelable> sparseArray3 = new SparseArray();
+
+        sparseArray1.put(2, new UserWithParcelable());
+        sparseArray1.put(1, new UserWithParcelable());
+        sparseArray1.put(3, new UserWithParcelable());
+        sparseArray2.put(1, new UserWithParcelable());
+        sparseArray2.put(2, new UserWithParcelable());
+        sparseArray2.put(3, new UserWithParcelable());
+        sparseArray3.put(1, new UserWithSubParcelable());
+        sparseArray3.put(2, new UserWithSubParcelable());
+        sparseArray3.put(3, new UserWithSubParcelable());
+
+        Router.withApi(SampleApi.class)
+                .test114(
+                        this,
+                        new byte[]{1,2,3},
+                        new char[]{'1', '2', '3'},
+                        new String[]{"1", "2", "3"},
+                        new short[]{1,2,3},
+                        new int[]{1,2,3},
+                        new long[]{1,2,3},
+                        new float[]{1,2,3},
+                        new double[]{1,2,3},
+                        new boolean[]{true, false, true},
+                        new Parcelable[]{
+                                new UserWithParcelable(),
+                                new UserWithParcelable(),
+                                new UserWithParcelable()
+                        },
+                        new UserWithParcelable[]{
+                                new UserWithParcelable(),
+                                new UserWithParcelable(),
+                                new UserWithParcelable()
+                        },
+                        new CharSequence[]{
+                                "1", "2", "3"
+                        },
+                        "1 2 3",
+                        "1 2 3 ",
+                        (byte)1,
+                        '1',
+                        true,
+                        (short)1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        "1", "2", "3"
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        "1", "2", "3"
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        1 ,2 ,3
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        new UserWithParcelable(),
+                                        new UserWithParcelable(),
+                                        new UserWithParcelable()
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        new UserWithParcelable(),
+                                        new UserWithParcelable(),
+                                        new UserWithParcelable()
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        new UserWithSubParcelable(),
+                                        new UserWithSubParcelable(),
+                                        new UserWithSubParcelable()
+                                )
+                        ),
+                        sparseArray2,
+                        sparseArray1,
+                        sparseArray3,
+                        new User(),
+                        new UserWithSerializable(),
+                        new UserWithParcelable()
+                );
     }
 
 }
