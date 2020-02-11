@@ -381,7 +381,7 @@ public class AutowireProcessor extends BaseProcessor {
                     methodBuilder.addStatement("$N = $T.getDoubleArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else if (parameterComponentTypeName.equals(ClassName.BOOLEAN) || parameterComponentTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是 boolean
                     methodBuilder.addStatement("$N = $T.getBooleanArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
-                } else if (mTypes.isSubtype(parameterArrayType.getComponentType(), parcelableTypeMirror)) {  // 如果是 Parcelable
+                } else if (mTypes.isSameType(parameterArrayType.getComponentType(), parcelableTypeMirror)) {  // 如果是 Parcelable
                     methodBuilder.addStatement("$N = $T.getParcelableArray($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                 } else {
                     throw new ProcessException("can't to resolve unknow type parameter(" + variableElement.getEnclosingElement().getSimpleName() + "#" + variableElement.getSimpleName().toString() + ")");

@@ -347,9 +347,6 @@ public class RouterApiProcessor extends BaseProcessor {
                     parameterStatement.append("\n.putBoolean($S,$N)");
                 } else if (parameterTypeMirror instanceof DeclaredType) {
                     DeclaredType declaredType = (DeclaredType) parameterTypeMirror;
-                    System.out.println("kkkk = " + mTypeElementArrayList);
-                    System.out.println("kkkk = " + declaredType.asElement().asType());
-                    System.out.println("kkkk = " + mTypeElementArrayList.asType().equals(declaredType.asElement().asType()));
                     if (mTypeElementArrayList.asType().equals(declaredType.asElement().asType())) { // 如果外层是 ArrayList
                         // 泛型的类型
                         List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
