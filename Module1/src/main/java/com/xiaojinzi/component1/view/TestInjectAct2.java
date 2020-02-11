@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class TestInjectAct2 extends BaseAct {
 
     // 基本数据类型
+
     @AttrValueAutowiredAnno("data40")
     String data40;
     @AttrValueAutowiredAnno("data41")
@@ -110,6 +111,7 @@ public class TestInjectAct2 extends BaseAct {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.component1_test_inject_parameter_act);
         Component.inject(this);
+        System.out.println("注入了");
     }
 
 }
