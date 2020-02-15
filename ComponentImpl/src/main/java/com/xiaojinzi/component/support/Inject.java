@@ -2,6 +2,7 @@ package com.xiaojinzi.component.support;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
@@ -18,6 +19,7 @@ public interface Inject<T> {
      *
      * @param target 目标
      */
+    @MainThread
     void injectAttrValue(@NonNull T target);
 
     /**
@@ -26,6 +28,7 @@ public interface Inject<T> {
      * @param target 目标
      * @param bundle 数据源的 bundle
      */
+    @MainThread
     void injectAttrValue(@NonNull T target, @NonNull Bundle bundle);
 
     /**
@@ -33,6 +36,7 @@ public interface Inject<T> {
      *
      * @param target 目标
      */
+    @MainThread
     void injectService(@NonNull T target);
 
 }

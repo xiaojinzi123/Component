@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -356,22 +357,22 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder beforJumpAction(@Nullable Action action) {
+        public Builder beforJumpAction(@Nullable @MainThread Action action) {
             this.beforJumpAction = action;
             return this;
         }
 
-        public Builder afterJumpAction(@Nullable Action action) {
+        public Builder afterJumpAction(@Nullable @MainThread Action action) {
             this.afterJumpAction = action;
             return this;
         }
 
-        public Builder afterErrorAction(@Nullable Action action) {
+        public Builder afterErrorAction(@Nullable @MainThread Action action) {
             this.afterErrorAction = action;
             return this;
         }
 
-        public Builder afterEventAction(@Nullable Action action) {
+        public Builder afterEventAction(@Nullable @MainThread Action action) {
             this.afterEventAction = action;
             return this;
         }
@@ -393,7 +394,7 @@ public class RouterRequest {
          *                       的 {@link Intent#addFlags(int)} 等方法,并不是给你修改内部的 bundle 的
          * @return
          */
-        public Builder intentConsumer(@Nullable Consumer<Intent> intentConsumer) {
+        public Builder intentConsumer(@Nullable @MainThread Consumer<Intent> intentConsumer) {
             this.intentConsumer = intentConsumer;
             return this;
         }

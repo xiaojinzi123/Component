@@ -93,31 +93,32 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public RxNavigator beforJumpAction(@NonNull Action action) {
+        public RxNavigator beforJumpAction(@NonNull @MainThread Action action) {
             super.beforJumpAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterJumpAction(@NonNull Action action) {
+        public RxNavigator afterJumpAction(@NonNull @MainThread Action action) {
             super.afterJumpAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterErrorAction(@Nullable Action action) {
+        public RxNavigator afterErrorAction(@Nullable @MainThread Action action) {
             super.afterErrorAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterEventAction(@Nullable Action action) {
+        public RxNavigator afterEventAction(@Nullable @MainThread Action action) {
             super.afterEventAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator intentConsumer(@NonNull com.xiaojinzi.component.support.Consumer<Intent> intentConsumer) {
+        public RxNavigator intentConsumer(
+                @NonNull @MainThread com.xiaojinzi.component.support.Consumer<Intent> intentConsumer) {
             super.intentConsumer(intentConsumer);
             return this;
         }

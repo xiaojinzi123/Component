@@ -183,7 +183,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator intentConsumer(@Nullable Consumer<Intent> intentConsumer) {
+    public Navigator intentConsumer(@Nullable @MainThread Consumer<Intent> intentConsumer) {
         super.intentConsumer(intentConsumer);
         return this;
     }
@@ -201,25 +201,25 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator beforJumpAction(@Nullable Action action) {
+    public Navigator beforJumpAction(@Nullable @MainThread Action action) {
         super.beforJumpAction(action);
         return this;
     }
 
     @Override
-    public Navigator afterJumpAction(@Nullable Action action) {
+    public Navigator afterJumpAction(@Nullable @MainThread Action action) {
         super.afterJumpAction(action);
         return this;
     }
 
     @Override
-    public Navigator afterErrorAction(@Nullable Action action) {
+    public Navigator afterErrorAction(@Nullable @MainThread Action action) {
         super.afterErrorAction(action);
         return this;
     }
 
     @Override
-    public Navigator afterEventAction(@Nullable Action action) {
+    public Navigator afterEventAction(@Nullable @MainThread Action action) {
         super.afterEventAction(action);
         return this;
     }
