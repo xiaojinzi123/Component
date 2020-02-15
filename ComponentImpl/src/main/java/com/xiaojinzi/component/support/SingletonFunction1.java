@@ -31,8 +31,6 @@ public abstract class SingletonFunction1<T, R> implements Function1<T, R> {
 
     /**
      * 获取真正的对象
-     *
-     * @return
      */
     @NonNull
     protected abstract R applyRaw(T t);
