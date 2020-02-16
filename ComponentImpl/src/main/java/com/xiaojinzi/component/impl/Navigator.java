@@ -91,8 +91,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
     /**
      * 懒加载自定义拦截器列表
-     *
-     * @param size
      */
     private void lazyInitCustomInterceptors(int size) {
         if (customInterceptors == null) {
@@ -100,7 +98,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         }
     }
 
-    public Navigator interceptors(RouterInterceptor... interceptorArr) {
+    public Navigator interceptors(@Nullable RouterInterceptor... interceptorArr) {
         Utils.debugCheckNullPointer(interceptorArr, "interceptorArr");
         if (interceptorArr != null) {
             lazyInitCustomInterceptors(interceptorArr.length);
@@ -109,7 +107,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return this;
     }
 
-    public Navigator interceptors(Class<? extends RouterInterceptor>... interceptorClassArr) {
+    public Navigator interceptors(
+            @Nullable Class<? extends RouterInterceptor>... interceptorClassArr) {
         Utils.debugCheckNullPointer(interceptorClassArr, "interceptorClassArr");
         if (interceptorClassArr != null) {
             lazyInitCustomInterceptors(interceptorClassArr.length);
@@ -118,7 +117,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return this;
     }
 
-    public Navigator interceptorNames(String... interceptorNameArr) {
+    public Navigator interceptorNames(@Nullable String... interceptorNameArr) {
         Utils.debugCheckNullPointer(interceptorNameArr, "interceptorNameArr");
         if (interceptorNameArr != null) {
             lazyInitCustomInterceptors(interceptorNameArr.length);
@@ -267,7 +266,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator path(@Nullable String path) {
+    public Navigator path(@NonNull String path) {
         super.path(path);
         return this;
     }
@@ -453,7 +452,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator query(@NonNull String queryName, @Nullable String queryValue) {
+    public Navigator query(@NonNull String queryName, @NonNull String queryValue) {
         super.query(queryName, queryValue);
         return this;
     }

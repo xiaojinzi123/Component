@@ -396,7 +396,7 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public RxNavigator query(@NonNull String queryName, @Nullable String queryValue) {
+        public RxNavigator query(@NonNull String queryName, @NonNull String queryValue) {
             super.query(queryName, queryValue);
             return this;
         }
