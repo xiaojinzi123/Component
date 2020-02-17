@@ -29,7 +29,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
             "    versionName \"1.0\"\n\n" +
             "    javaCompileOptions {\n" +
             "        annotationProcessorOptions {\n" +
-            "            arguments = [HOST: \"component2\"]\n" +
+            "            arguments = [HOST: \"user\"]\n" +
             "        }\n" +
             "    }\n" +
             "}\n  \n");
@@ -91,5 +91,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
         mClassNameKeep = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_KEEP));
 
     }
+
+
 
 }

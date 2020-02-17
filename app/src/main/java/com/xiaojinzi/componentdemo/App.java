@@ -20,6 +20,13 @@ public class App extends Application {
                 BuildConfig.DEBUG,
                 Config.with(this)
                         .defaultScheme("router")
+                        // 使用内置的路由重复检查的拦截器, 如果为 true,
+                        // 那么当两个相同的路由发生在指定的时间内后一个路由就会被拦截
+                        .useRouteRepeatCheckInterceptor(true)
+                        // 1000 是默认的, 表示相同路由拦截的时间间隔
+                        .routeRepeatCheckDuration(1000)
+                        // 是否打印日志提醒你哪些路由使用了 Application 为 Context 进行跳转
+                        .tipWhenUseApplication(true)
                         // 开启启动优化, 必须配套使用 Gradle 插件
                         .optimizeInit(true)
                         // 自动加载所有模块
