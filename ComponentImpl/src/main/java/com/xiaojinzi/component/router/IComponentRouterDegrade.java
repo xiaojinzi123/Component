@@ -18,7 +18,6 @@ public interface IComponentRouterDegrade {
     /**
      * 获取所有的降级处理, 数据需要排过序的
      *
-     * @return
      * @throws Exception
      */
     @NonNull

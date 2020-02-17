@@ -3,6 +3,7 @@ package com.xiaojinzi.component.router;
 import android.support.annotation.NonNull;
 
 import com.xiaojinzi.component.bean.RouterBean;
+import com.xiaojinzi.component.support.IHost;
 
 import java.util.Map;
 
@@ -12,20 +13,10 @@ import java.util.Map;
  * time   : 2018/07/26
  * @author : xiaojinzi
  */
-public interface IComponentHostRouter {
-
-    /**
-     * 获取host
-     *
-     * @return
-     */
-    @NonNull
-    String getHost();
+public interface IComponentHostRouter extends IHost {
 
     /**
      * 获取路由表,用于检查
-     *
-     * @return
      */
     @NonNull
     Map<String, RouterBean> getRouterMap();

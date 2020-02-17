@@ -62,10 +62,8 @@ public class RouterApiProcessor extends BaseProcessor {
 
     private TypeElement charsequenceTypeElement;
     private TypeMirror charsequenceTypeMirror;
-    private ClassName charsequenceClassName;
     private TypeName charsequenceTypeName;
     private TypeElement routerTypeElement;
-
 
     private TypeElement navigationDisposableTypeElement;
     private TypeMirror navigationDisposableTypeMirror;
@@ -78,7 +76,8 @@ public class RouterApiProcessor extends BaseProcessor {
 
     // 这个也可能为空的
     private TypeElement routerRxTypeElement;
-    // 这两个可能为null吧,因为没有依赖 RxJava
+
+    // 这几个可能为null吧,因为没有依赖 RxJava
     private TypeMirror completableMirror;
     private TypeMirror singleMirror;
     private TypeMirror singleErasureMirror;
@@ -89,11 +88,6 @@ public class RouterApiProcessor extends BaseProcessor {
     private TypeMirror serializableTypeMirror;
     private TypeMirror parcelableTypeMirror;
     private TypeMirror bundleTypeMirror;
-    private ParameterizedTypeName stringArrayListParameterizedTypeName;
-    private ParameterizedTypeName integerArrayListParameterizedTypeName;
-    private ParameterizedTypeName parcelableArrayListParameterizedTypeName;
-    private ParameterizedTypeName parcelableSparseArrayParameterizedTypeName;
-    private ParameterizedTypeName charsequenceArrayListParameterizedTypeName;
     private ParameterizedTypeName intentComsumerParameterizedTypeName;
 
     @Override
@@ -109,7 +103,6 @@ public class RouterApiProcessor extends BaseProcessor {
 
         charsequenceTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_CHARSEQUENCE);
         charsequenceTypeMirror = charsequenceTypeElement.asType();
-        charsequenceClassName = ClassName.get(charsequenceTypeElement);
         charsequenceTypeName = TypeName.get(charsequenceTypeMirror);
         routerTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_CLASS_NAME);
         routerRxTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_RX_CLASS_NAME);
@@ -132,11 +125,6 @@ public class RouterApiProcessor extends BaseProcessor {
         parcelableTypeMirror = parcelableTypeElement.asType();
         final TypeElement bundleTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_BUNDLE);
         bundleTypeMirror = bundleTypeElement.asType();
-        stringArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, mClassNameString);
-        integerArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, ClassName.INT.box());
-        parcelableArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(parcelableTypeMirror));
-        parcelableSparseArrayParameterizedTypeName = ParameterizedTypeName.get(mClassNameSparseArray, TypeName.get(parcelableTypeMirror));
-        charsequenceArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(charsequenceTypeMirror));
         intentComsumerParameterizedTypeName = ParameterizedTypeName.get(
                 ClassName.get(mElements.getTypeElement(ComponentConstants.CONSUMER_CLASS_NAME)),
                 TypeName.get(mElements.getTypeElement(ComponentConstants.ANDROID_INTENT).asType())
@@ -173,8 +161,6 @@ public class RouterApiProcessor extends BaseProcessor {
 
     /**
      * 生成一个 RouterApi 的实现类
-     *
-     * @param typeElement
      */
     private void createRouterApiImpl(TypeElement typeElement) {
         // 整个类默认的host注解

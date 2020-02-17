@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -190,8 +191,6 @@ public class RouterRequest {
     /**
      * 首先调用 {@link #getRawActivity()} 尝试获取此次用户传入的 Context 中是否有关联的 Activity
      * 如果为空, 则尝试获取运行中的所有 Activity 中顶层的那个
-     *
-     * @return
      */
     @Nullable
     public final Activity getRawOrTopActivity() {
@@ -356,22 +355,22 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder beforJumpAction(@Nullable Action action) {
+        public Builder beforJumpAction(@Nullable @MainThread Action action) {
             this.beforJumpAction = action;
             return this;
         }
 
-        public Builder afterJumpAction(@Nullable Action action) {
+        public Builder afterJumpAction(@Nullable @MainThread Action action) {
             this.afterJumpAction = action;
             return this;
         }
 
-        public Builder afterErrorAction(@Nullable Action action) {
+        public Builder afterErrorAction(@Nullable @MainThread Action action) {
             this.afterErrorAction = action;
             return this;
         }
 
-        public Builder afterEventAction(@Nullable Action action) {
+        public Builder afterEventAction(@Nullable @MainThread Action action) {
             this.afterEventAction = action;
             return this;
         }
@@ -391,9 +390,8 @@ public class RouterRequest {
          * @param intentConsumer Intent 是框架自动构建完成的,里面有跳转需要的所有参数和数据,这里就是给用户一个
          *                       更改的机会,最好别更改内部的参数等的信息,这里提供出来其实主要是可以让你调用Intent
          *                       的 {@link Intent#addFlags(int)} 等方法,并不是给你修改内部的 bundle 的
-         * @return
          */
-        public Builder intentConsumer(@Nullable Consumer<Intent> intentConsumer) {
+        public Builder intentConsumer(@Nullable @MainThread Consumer<Intent> intentConsumer) {
             this.intentConsumer = intentConsumer;
             return this;
         }
@@ -451,7 +449,7 @@ public class RouterRequest {
         }
 
         @Override
-        public Builder path(@Nullable String path) {
+        public Builder path(@NonNull String path) {
             super.path(path);
             return this;
         }
@@ -608,7 +606,7 @@ public class RouterRequest {
         }
 
         @Override
-        public Builder query(@NonNull String queryName, @Nullable String queryValue) {
+        public Builder query(@NonNull String queryName, @NonNull String queryValue) {
             super.query(queryName, queryValue);
             return this;
         }
@@ -686,6 +684,7 @@ public class RouterRequest {
         protected Map<String, String> queryMap = new HashMap<>();
 
         public URIBuilder url(@NonNull String url) {
+            Utils.checkStringNullPointer(url, "url");
             this.url = url;
             return this;
         }
@@ -699,8 +698,7 @@ public class RouterRequest {
         /**
          * xxx/xxx
          *
-         * @param hostAndPath
-         * @return
+         * @param hostAndPath xxx/xxx
          */
         public URIBuilder hostAndPath(@NonNull String hostAndPath) {
             Utils.checkNullPointer(hostAndPath, "hostAndPath");
@@ -726,13 +724,15 @@ public class RouterRequest {
             return this;
         }
 
-        public URIBuilder path(@Nullable String path) {
+        public URIBuilder path(@NonNull String path) {
+            Utils.checkStringNullPointer(path, "path");
             this.path = path;
             return this;
         }
 
-        public URIBuilder query(@NonNull String queryName, @Nullable String queryValue) {
+        public URIBuilder query(@NonNull String queryName, @NonNull String queryValue) {
             Utils.checkStringNullPointer(queryName, "queryName");
+            Utils.checkStringNullPointer(queryValue, "queryValue");
             queryMap.put(queryName, queryValue);
             return this;
         }

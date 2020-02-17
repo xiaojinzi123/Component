@@ -91,8 +91,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
     /**
      * 懒加载自定义拦截器列表
-     *
-     * @param size
      */
     private void lazyInitCustomInterceptors(int size) {
         if (customInterceptors == null) {
@@ -100,7 +98,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         }
     }
 
-    public Navigator interceptors(RouterInterceptor... interceptorArr) {
+    public Navigator interceptors(@Nullable RouterInterceptor... interceptorArr) {
         Utils.debugCheckNullPointer(interceptorArr, "interceptorArr");
         if (interceptorArr != null) {
             lazyInitCustomInterceptors(interceptorArr.length);
@@ -109,7 +107,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return this;
     }
 
-    public Navigator interceptors(Class<? extends RouterInterceptor>... interceptorClassArr) {
+    public Navigator interceptors(
+            @Nullable Class<? extends RouterInterceptor>... interceptorClassArr) {
         Utils.debugCheckNullPointer(interceptorClassArr, "interceptorClassArr");
         if (interceptorClassArr != null) {
             lazyInitCustomInterceptors(interceptorClassArr.length);
@@ -118,7 +117,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         return this;
     }
 
-    public Navigator interceptorNames(String... interceptorNameArr) {
+    public Navigator interceptorNames(@Nullable String... interceptorNameArr) {
         Utils.debugCheckNullPointer(interceptorNameArr, "interceptorNameArr");
         if (interceptorNameArr != null) {
             lazyInitCustomInterceptors(interceptorNameArr.length);
@@ -183,7 +182,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator intentConsumer(@Nullable Consumer<Intent> intentConsumer) {
+    public Navigator intentConsumer(@Nullable @MainThread Consumer<Intent> intentConsumer) {
         super.intentConsumer(intentConsumer);
         return this;
     }
@@ -201,25 +200,25 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator beforJumpAction(@Nullable Action action) {
+    public Navigator beforJumpAction(@Nullable @MainThread Action action) {
         super.beforJumpAction(action);
         return this;
     }
 
     @Override
-    public Navigator afterJumpAction(@Nullable Action action) {
+    public Navigator afterJumpAction(@Nullable @MainThread Action action) {
         super.afterJumpAction(action);
         return this;
     }
 
     @Override
-    public Navigator afterErrorAction(@Nullable Action action) {
+    public Navigator afterErrorAction(@Nullable @MainThread Action action) {
         super.afterErrorAction(action);
         return this;
     }
 
     @Override
-    public Navigator afterEventAction(@Nullable Action action) {
+    public Navigator afterEventAction(@Nullable @MainThread Action action) {
         super.afterEventAction(action);
         return this;
     }
@@ -267,7 +266,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator path(@Nullable String path) {
+    public Navigator path(@NonNull String path) {
         super.path(path);
         return this;
     }
@@ -453,7 +452,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator query(@NonNull String queryName, @Nullable String queryValue) {
+    public Navigator query(@NonNull String queryName, @NonNull String queryValue) {
         super.query(queryName, queryValue);
         return this;
     }
@@ -572,7 +571,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 回调方法
      */
     @AnyThread
-    public void forwardForResultCode(@NonNull final BiCallback<Integer> callback) {
+    public void forwardForResultCode(@NonNull @MainThread final BiCallback<Integer> callback) {
         navigateForResultCode(callback);
     }
 
@@ -584,7 +583,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @NonNull
     @AnyThread
     @CheckResult
-    public NavigationDisposable navigateForResultCode(@NonNull final BiCallback<Integer> callback) {
+    public NavigationDisposable navigateForResultCode(@NonNull @MainThread final BiCallback<Integer> callback) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Integer>(callback) {
             @NonNull
             @Override
@@ -600,8 +599,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 回调方法
      */
     @AnyThread
-    public void forwardForResultCodeMatch(@NonNull final Callback callback,
-                                          final int expectedResultCode) {
+    public void forwardForResultCodeMatch(
+            @NonNull @MainThread final Callback callback, final int expectedResultCode) {
         navigateForResultCodeMatch(callback, expectedResultCode);
     }
 
@@ -613,8 +612,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @NonNull
     @AnyThread
     @CheckResult
-    public NavigationDisposable navigateForResultCodeMatch(@NonNull final Callback callback,
-                                                           final int expectedResultCode) {
+    public NavigationDisposable navigateForResultCodeMatch(
+            @NonNull @MainThread final Callback callback, final int expectedResultCode) {
         return navigateForResult(new BiCallback<ActivityResult>() {
             @Override
             public void onSuccess(@NonNull RouterResult result, @NonNull ActivityResult activityResult) {
@@ -643,8 +642,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 回调方法
      */
     @AnyThread
-    public void forwardForIntentAndResultCodeMatch(@NonNull final BiCallback<Intent> callback,
-                                                   final int expectedResultCode) {
+    public void forwardForIntentAndResultCodeMatch(
+            @NonNull @MainThread final BiCallback<Intent> callback, final int expectedResultCode) {
         navigateForIntentAndResultCodeMatch(callback, expectedResultCode);
     }
 
@@ -656,8 +655,9 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @NonNull
     @AnyThread
     @CheckResult
-    public NavigationDisposable navigateForIntentAndResultCodeMatch(@NonNull final BiCallback<Intent> callback,
-                                                                    final int expectedResultCode) {
+    public NavigationDisposable navigateForIntentAndResultCodeMatch(
+            @NonNull @MainThread final BiCallback<Intent> callback,
+            final int expectedResultCode) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Intent>(callback) {
             @NonNull
             @Override
@@ -673,7 +673,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 回调方法
      */
     @AnyThread
-    public void forwardForIntent(@NonNull final BiCallback<Intent> callback) {
+    public void forwardForIntent(@NonNull @MainThread final BiCallback<Intent> callback) {
         navigateForIntent(callback);
     }
 
@@ -685,7 +685,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @NonNull
     @AnyThread
     @CheckResult
-    public NavigationDisposable navigateForIntent(@NonNull final BiCallback<Intent> callback) {
+    public NavigationDisposable navigateForIntent(@NonNull @MainThread final BiCallback<Intent> callback) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Intent>(callback) {
             @NonNull
             @Override
@@ -701,7 +701,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 这里是为了拿返回的东西是不可以为空的
      */
     @AnyThread
-    public void forwardForResult(@NonNull final BiCallback<ActivityResult> callback) {
+    public void forwardForResult(@NonNull @MainThread final BiCallback<ActivityResult> callback) {
         navigateForResult(callback);
     }
 
@@ -714,7 +714,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @NonNull
     @AnyThread
     @CheckResult
-    public NavigationDisposable navigateForResult(@NonNull final BiCallback<ActivityResult> callback) {
+    public NavigationDisposable navigateForResult(
+            @NonNull @MainThread final BiCallback<ActivityResult> callback) {
         Utils.checkNullPointer(callback, "callback");
         return realNavigateForResult(callback);
     }
@@ -743,14 +744,15 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 路由的回调
      */
     @AnyThread
-    public void forward(@Nullable final Callback callback) {
+    public void forward(@Nullable @MainThread final Callback callback) {
         navigate(callback);
     }
 
     @NonNull
     @AnyThread
     @CheckResult
-    public synchronized NavigationDisposable navigate(@Nullable final Callback callback) {
+    public synchronized NavigationDisposable navigate(
+            @Nullable @MainThread final Callback callback) {
         // 构建请求对象
         RouterRequest originalRequest = null;
         // 可取消对象

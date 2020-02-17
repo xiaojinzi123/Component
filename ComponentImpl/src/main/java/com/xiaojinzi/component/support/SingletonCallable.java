@@ -30,8 +30,6 @@ public abstract class SingletonCallable<T> implements Callable<T> {
 
     /**
      * 获取真正的对象
-     *
-     * @return
      */
     @NonNull
     protected abstract T getRaw();
