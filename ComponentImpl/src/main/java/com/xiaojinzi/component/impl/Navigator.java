@@ -76,6 +76,11 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     protected boolean autoCancel = true;
 
+    /**
+     * 是否检查路由是否重复, 默认是全局配置的开关
+     */
+    private boolean useRouteRepeatCheck = Component.getConfig().isUseRouteRepeatCheckInterceptor();
+
     public Navigator() {
     }
 
@@ -135,6 +140,11 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
     public Navigator autoCancel(boolean autoCancel) {
         this.autoCancel = autoCancel;
+        return this;
+    }
+
+    public Navigator useRouteRepeatCheck(boolean useRouteRepeatCheck) {
+        this.useRouteRepeatCheck = useRouteRepeatCheck;
         return this;
     }
 
@@ -943,7 +953,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param routerInterceptorCallback 回调对象
      */
     @AnyThread
-    private static void realNavigate(@NonNull final RouterRequest originalRequest,
+    private void realNavigate(@NonNull final RouterRequest originalRequest,
                                      @Nullable final List<Object> customInterceptors,
                                      @NonNull final RouterInterceptor.Callback routerInterceptorCallback) {
 
@@ -968,7 +978,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 chain.proceed(chain.request());
             }
         });
-        if (Component.getConfig().isUseRouteRepeatCheckInterceptor()) {
+        if (this.useRouteRepeatCheck) {
             allInterceptors.add(OpenOnceInterceptor.getInstance());
         }
         // 添加共有拦截器
@@ -1011,15 +1021,11 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
     /**
      * 添加自定义的拦截器
-     *
-     * @param originalRequest
-     * @param customInterceptors
-     * @param currentInterceptors
      */
     @MainThread
     private static void addCustomInterceptors(@NonNull RouterRequest originalRequest,
                                               @Nullable List<Object> customInterceptors,
-                                              List<RouterInterceptor> currentInterceptors) {
+                                              List<RouterInterceptor> currentInterceptors) throws InterceptorNotFoundException {
         if (customInterceptors == null) {
             return;
         }

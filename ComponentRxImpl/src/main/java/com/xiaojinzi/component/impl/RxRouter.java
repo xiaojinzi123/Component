@@ -153,7 +153,13 @@ public class RxRouter extends Router {
         }
 
         public RxNavigator autoCancel(boolean autoCancel) {
-            this.autoCancel = autoCancel;
+            super.autoCancel(autoCancel);
+            return this;
+        }
+
+        @Override
+        public RxNavigator useRouteRepeatCheck(boolean routeRepeatCheck) {
+            super.useRouteRepeatCheck(routeRepeatCheck);
             return this;
         }
 

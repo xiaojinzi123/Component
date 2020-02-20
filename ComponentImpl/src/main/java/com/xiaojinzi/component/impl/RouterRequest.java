@@ -771,7 +771,7 @@ public class RouterRequest {
             if (builder.url == null) {
                 Uri.Builder uriBuilder = new Uri.Builder();
                 StringBuffer authoritySB = new StringBuffer();
-                if (userInfo != null || !"".equals(userInfo)) {
+                if (userInfo != null && !userInfo.isEmpty()) {
                     authoritySB
                             .append(Uri.encode(userInfo))
                             .append("@");
