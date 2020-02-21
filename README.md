@@ -154,6 +154,11 @@
 
 ## 版本更新日志
 
+#### v1.8.0
+
+- 修复 `Uri` 中的 `userInfo` 为空的时候的处理
+- 增加针对单个路由是否启用重复检查的拦截器的方法. Navigator.useRouteRepeatCheck(boolean) 默认是全局设置的值. 全局设置的值默认是 `true`
+
 #### v1.7.9
 
 - `ModuleManager` 类中增加 `autoRegister()` 方法, 可以自动加载所有的模块
