@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 
 /**
  * 获取 Host 的接口
