@@ -6,7 +6,10 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,10 +59,14 @@ public class OpenOnceInterceptor implements RouterInterceptor {
 
     private void cleanOverdue(){
         long currentTime = System.currentTimeMillis();
+        List<String> keys = new ArrayList<>();
         for (String key : map.keySet()) {
             if (currentTime - map.get(key) >= Component.getConfig().getRouteRepeatCheckDuration()) {
-                map.remove(key);
+                keys.add(key);
             }
+        }
+        for (String key : keys) {
+            map.remove(key);
         }
     }
 
