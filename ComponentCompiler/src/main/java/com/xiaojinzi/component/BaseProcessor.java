@@ -3,6 +3,8 @@ package com.xiaojinzi.component;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 
+import java.util.Map;
+
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -34,6 +36,8 @@ public abstract class BaseProcessor extends AbstractProcessor {
             "    }\n" +
             "}\n  \n");
 
+    protected String routerDocFolder = null;
+
     protected Filer mFiler;
     protected Messager mMessager;
     protected Types mTypes;
@@ -62,6 +66,11 @@ public abstract class BaseProcessor extends AbstractProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
+
+        Map<String, String> options = processingEnv.getOptions();
+        if (options != null) {
+            routerDocFolder = options.get("RouterDoc");
+        }
 
         mFiler = processingEnv.getFiler();
         mMessager = processingEnv.getMessager();

@@ -1,6 +1,7 @@
 package com.xiaojinzi.component;
 
 import com.google.auto.service.AutoService;
+import com.google.gson.Gson;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -8,10 +9,14 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.bean.RouterAnnoBean;
+import com.xiaojinzi.component.bean.RouterDocBean;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +55,7 @@ public class RouterProcessor extends BaseHostProcessor {
     private TypeElement intentTypeElement;
     private TypeMirror intentTypeMirror;
     private TypeMirror routerRequestTypeMirror;
+    private TypeMirror activityTypeMirror;
     private TypeElement interceptorTypeElement;
 
     final AtomicInteger atomicInteger = new AtomicInteger();
@@ -58,6 +64,7 @@ public class RouterProcessor extends BaseHostProcessor {
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
 
+        activityTypeMirror = mElements.getTypeElement(ComponentConstants.ANDROID_ACTIVITY).asType();
         interceptorTypeElement = mElements.getTypeElement(ComponentConstants.INTERCEPTOR_INTERFACE_CLASS_NAME);
         routerBeanTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_BEAN_CLASS_NAME);
         final TypeElement exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
@@ -77,6 +84,10 @@ public class RouterProcessor extends BaseHostProcessor {
             final Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(RouterAnno.class);
             parseAnno(routeElements);
             createRouterImpl();
+            try {
+                createRouterJson();
+            } catch (IOException e) {
+            }
             return true;
         }
         return false;
@@ -86,8 +97,6 @@ public class RouterProcessor extends BaseHostProcessor {
 
     /**
      * 解析注解
-     *
-     * @param routeElements
      */
     private void parseAnno(Set<? extends Element> routeElements) {
         for (Element element : routeElements) {
@@ -152,16 +161,14 @@ public class RouterProcessor extends BaseHostProcessor {
                 routerBean.getInterceptorNames().add(interceptorName);
             }
         }
-
         return routerBean;
-
     }
 
     /**
      * 生成路由
      */
     private void createRouterImpl() {
-        final String claName = com.xiaojinzi.component.ComponentUtil.genHostRouterClassName(componentHost);
+        final String claName = ComponentUtil.genHostRouterClassName(componentHost);
         //pkg
         final String pkg = claName.substring(0, claName.lastIndexOf('.'));
         //simpleName
@@ -187,6 +194,57 @@ public class RouterProcessor extends BaseHostProcessor {
         } catch (IOException e) {
             throw new ProcessException(e);
         }
+    }
+
+    private void createRouterJson() throws IOException {
+
+        if (routerDocFolder == null || routerDocFolder.isEmpty()) {
+            return;
+        }
+
+        File docFolder = new File(routerDocFolder);
+        if (docFolder.exists() && docFolder.isFile()) {
+            docFolder.delete();
+        }
+        docFolder.mkdirs();
+
+        int size = routerMap.size();
+        List<RouterDocBean> result = new ArrayList<>(size);
+        for (Map.Entry<String, RouterAnnoBean> entry : routerMap.entrySet()) {
+            RouterAnnoBean routerAnnoBean = entry.getValue();
+            RouterDocBean item = new RouterDocBean();
+            item.setHost(routerAnnoBean.getHost());
+            item.setPath(routerAnnoBean.getPath());
+            item.setDesc(routerAnnoBean.getDesc());
+            Element rawType = routerAnnoBean.getRawType();
+            TypeMirror targetClassTypeMirror = rawType.asType();
+            if (rawType instanceof TypeElement && mTypes.isSubtype(targetClassTypeMirror, activityTypeMirror)) {
+                item.setTargetActivity(targetClassTypeMirror.toString());
+                item.setTargetActivityName(rawType.getSimpleName().toString());
+            } else if (rawType instanceof ExecutableElement) {
+                ExecutableElement executableElement = (ExecutableElement) rawType;
+                item.setTargetSimpleMethod(executableElement.getEnclosingElement().toString());
+                item.setTargetMethod(
+                        "(" + executableElement.getReturnType().toString() + ") " +
+                                executableElement.getEnclosingElement().toString() + "." + executableElement.toString());
+            }
+            result.add(item);
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(result);
+        File routerDocJsonFolder = new File(docFolder, "router");
+        if (!routerDocJsonFolder.exists()) {
+            routerDocJsonFolder.mkdirs();
+        }
+        File file = new File(routerDocJsonFolder, componentHost + ".json");
+        if (file.exists()) {
+            file.delete();
+        }
+        Writer writer = new FileWriter(file);
+        writer.write(json);
+        writer.close();
+
     }
 
     private MethodSpec generateInitMapMethod() {

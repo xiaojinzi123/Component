@@ -158,6 +158,7 @@
 
 - 修复 `Uri` 中的 `userInfo` 为空的时候的处理
 - 增加针对单个路由是否启用重复检查的拦截器的方法. Navigator.useRouteRepeatCheck(boolean) 默认是全局设置的值. 全局设置的值默认是 `true`
+- 增加了 [生成文档](https://github.com/xiaojinzi123/Component/wiki/%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90) 的功能, 对应 [issue](https://github.com/xiaojinzi123/Component/issues/15)
 
 #### v1.7.9
 
