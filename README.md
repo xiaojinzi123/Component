@@ -71,7 +71,8 @@
       - 其实这两块本来就是两个方面,我不清楚为什么很多方案中都柔和在一块
 - [x] [业务模块单独运行]([https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E5%8D%95%E7%8B%AC%E8%BF%90%E8%A1%8C](https://github.com/xiaojinzi123/Component/wiki/业务组件单独运行))
 - [x] 路由跳转功能
-    - [X] 支持获取目标的 `ProxyIntent`
+    - [x] 支持[生成文档](https://github.com/xiaojinzi123/Component/wiki/%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90)
+    - [x] 支持获取目标的 `ProxyIntent`
     - [x] 支持标准 `URI` 的使用
     - [x] 无缝对接 `H5`
       - [x] `H5` 只需利用 `URL` 即可任意路由到任何界面(只需下面一段统一的跳转. 完全不需要关心目标界面是否需要登陆、定位、权限等.)
@@ -125,6 +126,7 @@
 - [拦截器](https://github.com/xiaojinzi123/Component/wiki/%E6%8B%A6%E6%88%AA%E5%99%A8)
 - [服务发现实现跨模块调用](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%A8%E6%A8%A1%E5%9D%97%E6%9C%8D%E5%8A%A1%E8%B0%83%E7%94%A8)
 - [ProxyIntent](https://github.com/xiaojinzi123/Component/wiki/ProxyIntent) 在需要使用 `Intent` 的地方使用
+- [生成文档](https://github.com/xiaojinzi123/Component/wiki/%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90)
 - [单独运行](https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E5%8D%95%E7%8B%AC%E8%BF%90%E8%A1%8C)
 - [名词解释](https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A)
 - [基本介绍](https://github.com/xiaojinzi123/Component/wiki/%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D%E5%92%8C%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D)
