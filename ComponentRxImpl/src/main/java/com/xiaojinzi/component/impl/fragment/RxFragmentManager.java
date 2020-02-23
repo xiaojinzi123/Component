@@ -36,10 +36,6 @@ public class RxFragmentManager {
      * 3. 在保证了第一点的情况下保证不改变 RxJava 的执行线程
      * 4. 保证调用任何一个服务实现类的时候出现的错误用 {@link ServiceInvokeException}
      * 代替,当然了,真实的错误在 {@link Throwable#getCause()} 中可以获取到
-     *
-     * @param fragmentFlag
-     * @param bundle
-     * @return
      */
     @NonNull
     public static Single<Fragment> with(@NonNull final String fragmentFlag, @Nullable final Bundle bundle) {
@@ -66,10 +62,6 @@ public class RxFragmentManager {
 
     /**
      * 在主线程中去创建对象,然后在其他线程拿到
-     *
-     * @param fragmentFlag
-     * @param bundle
-     * @return
      */
     @NonNull
     private static Fragment blockingGetInChildThread(@NonNull final String fragmentFlag, @Nullable final Bundle bundle) {

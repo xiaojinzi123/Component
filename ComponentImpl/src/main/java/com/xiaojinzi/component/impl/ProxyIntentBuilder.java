@@ -104,7 +104,7 @@ public class ProxyIntentBuilder extends RouterRequest.URIBuilder {
     }
 
     @Override
-    public ProxyIntentBuilder path(@Nullable String path) {
+    public ProxyIntentBuilder path(@NonNull String path) {
         super.path(path);
         return this;
     }
@@ -261,7 +261,7 @@ public class ProxyIntentBuilder extends RouterRequest.URIBuilder {
     }
 
     @Override
-    public ProxyIntentBuilder query(@NonNull String queryName, @Nullable String queryValue) {
+    public ProxyIntentBuilder query(@NonNull String queryName, @NonNull String queryValue) {
         super.query(queryName, queryValue);
         return this;
     }

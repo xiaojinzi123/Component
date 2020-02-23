@@ -10,6 +10,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["HOST": "base"]
+                // arguments = ["HOST": "base", "RouterDoc": project.property("componnet_router_doc_folder")]
             }
         }
     }

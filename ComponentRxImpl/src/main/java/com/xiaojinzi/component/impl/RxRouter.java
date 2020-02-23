@@ -37,7 +37,8 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 /**
- * 使用这个可以结合 RxJava 中的{@link io.reactivex.Single} 使用,会很方便
+ * 使用这个可以结合 RxJava 中的
+ * {@link Single} 和 {@link Completable} 使用,会很方便
  * <p>
  * time   : 2018/11/03
  *
@@ -58,10 +59,8 @@ public class RxRouter extends Router {
 
     /**
      * 这个方法父类也有一个静态的,但是父类返回的是 {@link Navigator} 而这个返回的是
-     * {@link RxNavigator}
      *
-     * @param context
-     * @return
+     * @return {@link RxNavigator}
      */
     public static RxNavigator with(@NonNull Context context) {
         return new RxNavigator(context);
@@ -93,31 +92,32 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public RxNavigator beforJumpAction(@NonNull Action action) {
+        public RxNavigator beforJumpAction(@NonNull @MainThread Action action) {
             super.beforJumpAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterJumpAction(@NonNull Action action) {
+        public RxNavigator afterJumpAction(@NonNull @MainThread Action action) {
             super.afterJumpAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterErrorAction(@Nullable Action action) {
+        public RxNavigator afterErrorAction(@Nullable @MainThread Action action) {
             super.afterErrorAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterEventAction(@Nullable Action action) {
+        public RxNavigator afterEventAction(@Nullable @MainThread Action action) {
             super.afterEventAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator intentConsumer(@NonNull com.xiaojinzi.component.support.Consumer<Intent> intentConsumer) {
+        public RxNavigator intentConsumer(
+                @NonNull @MainThread com.xiaojinzi.component.support.Consumer<Intent> intentConsumer) {
             super.intentConsumer(intentConsumer);
             return this;
         }
@@ -153,7 +153,13 @@ public class RxRouter extends Router {
         }
 
         public RxNavigator autoCancel(boolean autoCancel) {
-            this.autoCancel = autoCancel;
+            super.autoCancel(autoCancel);
+            return this;
+        }
+
+        @Override
+        public RxNavigator useRouteRepeatCheck(boolean routeRepeatCheck) {
+            super.useRouteRepeatCheck(routeRepeatCheck);
             return this;
         }
 
@@ -207,8 +213,6 @@ public class RxRouter extends Router {
 
         /**
          * requestCode 会随机的生成
-         *
-         * @return
          */
         public RxNavigator requestCodeRandom() {
             return requestCode(RANDOM_REQUSET_CODE);
@@ -239,7 +243,8 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public RxNavigator putCharSequenceArrayList(@NonNull String key, @Nullable ArrayList<CharSequence> value) {
+        public RxNavigator putCharSequenceArrayList(@NonNull String key,
+                                                    @Nullable ArrayList<CharSequence> value) {
             super.putCharSequenceArrayList(key, value);
             return this;
         }
@@ -377,13 +382,15 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public RxNavigator putParcelableArrayList(@NonNull String key, @Nullable ArrayList<? extends Parcelable> value) {
+        public RxNavigator putParcelableArrayList(@NonNull String key,
+                                                  @Nullable ArrayList<? extends Parcelable> value) {
             super.putParcelableArrayList(key, value);
             return this;
         }
 
         @Override
-        public RxNavigator putSparseParcelableArray(@NonNull String key, @Nullable SparseArray<? extends Parcelable> value) {
+        public RxNavigator putSparseParcelableArray(@NonNull String key,
+                                                    @Nullable SparseArray<? extends Parcelable> value) {
             super.putSparseParcelableArray(key, value);
             return this;
         }
@@ -395,7 +402,7 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public RxNavigator query(@NonNull String queryName, @Nullable String queryValue) {
+        public RxNavigator query(@NonNull String queryName, @NonNull String queryValue) {
             super.query(queryName, queryValue);
             return this;
         }
@@ -439,7 +446,6 @@ public class RxRouter extends Router {
         /**
          * 一个可以拿到 Intent 的 Observable
          *
-         * @return
          * @see #activityResultCall()
          */
         @NonNull
@@ -644,9 +650,6 @@ public class RxRouter extends Router {
         /**
          * 发射错误,目前这些个发射错误都是为了 {@link RxRouter} 写的,发射的错误和正确的 item 被发射都应该
          * 最终发射在主线程
-         *
-         * @param emitter
-         * @param e
          */
         private static void onErrorEmitter(@MainThread final SingleEmitter<? extends Object> emitter,
                                            @NonNull final Throwable e) {

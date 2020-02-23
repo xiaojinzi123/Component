@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>@{title}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+</head>
+<body style="padding: 40px;overflow-x: hidden;">
+<div style="text-align: center;display: block;">
+    <span style="font-size: 50px;">Component Router Doc</span> <a href="https://github.com/xiaojinzi123/Component">power
+    by Component</a>
+</div>
+<div id="routerInfos">
+    <div v-for="(module, index) in routerInfos">
+        <span style="font-size: 40px;">{{module.moduleName}}</span>
+        <table class="table" style="table-layout: fixed;">
+            <thead>
+            <tr>
+                <th colspan="1" scope="col">#</th>
+                <th colspan="3" scope="col">host</th>
+                <th colspan="4" scope="col">path</th>
+                <th colspan="5" scope="col">desc</th>
+                <th colspan="5" scope="col">targetActivity</th>
+                <th colspan="6" scope="col">attr</th>
+                <th colspan="5" scope="col">targetMethod</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item, index) in module.data">
+                <th colspan="1" scope="row">{{index + 1}}</th>
+                <td colspan="3">{{item.host}}</td>
+                <td colspan="4">{{item.path}}</td>
+                <td colspan="5">{{item.desc}}</td>
+                <td colspan="5" style="word-wrap: break-word;">{{item.targetActivityName == null?"无":item.targetActivityName}}</td>
+                <td colspan="6">
+                    <span v-if="item.activityAttrDocs == null">无</span>
+                    <table v-else frame="void" border="0" cellpadding="0" cellspacing="0">
+                        <tr v-for="attrItem in item.activityAttrDocs" style="font-size: 14px;">
+                            <th>{{attrItem.attrKey}}</th>
+                            <th>{{attrItem.attrType}}</th>
+                        </tr>
+                    </table>
+                </td>
+                <td colspan="5" style="word-wrap: break-word;">{{item.targetMethod == null? "无":item.targetMethod}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var routerInfosData = @{routerDoc};
+
+    var routerInfos = new Vue({
+        el: '#routerInfos',
+        data: {
+            routerInfos: routerInfosData
+        }
+    })
+
+</script>
+
+</body>
+</html>

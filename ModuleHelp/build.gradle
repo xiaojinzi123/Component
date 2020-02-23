@@ -13,6 +13,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["HOST": "help"]
+                // arguments = ["HOST": "help", "RouterDoc": project.property("componnet_router_doc_folder")]
             }
         }
     }

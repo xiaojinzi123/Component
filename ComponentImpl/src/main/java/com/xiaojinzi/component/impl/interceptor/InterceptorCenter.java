@@ -99,9 +99,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
         moduleInterceptorMap.put(interceptor.getHost(), interceptor);
         // 子拦截器列表
         Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = interceptor.getInterceptorMap();
-        if (childInterceptorMap != null) {
-            mInterceptorMap.putAll(childInterceptorMap);
-        }
+        mInterceptorMap.putAll(childInterceptorMap);
     }
 
     @Override
@@ -122,11 +120,9 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
         isInterceptorListHaveChange = true;
         // 子拦截器列表
         Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = interceptor.getInterceptorMap();
-        if (childInterceptorMap != null) {
-            for (Map.Entry<String, Class<? extends RouterInterceptor>> entry : childInterceptorMap.entrySet()) {
-                mInterceptorMap.remove(entry.getKey());
-                RouterInterceptorCache.removeCache(entry.getValue());
-            }
+        for (Map.Entry<String, Class<? extends RouterInterceptor>> entry : childInterceptorMap.entrySet()) {
+            mInterceptorMap.remove(entry.getKey());
+            RouterInterceptorCache.removeCache(entry.getValue());
         }
     }
 
@@ -173,7 +169,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
         try {
             if (Component.getConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleInterceptorAsmImpl(host);
-            }else {
+            } else {
                 Class<? extends IComponentHostInterceptor> clazz = null;
                 String className = ComponentUtil.genHostInterceptorClassName(host);
                 clazz = (Class<? extends IComponentHostInterceptor>) Class.forName(className);
@@ -213,10 +209,13 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
         Set<String> set = new HashSet<>();
         for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
             IComponentHostInterceptor childInterceptor = entry.getValue();
-            if (childInterceptor == null || childInterceptor.getInterceptorNames() == null) {
+            if (childInterceptor == null) {
                 continue;
             }
             Set<String> childInterceptorNames = childInterceptor.getInterceptorNames();
+            if (childInterceptorNames.isEmpty()) {
+                continue;
+            }
             for (String interceptorName : childInterceptorNames) {
                 if (set.contains(interceptorName)) {
                     throw new InterceptorNameExistException("the interceptor's name is exist：" + interceptorName);

@@ -58,6 +58,7 @@
 等开源的组件化框架, 有哪些一样或者更加优秀的点
 
 - [x] 支持多 `Module`
+- [X] 支持 `Google App Bundle 架构` 
 - [x] 支持 `Flutter`, `H5` 等混合项目
 - [x] 支持 `androidx`, 几乎没有其他组件化框架支持 `androidx` 的
 - [x] 整个设计贴近原生,对原生的代码入侵极少,尽最大的可能保留原生的代码
@@ -153,11 +154,18 @@
 
 ## 版本更新日志
 
+#### v1.8.0
+
+- 修复 `Uri` 中的 `userInfo` 为空的时候的处理
+- 增加针对单个路由是否启用重复检查的拦截器的方法. Navigator.useRouteRepeatCheck(boolean) 默认是全局设置的值. 全局设置的值默认是 `true`
+- 增加了 [生成文档](https://github.com/xiaojinzi123/Component/wiki/%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90) 的功能, 对应 [issue](https://github.com/xiaojinzi123/Component/issues/15)
+
 #### v1.7.9
 
 - `ModuleManager` 类中增加 `autoRegister()` 方法, 可以自动加载所有的模块
     - 前提是你使用 Gradle 插件, 并且配置中 optimizeInit 开关已经打开
 - 配置中增加开关, 控制是否在初始化的时候自动加载所有模块. 这样子可以进一步省略配置的代码量
+- 上面两个描述不支持 `Google` 的 `App Bundle`. 还请特别留意
 - `ParameterSupport` 增加对 `Uri` 的获取. 
 - 跳转支持 `Uri` 中的 `UserInfo`. 接口的路由跳转中同样也支持了, 使用 `@UserInfoAnno` 即可
 - 修复 `@FragmentAnno` 标记在类上的时候的传值问题, 详见 `issue` [#51](https://github.com/xiaojinzi123/Component/issues/51)

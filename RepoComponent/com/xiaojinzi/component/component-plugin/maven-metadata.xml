@@ -3,12 +3,13 @@
   <groupId>com.xiaojinzi.component</groupId>
   <artifactId>component-plugin</artifactId>
   <versioning>
-    <release>1.7.9</release>
+    <release>1.8.0</release>
     <versions>
       <version>1.7.7.3</version>
       <version>1.7.8</version>
       <version>1.7.9</version>
+      <version>1.8.0</version>
     </versions>
-    <lastUpdated>20200211124931</lastUpdated>
+    <lastUpdated>20200223075828</lastUpdated>
   </versioning>
 </metadata>

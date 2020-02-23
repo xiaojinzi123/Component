@@ -1,6 +1,7 @@
 package com.xiaojinzi.component;
 
 import com.google.auto.service.AutoService;
+import com.google.gson.Gson;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -10,10 +11,16 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
+import com.xiaojinzi.component.bean.ActivityAttrDocBean;
+import com.xiaojinzi.component.bean.RouterDocBean;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -65,10 +72,6 @@ public class AutowireProcessor extends BaseProcessor {
 
     private TypeElement bundleTypeElement;
 
-    private ParameterizedTypeName stringArrayListParameterizedTypeName;
-    private ParameterizedTypeName integerArrayListParameterizedTypeName;
-    private ParameterizedTypeName charsequenceArrayListParameterizedTypeName;
-
     private AtomicInteger intCount = new AtomicInteger();
 
     @Override
@@ -90,10 +93,6 @@ public class AutowireProcessor extends BaseProcessor {
         serializableTypeMirror = serializableTypeElement.asType();
         final TypeElement parcelableTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_PARCELABLE);
         parcelableTypeMirror = parcelableTypeElement.asType();
-
-        stringArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, mClassNameString);
-        integerArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, ClassName.INT.box());
-        charsequenceArrayListParameterizedTypeName = ParameterizedTypeName.get(mClassNameArrayList, TypeName.get(charsequenceTypeMirror));
 
         arrayListTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_ARRAYLIST);
         arrayListClassName = ClassName.get(arrayListTypeElement);
@@ -122,6 +121,11 @@ public class AutowireProcessor extends BaseProcessor {
             // 找到标记到相同的一个类上的所有注解
             findSameTargetElement(fieldElements);
             createImpl();
+            try {
+                createRouterAttrDocJson();
+            } catch (IOException e) {
+                // ignore
+            }
             return true;
         }
         return false;
@@ -172,7 +176,7 @@ public class AutowireProcessor extends BaseProcessor {
                 .addAnnotation(mClassNameComponentGeneratedAnno)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addSuperinterface(ParameterizedTypeName.get(injectClassName, TypeName.get(mElements.getTypeElement(fullClassName).asType())))
-                .addMethod(injectAttrValueMethod1(targetClass, parameterFieldSet))
+                .addMethod(injectAttrValueMethod1(targetClass))
                 .addMethod(injectAttrValueMethod2(targetClass, parameterFieldSet))
                 .addMethod(injectServiceMethod(targetClass, parameterFieldSet));
         try {
@@ -183,7 +187,52 @@ public class AutowireProcessor extends BaseProcessor {
         }
     }
 
-    private MethodSpec injectAttrValueMethod1(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
+    private void createRouterAttrDocJson() throws IOException {
+
+        if (routerDocFolder == null || routerDocFolder.isEmpty()) {
+            return;
+        }
+
+        File attrFolder = new File(routerDocFolder, "attr");
+        if (attrFolder.exists() && attrFolder.isFile()) {
+            attrFolder.delete();
+        }
+        attrFolder.mkdirs();
+
+        Set<Map.Entry<TypeElement, Set<VariableElement>>> entrySet = map.entrySet();
+        Gson gson = new Gson();
+        // 循环, key 是目标 class, value 是 该 class 下所有待注入的字段
+        for (Map.Entry<TypeElement, Set<VariableElement>> entry : entrySet) {
+            List<ActivityAttrDocBean> activityAttrDocBeans = new ArrayList<>();
+            TypeElement targetClass = entry.getKey();
+            TypeMirror targetClassTypeMirror = targetClass.asType();
+            // 如果是 Activity
+            if (mTypes.isSubtype(targetClassTypeMirror, activityTypeMirror)) {
+                // 所有字段
+                Set<VariableElement> variableElementSet = entry.getValue();
+                for (VariableElement variableElement : variableElementSet) {
+                    AttrValueAutowiredAnno attrValueAutowiredAnno = variableElement.getAnnotation(AttrValueAutowiredAnno.class);
+                    // 如果是注入字段
+                    if (attrValueAutowiredAnno != null) {
+                        ActivityAttrDocBean activityAttrDocBean = new ActivityAttrDocBean();
+                        activityAttrDocBean.setAttrKey(attrValueAutowiredAnno.value());
+                        activityAttrDocBean.setAttrType(variableElement.asType().toString());
+                        activityAttrDocBeans.add(activityAttrDocBean);
+                    }
+                }
+            }
+            File file = new File(attrFolder, targetClassTypeMirror.toString() + ".json");
+            if (file.exists()) {
+                file.delete();
+            }
+            String json = gson.toJson(activityAttrDocBeans);
+            Writer writer = new FileWriter(file);
+            writer.write(json);
+            writer.close();
+        }
+    }
+
+    private MethodSpec injectAttrValueMethod1(TypeElement targetClass) {
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder("injectAttrValue")
                 .addJavadoc("属性注入\n")
@@ -311,7 +360,7 @@ public class AutowireProcessor extends BaseProcessor {
                                 methodBuilder.addStatement("$N = $T.getIntegerArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                             }
                         }
-                    } else if(mClassNameSparseArray.equals(className)){ // 如果是 SparseArray
+                    } else if (mClassNameSparseArray.equals(className)) { // 如果是 SparseArray
                         List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
                         if (typeArguments.size() == 1) { // 处理泛型个数是一个的
                             if (mTypes.isSubtype(typeArguments.get(0), parcelableTypeMirror)) { // 如果是 Parcelable 及其子类

@@ -36,7 +36,7 @@ public class CustomerRouterImpl {
             interceptorNames = InterceptorConfig.HELP_CALLPHOEPERMISION
     )
     @NonNull
-    public static Intent callPhoneIntent(@NonNull RouterRequest request) {
+    public static Intent callPhoneIntent(@NonNull RouterRequest request, @NonNull RouterRequest request1) {
         String tel = ParameterSupport.getString(request.bundle, "tel");
         if (TextUtils.isEmpty(tel)) {
             throw new NullPointerException("the tel is empty");

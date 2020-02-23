@@ -17,7 +17,6 @@ public interface IComponentInterceptor {
      * 根据拦截器的唯一名字获取拦截器
      *
      * @param name if name is null,return null
-     * @return
      */
     @Nullable
     @MainThread

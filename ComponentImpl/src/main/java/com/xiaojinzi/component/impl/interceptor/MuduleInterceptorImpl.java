@@ -62,7 +62,7 @@ abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
         isInitMap = true;
     }
 
-    @Nullable
+    @NonNull
     @Override
     public Set<String> getInterceptorNames() {
         if (!isInitMap) {
@@ -71,7 +71,7 @@ abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
         return interceptorMap.keySet();
     }
 
-    @Nullable
+    @NonNull
     @Override
     public Map<String, Class<? extends RouterInterceptor>> getInterceptorMap() {
         if (!isInitMap) {
