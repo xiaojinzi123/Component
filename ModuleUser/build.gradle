@@ -13,8 +13,8 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["HOST": "user"]
-                // arguments = ["HOST": "user", "RouterDoc": project.property("componnet_router_doc_folder")]
+                // arguments = ["HOST": "user"]
+                arguments = ["HOST": "user", "RouterDoc": project.property("component_router_doc_folder")]
             }
         }
     }

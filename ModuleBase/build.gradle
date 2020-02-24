@@ -9,8 +9,8 @@ android {
         versionName "1.0"
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["HOST": "base"]
-                // arguments = ["HOST": "base", "RouterDoc": project.property("componnet_router_doc_folder")]
+                // arguments = ["HOST": "base"]
+                arguments = ["HOST": "base", "RouterDoc": project.property("component_router_doc_folder")]
             }
         }
     }
