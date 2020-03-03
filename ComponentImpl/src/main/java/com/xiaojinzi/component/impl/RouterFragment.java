@@ -5,8 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.component.bean.ActivityResult;
-import com.xiaojinzi.component.impl.RouterRequest;
-import com.xiaojinzi.component.support.Consumer;
+import com.xiaojinzi.component.support.Consumer1;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +30,7 @@ import java.util.Set;
 public final class RouterFragment extends Fragment {
 
     @NonNull
-    private Map<RouterRequest, Consumer<ActivityResult>> singleEmitterMap = new HashMap<>();
+    private Map<RouterRequest, Consumer1<ActivityResult>> singleEmitterMap = new HashMap<>();
 
     @Override
     public void onDestroy() {
@@ -46,7 +45,7 @@ public final class RouterFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         // 根据 requestCode 获取发射器
-        Consumer<ActivityResult> findConsumer = null;
+        Consumer1<ActivityResult> findConsumer = null;
         RouterRequest findRequest = null;
         // 找出 requestCode 一样的那个
         Set<RouterRequest> keySet = singleEmitterMap.keySet();
@@ -73,7 +72,7 @@ public final class RouterFragment extends Fragment {
     }
 
     public void setActivityResultConsumer(@NonNull RouterRequest request,
-                                          @NonNull Consumer<ActivityResult> consumer) {
+                                          @NonNull Consumer1<ActivityResult> consumer) {
         // 检测是否重复的在这个方法调用之前被检查掉了
         singleEmitterMap.put(request, consumer);
     }
