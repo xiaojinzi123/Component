@@ -343,6 +343,8 @@ public class RouterApiProcessor extends BaseProcessor {
                                 parameterStatement.append("\n.putIntegerArrayList($S,$N)");
                             } else if (mTypes.isSubtype(typeArguments.get(0), parcelableTypeMirror)) { // 如果是 Parcelable 及其子类
                                 parameterStatement.append("\n.putParcelableArrayList($S,$N)");
+                            } else if (mTypes.isSubtype(typeArguments.get(0), serializableTypeMirror)) { // 如果是 Serializable 及其子类
+                                parameterStatement.append("\n.putSerializable($S,$N)");
                             } else if (charsequenceTypeMirror.equals(typeArguments.get(0))) { // 如果是 CharSequence
                                 parameterStatement.append("\n.putCharSequenceArrayList($S,$N)");
                             } else {

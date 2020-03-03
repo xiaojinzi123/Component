@@ -29,6 +29,8 @@ import groovy.lang.Closure;
  */
 public class ComponentPlugin implements Plugin<Project> {
 
+    public static final String ROUTER_FOLDER = "component_router_doc_folder";
+
     @Override
     public void apply(final Project project) {
         BaseAppModuleExtension appModuleExtension = (BaseAppModuleExtension) project.getProperties().get("android");
@@ -50,8 +52,8 @@ public class ComponentPlugin implements Plugin<Project> {
                 task.doLast(new Action<Task>() {
                     @Override
                     public void execute(Task task) {
-                        if (project.hasProperty("componnet_router_doc_folder")) {
-                            Object folderObj = project.property("componnet_router_doc_folder");
+                        if (project.hasProperty(ROUTER_FOLDER)) {
+                            Object folderObj = project.property(ROUTER_FOLDER);
                             if (folderObj instanceof String) {
                                 String folderStr = (String) folderObj;
                                 if (!folderStr.isEmpty()) {
@@ -80,8 +82,8 @@ public class ComponentPlugin implements Plugin<Project> {
                 task.doLast(new Action<Task>() {
                     @Override
                     public void execute(Task task) {
-                        if (project.hasProperty("componnet_router_doc_folder")) {
-                            Object folderObj = project.property("componnet_router_doc_folder");
+                        if (project.hasProperty(ROUTER_FOLDER)) {
+                            Object folderObj = project.property(ROUTER_FOLDER);
                             if (folderObj instanceof String) {
                                 String folderStr = (String) folderObj;
                                 if (!folderStr.isEmpty()) {

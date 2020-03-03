@@ -12,7 +12,6 @@ import com.squareup.javapoet.TypeSpec;
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
 import com.xiaojinzi.component.bean.ActivityAttrDocBean;
-import com.xiaojinzi.component.bean.RouterDocBean;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -352,7 +351,9 @@ public class AutowireProcessor extends BaseProcessor {
                         if (typeArguments.size() == 1) { // 处理泛型个数是一个的
                             if (mTypes.isSubtype(typeArguments.get(0), parcelableTypeMirror)) { // 如果是 Parcelable 及其子类
                                 methodBuilder.addStatement("$N = $T.getParcelableArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
-                            } else if (mTypeElementString.asType().equals(typeArguments.get(0))) {
+                            }else if (mTypes.isSubtype(typeArguments.get(0), serializableTypeMirror)) { // 如果是 Serializable 及其子类
+                                methodBuilder.addStatement("$N = $T.getSerializable($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
+                            }  else if (mTypeElementString.asType().equals(typeArguments.get(0))) {
                                 methodBuilder.addStatement("$N = $T.getStringArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);
                             } else if (charsequenceTypeMirror.equals(typeArguments.get(0))) {
                                 methodBuilder.addStatement("$N = $T.getCharSequenceArrayList($N,$S,$L)", parameterName, parameterSupportTypeMirror, bundleCallStr, attrValueAutowiredAnno.value(), parameterName);

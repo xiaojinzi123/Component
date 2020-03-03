@@ -29,6 +29,7 @@ import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.Consumer;
+import com.xiaojinzi.component.support.Consumer1;
 import com.xiaojinzi.component.support.NavigationDisposable;
 import com.xiaojinzi.component.support.ProxyIntentAct;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
@@ -888,13 +889,15 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 public void onSuccess(@NonNull final RouterResult routerResult) {
                     super.onSuccess(routerResult);
                     // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
-                    rxFragment.setActivityResultConsumer(routerResult.getOriginalRequest(), new com.xiaojinzi.component.support.Consumer<ActivityResult>() {
-                        @Override
-                        public void accept(@NonNull ActivityResult result) throws Exception {
-                            Help.removeRequestCode(routerResult.getOriginalRequest());
-                            biCallbackWrap.onSuccess(routerResult, result);
-                        }
-                    });
+                    rxFragment.setActivityResultConsumer(
+                            routerResult.getOriginalRequest(),
+                            new Consumer1<ActivityResult>() {
+                                @Override
+                                public void accept(@NonNull ActivityResult result) {
+                                    Help.removeRequestCode(routerResult.getOriginalRequest());
+                                    biCallbackWrap.onSuccess(routerResult, result);
+                                }
+                            });
                 }
 
                 @Override
@@ -954,8 +957,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @AnyThread
     private void realNavigate(@NonNull final RouterRequest originalRequest,
-                                     @Nullable final List<Object> customInterceptors,
-                                     @NonNull final RouterInterceptor.Callback routerInterceptorCallback) {
+                              @Nullable final List<Object> customInterceptors,
+                              @NonNull final RouterInterceptor.Callback routerInterceptorCallback) {
 
         // 拿到用户定义的共有的拦截器
         // 这里是因为第一次创建拦截器需要在主线程上, 所以需要这样

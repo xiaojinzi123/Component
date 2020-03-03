@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.ModuleConfig;
-import com.xiaojinzi.base.bean.SubCharSequence;
 import com.xiaojinzi.base.bean.SubParcelable;
 import com.xiaojinzi.base.bean.User;
 import com.xiaojinzi.base.bean.UserWithParcelable;
@@ -222,6 +221,7 @@ public interface SampleApi {
                  @ParameterAnno("data32") ArrayList<Integer> data32,
                  @ParameterAnno("data33") ArrayList<Parcelable> data33,
                  @ParameterAnno("data34") ArrayList<UserWithParcelable> data34,
+                 @ParameterAnno("data341") ArrayList<UserWithSerializable> data341,
                  @ParameterAnno("data35") ArrayList<SubParcelable> data35,
                  @ParameterAnno("data36") SparseArray<Parcelable> data36,
                  @ParameterAnno("data37") SparseArray<UserWithParcelable> data37,
