@@ -69,9 +69,6 @@ public class RxRouter extends Router {
     /**
      * 这个方法父类也有一个静态的,但是父类返回的是 {@link Navigator} 而这个返回的是
      * {@link RxNavigator}
-     *
-     * @param fragment
-     * @return
      */
     public static RxNavigator with(@NonNull Fragment fragment) {
         return new RxNavigator(fragment);
