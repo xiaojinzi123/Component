@@ -1,4 +1,8 @@
 
+#### v1.8.1
+
+- 修复生成文档的 `componnet_router_doc_folder` 拼写错误的错误. 改为 `component_router_doc_folder`
+
 #### v1.8.0
 
 - 修复 `Uri` 中的 `userInfo` 为空的时候的处理
