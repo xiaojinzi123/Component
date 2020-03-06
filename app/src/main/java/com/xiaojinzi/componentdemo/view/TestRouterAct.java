@@ -34,7 +34,6 @@ import com.xiaojinzi.component.impl.RouterRequest;
 import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.RxRouter;
 import com.xiaojinzi.component.support.CallbackAdapter;
-import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
 import java.util.ArrayList;
@@ -636,14 +635,14 @@ public class TestRouterAct extends BaseAct {
         Router.withApi(SampleApi.class)
                 .test114(
                         this,
-                        new byte[]{1,2,3},
+                        new byte[]{1, 2, 3},
                         new char[]{'1', '2', '3'},
                         new String[]{"1", "2", "3"},
-                        new short[]{1,2,3},
-                        new int[]{1,2,3},
-                        new long[]{1,2,3},
-                        new float[]{1,2,3},
-                        new double[]{1,2,3},
+                        new short[]{1, 2, 3},
+                        new int[]{1, 2, 3},
+                        new long[]{1, 2, 3},
+                        new float[]{1, 2, 3},
+                        new double[]{1, 2, 3},
                         new boolean[]{true, false, true},
                         new Parcelable[]{
                                 new UserWithParcelable(),
@@ -660,10 +659,10 @@ public class TestRouterAct extends BaseAct {
                         },
                         "1 2 3",
                         "1 2 3 ",
-                        (byte)1,
+                        (byte) 1,
                         '1',
                         true,
-                        (short)1,
+                        (short) 1,
                         1,
                         1,
                         1,
@@ -680,7 +679,7 @@ public class TestRouterAct extends BaseAct {
                         ),
                         new ArrayList<>(
                                 Arrays.asList(
-                                        1 ,2 ,3
+                                        1, 2, 3
                                 )
                         ),
                         new ArrayList<>(
@@ -695,6 +694,13 @@ public class TestRouterAct extends BaseAct {
                                         new UserWithParcelable(),
                                         new UserWithParcelable(),
                                         new UserWithParcelable()
+                                )
+                        ),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        new UserWithSerializable(),
+                                        new UserWithSerializable(),
+                                        new UserWithSerializable()
                                 )
                         ),
                         new ArrayList<>(

@@ -1,6 +1,7 @@
 
-#### v1.8.1
+#### v1.8.0.1
 
+- 类型 ArrayList<? extends Serializable> RouterApi 中的支持和 Autowire 的支持. 此类型判断为 Serializable 类型
 - 修复生成文档的 `componnet_router_doc_folder` 拼写错误的错误. 改为 `component_router_doc_folder`
 
 #### v1.8.0

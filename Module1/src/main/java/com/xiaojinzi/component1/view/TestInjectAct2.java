@@ -16,7 +16,6 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
-import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.component1.R;
 
 import java.util.ArrayList;
@@ -96,6 +95,8 @@ public class TestInjectAct2 extends BaseAct {
     ArrayList<Parcelable> data33;
     @AttrValueAutowiredAnno("data34")
     ArrayList<UserWithParcelable> data34;
+    @AttrValueAutowiredAnno("data341")
+    ArrayList<UserWithSerializable> data341;
     @AttrValueAutowiredAnno("data35")
     ArrayList<SubParcelable> data35;
 
