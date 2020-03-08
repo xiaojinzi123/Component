@@ -19,25 +19,6 @@
 
 选择一个更好、更全面的、更稳定、更有发展前景的框架更是你们技术团队或者技术负责人要做的事情!
 
-本项目即是 `Demo` 也是库的实现.
-
-- `demo` 示例代码
-    - `app`                 --> 壳工程
-    - `Module1`             --> `Java` 业务模块
-    - `Module1run`          --> `Module1` 业务模块单独运行的 `Application` 应用
-    - `Module2`             --> `Kotlin` 业务模块
-    - `ModuleHelp`          --> `Help` 业务模块, 一些有关通用的或者系统相关的放这里
-    - `ModuleUser`          --> `User` 业务模块
-    - `ModuleBase`          --> 各个业务模块的基础模块, 上述的没一个业务模块都需要依赖
-- 实现库源码
-    - `ComponentApi`        --> `Api` 库
-    - `ComponentCompiler`   --> 注解驱动器库
-    - `ComponentImpl`       --> 实现库
-    - `ComponentRxImpl`     --> 实现库 `RxJava` 的扩展
-    - `ComponentPlugin`     --> 配套的 `Gradle`, 功能有两个
-        - 优化初始化的方式, 优化反射加载模块为正常的 `new` 对象的方式, 利用字节码修改技术
-        - 生成路由文档
-
 [Component VS ARouter](https://github.com/xiaojinzi123/Component/wiki/Component-%E5%92%8C-ARouter-%E6%AF%94%E8%BE%83)
 
 **[点击查看 Component 解决了哪些开发中的痛点](https://github.com/xiaojinzi123/Component/wiki/Component-%E7%9B%B4%E5%87%BB%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84%E7%97%9B%E7%82%B9)**
@@ -159,6 +140,25 @@
 `Android Studio` 中搜索插件名称：RouterGo, 即可下载对应的插件
 
 [RouterGo 源码地址：帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
+
+## `Component` 项目结构(Demo + 库源码)
+
+- `demo` 示例代码
+    - `app`                 --> 壳工程
+    - `Module1`             --> `Java` 业务模块
+    - `Module1run`          --> `Module1` 业务模块单独运行的 `Application` 应用
+    - `Module2`             --> `Kotlin` 业务模块
+    - `ModuleHelp`          --> `Help` 业务模块, 一些有关通用的或者系统相关的放这里
+    - `ModuleUser`          --> `User` 业务模块
+    - `ModuleBase`          --> 各个业务模块的基础模块, 上述的没一个业务模块都需要依赖
+- 实现库源码
+    - `ComponentApi`        --> `Api` 库
+    - `ComponentCompiler`   --> 注解驱动器库
+    - `ComponentImpl`       --> 实现库
+    - `ComponentRxImpl`     --> 实现库 `RxJava` 的扩展
+    - `ComponentPlugin`     --> 配套的 `Gradle`, 功能有两个
+        - 优化初始化的方式, 优化反射加载模块为正常的 `new` 对象的方式, 利用字节码修改技术
+        - 生成路由文档
 
 ## 扫码进群
 
