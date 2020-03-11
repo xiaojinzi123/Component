@@ -454,14 +454,14 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder putBundle(@NonNull String key, @Nullable Bundle bundle) {
-            this.bundle.putBundle(key, bundle);
-            return this;
-        }
-
         public Builder putAll(@NonNull Bundle bundle) {
             Utils.checkNullPointer(bundle, "bundle");
             this.bundle.putAll(bundle);
+            return this;
+        }
+
+        public Builder putBundle(@NonNull String key, @Nullable Bundle bundle) {
+            this.bundle.putBundle(key, bundle);
             return this;
         }
 

@@ -69,9 +69,6 @@ public class RxRouter extends Router {
     /**
      * 这个方法父类也有一个静态的,但是父类返回的是 {@link Navigator} 而这个返回的是
      * {@link RxNavigator}
-     *
-     * @param fragment
-     * @return
      */
     public static RxNavigator with(@NonNull Fragment fragment) {
         return new RxNavigator(fragment);
@@ -219,14 +216,14 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public RxNavigator putBundle(@NonNull String key, @Nullable Bundle bundle) {
-            super.putBundle(key, bundle);
+        public RxNavigator putAll(@NonNull Bundle bundle) {
+            super.putAll(bundle);
             return this;
         }
 
         @Override
-        public RxNavigator putAll(@NonNull Bundle bundle) {
-            super.putAll(bundle);
+        public RxNavigator putBundle(@NonNull String key, @Nullable Bundle bundle) {
+            super.putBundle(key, bundle);
             return this;
         }
 

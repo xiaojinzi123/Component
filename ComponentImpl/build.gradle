@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.github.xiaojinzi123'
+
 archivesBaseName = "component-impl"
 
 android {
@@ -24,7 +25,7 @@ android {
 
 dependencies {
     compileOnly androidxLibs.appcompat
-    if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
+    if (rootProject.ext.isDependMavenOnline) {
         api androidxLibs.component_annotation
     }else {
         api project(':ComponentApi')

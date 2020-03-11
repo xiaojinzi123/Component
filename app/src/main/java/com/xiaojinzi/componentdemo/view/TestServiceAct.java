@@ -48,7 +48,7 @@ public class TestServiceAct extends AppCompatActivity {
         bundle.putInt("age", 22);
         Fragment fragment = Router
                 .with("component1.fragment")
-                .bundle(bundle)
+                .putInt("age", 22)
                 .navigate();
         if (fragment == null) {
             Toast.makeText(this, "对应的 component1.fragment 没有找到", Toast.LENGTH_SHORT).show();

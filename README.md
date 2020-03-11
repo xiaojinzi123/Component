@@ -1,13 +1,13 @@
 
-**相信 Component 能成为最优秀的那个框架!**
+**相信 Component 能成为最优秀的那个框架! 开源于 2018.8.8**
 
 从 **17** 年下旬就用在公司的产品上了. 虽然不像巨型 `App` 那样庞大. 但是日活也有好几万, `Activity` 界面也有 `200+`, 
 经过这么久的洗礼, `Component` 早就度过了初期的艰难阶段. 现在 `Component` 越来越稳定也越来越好. 
-同时作者也希望 `Component` 能一直保持活力, 本着解决用户 Bug 放在首位, 为用户服务为己任. 相信 `Component`
+同时作者也希望 `Component` 能一直保持活力, 本着解决用户 `Bug` 放在首位, 为用户服务为己任. 相信 `Component`
 会持续在组件化方面保持领先. 并且之后也会不断发现用户的需求, 然后迭代. 希望你们能积极的提 `issue`, 
 告诉我你们在组件化方面的困恼!
 
-如果您选择了 `Component`, 可以的话留下您的 `App` 名称或者公司名称, 我做一个展示, 不甚感激~~~. 如果可以的话, 请点个 `star`
+如果可以的话, 请点个 `star`
 
 很多选型的人有这么个疑问: 有了 `ARouter` 为啥要有 `Component`. 
 我这里在这里做一个回答.
@@ -18,8 +18,6 @@
 可以说到目前为止, 基于 `URI` 方面的所有路由框架中(`ARouter`、`WMRouter`、`ActivityRouter` ...) `Component` 是最强大和完善的组件化框架.
 
 选择一个更好、更全面的、更稳定、更有发展前景的框架更是你们技术团队或者技术负责人要做的事情!
-
-[English Doc](https://github.com/xiaojinzi123/Component/blob/develop/README_en.md) | [中文文档](https://github.com/xiaojinzi123/Component)
 
 [Component VS ARouter](https://github.com/xiaojinzi123/Component/wiki/Component-%E5%92%8C-ARouter-%E6%AF%94%E8%BE%83)
 
@@ -142,6 +140,25 @@
 `Android Studio` 中搜索插件名称：RouterGo, 即可下载对应的插件
 
 [RouterGo 源码地址：帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
+
+## `Component` 项目结构(Demo + 库源码)
+
+- `demo` 示例代码
+    - `app`                 --> 壳工程
+    - `Module1`             --> `Java` 业务模块
+    - `Module1run`          --> `Module1` 业务模块单独运行的 `Application` 应用
+    - `Module2`             --> `Kotlin` 业务模块
+    - `ModuleHelp`          --> `Help` 业务模块, 一些有关通用的或者系统相关的放这里
+    - `ModuleUser`          --> `User` 业务模块
+    - `ModuleBase`          --> 各个业务模块的基础模块, 上述的没一个业务模块都需要依赖
+- 实现库源码
+    - `ComponentApi`        --> `Api` 库
+    - `ComponentCompiler`   --> 注解驱动器库
+    - `ComponentImpl`       --> 实现库
+    - `ComponentRxImpl`     --> 实现库 `RxJava` 的扩展
+    - `ComponentPlugin`     --> 配套的 `Gradle`, 功能有两个
+        - 优化初始化的方式, 优化反射加载模块为正常的 `new` 对象的方式, 利用字节码修改技术
+        - 生成路由文档
 
 ## 扫码进群
 

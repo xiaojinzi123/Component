@@ -62,7 +62,7 @@ dependencies {
     api project(':ModuleHelp')
     api project(':ModuleUser')
 
-    if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
+    if (rootProject.ext.isDependMavenOnline) {
         kapt androidxLibs.component_compiler
     } else {
         kapt project(':ComponentCompiler')

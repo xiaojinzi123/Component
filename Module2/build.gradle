@@ -35,7 +35,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api project(':ModuleBase')
-    if (Boolean.parseBoolean(rootProject.ext.isDependMavenOnline)) {
+    if (rootProject.ext.isDependMavenOnline) {
         kapt androidxLibs.component_compiler
     }else {
         kapt project(':ComponentCompiler')
