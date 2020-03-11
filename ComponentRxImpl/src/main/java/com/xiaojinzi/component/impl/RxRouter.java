@@ -216,14 +216,14 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public RxNavigator putBundle(@NonNull String key, @Nullable Bundle bundle) {
-            super.putBundle(key, bundle);
+        public RxNavigator putAll(@NonNull Bundle bundle) {
+            super.putAll(bundle);
             return this;
         }
 
         @Override
-        public RxNavigator putAll(@NonNull Bundle bundle) {
-            super.putAll(bundle);
+        public RxNavigator putBundle(@NonNull String key, @Nullable Bundle bundle) {
+            super.putBundle(key, bundle);
             return this;
         }
 

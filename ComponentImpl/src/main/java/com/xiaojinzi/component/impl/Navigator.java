@@ -283,14 +283,14 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator putBundle(@NonNull String key, @Nullable Bundle bundle) {
-        super.putBundle(key, bundle);
+    public Navigator putAll(@NonNull Bundle bundle) {
+        super.putAll(bundle);
         return this;
     }
 
     @Override
-    public Navigator putAll(@NonNull Bundle bundle) {
-        super.putAll(bundle);
+    public Navigator putBundle(@NonNull String key, @Nullable Bundle bundle) {
+        super.putBundle(key, bundle);
         return this;
     }
 
