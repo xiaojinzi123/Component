@@ -21,8 +21,8 @@ public class FragmentNavigator {
     @NonNull
     protected String fragmentFlag;
 
-    @Nullable
-    protected Bundle bundle;
+    @NonNull
+    protected Bundle bundle = new Bundle();
 
     public FragmentNavigator(@NonNull String fragmentFlag) {
         this.fragmentFlag = fragmentFlag;
@@ -36,7 +36,7 @@ public class FragmentNavigator {
      */
     @Deprecated
     public FragmentNavigator bundle(@NonNull Bundle bundle) {
-        this.bundle = bundle;
+        this.putAll(bundle);
         return this;
     }
 
