@@ -1,4 +1,8 @@
 
+#### [v1.8.0.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.0.2)
+
+- 对路由 `Fragment` 支持了常用的 `putXXX` 方法
+
 #### [v1.8.0.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.0.1)
 
 - 类型 ArrayList<? extends Serializable> RouterApi 中的支持和 Autowire 的支持. 此类型判断为 Serializable 类型

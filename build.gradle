@@ -9,7 +9,6 @@ buildscript {
     ext.isDependMavenOnline = false
     // ext.component_asm_util_class_output_path = "./temp/ASMUtil.class"
     // 注解生成器生成的文件 json 信息都在这里面
-    ext.componnet_router_doc_folder = "./Doc"
     ext.component_router_doc_folder = "./Doc"
     // 无用 ext.componnet_router_doc_enable = false
 
