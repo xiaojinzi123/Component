@@ -21,7 +21,9 @@ import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.router.AfterActionAnno;
 import com.xiaojinzi.component.anno.router.AfterErrorActionAnno;
 import com.xiaojinzi.component.anno.router.AfterEventActionAnno;
+import com.xiaojinzi.component.anno.router.AfterStartActionAnno;
 import com.xiaojinzi.component.anno.router.BeforActionAnno;
+import com.xiaojinzi.component.anno.router.BeforStartActionAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.NavigateAnno;
@@ -60,6 +62,8 @@ public interface SampleApi {
     Navigator test(Context context, @ParameterAnno("data") String data, Callback callback,
                    @NonNull @OptionsAnno Bundle options,
                    @NonNull @BeforActionAnno Action beforAction,
+                   @NonNull @BeforStartActionAnno Action beforStartAction,
+                   @NonNull @AfterStartActionAnno Action afterStartAction,
                    @NonNull @AfterActionAnno Action afterAction,
                    @NonNull @AfterErrorActionAnno Action afterErrorAction,
                    @NonNull @AfterEventActionAnno Action afterEventAction,

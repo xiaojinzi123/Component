@@ -89,14 +89,26 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public RxNavigator beforJumpAction(@NonNull @MainThread Action action) {
-            super.beforJumpAction(action);
+        public RxNavigator beforAction(@NonNull @MainThread Action action) {
+            super.beforAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterJumpAction(@NonNull @MainThread Action action) {
-            super.afterJumpAction(action);
+        public RxNavigator beforStartAction(@NonNull @MainThread Action action) {
+            super.beforStartAction(action);
+            return this;
+        }
+
+        @Override
+        public RxNavigator afterStartAction(@NonNull @MainThread Action action) {
+            super.afterStartAction(action);
+            return this;
+        }
+
+        @Override
+        public RxNavigator afterAction(@NonNull @MainThread Action action) {
+            super.afterAction(action);
             return this;
         }
 

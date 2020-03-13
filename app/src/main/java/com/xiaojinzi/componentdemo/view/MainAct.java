@@ -103,7 +103,7 @@ public class MainAct extends AppCompatActivity {
 
     public void testRouterForFragment(View view) {
         Bundle bundle = new Bundle();
-        bundle.putInt("age",26);
+        bundle.putInt("age", 26);
         Fragment fragment = Router
                 .with("component1.fragment")
                 .navigate();
@@ -120,6 +120,12 @@ public class MainAct extends AppCompatActivity {
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.TEST_WEB_ROUTER)
                 .requestCode(123)
+                .afterStartAction(() -> {
+                    overridePendingTransition(
+                            android.R.anim.slide_in_left,
+                            android.R.anim.slide_out_right
+                    );
+                })
                 .forward();
     }
 

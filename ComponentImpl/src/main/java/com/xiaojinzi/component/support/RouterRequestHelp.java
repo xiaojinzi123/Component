@@ -11,33 +11,33 @@ import com.xiaojinzi.component.impl.RouterRequest;
 public class RouterRequestHelp {
 
     @MainThread
-    public static void executeBeforCallback(@NonNull RouterRequest request) throws Exception {
+    public static void executeBeforAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
-        if (request.beforJumpAction != null) {
-            request.beforJumpAction.run();
+        if (request.beforAction != null) {
+            request.beforAction.run();
         }
     }
 
     @MainThread
-    public static void executeAfterJumpCallback(@NonNull RouterRequest request) throws Exception {
+    public static void executeAfterAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
-        if (request.afterJumpAction != null) {
-            request.afterJumpAction.run();
+        if (request.afterAction != null) {
+            request.afterAction.run();
         }
-        executeAfterEventCallback(request);
+        executeAfterEventAction(request);
     }
 
     @MainThread
-    public static void executeAfterErrorCallback(@NonNull RouterRequest request) throws Exception {
+    public static void executeAfterErrorAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
         if (request.afterErrorAction != null) {
             request.afterErrorAction.run();
         }
-        executeAfterEventCallback(request);
+        executeAfterEventAction(request);
     }
 
     @MainThread
-    public static void executeAfterEventCallback(@NonNull RouterRequest request) throws Exception {
+    public static void executeAfterEventAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
         if (request.afterEventAction != null) {
             request.afterEventAction.run();

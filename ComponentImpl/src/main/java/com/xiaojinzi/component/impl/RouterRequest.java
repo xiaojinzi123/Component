@@ -96,15 +96,53 @@ public class RouterRequest {
     @Nullable
     public final Consumer<Intent> intentConsumer;
 
+    /**
+     * 这个 {@link Action} 是在路由开始的时候调用的.
+     * 和 {@link Activity#startActivity(Intent)} 不是连着执行的.
+     * 中间 post 到主线程的操作
+     */
     @Nullable
-    public final Action beforJumpAction;
+    public final Action beforAction;
 
+    /**
+     * 这个 {@link Action} 是在 {@link Activity#startActivity(Intent)} 之前调用的.
+     * 和 {@link Activity#startActivity(Intent)} 是连着执行的.
+     */
     @Nullable
-    public final Action afterJumpAction;
+    public final Action beforStartAction;
 
+    /**
+     * 这个 {@link Action} 是在 {@link Activity#startActivity(Intent)} 之后调用的.
+     * 和 {@link Activity#startActivity(Intent)} 是连着执行的.
+     */
+    @Nullable
+    public final Action afterStartAction;
+
+    /**
+     * 这个 {@link Action} 是在结束之后调用的.
+     * 和 {@link Activity#startActivity(Intent)} 不是连着执行的.
+     * 是在 {@link RouterInterceptor.Callback#onSuccess(RouterResult)}
+     * 方法中 post 到主线程完成的
+     */
+    @Nullable
+    public final Action afterAction;
+
+    /**
+     * 这个 {@link Action} 是在结束之后调用的.
+     * 和 {@link Activity#startActivity(Intent)} 不是连着执行的.
+     * 是在 {@link RouterInterceptor.Callback#onError(Throwable)}
+     * 方法中 post 到主线程完成的
+     */
     @Nullable
     public final Action afterErrorAction;
 
+    /**
+     * 这个 {@link Action} 是在结束之后调用的.
+     * 和 {@link Activity#startActivity(Intent)} 不是连着执行的.
+     * 是在 {@link RouterInterceptor.Callback#onSuccess(RouterResult)} 或者
+     * {@link RouterInterceptor.Callback#onError(Throwable)}
+     * 方法中 post 到主线程完成的
+     */
     @Nullable
     public final Action afterEventAction;
 
@@ -249,8 +287,10 @@ public class RouterRequest {
         builder.intentFlags = new ArrayList<>(intentFlags);
 
         builder.intentConsumer = intentConsumer;
-        builder.beforJumpAction = beforJumpAction;
-        builder.afterJumpAction = afterJumpAction;
+        builder.beforAction = beforAction;
+        builder.beforStartAction = beforStartAction;
+        builder.afterStartAction = afterStartAction;
+        builder.afterAction = afterAction;
         builder.afterErrorAction = afterErrorAction;
         builder.afterEventAction = afterEventAction;
         return builder;
@@ -270,8 +310,10 @@ public class RouterRequest {
             this.bundle.putAll(builder.bundle);
         }
         intentConsumer = builder.intentConsumer;
-        beforJumpAction = builder.beforJumpAction;
-        afterJumpAction = builder.afterJumpAction;
+        beforAction = builder.beforAction;
+        beforStartAction = builder.beforStartAction;
+        afterStartAction = builder.afterStartAction;
+        afterAction = builder.afterAction;
         afterErrorAction = builder.afterErrorAction;
         afterEventAction = builder.afterEventAction;
     }
@@ -322,7 +364,13 @@ public class RouterRequest {
          * 跳转前的 Callback
          */
         @Nullable
-        protected Action beforJumpAction;
+        protected Action beforAction;
+
+        @Nullable
+        protected Action beforStartAction;
+
+        @Nullable
+        protected Action afterStartAction;
 
         /**
          * 跳转成功之后的 Callback
@@ -331,7 +379,7 @@ public class RouterRequest {
          * 当你拿到 Intent 的回调了, 和此回调已经没关系了
          */
         @Nullable
-        protected Action afterJumpAction;
+        protected Action afterAction;
 
         /**
          * 跳转失败之后的 Callback
@@ -355,13 +403,23 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder beforJumpAction(@Nullable @MainThread Action action) {
-            this.beforJumpAction = action;
+        public Builder beforAction(@Nullable @MainThread Action action) {
+            this.beforAction = action;
             return this;
         }
 
-        public Builder afterJumpAction(@Nullable @MainThread Action action) {
-            this.afterJumpAction = action;
+        public Builder beforStartAction(@Nullable @MainThread Action action) {
+            this.beforStartAction = action;
+            return this;
+        }
+
+        public Builder afterStartAction(@Nullable @MainThread Action action) {
+            this.afterStartAction = action;
+            return this;
+        }
+
+        public Builder afterAction(@Nullable @MainThread Action action) {
+            this.afterAction = action;
             return this;
         }
 

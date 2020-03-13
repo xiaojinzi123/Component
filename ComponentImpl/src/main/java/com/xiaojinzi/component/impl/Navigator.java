@@ -211,14 +211,26 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator beforJumpAction(@Nullable @MainThread Action action) {
-        super.beforJumpAction(action);
+    public Navigator beforAction(@Nullable @MainThread Action action) {
+        super.beforAction(action);
         return this;
     }
 
     @Override
-    public Navigator afterJumpAction(@Nullable @MainThread Action action) {
-        super.afterJumpAction(action);
+    public Navigator beforStartAction(@Nullable Action action) {
+        super.beforStartAction(action);
+        return this;
+    }
+
+    @Override
+    public Navigator afterStartAction(@Nullable Action action) {
+        super.afterStartAction(action);
+        return this;
+    }
+
+    @Override
+    public Navigator afterAction(@Nullable @MainThread Action action) {
+        super.afterAction(action);
         return this;
     }
 
@@ -814,8 +826,10 @@ public class Navigator extends RouterRequest.Builder implements Call {
             queryMap = null;
             bundle = null;
             intentConsumer = null;
-            beforJumpAction = null;
-            afterJumpAction = null;
+            beforAction = null;
+            beforStartAction = null;
+            afterStartAction = null;
+            afterAction = null;
             afterErrorAction = null;
             afterEventAction = null;
         }
@@ -976,7 +990,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
             @Override
             public void intercept(Chain chain) throws Exception {
                 // 执行跳转前的 Callback
-                RouterRequestHelp.executeBeforCallback(chain.request());
+                RouterRequestHelp.executeBeforAction(chain.request());
                 // 继续下一个拦截器
                 chain.proceed(chain.request());
             }

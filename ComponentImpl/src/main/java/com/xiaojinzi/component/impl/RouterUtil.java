@@ -85,7 +85,7 @@ class RouterUtil {
         // 执行 Request 中 的 errorCallback
         if (errorResult.getOriginalRequest() != null) {
             try {
-                RouterRequestHelp.executeAfterErrorCallback(errorResult.getOriginalRequest());
+                RouterRequestHelp.executeAfterErrorAction(errorResult.getOriginalRequest());
             } catch (Exception e) {
                 throw new RouterRuntimeException("afterErrorCallback or afterEventCallback can't throw any exception!", e);
             }
@@ -122,7 +122,7 @@ class RouterUtil {
         }
         // 执行 Request 中 的 afterCallback
         try {
-            RouterRequestHelp.executeAfterJumpCallback(result.getOriginalRequest());
+            RouterRequestHelp.executeAfterAction(result.getOriginalRequest());
         } catch (Exception e) {
             throw new RouterRuntimeException("afterJumpCallback or afterEventCallback can't throw any exception!", e);
         }
