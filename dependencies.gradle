@@ -8,7 +8,7 @@ ext.versions = [
         support_lib                    : "28.0.0",
         // 第三方控件的版本号
         constraintLayout               : '2.0.0-beta4',
-        rxjava                         : '2.2.18',
+        rxjava                         : '2.2.19',
         rxandroid                      : "2.1.1",
         component_version              : "1.8.1",
         component_plugin_upload_version: "1.8.1"
