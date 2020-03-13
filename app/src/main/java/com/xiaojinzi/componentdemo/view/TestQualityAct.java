@@ -255,7 +255,7 @@ public class TestQualityAct extends BaseAct implements TestContext {
                 .path(ModuleConfig.Module1.TEST_AUTORETURN1)
                 .requestCodeRandom()
                 .putString("data", "crashOnAfterJumpAction")
-                .afterJumpAction(() -> {
+                .afterAction(() -> {
                     throw new NullPointerException("test exception on afterJumpAction");
                 })
                 .activityResultCall()

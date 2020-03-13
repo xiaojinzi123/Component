@@ -182,8 +182,36 @@ public class RouterCenter implements IComponentCenterRouter {
             );
         }
 
+        if (request.beforStartAction != null) {
+            request.beforStartAction.run();
+        }
+
+        // ------------------------------- 启动界面核心代码 ------------------------------- START
+
         // 如果是普通的启动界面
-        if (request.requestCode == null) { // 如果是 startActivity
+        if (request.isForResult) { // 如果是 startActivity
+            // 使用 context 跳转 startActivityForResult
+            if (request.context != null) {
+                Fragment rxFragment = findFragment(request.context);
+                Activity rawAct = null;
+                if (rxFragment != null) {
+                    rxFragment.startActivityForResult(intent, request.requestCode, request.options);
+                } else if ((rawAct = Utils.getActivityFromContext(request.context)) != null) {
+                    rawAct.startActivityForResult(intent, request.requestCode, request.options);
+                } else {
+                    throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
+                }
+            } else if (request.fragment != null) { // 使用 Fragment 跳转
+                Fragment rxFragment = findFragment(request.fragment);
+                if (rxFragment != null) {
+                    rxFragment.startActivityForResult(intent, request.requestCode, request.options);
+                } else {
+                    request.fragment.startActivityForResult(intent, request.requestCode, request.options);
+                }
+            } else {
+                throw new NavigationFailException("the context or fragment both are null");
+            }
+        }else {
             if (request.context != null) {
                 request.context.startActivity(intent, request.options);
             } else if (request.fragment != null) {
@@ -191,32 +219,14 @@ public class RouterCenter implements IComponentCenterRouter {
             } else {
                 throw new NavigationFailException("the context or fragment both are null");
             }
-            return;
         }
 
-        // 使用 context 跳转 startActivityForResult
-        if (request.context != null) {
-            Fragment rxFragment = findFragment(request.context);
-            boolean isUseRxFragment = rxFragment != null && request.isForResult;
-            Activity rawAct = null;
-            if (isUseRxFragment) {
-                rxFragment.startActivityForResult(intent, request.requestCode, request.options);
-            } else if ((rawAct = Utils.getActivityFromContext(request.context)) != null) {
-                rawAct.startActivityForResult(intent, request.requestCode, request.options);
-            } else {
-                throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
-            }
-        } else if (request.fragment != null) { // 使用 Fragment 跳转
-            Fragment rxFragment = findFragment(request.fragment);
-            boolean isUseRxFragment = rxFragment != null && request.isForResult;
-            if (isUseRxFragment) {
-                rxFragment.startActivityForResult(intent, request.requestCode, request.options);
-            } else {
-                request.fragment.startActivityForResult(intent, request.requestCode, request.options);
-            }
-        } else {
-            throw new NavigationFailException("the context or fragment both are null");
+        // ------------------------------- 启动界面核心代码 ------------------------------- END
+
+        if (request.afterStartAction != null) {
+            request.afterStartAction.run();
         }
+
     }
 
     @NonNull

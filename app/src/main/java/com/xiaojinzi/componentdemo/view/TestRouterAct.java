@@ -571,8 +571,8 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .putString("tel", "17321174171")
-                .beforJumpAction(() -> Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show())
-                .afterJumpAction(() -> Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show())
+                .beforAction(() -> Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show())
+                .afterAction(() -> Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show())
                 .forward(new CallbackAdapter() {
                     @Override
                     public void onEvent(@Nullable RouterResult result, @Nullable RouterErrorResult errorResult) {

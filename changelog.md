@@ -1,4 +1,12 @@
 
+#### [v1.8.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.1)
+
+- beforJumpAction 全部更名为 beforAction
+- afterJumpAction 全部更名为 afterAction
+- 增加 beforStartAction, 此 Action 和 startActivity 方法是仅仅连着的代码
+- 增加 afterStartAction, 此 Action 和 startActivity 方法是仅仅连着的代码
+  - 可用来转场动画
+
 #### [v1.8.0.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.0.2)
 
 - 对路由 `Fragment` 支持了常用的 `putXXX` 方法

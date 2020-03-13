@@ -12,7 +12,9 @@ import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.router.AfterActionAnno;
 import com.xiaojinzi.component.anno.router.AfterErrorActionAnno;
 import com.xiaojinzi.component.anno.router.AfterEventActionAnno;
+import com.xiaojinzi.component.anno.router.AfterStartActionAnno;
 import com.xiaojinzi.component.anno.router.BeforActionAnno;
+import com.xiaojinzi.component.anno.router.BeforStartActionAnno;
 import com.xiaojinzi.component.anno.router.CategoryAnno;
 import com.xiaojinzi.component.anno.router.FlagAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
@@ -262,6 +264,8 @@ public class RouterApiProcessor extends BaseProcessor {
         VariableElement activityBundleOptionsParameter = null;
         VariableElement intentConsumerParameter = null;
         VariableElement beforActionParameter = null;
+        VariableElement beforStartActionParameter = null;
+        VariableElement afterStartActionParameter = null;
         VariableElement afterActionParameter = null;
         VariableElement afterErrorActionParameter = null;
         VariableElement afterEventActionParameter = null;
@@ -288,6 +292,10 @@ public class RouterApiProcessor extends BaseProcessor {
                 intentConsumerParameter = parameter;
             } else if (parameter.getAnnotation(BeforActionAnno.class) != null) { // 如果是 beforAction
                 beforActionParameter = parameter;
+            } else if (parameter.getAnnotation(BeforStartActionAnno.class) != null) { // 如果是 beforStartAction
+                beforStartActionParameter = parameter;
+            } else if (parameter.getAnnotation(AfterStartActionAnno.class) != null) { // 如果是 afterStartAction
+                afterStartActionParameter = parameter;
             } else if (parameter.getAnnotation(AfterActionAnno.class) != null) { // 如果是 afterAction
                 afterActionParameter = parameter;
             } else if (parameter.getAnnotation(AfterErrorActionAnno.class) != null) { // 如果是 afterErrorAction
@@ -616,11 +624,19 @@ public class RouterApiProcessor extends BaseProcessor {
 
         // 几个 action
         if (beforActionParameter != null) {
-            routerStatement.append("\n.beforJumpAction($N)");
+            routerStatement.append("\n.beforAction($N)");
             args.add(beforActionParameter.getSimpleName().toString());
         }
+        if (beforStartActionParameter != null) {
+            routerStatement.append("\n.beforStartAction($N)");
+            args.add(beforStartActionParameter.getSimpleName().toString());
+        }
+        if (afterStartActionParameter != null) {
+            routerStatement.append("\n.afterStartAction($N)");
+            args.add(afterStartActionParameter.getSimpleName().toString());
+        }
         if (afterActionParameter != null) {
-            routerStatement.append("\n.afterJumpAction($N)");
+            routerStatement.append("\n.afterAction($N)");
             args.add(afterActionParameter.getSimpleName().toString());
         }
         if (afterErrorActionParameter != null) {
