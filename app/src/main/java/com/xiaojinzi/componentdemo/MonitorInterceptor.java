@@ -4,8 +4,9 @@ import android.util.Log;
 
 import com.xiaojinzi.component.anno.ConditionalAnno;
 import com.xiaojinzi.component.anno.GlobalInterceptorAnno;
-import com.xiaojinzi.component.support.Condition;
 import com.xiaojinzi.component.impl.RouterInterceptor;
+import com.xiaojinzi.component.impl.RouterRequest;
+import com.xiaojinzi.component.support.Condition;
 
 /**
  * 全局的一个监测的拦截器
@@ -20,9 +21,15 @@ public class MonitorInterceptor implements RouterInterceptor {
 
     @Override
     public void intercept(Chain chain) throws Exception {
-        String uriStr = chain.request().uri.toString();
+        RouterRequest request = chain.request();
+        /*if (request.uri.getQueryParameter("tel") != null) {
+            request = request.toBuilder()
+                    .query("tel", "15857913622")
+                    .build();
+        }*/
+        String uriStr = request.uri.toString();
         Log.d("全局监控的拦截器", "uri = " + uriStr);
-        chain.proceed(chain.request());
+        chain.proceed(request);
     }
 
     public static class OnCondition implements Condition {

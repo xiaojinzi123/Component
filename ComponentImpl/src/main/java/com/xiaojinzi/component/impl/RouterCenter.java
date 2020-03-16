@@ -25,7 +25,6 @@ import com.xiaojinzi.component.router.IComponentCenterRouter;
 import com.xiaojinzi.component.router.IComponentHostRouter;
 import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.LogUtil;
-import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
 import com.xiaojinzi.component.support.Utils;
 
@@ -152,16 +151,10 @@ public class RouterCenter implements IComponentCenterRouter {
      * @param intent  Intent
      */
     @MainThread
-    private void doStartIntent(@NonNull RouterRequest request, Intent intent) throws Exception {
+    private void doStartIntent(@NonNull RouterRequest request,
+                               Intent intent) throws Exception {
         // 前置工作
 
-        // 转化 query 到 bundle,这句话不能随便放
-        // 因为这句话之前是因为拦截器可以修改 routerRequest 对象中的参数或者整个对象
-        // 所以直接当所有拦截器都执行完毕的时候,在确定要跳转了
-        // 这个 query 参数可以往 bundle 里面存了
-        ParameterSupport.putQueryBundleToBundle(request.bundle, request.uri);
-        ParameterSupport.putUriStringToBundle(request.bundle, request.uri);
-        // 然后把 Uri 塞进一个特殊的 key 中
         intent.putExtras(request.bundle);
         // 把用户的 flags 和 categories 都设置进来
         for (String intentCategory : request.intentCategories) {
