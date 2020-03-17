@@ -1169,9 +1169,10 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
-     * 实现拦截器列表中的最后一环,内部去执行了跳转的代码
+     * 这是拦截器的最后一个拦截器了
+     * 实现拦截器列表中的最后一环, 内部去执行了跳转的代码
      * 1.如果跳转的时候没有发生异常, 说明可以跳转过去
-     * 如果失败需要继续链接下一个拦截器
+     * 如果失败了进行降级处理
      */
     private static class DoActivityStartInterceptor implements RouterInterceptor {
 
@@ -1214,7 +1215,10 @@ public class Navigator extends RouterRequest.Builder implements Call {
                         throw new NavigationFailException("degrade route fail, it's url is " + mOriginalRequest.uri.toString());
                     }
                     // 降级跳转
-                    RouterCenter.getInstance().routerDegrade(finalRequest, routerDegrade.onDegrade(finalRequest));
+                    RouterCenter.getInstance().routerDegrade(
+                            finalRequest,
+                            routerDegrade.onDegrade(finalRequest)
+                    );
                     // 成功的回调
                     chain.callback().onSuccess(new RouterResult(mOriginalRequest, finalRequest));
                 } catch (Exception ignore) {
@@ -1346,6 +1350,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
                                     request, callback);
                             // current Interceptor
                             RouterInterceptor interceptor = mInterceptors.get(mIndex);
+                            // 提前同步 Query 到 Bundle
+                            next.request().syncUriToBundle();
                             // 用户自定义的部分,必须在主线程
                             interceptor.intercept(next);
                         }

@@ -1,10 +1,15 @@
 
+#### [v1.8.1.1(待发布)](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.1.1)
+
+- 修复之前更新版本出现的 `Uri` 中的 `Query` 同步到 `Bundle` 中的问题
+  - 之前版本表现为拦截器中没法从 `Bundle` 中获取到 `Query` 中的参数
+
 #### [v1.8.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.1)
 
 - beforJumpAction 全部更名为 beforAction
 - afterJumpAction 全部更名为 afterAction
-- 增加 beforStartAction, 此 Action 和 startActivity 方法是仅仅连着的代码
-- 增加 afterStartAction, 此 Action 和 startActivity 方法是仅仅连着的代码
+- 增加 beforStartAction, 此 Action 和 startActivity 方法是紧紧连着的代码
+- 增加 afterStartAction, 此 Action 和 startActivity 方法是紧紧连着的代码
   - 可用来转场动画
 
 #### [v1.8.0.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.0.2)
