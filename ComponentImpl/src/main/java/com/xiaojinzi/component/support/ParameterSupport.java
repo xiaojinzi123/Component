@@ -12,7 +12,6 @@ import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -66,7 +65,7 @@ public class ParameterSupport {
     public static final String KEY_URI_QUERY_BUNDLE = "_componentQueryBundle";
     public static final String KEY_URI = "_componentRouterUri";
 
-    public static void putQueryBundleToBundle(@NonNull Bundle bundle, @NonNull Uri uri) {
+    public static void syncUriToBundle(@NonNull Uri uri, @NonNull Bundle bundle) {
         Bundle routerParameterBundle = new Bundle();
         Set<String> queryParameterNames = uri.getQueryParameterNames();
         if (queryParameterNames != null) {
@@ -76,9 +75,6 @@ public class ParameterSupport {
             }
         }
         bundle.putBundle(KEY_URI_QUERY_BUNDLE, routerParameterBundle);
-    }
-
-    public static void putUriStringToBundle(@NonNull Bundle bundle, @NonNull Uri uri) {
         bundle.putString(KEY_URI, uri.toString());
     }
 
@@ -1460,26 +1456,26 @@ public class ParameterSupport {
     }
 
     @Nullable
-    public static <T extends  Serializable> T getSerializable(@NonNull Intent intent,
-                                                         @NonNull String key) {
+    public static <T extends Serializable> T getSerializable(@NonNull Intent intent,
+                                                             @NonNull String key) {
         return getSerializable(intent, key, null);
     }
 
     @Nullable
-    public static <T extends  Serializable> T getSerializable(@NonNull Intent intent,
-                                                         @NonNull String key,
-                                                         @Nullable T defaultValue) {
+    public static <T extends Serializable> T getSerializable(@NonNull Intent intent,
+                                                             @NonNull String key,
+                                                             @Nullable T defaultValue) {
         return getSerializable(intent.getExtras(), key, defaultValue);
     }
 
     @Nullable
-    public static <T extends  Serializable> T getSerializable(@Nullable Bundle bundle,
-                                                         @NonNull String key) {
+    public static <T extends Serializable> T getSerializable(@Nullable Bundle bundle,
+                                                             @NonNull String key) {
         return getSerializable(bundle, key, null);
     }
 
     @Nullable
-    public static <T extends  Serializable> T getSerializable(@Nullable Bundle bundle,
+    public static <T extends Serializable> T getSerializable(@Nullable Bundle bundle,
                                                              @NonNull String key,
                                                              @Nullable T defaultValue) {
         if (bundle == null) {

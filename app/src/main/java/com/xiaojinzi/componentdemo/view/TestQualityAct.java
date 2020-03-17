@@ -77,7 +77,6 @@ public class TestQualityAct extends BaseAct implements TestContext {
 
     @Override
     public void log(@NonNull String msg) {
-
     }
 
     private void testFailure() {

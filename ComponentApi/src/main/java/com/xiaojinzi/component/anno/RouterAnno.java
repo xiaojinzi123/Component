@@ -27,15 +27,11 @@ public @interface RouterAnno {
 
     /**
      * 定义host
-     *
-     * @return
      */
     String host() default "";
 
     /**
      * 路径
-     *
-     * @return
      */
     String path() default "";
 

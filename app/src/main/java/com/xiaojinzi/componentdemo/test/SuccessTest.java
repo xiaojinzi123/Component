@@ -430,10 +430,8 @@ public class SuccessTest implements TestExecutor {
     }
 
     private Completable testPassQuery() {
-        return mTestContext.testWrap(new TestContext.TestBack() {
-            @Override
-            public void run(CompletableEmitter emitter) {
-                RxRouter
+        return mTestContext.testWrap(
+                emitter -> RxRouter
                         .with(mTestContext.context())
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_QUERY)
@@ -442,19 +440,29 @@ public class SuccessTest implements TestExecutor {
                         .query("isReturnAuto", true)
                         .requestCodeRandom()
                         .resultCodeMatchCall(Activity.RESULT_OK)
-                        .subscribe(new Action() {
-                            @Override
-                            public void run() throws Exception {
-                                emitter.onComplete();
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                emitter.onError(throwable);
-                            }
-                        });
-            }
-        });
+                        .subscribe(
+                                () -> emitter.onComplete(),
+                                throwable -> emitter.onError(throwable)
+                        )
+        );
+    }
+
+    private Completable testPassQuery1() {
+        return mTestContext.testWrap(
+                emitter -> RxRouter
+                        .with(mTestContext.context())
+                        .host(ModuleConfig.Module1.NAME)
+                        .path(ModuleConfig.Module1.TEST_QUERY)
+                        .query("name", "testName")
+                        .query("pass", "testPass")
+                        .query("isReturnAuto", true)
+                        .requestCodeRandom()
+                        .resultCodeMatchCall(Activity.RESULT_OK)
+                        .subscribe(
+                                () -> emitter.onComplete(),
+                                throwable -> emitter.onError(throwable)
+                        )
+        );
     }
 
     private Completable testModifyByInterceptor() {

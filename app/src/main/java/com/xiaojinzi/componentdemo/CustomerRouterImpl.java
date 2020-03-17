@@ -25,9 +25,6 @@ public class CustomerRouterImpl {
 
     /**
      * 自定义实现跳转到打电话的界面,并且自动完成打电话权限的申请
-     *
-     * @param request
-     * @return
      */
     @Nullable
     @RouterAnno(

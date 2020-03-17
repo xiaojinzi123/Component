@@ -20,6 +20,7 @@ import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.Consumer;
+import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.component.support.Utils;
 
 import java.io.Serializable;
@@ -43,6 +44,8 @@ import java.util.Set;
  */
 @CheckClassNameAnno
 public class RouterRequest {
+
+    public static final String KEY_SYNC_URI = "_componentSyncUri";
 
     @Nullable
     public final Context context;
@@ -145,6 +148,41 @@ public class RouterRequest {
      */
     @Nullable
     public final Action afterEventAction;
+
+    private RouterRequest(@NonNull Builder builder) {
+        this.uri = builder.buildURI();
+        context = builder.context;
+        fragment = builder.fragment;
+        requestCode = builder.requestCode;
+        isForResult = builder.isForResult;
+        options = builder.options;
+        // 这两个集合是不可以更改的
+        intentCategories = Collections.unmodifiableList(builder.intentCategories);
+        intentFlags = Collections.unmodifiableList(builder.intentFlags);
+        if (builder.bundle != null) {
+            this.bundle.putAll(builder.bundle);
+        }
+        intentConsumer = builder.intentConsumer;
+        beforAction = builder.beforAction;
+        beforStartAction = builder.beforStartAction;
+        afterStartAction = builder.afterStartAction;
+        afterAction = builder.afterAction;
+        afterErrorAction = builder.afterErrorAction;
+        afterEventAction = builder.afterEventAction;
+    }
+
+    /**
+     * 同步 Query 到 Bundle 中
+     */
+    public void syncUriToBundle() {
+        // 如果 URI 没有变化就不同步了
+        if (bundle.getInt(KEY_SYNC_URI) == uri.hashCode()) {
+            return;
+        }
+        ParameterSupport.syncUriToBundle(uri, bundle);
+        // 更新新的 hashCode
+        bundle.putInt(KEY_SYNC_URI, uri.hashCode());
+    }
 
     /**
      * 从 {@link Fragment} 和 {@link Context} 中获取上下文
@@ -294,28 +332,6 @@ public class RouterRequest {
         builder.afterErrorAction = afterErrorAction;
         builder.afterEventAction = afterEventAction;
         return builder;
-    }
-
-    private RouterRequest(@NonNull Builder builder) {
-        this.uri = builder.buildURI();
-        context = builder.context;
-        fragment = builder.fragment;
-        requestCode = builder.requestCode;
-        isForResult = builder.isForResult;
-        options = builder.options;
-        // 这两个集合是不可以更改的
-        intentCategories = Collections.unmodifiableList(builder.intentCategories);
-        intentFlags = Collections.unmodifiableList(builder.intentFlags);
-        if (builder.bundle != null) {
-            this.bundle.putAll(builder.bundle);
-        }
-        intentConsumer = builder.intentConsumer;
-        beforAction = builder.beforAction;
-        beforStartAction = builder.beforStartAction;
-        afterStartAction = builder.afterStartAction;
-        afterAction = builder.afterAction;
-        afterErrorAction = builder.afterErrorAction;
-        afterEventAction = builder.afterEventAction;
     }
 
     /**
