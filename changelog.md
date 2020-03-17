@@ -1,5 +1,5 @@
 
-#### [v1.8.2(待发布)](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2)
+#### [v1.8.1.1(待发布)](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.1.1)
 
 - 修复之前更新版本出现的 `Uri` 中的 `Query` 同步到 `Bundle` 中的问题
   - 之前版本表现为拦截器中没法从 `Bundle` 中获取到 `Query` 中的参数
