@@ -48,11 +48,14 @@ public class Component {
      */
     @MainThread
     public static void init(boolean isDebug, @NonNull Config config) {
+
+        // 做必要的检查
         if (isInit) {
             throw new RuntimeException("you have init Component already!");
         }
         Utils.checkMainThread();
         Utils.checkNullPointer(config, "config");
+
         Component.isDebug = isDebug;
         mConfig = config;
         // 注册
@@ -61,6 +64,13 @@ public class Component {
             ModuleManager.getInstance().autoRegister();
         }
         isInit = true;
+        if (isDebug) {
+            LogUtil.logw(
+                    " \n 感谢您选择 Component 组件化框架. " +
+                            "Github 地址是：https://github.com/xiaojinzi123/Component"
+            );
+        }
+
     }
 
     @NonNull
