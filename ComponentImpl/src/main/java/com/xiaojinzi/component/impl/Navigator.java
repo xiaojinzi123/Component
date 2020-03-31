@@ -892,7 +892,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 findRxFragment = new RouterFragment();
                 fm.beginTransaction()
                         .add(findRxFragment, ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG)
-                        .commitAllowingStateLoss();
+                        // 这里必须使用 now 的形式, 否则连续的话立马就会new出来. 因为判断进来了
+                        .commitNowAllowingStateLoss();
             }
             final RouterFragment rxFragment = findRxFragment;
             // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
@@ -934,9 +935,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 }
 
             });
-            // 现在可以检测 requestCode 是否重复,除了 RxRouter 之外的地方使用同一个 requestCode 是可以的
-            // 因为 RxRouter 的 requestCode 是直接配合 RouterFragment 使用的
-            // 其他地方是用不到 RouterFragment,所以可以重复
+            // 现在可以检测 requestCode 是否重复
             boolean isExist = Help.isExist(finalNavigationDisposable.originalRequest());
             if (isExist) { // 如果存在直接返回错误给 callback
                 throw new NavigationFailException("request&result code is " +
@@ -946,7 +945,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
             }
             return finalNavigationDisposable;
         } catch (Exception e) {
-            // biCallbackWrap.onError(new RouterErrorResult(finalNavigationDisposable.originalRequest(), e));
             if (finalNavigationDisposable == null) {
                 RouterUtil.errorCallback(null, biCallbackWrap, new RouterErrorResult(e));
                 // 就只会打印出一个错误信息: 路由失败信息
@@ -954,7 +952,13 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 // 取消这个路由, 此时其实会输出两个信息
                 // 第一个是打印出路由失败的信息
                 // 第二个是路由被取消的信息
-                RouterUtil.errorCallback(null, biCallbackWrap, new RouterErrorResult(finalNavigationDisposable.originalRequest(), e));
+                // 因为上面路由发起了才能有 RouterRequest 对象, 然后这里检查到 requestCode 重复了
+                // 回调给用户的是 requestCode 重复的错误, 但是上面发起的路由还是得取消的. 不然就跳过去了
+                RouterUtil.errorCallback(
+                        null, biCallbackWrap,
+                        new RouterErrorResult(finalNavigationDisposable.originalRequest(), e)
+                );
+                // 取消上面执行的路由
                 finalNavigationDisposable.cancel();
             }
             finalNavigationDisposable = null;
@@ -1081,8 +1085,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
         /**
          * 标记这次路由请求是否完毕
-         *
-         * @return
          */
         public boolean isEnd() {
             return isComplete || isCanceled;

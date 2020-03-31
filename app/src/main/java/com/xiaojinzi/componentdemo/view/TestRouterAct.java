@@ -486,17 +486,10 @@ public class TestRouterAct extends BaseAct {
                 .requestCode(123)
                 .putString("data", "testUseRequestCodeTiwce1")
                 .resultCodeMatchCall(RESULT_OK)
-                .subscribe(new Action() {
-                    @Override
-                    public void run() {
-                        addInfo("从" + ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK");
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        addInfo("错误信息：" + throwable.getMessage());
-                    }
-                });
+                .subscribe(
+                        () -> addInfo("从" + ModuleConfig.Module1.NAME + "/" + ModuleConfig.Module1.TEST + "界面返回了,并且成功匹配 resultCode = Activity.RESULT_OK"),
+                        throwable -> addInfo("错误信息：" + throwable.getMessage())
+                );
 
         RxRouter
                 .with(this)

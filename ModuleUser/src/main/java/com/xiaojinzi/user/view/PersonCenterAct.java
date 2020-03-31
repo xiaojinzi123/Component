@@ -12,7 +12,7 @@ import com.xiaojinzi.user.R;
 
 @RouterAnno(
         path = ModuleConfig.User.PERSON_CENTER,
-        interceptorNames = {InterceptorConfig.USER_LOGIN, InterceptorConfig.HELP_CAMERAPERMISION},
+        interceptorNames = {InterceptorConfig.USER_LOGIN},
         // interceptorNamePriorities = {2, 1},
         // interceptors = PersonCenterAct.TestInterceptor.class,
         // interceptorPriorities = {1},

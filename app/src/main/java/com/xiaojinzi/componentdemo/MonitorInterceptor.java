@@ -1,7 +1,5 @@
 package com.xiaojinzi.componentdemo;
 
-import android.util.Log;
-
 import com.xiaojinzi.component.anno.ConditionalAnno;
 import com.xiaojinzi.component.anno.GlobalInterceptorAnno;
 import com.xiaojinzi.component.impl.RouterInterceptor;
@@ -28,7 +26,7 @@ public class MonitorInterceptor implements RouterInterceptor {
                     .build();
         }*/
         String uriStr = request.uri.toString();
-        Log.d("全局监控的拦截器", "uri = " + uriStr);
+        // Log.d("全局监控的拦截器", "uri = " + uriStr);
         chain.proceed(request);
     }
 
