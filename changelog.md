@@ -1,5 +1,5 @@
 
-#### [v1.8.1.2(待发布)](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.1.2)
+#### [v1.8.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2)
 
 - 增加 Androidx 配置和 非Androidx 选择错误的时候的提示
 - 当页面拦截器更改 `Uri` 的 `host` 和 `path` 这部分信息之后重新加载新的目标的页面拦截器
