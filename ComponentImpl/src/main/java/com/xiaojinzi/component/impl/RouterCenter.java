@@ -21,6 +21,7 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
+import com.xiaojinzi.component.bean.PageInterceptorBean;
 import com.xiaojinzi.component.bean.RouterBean;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
 import com.xiaojinzi.component.error.ignore.NavigationFailException;
@@ -35,6 +36,7 @@ import com.xiaojinzi.component.support.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -87,6 +89,16 @@ public class RouterCenter implements IComponentCenterRouter {
      * 保存映射关系的map集合,是一个总路由表
      */
     protected final Map<String, RouterBean> routerMap = new HashMap<>();
+
+    @Override
+    public synchronized boolean isMatchUri(@NonNull Uri uri) {
+        return getTarget(uri) != null;
+    }
+
+    @Override
+    public boolean isSameTarget(@NonNull Uri uri1, @NonNull Uri uri2) {
+        return getTargetRouterKey(uri1).equals(getTargetRouterKey(uri2));
+    }
 
     @Override
     @MainThread
@@ -236,27 +248,43 @@ public class RouterCenter implements IComponentCenterRouter {
         if (routerBean == null) {
             return Collections.emptyList();
         }
-        final List<Class<? extends RouterInterceptor>> targetInterceptors = routerBean.getInterceptors();
-        final List<String> targetInterceptorNames = routerBean.getInterceptorNames();
+
         // 如果没有拦截器直接返回 null
-        if (targetInterceptors.isEmpty() && targetInterceptorNames.isEmpty()) {
+        if (routerBean.getPageInterceptors().isEmpty()) {
             return Collections.emptyList();
         }
-        final List<RouterInterceptor> result = new ArrayList<>();
-        for (Class<? extends RouterInterceptor> interceptorClass : targetInterceptors) {
-            final RouterInterceptor interceptor = RouterInterceptorCache.getInterceptorByClass(interceptorClass);
-            if (interceptor == null) {
-                throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + uri.toString());
+
+        final List<RouterInterceptor> result = new ArrayList<>(routerBean.getPageInterceptors().size());
+
+        // 排个序
+        List<PageInterceptorBean> pageInterceptors = routerBean.getPageInterceptors();
+        Collections.sort(pageInterceptors, new Comparator<PageInterceptorBean>() {
+            @Override
+            public int compare(PageInterceptorBean o1, PageInterceptorBean o2) {
+                return o2.getPriority() - o1.getPriority();
             }
-            result.add(interceptor);
-        }
-        for (String interceptorName : targetInterceptorNames) {
-            final RouterInterceptor interceptor = InterceptorCenter.getInstance().getByName(interceptorName);
-            if (interceptor == null) {
-                throw new InterceptorNotFoundException("can't find the interceptor and it's name is " + interceptorName + ",target url is " + uri.toString());
+        });
+
+        for (PageInterceptorBean pageInterceptorBean : pageInterceptors) {
+            String interceptorName = pageInterceptorBean.getStringInterceptor();
+            Class<? extends RouterInterceptor> interceptorClass = pageInterceptorBean.getClassInterceptor();
+            if (interceptorName != null && !interceptorName.isEmpty()) {
+                final RouterInterceptor interceptor = InterceptorCenter.getInstance().getByName(interceptorName);
+                if (interceptor == null) {
+                    throw new InterceptorNotFoundException("can't find the interceptor and it's name is " + interceptorName + ",target url is " + uri.toString());
+                }
+                result.add(interceptor);
+            } else if (interceptorClass != null) {
+                final RouterInterceptor interceptor = RouterInterceptorCache.getInterceptorByClass(interceptorClass);
+                if (interceptor == null) {
+                    throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + uri.toString());
+                }
+                result.add(interceptor);
+            }else {
+                throw new InterceptorNotFoundException("String interceptor and class interceptor are both null");
             }
-            result.add(interceptor);
         }
+
         return result;
     }
 
@@ -268,9 +296,6 @@ public class RouterCenter implements IComponentCenterRouter {
 
     /**
      * 获取url地址
-     *
-     * @param uri
-     * @return
      */
     @Nullable
     private String getTargetUrl(@NonNull Uri uri) {
@@ -288,17 +313,20 @@ public class RouterCenter implements IComponentCenterRouter {
 
     @Nullable
     private RouterBean getTarget(@NonNull Uri uri) {
+        return routerMap.get(getTargetRouterKey(uri));
+    }
+
+    @NonNull
+    private String getTargetRouterKey(@NonNull Uri uri) {
         // "/component1/test" 不含host
         String targetPath = uri.getPath();
-
         if (targetPath == null || targetPath.isEmpty()) {
             return null;
         }
         if (targetPath.charAt(0) != '/') {
             targetPath = SEPARATOR + targetPath;
         }
-        targetPath = uri.getHost() + targetPath;
-        return routerMap.get(targetPath);
+        return uri.getHost() + targetPath;
     }
 
     /**
@@ -322,11 +350,6 @@ public class RouterCenter implements IComponentCenterRouter {
             result = fragment.getChildFragmentManager().findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
         }
         return result;
-    }
-
-    @Override
-    public synchronized boolean isMatchUri(@NonNull Uri uri) {
-        return getTarget(uri) != null;
     }
 
     @Override
@@ -367,10 +390,6 @@ public class RouterCenter implements IComponentCenterRouter {
 
     /**
      * 根据模块名称寻找子路由对象
-     *
-     * @param host
-     * @return
-     * @hide
      */
     @Nullable
     public IComponentHostRouter findUiRouter(String host) {

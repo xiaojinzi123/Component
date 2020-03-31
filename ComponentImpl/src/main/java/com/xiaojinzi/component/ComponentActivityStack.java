@@ -5,6 +5,8 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.xiaojinzi.component.support.Utils;
+
 import java.util.Stack;
 
 /**
@@ -78,7 +80,27 @@ public class ComponentActivityStack {
      */
     @Nullable
     public synchronized Activity getTopActivity() {
-        return isEmpty() || activityStack.size() < 1 ? null : activityStack.get(activityStack.size() - 1);
+        return isEmpty() ? null : activityStack.get(activityStack.size() - 1);
+    }
+
+    /**
+     * 返回顶层的活着的 Activity
+     */
+    @Nullable
+    public synchronized Activity getTopAliveActivity() {
+        Activity result = null;
+        if (!isEmpty()) {
+            int size = activityStack.size();
+            for (int i = size - 1; i >= 0; i--) {
+                Activity activity = activityStack.get(i);
+                // 如果已经销毁, 就下一个
+                if(!Utils.isActivityDestoryed(activity)){
+                    result = activity;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     /**

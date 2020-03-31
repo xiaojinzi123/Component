@@ -15,6 +15,10 @@ public class RouterAnnoBean {
     private String host;
     private String path;
     private String desc;
+
+    private int totalInterceptorSize;
+    private int[] interceptorPriorities;
+    private int[] interceptorNamePriorities;
     // value是实现类的全类名
     private List<String> interceptors = new ArrayList<>(1);
     // 拦截器的一个别名
@@ -44,6 +48,30 @@ public class RouterAnnoBean {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public int getTotalInterceptorSize() {
+        return totalInterceptorSize;
+    }
+
+    public void setTotalInterceptorSize(int totalInterceptorSize) {
+        this.totalInterceptorSize = totalInterceptorSize;
+    }
+
+    public int[] getInterceptorPriorities() {
+        return interceptorPriorities;
+    }
+
+    public void setInterceptorPriorities(int[] interceptorPriorities) {
+        this.interceptorPriorities = interceptorPriorities;
+    }
+
+    public int[] getInterceptorNamePriorities() {
+        return interceptorNamePriorities;
+    }
+
+    public void setInterceptorNamePriorities(int[] interceptorNamePriorities) {
+        this.interceptorNamePriorities = interceptorNamePriorities;
     }
 
     public Element getRawType() {

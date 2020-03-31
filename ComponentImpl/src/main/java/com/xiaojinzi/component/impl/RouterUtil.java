@@ -25,6 +25,8 @@ import com.xiaojinzi.component.support.Utils;
  */
 class RouterUtil {
 
+    private static final String TAG = Router.TAG;
+
     private RouterUtil() {
     }
 
@@ -32,7 +34,8 @@ class RouterUtil {
      * 当请求对象构建出来以后调用的
      */
     @AnyThread
-    public static void cancelCallback(@Nullable final RouterRequest request, @Nullable final OnRouterCancel callback) {
+    public static void cancelCallback(@Nullable final RouterRequest request,
+                                      @Nullable final OnRouterCancel callback) {
         Utils.postActionToMainThreadAnyway(new Runnable() {
             @Override
             public void run() {
@@ -47,9 +50,9 @@ class RouterUtil {
     private static void cancelCallbackOnMainThread(@Nullable RouterRequest request,
                                                    @Nullable final OnRouterCancel callback) {
         if (request == null) {
-            LogUtil.log(Router.TAG, "route canceled, request is null!");
+            LogUtil.log(TAG, "route canceled, request is null!");
         }else {
-            LogUtil.log(Router.TAG, "route canceled：" + request.uri.toString());
+            LogUtil.log(TAG, "route canceled：" + request.uri.toString());
         }
         if (callback == null) {
             return;
@@ -58,7 +61,8 @@ class RouterUtil {
     }
 
     @AnyThread
-    public static void errorCallback(@Nullable final Callback callback, @Nullable final BiCallback biCallback,
+    public static void errorCallback(@Nullable final Callback callback,
+                                     @Nullable final BiCallback biCallback,
                                      @NonNull final RouterErrorResult errorResult) {
         Utils.postActionToMainThreadAnyway(new Runnable() {
             @Override
@@ -70,13 +74,14 @@ class RouterUtil {
     }
 
     @MainThread
-    private static void errorCallbackOnMainThread(@Nullable final Callback callback, @Nullable final BiCallback biCallback,
+    private static void errorCallbackOnMainThread(@Nullable final Callback callback,
+                                                  @Nullable final BiCallback biCallback,
                                                   @NonNull final RouterErrorResult errorResult) {
         Utils.checkNullPointer(errorResult, "errorResult");
         if (errorResult.getOriginalRequest() == null) {
-            LogUtil.log(Router.TAG, "route fail：routerRequest has not been created, errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
+            LogUtil.log(TAG, "route fail：routerRequest has not been created, errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
         } else {
-            LogUtil.log(Router.TAG, "route fail：" + errorResult.getOriginalRequest().uri.toString() + " and errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
+            LogUtil.log(TAG, "route fail：" + errorResult.getOriginalRequest().uri.toString() + " and errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
         }
         // 如果发起了一个路由但是现在已经 GG 了, 那就不执行了回调了
         if (errorResult.getOriginalRequest() != null && isRequestUnavailabled(errorResult.getOriginalRequest())) {
@@ -115,7 +120,7 @@ class RouterUtil {
     private static void successCallbackOnMainThread(@Nullable final Callback callback,
                                                     @NonNull final RouterResult result) {
         Utils.checkNullPointer(result, "result");
-        LogUtil.log(Router.TAG, "route success：" + result.getOriginalRequest().uri.toString());
+        LogUtil.log(TAG, "route success：" + result.getOriginalRequest().uri.toString());
         // 如果请求的界面已经 GG 了
         if (isRequestUnavailabled(result.getOriginalRequest())) {
             return;

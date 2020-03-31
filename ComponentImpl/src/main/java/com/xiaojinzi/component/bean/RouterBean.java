@@ -5,11 +5,9 @@ import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.impl.RouterInterceptor;
-import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.support.CustomerIntentCall;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,25 +27,12 @@ public class RouterBean {
     private String desc;
 
     /**
-     * 这个目标 Activity Class,可能为空,因为可能标记在静态方法上
+     * 这个目标 Activity Class,可能为空, 因为可能标记在静态方法上
      */
     @Nullable
     private Class targetClass;
 
-    /**
-     * 这个目标界面要执行的拦截器
-     */
-    @Nullable
-    private List<Class<? extends RouterInterceptor>> interceptors;
-
-    /**
-     * 这是也是目标界面要执行的拦截器,不过这个是字符串表示的
-     * 更加的跨越模块,但是寻找可能就没有上面的方式来的直接了
-     *
-     * @see InterceptorCenter#getByName(String)
-     */
-    @Nullable
-    private List<String> interceptorNames;
+    private List<PageInterceptorBean> pageInterceptors = new ArrayList<>(4);
 
     /**
      * 用户自定义的 {@link android.content.Intent},
@@ -74,28 +59,12 @@ public class RouterBean {
         this.targetClass = targetClass;
     }
 
-    @NonNull
-    public List<Class<? extends RouterInterceptor>> getInterceptors() {
-        if (interceptors == null) {
-            return Collections.emptyList();
-        }
-        return interceptors;
+    public void setPageInterceptors(List<PageInterceptorBean> pageInterceptors) {
+        this.pageInterceptors = pageInterceptors;
     }
 
-    public void setInterceptors(@Nullable List<Class<? extends RouterInterceptor>> interceptors) {
-        this.interceptors = interceptors;
-    }
-
-    @NonNull
-    public List<String> getInterceptorNames() {
-        if (interceptorNames == null) {
-            return Collections.emptyList();
-        }
-        return interceptorNames;
-    }
-
-    public void setInterceptorNames(@Nullable List<String> interceptorNames) {
-        this.interceptorNames = interceptorNames;
+    public List<PageInterceptorBean> getPageInterceptors() {
+        return pageInterceptors;
     }
 
     @Nullable

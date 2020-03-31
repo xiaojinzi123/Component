@@ -42,6 +42,7 @@ public class ComponentConstants {
     public static final String CLASSCACHE_CLASS_NAME = "com.xiaojinzi.component.cache.ClassCache";
     public static final String CONDITIONCACHE_CLASS_NAME = "com.xiaojinzi.component.support.ConditionCache";
     public static final String ROUTER_BEAN_CLASS_NAME = "com.xiaojinzi.component.bean.RouterBean";
+    public static final String PAGEINTERCEPTOR_BEAN_CLASS_NAME = "com.xiaojinzi.component.bean.PageInterceptorBean";
     public static final String ROUTER_DEGRADE_BEAN_CLASS_NAME = "com.xiaojinzi.component.bean.RouterDegradeBean";
     public static final String CUSTOMER_INTENT_CALL_CLASS_NAME = "com.xiaojinzi.component.support.CustomerIntentCall";
     public static final String FRAGMENT_MANAGER_CALL_CLASS_NAME = "com.xiaojinzi.component.impl.fragment.FragmentManager";

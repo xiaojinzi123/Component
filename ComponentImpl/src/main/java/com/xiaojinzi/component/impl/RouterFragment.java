@@ -29,6 +29,10 @@ import java.util.Set;
  */
 public final class RouterFragment extends Fragment {
 
+    public RouterFragment() {
+        System.out.println("123123");
+    }
+
     @NonNull
     private Map<RouterRequest, Consumer1<ActivityResult>> singleEmitterMap = new HashMap<>();
 

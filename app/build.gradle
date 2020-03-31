@@ -16,8 +16,8 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 // 配置业务模块的模块名称
-                // arguments = ["HOST": "app"]
-                arguments = ["HOST": "app", "RouterDoc": project.property("component_router_doc_folder")]
+                arguments = ["HOST": "app"]
+                // arguments = ["HOST": "app", "RouterDoc": project.property("component_router_doc_folder")]
             }
         }
     }
