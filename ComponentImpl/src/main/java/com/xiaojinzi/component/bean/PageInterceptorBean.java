@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.bean;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.impl.RouterInterceptor;
