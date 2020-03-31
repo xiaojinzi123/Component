@@ -1,14 +1,15 @@
 package com.xiaojinzi.component.help;
 
 import android.Manifest;
+import android.app.Activity;
 
 import com.xiaojinzi.base.InterceptorConfig;
 import com.xiaojinzi.base.util.PermissionsCallback;
 import com.xiaojinzi.base.util.PermissionsUtil;
 import com.xiaojinzi.component.anno.ConditionalAnno;
 import com.xiaojinzi.component.anno.InterceptorAnno;
-import com.xiaojinzi.component.support.Condition;
 import com.xiaojinzi.component.impl.RouterInterceptor;
+import com.xiaojinzi.component.support.Condition;
 
 /**
  * 电话权限申请的拦截器
@@ -22,7 +23,8 @@ public class CallPhoePermisionInterceptor implements RouterInterceptor {
 
     @Override
     public void intercept(final Chain chain) throws Exception {
-        PermissionsUtil.with(chain.request().getRawOrTopActivity())
+        Activity activity = chain.request().getRawOrTopActivity();
+        PermissionsUtil.with(activity)
                 .request(Manifest.permission.CALL_PHONE)
                 .execute(new PermissionsCallback() {
                     @Override

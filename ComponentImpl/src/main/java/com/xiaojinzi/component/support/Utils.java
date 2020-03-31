@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.AnyThread;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -62,6 +63,17 @@ public class Utils {
      */
     public static boolean isMainThread() {
         return Thread.currentThread() == Looper.getMainLooper().getThread();
+    }
+
+    /**
+     * Activity 是否被销毁了
+     */
+    public static boolean isActivityDestoryed(@NonNull Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return activity.isFinishing() || activity.isDestroyed();
+        } else {
+            return activity.isFinishing();
+        }
     }
 
     /**
@@ -236,7 +248,7 @@ public class Utils {
 
     @AnyThread
     @SuppressLint("WrongThread")
-    public static void mainThreadAction(@NonNull final Action action) {
+    public static void mainThreadAction(@NonNull @MainThread final Action action) {
         if (isMainThread()) {
             action.run();
         } else {

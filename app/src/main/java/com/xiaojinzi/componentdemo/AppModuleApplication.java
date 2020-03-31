@@ -16,22 +16,23 @@ import com.xiaojinzi.component.support.Utils;
 @ModuleAppAnno()
 public class AppModuleApplication implements IComponentApplication {
 
-    private final String tag = "自定义实现的路由监听";
+    private final String TAG = "自定义实现的路由监听";
 
     private RouterListener listener = new RouterListener() {
+
         @Override
         public void onSuccess(@NonNull RouterResult successResult) throws Exception {
             RouterRequest originalRequest = successResult.getOriginalRequest();
-            Log.e(tag, "路由成功：" + originalRequest.uri.toString() + ",requestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode));
+            Log.e(TAG, "路由成功：" + originalRequest.uri.toString() + ",requestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode));
         }
 
         @Override
         public void onError(RouterErrorResult errorResult) throws Exception {
             RouterRequest originalRequest = errorResult.getOriginalRequest();
             if (originalRequest == null) {
-                Log.e(tag, "路由失败：errorMsg = " + Utils.getRealMessage(errorResult.getError()));
+                Log.e(TAG, "路由失败：errorMsg = " + Utils.getRealMessage(errorResult.getError()));
             } else {
-                Log.e(tag, "路由失败：" + originalRequest.uri.toString()
+                Log.e(TAG, "路由失败：" + originalRequest.uri.toString()
                         + ",errorMsg = " + Utils.getRealMessage(errorResult.getError())
                         + "\nrequestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode)
                 );
@@ -40,7 +41,7 @@ public class AppModuleApplication implements IComponentApplication {
 
         @Override
         public void onCancel(@NonNull RouterRequest originalRequest) throws Exception {
-            Log.e(tag, "路由被取消：" + originalRequest.uri.toString() + ",requestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode));
+            Log.e(TAG, "路由被取消：" + originalRequest.uri.toString() + ",requestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode));
         }
     };
 

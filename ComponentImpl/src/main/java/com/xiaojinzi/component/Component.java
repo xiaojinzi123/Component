@@ -48,11 +48,14 @@ public class Component {
      */
     @MainThread
     public static void init(boolean isDebug, @NonNull Config config) {
+
+        // 做必要的检查
         if (isInit) {
             throw new RuntimeException("you have init Component already!");
         }
         Utils.checkMainThread();
         Utils.checkNullPointer(config, "config");
+
         Component.isDebug = isDebug;
         mConfig = config;
         // 注册
@@ -61,6 +64,40 @@ public class Component {
             ModuleManager.getInstance().autoRegister();
         }
         isInit = true;
+        if (isDebug) {
+            printComponent();
+        }
+
+    }
+
+    /**
+     * 打印宣传内容和 logo
+     */
+    private static void printComponent() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(" \n");
+
+        // 打印logo C
+
+        sb.append("\n");
+        sb.append("             *********\n");
+        sb.append("          ****        ****\n");
+        sb.append("       ****              ****\n");
+        sb.append("     ****\n");
+        sb.append("    ****\n");
+        sb.append("    ****\n");
+        sb.append("    ****\n");
+        sb.append("     ****\n");
+        sb.append("       ****              ****\n");
+        sb.append("          ****        ****\n");
+        sb.append("             *********\n");
+
+        sb.append("感谢您选择 Component 组件化框架. \n有任何问题欢迎提 issue 或者扫描 github 上的二维码进入群聊@群主\n")
+                .append("Github 地址：https://github.com/xiaojinzi123/Component")
+                .append("\n文档地址：https://github.com/xiaojinzi123/Component/wiki")
+                .append("\n ");
+
+        LogUtil.logw(sb.toString());
     }
 
     @NonNull

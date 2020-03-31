@@ -33,13 +33,6 @@ public class App extends Application {
                         .autoRegisterModule(true)
                         .build()
         );
-        // 装载各个业务组件
-        /*ModuleManager.getInstance().autoRegister();*/
-        /*ModuleManager.getInstance().registerArr(
-                ModuleConfig.App.NAME, ModuleConfig.Module1.NAME,
-                ModuleConfig.Module2.NAME, ModuleConfig.Help.NAME,
-                ModuleConfig.User.NAME, "base"
-        );*/
         long endTime = System.currentTimeMillis();
 
         LogUtil.log("---------------------------------耗时：" + (endTime - startTime));

@@ -53,7 +53,6 @@ public class InterceptorProcessor extends BaseHostProcessor {
     private TypeElement interceptorUtilTypeElement;
     private TypeElement interceptorBeanTypeElement;
     private TypeElement conditionCacheTypeElement;
-    private ClassName nonNullClassName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -62,8 +61,6 @@ public class InterceptorProcessor extends BaseHostProcessor {
         interceptorUtilTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.INTERCEPTOR_UTIL_CLASS_NAME);
         interceptorBeanTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.INTERCEPTOR_BEAN_CLASS_NAME);
         conditionCacheTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.CONDITIONCACHE_CLASS_NAME);
-        final TypeElement nonNullTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.ANDROID_ANNOTATION_NONNULL);
-        nonNullClassName = ClassName.get(nonNullTypeElement);
     }
 
     @Override
@@ -169,7 +166,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
         final MethodSpec.Builder globalInterceptorListMethodSpecBuilder = MethodSpec.methodBuilder("globalInterceptorList")
                 .returns(returnType)
                 .addAnnotation(Override.class)
-                .addAnnotation(nonNullClassName)
+                .addAnnotation(mClassNameNonNull)
                 .addModifiers(Modifier.PUBLIC);
 
         if (mGlobalInterceptElementList.isEmpty()) {
