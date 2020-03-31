@@ -24,7 +24,7 @@ import com.xiaojinzi.component.support.Utils;
  */
 class RouterUtil {
 
-    private static final String TAG = Router.TAG + "---RouterUtil";
+    private static final String TAG = Router.TAG;
 
     private RouterUtil() {
     }
