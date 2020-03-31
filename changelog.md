@@ -1,5 +1,12 @@
 
-#### [v1.8.1.1(待发布)](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.1.1)
+#### [v1.8.1.2(待发布)](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.1.2)
+
+- 增加 Androidx 配置和 非Androidx 选择错误的时候的提示
+- 当页面拦截器更改 `Uri` 的 `host` 和 `path` 这部分信息之后重新加载新的目标的页面拦截器
+  - 因为页面拦截器是和目标 `Uri` 绑定的. 如果在页面拦截器中更改了 `Uri`. 那么最终跳转的 `Intent` 可能和页面拦截器不是一对的
+- 增加页面拦截器两种类型之间的顺序属性 interceptorSort
+
+#### [v1.8.1.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.1.1)
 
 - 修复之前更新版本出现的 `Uri` 中的 `Query` 同步到 `Bundle` 中的问题
   - 之前版本表现为拦截器中没法从 `Bundle` 中获取到 `Query` 中的参数

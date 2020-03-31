@@ -46,6 +46,17 @@ public interface IComponentRouter {
     boolean isMatchUri(@NonNull Uri uri);
 
     /**
+     * 比较两个 {@link Uri} 是否是同一个目标.
+     * 这两个 {@link Uri#equals(Object)} 不一定相等的.
+     * 因为这里比较的是内部的信息是否指向了同一个目标
+     *
+     * @param uri1 第一个 {@link Uri}
+     * @param uri2 第二个 {@link Uri}
+     * @return 返回两个 {@link Uri} 是否指向同一个目标
+     */
+    boolean isSameTarget(@NonNull Uri uri1, @NonNull Uri uri2);
+
+    /**
      * Note: 不对外公开使用！
      * 获取这个目标要执行的页面拦截器
      *

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.MainThread;
@@ -214,7 +213,7 @@ public class RouterRequest {
             return rawContext;
         } else {
             // 如果是 Activity 并且已经销毁了返回 null
-            if (isActivityDestoryed(rawAct)) {
+            if (Utils.isActivityDestoryed(rawAct)) {
                 return null;
             } else {
                 return rawContext;
@@ -236,7 +235,7 @@ public class RouterRequest {
         if (realActivity == null) {
             return null;
         }
-        if (isActivityDestoryed(realActivity)) {
+        if (Utils.isActivityDestoryed(realActivity)) {
             return null;
         }
         return realActivity;
@@ -258,7 +257,7 @@ public class RouterRequest {
         if (rawActivity == null) {
             return null;
         }
-        if (isActivityDestoryed(rawActivity)) {
+        if (Utils.isActivityDestoryed(rawActivity)) {
             return null;
         }
         return rawActivity;
@@ -273,23 +272,9 @@ public class RouterRequest {
         Activity result = getRawActivity();
         if (result == null) {
             // 如果不是为空返回的, 那么必定不是销毁的
-            result = ComponentActivityStack.getInstance().getTopActivity();
+            result = ComponentActivityStack.getInstance().getTopAliveActivity();
         }
         return result;
-    }
-
-    /**
-     * Activity 是否被销毁了
-     *
-     * @param activity
-     * @return
-     */
-    private boolean isActivityDestoryed(@NonNull Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return activity.isFinishing() || activity.isDestroyed();
-        } else {
-            return activity.isFinishing();
-        }
     }
 
     /**

@@ -51,6 +51,7 @@ public class RouterProcessor extends BaseHostProcessor {
     private ClassName customerIntentCallClassName;
 
     private TypeElement routerBeanTypeElement;
+    private TypeElement pageInterceptorBeanTypeElement;
     private ClassName exceptionClassName;
     private TypeElement intentTypeElement;
     private TypeMirror intentTypeMirror;
@@ -67,6 +68,7 @@ public class RouterProcessor extends BaseHostProcessor {
         activityTypeMirror = mElements.getTypeElement(ComponentConstants.ANDROID_ACTIVITY).asType();
         interceptorTypeElement = mElements.getTypeElement(ComponentConstants.INTERCEPTOR_INTERFACE_CLASS_NAME);
         routerBeanTypeElement = mElements.getTypeElement(ComponentConstants.ROUTER_BEAN_CLASS_NAME);
+        pageInterceptorBeanTypeElement = mElements.getTypeElement(ComponentConstants.PAGEINTERCEPTOR_BEAN_CLASS_NAME);
         final TypeElement exceptionTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_EXCEPTION);
         exceptionClassName = ClassName.get(exceptionTypeElement);
         final TypeElement customerIntentCallTypeElement = mElements.getTypeElement(ComponentConstants.CUSTOMER_INTENT_CALL_CLASS_NAME);
@@ -83,6 +85,8 @@ public class RouterProcessor extends BaseHostProcessor {
         if (CollectionUtils.isNotEmpty(set)) {
             final Set<? extends Element> routeElements = roundEnvironment.getElementsAnnotatedWith(RouterAnno.class);
             parseAnno(routeElements);
+            // 检查矫正拦截器优先级
+            adjustInterceptorPriorities();
             createRouterImpl();
             try {
                 createRouterJson();
@@ -153,8 +157,15 @@ public class RouterProcessor extends BaseHostProcessor {
 
         routerBean.setDesc(routerAnno.desc());
         routerBean.setRawType(element);
+
+        // 拦截器的顺序
+        routerBean.setInterceptorPriorities(routerAnno.interceptorPriorities());
+        routerBean.setInterceptorNamePriorities(routerAnno.interceptorNamePriorities());
+        // class 拦截器
         routerBean.getInterceptors().clear();
         routerBean.getInterceptors().addAll(getImplClassName(routerAnno));
+
+        // String 拦截器
         if (routerAnno.interceptorNames() != null) {
             routerBean.getInterceptorNames().clear();
             for (String interceptorName : routerAnno.interceptorNames()) {
@@ -162,6 +173,65 @@ public class RouterProcessor extends BaseHostProcessor {
             }
         }
         return routerBean;
+    }
+
+    private void adjustInterceptorPriorities() {
+        routerMap.forEach(new BiConsumer<String, RouterAnnoBean>() {
+            @Override
+            public void accept(String s, RouterAnnoBean value) {
+
+                int totalSize = 0;
+
+                // 如果拦截器为空, 则让优先级的集合也为空
+
+                if (value.getInterceptors() == null) {
+                    value.setInterceptorPriorities(null);
+                } else if (value.getInterceptors().isEmpty()) {
+                    value.setInterceptorPriorities(new int[0]);
+                } else {
+                    totalSize += value.getInterceptors().size();
+                    if (value.getInterceptorPriorities() == null ||
+                            value.getInterceptorPriorities().length == 0) {
+                        int[] interceptorPriorities = new int[value.getInterceptors().size()];
+                        for (int i = 0; i < interceptorPriorities.length; i++) {
+                            interceptorPriorities[i] = 0;
+                        }
+                        value.setInterceptorPriorities(interceptorPriorities);
+                    } else {
+                        if (value.getInterceptorPriorities().length != value.getInterceptors().size()) {
+                            throw new ProcessException(
+                                    "size of RouterAnno.interceptorPriorities and RouterAnno.interceptors are not equal"
+                            );
+                        }
+                    }
+                }
+
+                if (value.getInterceptorNames() == null) {
+                    value.setInterceptorNamePriorities(null);
+                } else if (value.getInterceptorNames().isEmpty()) {
+                    value.setInterceptorNamePriorities(new int[0]);
+                } else {
+                    totalSize += value.getInterceptorNames().size();
+                    if (value.getInterceptorNamePriorities() == null ||
+                            value.getInterceptorNamePriorities().length == 0) {
+                        int[] interceptorPriorities = new int[value.getInterceptorNames().size()];
+                        for (int i = 0; i < interceptorPriorities.length; i++) {
+                            interceptorPriorities[i] = 0;
+                        }
+                        value.setInterceptorNamePriorities(interceptorPriorities);
+                    } else {
+                        if (value.getInterceptorNamePriorities().length != value.getInterceptorNames().size()) {
+                            throw new ProcessException(
+                                    "size of RouterAnno.interceptorNamePriorities and RouterAnno.interceptorNames are not equal"
+                            );
+                        }
+                    }
+                }
+
+                value.setTotalInterceptorSize(totalSize);
+
+            }
+        });
     }
 
     /**
@@ -263,24 +333,40 @@ public class RouterProcessor extends BaseHostProcessor {
                 generateActivityCall(routerBean, routerBeanName, initMapMethodSpecBuilder);
                 // 生成静态方法的代码的调用
                 generateStaticMethodCall(routerBean, routerBeanName, initMapMethodSpecBuilder);
+
+                // 声明一个拦截器的集合.
+                String interceptorListName = "interceptorList" + atomicInteger.incrementAndGet();
+                initMapMethodSpecBuilder.addStatement("$N<$T> $N = new $T($L)",
+                        ComponentConstants.JAVA_LIST, pageInterceptorBeanTypeElement, interceptorListName,
+                        ArrayList.class, routerBean.getTotalInterceptorSize());
+                initMapMethodSpecBuilder.addStatement("$N.setPageInterceptors($N)", routerBeanName, interceptorListName);
+
                 // 拦截器的代码的生成
-                if (routerBean.getInterceptors() != null && !routerBean.getInterceptors().isEmpty()) {
-                    String interceptorListName = "interceptorList" + atomicInteger.incrementAndGet();
-                    initMapMethodSpecBuilder.addStatement("java.util.List<Class<? extends $T>> " + interceptorListName + " = new $T($L)",
-                            interceptorTypeElement, ArrayList.class, routerBean.getInterceptors().size());
-                    for (String interceptorClassName : routerBean.getInterceptors()) {
-                        initMapMethodSpecBuilder.addStatement("$N.add($T.class)", interceptorListName, ClassName.get(mElements.getTypeElement(interceptorClassName)));
+                List<String> interceptors = routerBean.getInterceptors();
+                if (interceptors != null && !interceptors.isEmpty()) {
+                    for (int i = 0; i < interceptors.size(); i++) {
+                        initMapMethodSpecBuilder.addStatement(
+                                "$N.getPageInterceptors().add(new $T($L, $T.class))",
+                                routerBeanName,
+                                pageInterceptorBeanTypeElement,
+                                routerBean.getInterceptorPriorities()[i],
+                                ClassName.get(mElements.getTypeElement(interceptors.get(i)))
+                        );
                     }
-                    initMapMethodSpecBuilder.addStatement("$N.setInterceptors($N)", routerBeanName, interceptorListName);
                 }
-                if (routerBean.getInterceptorNames() != null && !routerBean.getInterceptorNames().isEmpty()) {
-                    String interceptorNameListName = "interceptorNameList" + atomicInteger.incrementAndGet();
-                    initMapMethodSpecBuilder.addStatement("java.util.List<String> " + interceptorNameListName + " = new $T($L)", ArrayList.class, routerBean.getInterceptorNames().size());
-                    for (String interceptorName : routerBean.getInterceptorNames()) {
-                        initMapMethodSpecBuilder.addStatement("$N.add($S)", interceptorNameListName, interceptorName);
+                List<String> interceptorNames = routerBean.getInterceptorNames();
+                if (interceptorNames != null && !interceptorNames.isEmpty()) {
+                    for (int i = 0; i < interceptorNames.size(); i++) {
+                        initMapMethodSpecBuilder.addStatement(
+                                "$N.getPageInterceptors().add(new $T($L, $S))",
+                                routerBeanName,
+                                pageInterceptorBeanTypeElement,
+                                routerBean.getInterceptorNamePriorities()[i],
+                                interceptorNames.get(i)
+                        );
                     }
-                    initMapMethodSpecBuilder.addStatement("$N.setInterceptorNames($N)", routerBeanName, interceptorNameListName);
                 }
+                // 存进 map 集合的代码
                 initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
                 initMapMethodSpecBuilder.addCode("\n");
             }
@@ -356,9 +442,6 @@ public class RouterProcessor extends BaseHostProcessor {
 
     /**
      * 生成目标是 Activity 的调用
-     *
-     * @param routerBean
-     * @param methodSpecBuilder
      */
     private void generateActivityCall(RouterAnnoBean routerBean, String routerBeanName, MethodSpec.Builder methodSpecBuilder) {
         if (!(routerBean.getRawType() instanceof TypeElement)) {

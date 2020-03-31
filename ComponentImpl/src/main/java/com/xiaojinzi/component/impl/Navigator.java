@@ -3,6 +3,7 @@ package com.xiaojinzi.component.impl;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -26,7 +27,6 @@ import com.xiaojinzi.component.error.ignore.NavigationFailException;
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.impl.interceptor.OpenOnceInterceptor;
 import com.xiaojinzi.component.support.Action;
-import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.component.support.Consumer;
 import com.xiaojinzi.component.support.Consumer1;
@@ -39,6 +39,7 @@ import com.xiaojinzi.component.support.Utils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -974,17 +975,9 @@ public class Navigator extends RouterRequest.Builder implements Call {
                               @Nullable final List<Object> customInterceptors,
                               @NonNull final RouterInterceptor.Callback routerInterceptorCallback) {
 
-        // 拿到用户定义的共有的拦截器
-        // 这里是因为第一次创建拦截器需要在主线程上, 所以需要这样
-        List<RouterInterceptor> publicInterceptors = Utils.mainThreadCallable(new Callable<List<RouterInterceptor>>() {
-            @NonNull
-            @Override
-            public List<RouterInterceptor> get() {
-                return InterceptorCenter.getInstance().getGlobalInterceptorList();
-            }
-        });
         // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
         final List<RouterInterceptor> allInterceptors = new ArrayList(10);
+
         // 此拦截器用于执行一些整个流程开始之前的事情
         allInterceptors.add(new RouterInterceptor() {
             @Override
@@ -995,37 +988,28 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 chain.proceed(chain.request());
             }
         });
-        if (this.useRouteRepeatCheck) {
-            allInterceptors.add(OpenOnceInterceptor.getInstance());
-        }
-        // 添加共有拦截器
-        allInterceptors.addAll(publicInterceptors);
-        // 添加自定义拦截器到 allInterceptors 中
-        // 这里是因为第一次创建拦截器需要在主线程上, 所以需要这样
+
+        // 主线程上执行, 卡住线程
         Utils.mainThreadAction(new Action() {
             @Override
             public void run() {
-                addCustomInterceptors(originalRequest, customInterceptors, allInterceptors);
-            }
-        });
-        // 扫尾拦截器,内部会添加目标要求执行的拦截器和真正执行跳转的拦截器
-        allInterceptors.add(new RouterInterceptor() {
-            @Override
-            public void intercept(final Chain outterChain) throws Exception {
-                // 这个地址要执行的页面拦截器,这里取的时候一定要注意了,不能拿最原始的那个 request,因为上面的拦截器都能更改 request,
-                // 导致最终跳转的界面和你拿到的页面拦截器不匹配,所以这里一定是拿上一个拦截器传给你的 request 对象
-                List<RouterInterceptor> targetPageInterceptors =
-                        RouterCenter.getInstance().listPageInterceptors(outterChain.request().uri);
-                if (!targetPageInterceptors.isEmpty()) {
-                    allInterceptors.addAll(targetPageInterceptors);
+                // 添加路由检查拦截器
+                if (useRouteRepeatCheck) {
+                    allInterceptors.add(OpenOnceInterceptor.getInstance());
                 }
-                // 真正的执行跳转的拦截器, 如果正常跳转了 DoActivityStartInterceptor 拦截器就直接返回了
-                // 如果没有正常跳转过去, 内部会继续走拦截器, 会执行到后面的这个
-                allInterceptors.add(new DoActivityStartInterceptor(originalRequest));
-                // 执行下一个拦截器,正好是上面代码添加的拦截器
-                outterChain.proceed(outterChain.request());
+                // 添加共有拦截器
+                allInterceptors.addAll(
+                        InterceptorCenter.getInstance().getGlobalInterceptorList()
+                );
+                // 添加用户自定义的拦截器
+                allInterceptors.addAll(
+                        getCustomInterceptors(originalRequest, customInterceptors)
+                );
+                // 负责加载目标 Intent 的页面拦截器的拦截器. 此拦截器后不可再添加其他拦截器
+                allInterceptors.add(new PageInterceptor(originalRequest, allInterceptors));
             }
         });
+
         // 创建执行器
         final RouterInterceptor.Chain chain = new InterceptorChain(
                 allInterceptors, 0,
@@ -1037,34 +1021,35 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
-     * 添加自定义的拦截器
+     * 返回自定义的拦截器
      */
     @MainThread
-    private static void addCustomInterceptors(@NonNull RouterRequest originalRequest,
-                                              @Nullable List<Object> customInterceptors,
-                                              List<RouterInterceptor> currentInterceptors) throws InterceptorNotFoundException {
-        if (customInterceptors == null) {
-            return;
+    private static List<RouterInterceptor> getCustomInterceptors(@NonNull RouterRequest originalRequest,
+                                                                 @Nullable List<Object> customInterceptors) throws InterceptorNotFoundException {
+        if (customInterceptors == null || customInterceptors.isEmpty()) {
+            return Collections.EMPTY_LIST;
         }
+        List<RouterInterceptor> result = new ArrayList<>(customInterceptors.size());
         for (Object customInterceptor : customInterceptors) {
             if (customInterceptor instanceof RouterInterceptor) {
-                currentInterceptors.add((RouterInterceptor) customInterceptor);
+                result.add((RouterInterceptor) customInterceptor);
             } else if (customInterceptor instanceof Class) {
                 RouterInterceptor interceptor = RouterInterceptorCache.getInterceptorByClass((Class<? extends RouterInterceptor>) customInterceptor);
                 if (interceptor == null) {
                     throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + (Class) customInterceptor + ",target url is " + originalRequest.uri.toString());
                 } else {
-                    currentInterceptors.add(interceptor);
+                    result.add(interceptor);
                 }
             } else if (customInterceptor instanceof String) {
                 RouterInterceptor interceptor = InterceptorCenter.getInstance().getByName((String) customInterceptor);
                 if (interceptor == null) {
                     throw new InterceptorNotFoundException("can't find the interceptor and it's name is " + (String) customInterceptor + ",target url is " + originalRequest.uri.toString());
                 } else {
-                    currentInterceptors.add(interceptor);
+                    result.add(interceptor);
                 }
             }
         }
+        return result;
     }
 
     /**
@@ -1169,11 +1154,134 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
+     * 处理页面拦截器的. 因为页面拦截器可能会更改 {@link Uri}. 导致目标改变.
+     * 那么新的页面拦截器也应该被加载执行.
+     * 最后确认 {@link Uri} 的目标没被改变的时候
+     * 就可以加载 {@link DoActivityStartInterceptor} 执行跳转了.
+     */
+    @MainThread
+    private static class PageInterceptor implements RouterInterceptor {
+
+        @NonNull
+        private RouterRequest mOriginalRequest;
+
+        @NonNull
+        private List<RouterInterceptor> mAllInterceptors;
+
+        public PageInterceptor(@NonNull RouterRequest mOriginalRequest,
+                               @NonNull List<RouterInterceptor> mAllInterceptors) {
+            this.mOriginalRequest = mOriginalRequest;
+            this.mAllInterceptors = mAllInterceptors;
+        }
+
+        @Override
+        public void intercept(@NonNull Chain chain) throws Exception {
+            Uri currentUri = chain.request().uri;
+            // 这个地址要执行的页面拦截器,这里取的时候一定要注意了,不能拿最原始的那个 request,因为上面的拦截器都能更改 request,
+            // 导致最终跳转的界面和你拿到的页面拦截器不匹配,所以这里一定是拿上一个拦截器传给你的 request 对象
+            List<RouterInterceptor> targetPageInterceptors =
+                    RouterCenter.getInstance().listPageInterceptors(currentUri);
+            mAllInterceptors.add(new PageInterceptorUriCheckInterceptor(
+                            mOriginalRequest,
+                            mAllInterceptors,
+                            currentUri,
+                            targetPageInterceptors,
+                            0
+                    )
+            );
+            // 执行下一个拦截器,正好是上面代码添加的拦截器
+            chain.proceed(chain.request());
+        }
+    }
+
+    /**
+     * 处理页面拦截器的. 因为页面拦截器可能会更改 {@link Uri}. 导致目标改变.
+     * 那么新的页面拦截器也应该被加载执行.
+     * 最后确认 {@link Uri} 的目标没被改变的时候
+     * 就可以加载 {@link DoActivityStartInterceptor} 执行跳转了.
+     */
+    @MainThread
+    private static class PageInterceptorUriCheckInterceptor implements RouterInterceptor {
+
+        @NonNull
+        private RouterRequest mOriginalRequest;
+
+        @NonNull
+        private List<RouterInterceptor> mAllInterceptors;
+
+        /**
+         * 进入页面拦截器之前的 {@link Uri}
+         */
+        @Nullable
+        private Uri mBeforPageInterceptorUri;
+
+        @Nullable
+        private List<RouterInterceptor> mPageInterceptors;
+
+        private int mPageIndex;
+
+        public PageInterceptorUriCheckInterceptor(@NonNull RouterRequest mOriginalRequest,
+                                                  @NonNull List<RouterInterceptor> mAllInterceptors,
+                                                  @Nullable Uri mBeforPageInterceptorUri,
+                                                  @Nullable List<RouterInterceptor> mPageInterceptors,
+                                                  int mPageIndex) {
+            this.mOriginalRequest = mOriginalRequest;
+            this.mAllInterceptors = mAllInterceptors;
+            this.mBeforPageInterceptorUri = mBeforPageInterceptorUri;
+            this.mPageInterceptors = mPageInterceptors;
+            this.mPageIndex = mPageIndex;
+        }
+
+        @Override
+        public void intercept(@NonNull Chain chain) throws Exception {
+
+            if (mPageIndex < 0) {
+                throw new NavigationFailException(new IndexOutOfBoundsException(
+                        "size = " + mPageInterceptors.size() + ",index = " + mPageIndex));
+            }
+
+            Uri currentUri = chain.request().uri;
+            boolean isSameTarget;
+            if (mBeforPageInterceptorUri != null) {
+                isSameTarget = RouterCenter
+                        .getInstance()
+                        .isSameTarget(mBeforPageInterceptorUri, currentUri);
+            } else {
+                isSameTarget = false;
+            }
+
+            // 如果目标是相同的, 说明页面拦截器并没有改变跳转的目标
+            if (isSameTarget) {
+                // 没有下一个了
+                if (mPageInterceptors == null || mPageIndex >= mPageInterceptors.size()) {
+                    // 真正的执行跳转的拦截器, 如果正常跳转了 DoActivityStartInterceptor 拦截器就直接返回了
+                    // 如果没有正常跳转过去, 内部会继续走拦截器, 会执行到后面的这个
+                    mAllInterceptors.add(new DoActivityStartInterceptor(mOriginalRequest));
+                } else {
+                    mAllInterceptors.add(mPageInterceptors.get(mPageIndex));
+                    mAllInterceptors.add(
+                            new PageInterceptorUriCheckInterceptor(
+                                    mOriginalRequest, mAllInterceptors, mBeforPageInterceptorUri,
+                                    mPageInterceptors, ++mPageIndex
+                            )
+                    );
+                }
+            } else {
+                mAllInterceptors.add(new PageInterceptor(mOriginalRequest, mAllInterceptors));
+            }
+            // 执行下一个拦截器,正好是上面代码添加的拦截器
+            chain.proceed(chain.request());
+
+        }
+    }
+
+    /**
      * 这是拦截器的最后一个拦截器了
      * 实现拦截器列表中的最后一环, 内部去执行了跳转的代码
      * 1.如果跳转的时候没有发生异常, 说明可以跳转过去
      * 如果失败了进行降级处理
      */
+    @MainThread
     private static class DoActivityStartInterceptor implements RouterInterceptor {
 
         @NonNull
