@@ -7,6 +7,7 @@
 - 增加页面拦截器的执行优先级 `interceptorPriorities` 和 `interceptorNamePriorities`
 - 修复一个界面同时使用两个跳转拿 `ActivityResult` 出现的其中一个回调问题.
   - 原因是 `commitAllowingStateLoss` 不是立马提交的, 需要使用 `commitNowAllowingStateLoss`. 基本只在测试情况出现, 线上使用基本没有同一个界面同时跳转拿 `ActivityResult` 的
+- 优化获取 `ActivityResult` 的时候因为 `requestCode` 重复导致的日志输出一个取消和错误的情况.
 
 #### [v1.8.1.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.1.1)
 

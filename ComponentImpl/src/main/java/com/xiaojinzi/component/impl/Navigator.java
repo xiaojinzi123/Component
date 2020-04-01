@@ -519,7 +519,16 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
     @Override
     public RouterRequest build() {
-        return Help.randomlyGenerateRequestCode(super.build());
+        RouterRequest routerRequest = super.build();
+        // 如果是随机的 requestCode, 则生成
+        routerRequest = Help.randomlyGenerateRequestCode(routerRequest);
+        // 现在可以检测 requestCode 是否重复
+        boolean isExist = Help.isExist(routerRequest);
+        if (isExist) { // 如果存在直接返回错误给 callback
+            throw new NavigationFailException("request&result code is " +
+                    routerRequest.requestCode + " is exist!");
+        }
+        return routerRequest;
     }
 
     /**
@@ -538,27 +547,12 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
     /**
      * 路由前的检查
-     *
-     * @throws Exception
      */
     private void onCheck() {
-        // 一个 Builder 不能被使用多次
-        if (isFinish) {
-            throw new NavigationFailException("Builder can't be used multiple times");
-        }
-        // 检查上下文和fragment
-        if (context == null && fragment == null) {
-            throw new NullPointerException("the parameter 'context' or 'fragment' both are null");
-        }
     }
 
     /**
-     * 检查参数,这个方法和 {@link #onCheck()} 很多项目都一样的,但是没办法
-     * 这里的检查是需要提前检查的
-     * 父类的检查是调用 {@link #navigate(Callback)}方法的时候调用 {@link #onCheck()} 检查的
-     * 这个类是调用 {@link #navigate(Callback)} 方法之前检查的,而且检查的项目虽然基本一样,但是有所差别
-     *
-     * @throws RuntimeException
+     * 检查 forResult 的时候的各个参数是否合格
      */
     private void onCheckForResult() throws Exception {
         if (context == null && fragment == null) {
@@ -785,7 +779,14 @@ public class Navigator extends RouterRequest.Builder implements Call {
             // 如果用户没填写 Context 或者 Fragment 默认使用 Application
             useDefaultContext();
             // 路由前的检查
-            onCheck();
+            if (isFinish) {
+                // 一个 Builder 不能被使用多次
+                throw new NavigationFailException("Builder can't be used multiple times");
+            }
+            if (context == null && fragment == null) {
+                // 检查上下文和fragment
+                throw new NullPointerException("the parameter 'context' or 'fragment' both are null");
+            }
             // 标记这个 builder 已经不能使用了
             isFinish = true;
             // 生成路由请求对象
@@ -875,6 +876,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
         this.isForResult = true;
         // 做一个包裹实现至多只能调用一次内部的其中一个方法
         final BiCallback<ActivityResult> biCallbackWrap = new BiCallbackWrap<>(biCallback);
+        // disposable 对象
         NavigationDisposable finalNavigationDisposable = null;
         try {
             // 为了拿数据做的检查
@@ -935,14 +937,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 }
 
             });
-            // 现在可以检测 requestCode 是否重复
-            boolean isExist = Help.isExist(finalNavigationDisposable.originalRequest());
-            if (isExist) { // 如果存在直接返回错误给 callback
-                throw new NavigationFailException("request&result code is " +
-                        finalNavigationDisposable.originalRequest().requestCode + " is exist!");
-            } else {
-                Help.addRequestCode(finalNavigationDisposable.originalRequest());
-            }
+            // 添加这个 requestCode 到 map, 重复的事情不用考虑了, 在 build RouterRequest 的时候已经处理了
+            Help.addRequestCode(finalNavigationDisposable.originalRequest());
             return finalNavigationDisposable;
         } catch (Exception e) {
             if (finalNavigationDisposable == null) {
@@ -1057,9 +1053,12 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
-     * 这个拦截器的 Callback 是所有拦截器执行过程中会使用的一个 Callback,这是唯一的一个,每个拦截器对象拿到的此对象都是一样的
+     * 这个拦截器的 Callback 是所有拦截器执行过程中会使用的一个 Callback,
+     * 这是唯一的一个, 每个拦截器对象拿到的此对象都是一样的
+     * 内部的错误成功额方法可以调用 N 次
      */
-    private static class InterceptorCallback implements NavigationDisposable, RouterInterceptor.Callback {
+    private static class InterceptorCallback
+            implements NavigationDisposable, RouterInterceptor.Callback {
 
         /**
          * 用户的回调
@@ -1404,10 +1403,10 @@ public class Navigator extends RouterRequest.Builder implements Call {
         private int calls;
 
         /**
-         * @param interceptors
-         * @param index
+         * @param interceptors 拦截器的即可
+         * @param index 要执行的拦截器的下标
          * @param request      第一次这个对象是不需要的
-         * @param callback
+         * @param callback 用户的 {@link Callback}
          */
         public InterceptorChain(@NonNull List<RouterInterceptor> interceptors, int index,
                                 @NonNull RouterRequest request, @NonNull RouterInterceptor.Callback callback) {
@@ -1486,7 +1485,8 @@ public class Navigator extends RouterRequest.Builder implements Call {
         private static Random r = new Random();
 
         /**
-         * 随机生成一个 requestCode,调用这个方法的 requestCode 是 {@link Navigator#RANDOM_REQUSET_CODE}
+         * 如果 requestCode 是 {@link Navigator#RANDOM_REQUSET_CODE}.
+         * 则随机生成一个 requestCode
          *
          * @return [1, 256]
          */
@@ -1511,7 +1511,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
          * 检测同一个 Fragment 或者 Activity 发起的多个路由 request 中的 requestCode 是否存在了
          *
          * @param request 路由请求对象
-         * @return
          */
         public static boolean isExist(@Nullable RouterRequest request) {
             if (request == null || request.requestCode == null) {
@@ -1524,6 +1523,12 @@ public class Navigator extends RouterRequest.Builder implements Call {
             return isExist(act, request.fragment, request.requestCode);
         }
 
+        /**
+         * 这里分别检测 {@link Activity}、{@link Fragment} 和 requestCode 的重复.
+         * 即使一个路由使用了 {@link Activity} + 123, 另一个用 {@link Fragment} + 123 也没问题是因为
+         * 这两个分别会被预埋一个 {@link RouterFragment}.
+         * 所以他们共享一个{@link RouterFragment} 接受 {@link ActivityResult} 的
+         */
         public static boolean isExist(@Nullable Activity act, @Nullable Fragment fragment,
                                       @NonNull Integer requestCode) {
             if (act != null) {
