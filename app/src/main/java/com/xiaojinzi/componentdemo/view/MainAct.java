@@ -95,9 +95,17 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void testRouter(View view) {
-        Router.withApi(AppApi.class).goToTestRouter(
+
+        Router
+                .with(this)
+                .host(ModuleConfig.User.NAME)
+                .path(ModuleConfig.User.LOGIN)
+                .requestCode(123)
+                .forward();
+
+        /*Router.withApi(AppApi.class).goToTestRouter(
                 () -> Toast.makeText(MainAct.this, "跳转后的提示", Toast.LENGTH_SHORT).show()
-        );
+        );*/
     }
 
     public void testRouterForFragment(View view) {
@@ -118,7 +126,6 @@ public class MainAct extends AppCompatActivity {
                 .with(this)
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.TEST_WEB_ROUTER)
-                .requestCode(123)
                 .afterStartAction(() -> {
                     overridePendingTransition(
                             android.R.anim.fade_in,
