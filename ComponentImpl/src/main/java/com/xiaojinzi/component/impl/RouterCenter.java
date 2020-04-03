@@ -221,13 +221,25 @@ public class RouterCenter implements IComponentCenterRouter {
             } else {
                 throw new NavigationFailException("the context or fragment both are null");
             }
-        }else {
-            if (request.context != null) {
-                request.context.startActivity(intent, request.options);
-            } else if (request.fragment != null) {
-                request.fragment.startActivity(intent, request.options);
-            } else {
-                throw new NavigationFailException("the context or fragment both are null");
+        } else { // 不想要框架来获取 activityResult
+            // 普通跳转
+            if (request.requestCode == null) {
+                if (request.context != null) {
+                    request.context.startActivity(intent, request.options);
+                } else if (request.fragment != null) {
+                    request.fragment.startActivity(intent, request.options);
+                } else {
+                    throw new NavigationFailException("the context or fragment both are null");
+                }
+            }else { // startActivityForResult
+                Activity rawAct = null;
+                if ((rawAct = Utils.getActivityFromContext(request.context)) != null) {
+                    rawAct.startActivityForResult(intent, request.requestCode, request.options);
+                } else if (request.fragment != null) {
+                    request.fragment.startActivityForResult(intent, request.requestCode, request.options);
+                } else {
+                    throw new NavigationFailException("the context or fragment both are null");
+                }
             }
         }
 
@@ -280,7 +292,7 @@ public class RouterCenter implements IComponentCenterRouter {
                     throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + uri.toString());
                 }
                 result.add(interceptor);
-            }else {
+            } else {
                 throw new InterceptorNotFoundException("String interceptor and class interceptor are both null");
             }
         }
