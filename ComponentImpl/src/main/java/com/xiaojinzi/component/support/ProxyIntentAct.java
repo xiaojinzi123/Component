@@ -29,7 +29,6 @@ public class ProxyIntentAct extends FragmentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("123123123123");
         // 获取数据
         Bundle bundle = getIntent().getExtras();
         Activity launchActivity = ComponentActivityStack
