@@ -188,7 +188,7 @@ public class AutowireProcessor extends BaseProcessor {
 
     private void createRouterAttrDocJson() throws IOException {
 
-        if (routerDocFolder == null || routerDocFolder.isEmpty()) {
+        if (!isRouterDocEnable()) {
             return;
         }
 
