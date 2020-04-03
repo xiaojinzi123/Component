@@ -268,7 +268,7 @@ public class RouterProcessor extends BaseHostProcessor {
 
     private void createRouterJson() throws IOException {
 
-        if (routerDocFolder == null || routerDocFolder.isEmpty()) {
+        if (!isRouterDocEnable()) {
             return;
         }
 

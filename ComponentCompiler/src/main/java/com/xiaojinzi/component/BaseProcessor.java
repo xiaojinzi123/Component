@@ -37,6 +37,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
             "}\n  \n");
 
     protected String routerDocFolder = null;
+    protected boolean routerDocEnable;
 
     protected Filer mFiler;
     protected Messager mMessager;
@@ -70,7 +71,8 @@ public abstract class BaseProcessor extends AbstractProcessor {
 
         Map<String, String> options = processingEnv.getOptions();
         if (options != null) {
-            routerDocFolder = options.get("RouterDoc");
+            routerDocFolder = options.get("RouterDocFolder");
+            routerDocEnable = Boolean.parseBoolean(options.get("RouterDocEnable"));
         }
 
         mFiler = processingEnv.getFiler();
@@ -108,6 +110,10 @@ public abstract class BaseProcessor extends AbstractProcessor {
                     "\n else see https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE");
         }
 
+    }
+
+    protected boolean isRouterDocEnable(){
+        return routerDocEnable && (routerDocFolder != null && !routerDocFolder.isEmpty());
     }
 
 }

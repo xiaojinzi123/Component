@@ -1,4 +1,12 @@
 
+#### [v1.8.2.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.1)
+
+- 修复之前修改 `impl` 模块的包名引起的 `ProxtActivity` 失效的问题
+- `router` 文档增加控制是否生成文档的 `boolean` 的开关. `componnet_router_doc_enable`
+    - 配置方式和 `componnet_router_doc_folder` 一致. 比如 ext.componnet_router_doc_enable = true
+- 同时注解驱动器的 `RouterDoc` 属性配置改为 `RouterDocFolder`
+- 注解驱动器也增加一个文档是否生成的开关 `RouterDocEable`, 一般 `RouterDocEable` 这个值随着 `componnet_router_doc_enable` 变化即可
+
 #### [v1.8.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2)
 
 - 增加 Androidx 配置和 非Androidx 选择错误的时候的提示
