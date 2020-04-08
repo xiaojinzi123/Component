@@ -7,8 +7,6 @@ import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 /**
  * 单例形式
- *
- * @param <T>
  */
 @CheckClassNameAnno
 public abstract class SingletonFunction1<T, R> implements Function1<T, R> {
