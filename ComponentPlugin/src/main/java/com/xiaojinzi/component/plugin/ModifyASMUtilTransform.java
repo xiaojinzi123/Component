@@ -27,6 +27,8 @@ import java.util.zip.ZipEntry;
 
 public class ModifyASMUtilTransform extends BaseTransform {
 
+    public static final String IMPL_OUTPUT_PKG_PATH = "com/xiaojinzi/component/impl";
+
     /**
      * value 是 class 的名称
      * "user" -> "UserModuleApplicationGeneratedDefault" or "user" -> "UserModuleApplicationGenerated"
@@ -118,6 +120,9 @@ public class ModifyASMUtilTransform extends BaseTransform {
                                 if (mAsmUtilOutputPathStr != null && !"".equals(mAsmUtilOutputPathStr)) {
                                     File file = new File(mAsmUtilOutputPathStr);
                                     file.delete();
+                                    if(!file.getParentFile().mkdirs()){
+                                        throw new Exception();
+                                    }
                                     FileOutputStream fileOutputStream = new FileOutputStream(file);
                                     fileOutputStream.write(bytes);
                                     fileOutputStream.close();
@@ -153,7 +158,6 @@ public class ModifyASMUtilTransform extends BaseTransform {
                             directoryInput.getContentTypes(), directoryInput.getScopes(),
                             Format.DIRECTORY);
                     File directoryInputFile = directoryInput.getFile();
-                    // printFile(directoryInputFile);
                     //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
                     FileUtils.copyDirectory(directoryInputFile, dest);
                 }
@@ -188,7 +192,8 @@ public class ModifyASMUtilTransform extends BaseTransform {
                 while (jarEntryEnumeration.hasMoreElements()) {
                     JarEntry jarEntry = jarEntryEnumeration.nextElement();
                     String entryName = jarEntry.getName();
-                    String className = entryName.substring(entryName.lastIndexOf("/") + 1);
+                    // 统一使用 / 分隔符处理. 全类名
+                    String className = entryName.replace('\\', '/');
                     doFilterApplicationName(className);
                     doFilterInterceptorName(className);
                     doFilterRouterName(className);
@@ -201,14 +206,22 @@ public class ModifyASMUtilTransform extends BaseTransform {
                 recursiveFile(directoryInput.getFile(), new IFileRecursive() {
                     @Override
                     public void accept(File file) {
-                        // xxx.class
-                        String className = file.getName();
-                        doFilterApplicationName(className);
-                        doFilterInterceptorName(className);
-                        doFilterRouterName(className);
-                        doFilterRouterDegradeName(className);
-                        doFilterServiceName(className);
-                        doFilterFragmentName(className);
+                        // xxx.class 统一使用 / 分隔符处理
+                        String filePath = file.getPath().replace('\\', '/');
+                        // 去掉文件前面本地的路径
+                        if (filePath.contains(IMPL_OUTPUT_PKG_PATH)) {
+                            // xxx/xxx/xxx/xxxxxxxx
+                            String className = filePath.substring(
+                                    filePath.indexOf(IMPL_OUTPUT_PKG_PATH)
+                            );
+                            doFilterApplicationName(className);
+                            doFilterInterceptorName(className);
+                            doFilterRouterName(className);
+                            doFilterRouterDegradeName(className);
+                            doFilterServiceName(className);
+                            doFilterFragmentName(className);
+                        }
+
                     }
                 });
             }
@@ -216,59 +229,72 @@ public class ModifyASMUtilTransform extends BaseTransform {
     }
 
     private void doFilterApplicationName(String className) {
-        if (className.endsWith("ModuleApplicationGeneratedDefault.class") ||
-                className.endsWith("ModuleApplicationGenerated.class")) {
+        if (className.startsWith(IMPL_OUTPUT_PKG_PATH + "/application")
+                && (className.endsWith("ModuleApplicationGeneratedDefault.class") ||
+                className.endsWith("ModuleApplicationGenerated.class"))
+        ) {
+            String simpleName = className.substring(className.lastIndexOf("/") + 1);
             // 拿到 host 的名称
-            String hostName = className.substring(0, className.indexOf("ModuleApplicationGenerated"));
+            String hostName = simpleName.substring(0, simpleName.indexOf("ModuleApplicationGenerated"));
             // 如果是 default 的, 需要看 map 中是否已经存在了
             if (className.endsWith("ModuleApplicationGeneratedDefault.class")) {
                 // 如果不存在才能进去
                 if (!applicationMap.containsKey(hostName)) {
-                    applicationMap.put(hostName, className);
+                    applicationMap.put(hostName, simpleName);
                 }
             } else {
-                applicationMap.put(hostName, className);
+                applicationMap.put(hostName, simpleName);
             }
         }
     }
 
     private void doFilterInterceptorName(String className) {
-        if (className.endsWith("InterceptorGenerated.class")) {
+        if (className.startsWith(IMPL_OUTPUT_PKG_PATH + "/interceptor") &&
+                className.endsWith("InterceptorGenerated.class")){
+            String simpleName = className.substring(className.lastIndexOf("/") + 1);
             // 拿到 host 的名称
-            String hostName = className.substring(0, className.indexOf("InterceptorGenerated"));
-            interceptorMap.put(hostName, className);
+            String hostName = simpleName.substring(0, simpleName.indexOf("InterceptorGenerated"));
+            interceptorMap.put(hostName, simpleName);
         }
     }
 
     private void doFilterRouterName(String className) {
-        if (className.endsWith("RouterGenerated.class")) {
+        if (className.startsWith(IMPL_OUTPUT_PKG_PATH) &&
+                className.endsWith("RouterGenerated.class")){
+            String simpleName = className.substring(className.lastIndexOf("/") + 1);
             // 拿到 host 的名称
-            String hostName = className.substring(0, className.indexOf("RouterGenerated"));
-            routerMap.put(hostName, className);
+            String hostName = simpleName.substring(0, simpleName.indexOf("RouterGenerated"));
+            routerMap.put(hostName, simpleName);
         }
     }
 
     private void doFilterRouterDegradeName(String className) {
-        if (className.endsWith("RouterDegradeGenerated.class")) {
+        if (className.startsWith(IMPL_OUTPUT_PKG_PATH) &&
+                className.endsWith("RouterDegradeGenerated.class")){
+            String simpleName = className.substring(className.lastIndexOf("/") + 1);
             // 拿到 host 的名称
-            String hostName = className.substring(0, className.indexOf("RouterDegradeGenerated"));
-            routerDegradeMap.put(hostName, className);
+            String hostName = simpleName.substring(0, simpleName.indexOf("RouterDegradeGenerated"));
+            routerDegradeMap.put(hostName, simpleName);
         }
     }
 
     private void doFilterServiceName(String className) {
-        if (className.endsWith("ServiceGenerated.class")) {
+        if (className.startsWith(IMPL_OUTPUT_PKG_PATH + "/service") &&
+                className.endsWith("ServiceGenerated.class")){
+            String simpleName = className.substring(className.lastIndexOf("/") + 1);
             // 拿到 host 的名称
-            String hostName = className.substring(0, className.indexOf("ServiceGenerated"));
-            serviceMap.put(hostName, className);
+            String hostName = simpleName.substring(0, simpleName.indexOf("ServiceGenerated"));
+            serviceMap.put(hostName, simpleName);
         }
     }
 
     private void doFilterFragmentName(String className) {
-        if (className.endsWith("FragmentGenerated.class")) {
+        if (className.startsWith(IMPL_OUTPUT_PKG_PATH + "/fragment") &&
+                className.endsWith("FragmentGenerated.class")){
+            String simpleName = className.substring(className.lastIndexOf("/") + 1);
             // 拿到 host 的名称
-            String hostName = className.substring(0, className.indexOf("FragmentGenerated"));
-            fragmentMap.put(hostName, className);
+            String hostName = simpleName.substring(0, simpleName.indexOf("FragmentGenerated"));
+            fragmentMap.put(hostName, simpleName);
         }
     }
 
@@ -282,22 +308,6 @@ public class ModifyASMUtilTransform extends BaseTransform {
                     fileRecursive.accept(subFile);
                 } else {
                     recursiveFile(subFile, fileRecursive);
-                }
-            }
-        }
-    }
-
-    private void printFile(File file) {
-        if (file.isFile()) {
-            // System.out.println("printFile = " + file.getPath());
-        } else {
-            // System.out.println("printFolder = " + file.getPath());
-            File[] files = file.listFiles();
-            for (File subFile : files) {
-                if (subFile.isFile()) {
-                    // System.out.println("printFile = " + subFile.getPath());
-                } else {
-                    printFile(subFile);
                 }
             }
         }

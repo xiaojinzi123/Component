@@ -19,9 +19,9 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:4.4'
     implementation 'com.google.code.gson:gson:2.8.6'
     if (rootProject.ext.isDependMavenOnline) {
-        compile libs.component_annotation
+        implementation libs.component_annotation
     }else {
-        compile project(':ComponentApi')
+        implementation project(':ComponentApi')
     }
 }
 

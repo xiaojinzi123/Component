@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.support;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
@@ -56,10 +57,12 @@ public class ASMUtil {
 
     /**
      * 获取所有模块的名称, 内部的实现由于 Gradle 插件修改字节码实现
+     * NOTE: 此方法不是给用户使用的. 请不要使用. 这里的模块名字首字母一定是大写的
+     * 而你自己定义的就可能首字母是小写的. 所以请勿使用, 这里的仅限框架内部使用
      *
      * @return 返回所有模块的名称
      */
-    @Nullable
+    @NonNull
     public static List<String> getModuleNames() {
         List<String> result = new ArrayList<>();
         // 示例代码
