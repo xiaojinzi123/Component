@@ -12,8 +12,12 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["HOST": "help"]
-                // arguments = ["HOST": "help", "RouterDoc": project.property("component_router_doc_folder")]
+                // arguments = ["HOST": "help"]
+                arguments = [
+                        "HOST"           : "help",
+                        "RouterDocFolder": project.property("component_router_doc_folder"),
+                        "RouterDocEnable": String.valueOf(project.property("componnet_router_doc_enable"))
+                ]
             }
         }
     }

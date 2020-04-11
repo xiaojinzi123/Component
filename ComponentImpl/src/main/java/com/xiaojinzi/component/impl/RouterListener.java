@@ -15,7 +15,7 @@ public interface RouterListener {
     /**
      * 路由成功的时候回调
      *
-     * @param successResult
+     * @param successResult 成功的对象
      */
     @MainThread
     void onSuccess(@NonNull RouterResult successResult) throws Exception;
@@ -23,7 +23,7 @@ public interface RouterListener {
     /**
      * 发生错误的时候的回调
      *
-     * @param errorResult
+     * @param errorResult 失败的对象
      */
     @MainThread
     void onError(RouterErrorResult errorResult) throws Exception;
@@ -31,8 +31,7 @@ public interface RouterListener {
     /**
      * 当被取消的时候回调
      *
-     * @param originalRequest
-     * @throws Exception
+     * @param originalRequest 最原始的请求对象
      */
     @MainThread
     void onCancel(@NonNull RouterRequest originalRequest) throws Exception;

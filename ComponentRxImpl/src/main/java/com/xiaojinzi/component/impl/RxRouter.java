@@ -681,8 +681,8 @@ public class RxRouter extends Router {
          * 发射错误,目前这些个发射错误都是为了 {@link RxRouter} 写的,发射的错误和正确的 item 被发射都应该
          * 最终发射在主线程
          *
-         * @param emitter
-         * @param e
+         * @param emitter {@link Completable} 的发射器
+         * @param e 跑出的异常
          */
         private static void onErrorEmitter(@MainThread final CompletableEmitter emitter,
                                            @NonNull final Throwable e) {

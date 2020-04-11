@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".support.ProxyIntentAct"
+            android:name="com.xiaojinzi.component.support.ProxyIntentAct"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
     </application>
 

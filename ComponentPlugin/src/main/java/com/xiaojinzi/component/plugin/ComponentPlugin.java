@@ -25,6 +25,7 @@ import java.util.List;
 public class ComponentPlugin implements Plugin<Project> {
 
     public static final String ROUTER_FOLDER = "component_router_doc_folder";
+    public static final String ROUTER_ENABLE = "componnet_router_doc_enable";
 
     @Override
     public void apply(final Project project) {
@@ -48,20 +49,34 @@ public class ComponentPlugin implements Plugin<Project> {
                 task.doLast(new Action<Task>() {
                     @Override
                     public void execute(Task task) {
-                        if (project.hasProperty(ROUTER_FOLDER)) {
-                            Object folderObj = project.property(ROUTER_FOLDER);
-                            if (folderObj instanceof String) {
-                                String folderStr = (String) folderObj;
-                                if (!folderStr.isEmpty()) {
-                                    File folder = new File(folderStr);
-                                    if (folder.exists() && folder.isDirectory()) {
-                                        try {
-                                            generateRouterDoc(folder);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
+                        if (!project.hasProperty(ROUTER_ENABLE)) {
+                            return;
+                        }
+                        Object routerEnableObj = project.property(ROUTER_ENABLE);
+                        if (!(routerEnableObj instanceof Boolean)){
+                            return;
+                        }
+                        boolean routerEnable = (boolean) routerEnableObj;
+                        if (!routerEnable) {
+                            return;
+                        }
+                        if (!project.hasProperty(ROUTER_FOLDER)) {
+                            return;
+                        }
+                        Object folderObj = project.property(ROUTER_FOLDER);
+                        if (!(folderObj instanceof String)) {
+                            return;
+                        }
+                        String folderStr = (String) folderObj;
+                        if (folderStr.isEmpty()) {
+                            return;
+                        }
+                        File folder = new File(folderStr);
+                        if (folder.exists() && folder.isDirectory()) {
+                            try {
+                                generateRouterDoc(folder);
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
                         }
                     }

@@ -15,8 +15,12 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["HOST": "component2"]
-                // arguments = ["HOST": "component2", "RouterDoc": project.property("component_router_doc_folder")]
+                // arguments = ["HOST": "component2"]
+                arguments = [
+                        "HOST"           : "component2",
+                        "RouterDocFolder": project.property("component_router_doc_folder"),
+                        "RouterDocEnable": String.valueOf(project.property("componnet_router_doc_enable"))
+                ]
             }
         }
 
@@ -37,7 +41,7 @@ dependencies {
     api project(':ModuleBase')
     if (rootProject.ext.isDependMavenOnline) {
         kapt libs.component_compiler
-    }else {
+    } else {
         kapt project(':ComponentCompiler')
     }
 }

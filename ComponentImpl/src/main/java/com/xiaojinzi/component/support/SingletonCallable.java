@@ -7,8 +7,6 @@ import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 /**
  * 单例服务,这是注册服务默认的形式
- *
- * @param <T>
  */
 @CheckClassNameAnno
 public abstract class SingletonCallable<T> implements Callable<T> {

@@ -35,11 +35,12 @@ public class FragmentManager {
     /**
      * 你可以注册一个服务,服务的初始化可以是 懒加载的
      *
-     * @param flag
-     * @param function
+     * @param flag 用 {@link com.xiaojinzi.component.anno.FragmentAnno} 标记 {@link Fragment} 的字符串
+     * @param function function
      */
     @AnyThread
-    public static void register(@NonNull String flag, @NonNull Function1<Bundle, ? extends Fragment> function) {
+    public static void register(@NonNull String flag,
+                                @NonNull Function1<Bundle, ? extends Fragment> function) {
         Utils.checkNullPointer(flag, "flag");
         Utils.checkNullPointer(function, "function");
         map.put(flag, function);

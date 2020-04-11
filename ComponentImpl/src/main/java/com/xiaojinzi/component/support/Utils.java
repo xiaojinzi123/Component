@@ -39,8 +39,6 @@ public class Utils {
 
     /**
      * 在主线程执行任务
-     *
-     * @param r
      */
     @AnyThread
     public static void postActionToMainThread(@NonNull Runnable r) {

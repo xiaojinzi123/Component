@@ -10,8 +10,12 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["HOST": "component1"]
-                // arguments = ["HOST": "component1", "RouterDoc": project.property("component_router_doc_folder")]
+                // arguments = ["HOST": "component1"]
+                arguments = [
+                        "HOST"           : "component1",
+                        "RouterDocFolder": project.property("component_router_doc_folder"),
+                        "RouterDocEnable": String.valueOf(project.property("componnet_router_doc_enable"))
+                ]
             }
         }
     }
