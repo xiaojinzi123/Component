@@ -2,6 +2,7 @@ package com.xiaojinzi.componentdemo;
 
 import android.app.Application;
 
+import com.google.gson.Gson;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.impl.application.ModuleManager;
@@ -31,6 +32,7 @@ public class App extends Application {
                         .optimizeInit(true)
                         // 自动加载所有模块
                         .autoRegisterModule(true)
+                        .objectToJsonConverter(obj -> new Gson().toJson(obj))
                         .build()
         );
         long endTime = System.currentTimeMillis();

@@ -36,6 +36,7 @@ dependencies {
     api libs.constraintLayout
     api libs.rxjava
     api libs.rxandroid
+    api libs.gson
 
     if (rootProject.ext.isDependMavenOnline) {
         api libs.component_impl_rx

@@ -8,25 +8,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 标记一个接口
+ * 标记一个 Service 服务接口的方法的参数是暴露的
  */
 @MainThreadCreateAnno
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.CLASS)
-public @interface ServiceAnno {
+public @interface ServiceParameterAnno {
 
     /**
-     * 这个服务对应的接口
-     *
-     * @return
+     * 名称
      */
-    Class[] value();
-
-    /**
-     * 是否是单例,默认是单例模式的
-     *
-     * @return
-     */
-    boolean singleTon() default true;
+    String value();
 
 }

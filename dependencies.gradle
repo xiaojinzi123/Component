@@ -26,6 +26,7 @@ ext.libs = [
         commons_codec       : "commons-codec:commons-codec:1.11",
         rxjava              : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
         rxandroid           : "io.reactivex.rxjava2:rxandroid:$versions.rxandroid",
+        gson           : "com.google.code.gson:gson:2.8.5",
 
         component_annotation: "com.github.xiaojinzi123.Component:component-annotation:${versions.component_version}",
         component_compiler  : "com.github.xiaojinzi123.Component:component-compiler:${versions.component_version}",
