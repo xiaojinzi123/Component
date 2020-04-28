@@ -27,26 +27,23 @@ public class ServiceManager {
     /**
      * Service 的集合. 线程安全的
      */
-    private static Map<Class, Callable<?>> map = Collections.synchronizedMap(new HashMap<Class, Callable<?>>());
+    private static Map<Class, Callable<?>> serviceMap =
+            Collections.synchronizedMap(new HashMap<Class, Callable<?>>());
 
     /**
      * 你可以注册一个服务,服务的初始化可以是 懒加载的
-     *
-     * @param tClass
-     * @param callable
-     * @param <T>
      */
     @AnyThread
     public static <T> void register(@NonNull Class<T> tClass, @NonNull Callable<? extends T> callable) {
         Utils.checkNullPointer(tClass, "tClass");
         Utils.checkNullPointer(callable, "callable");
-        map.put(tClass, callable);
+        serviceMap.put(tClass, callable);
     }
 
     @Nullable
     @AnyThread
     public static <T> void unregister(@NonNull Class<T> tClass) {
-        map.remove(tClass);
+        serviceMap.remove(tClass);
     }
 
     /**
@@ -63,7 +60,7 @@ public class ServiceManager {
             @NonNull
             @Override
             public T get() {
-                Callable<?> callable = map.get(tClass);
+                Callable<?> callable = serviceMap.get(tClass);
                 if (callable == null) {
                     return null;
                 } else {

@@ -17,15 +17,11 @@ public @interface ServiceAnno {
 
     /**
      * 这个服务对应的接口
-     *
-     * @return
      */
     Class[] value();
 
     /**
      * 是否是单例,默认是单例模式的
-     *
-     * @return
      */
     boolean singleTon() default true;
 
