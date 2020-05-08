@@ -111,6 +111,7 @@ public class Component {
      */
     @AnyThread
     public static boolean isDebug() {
+        checkInit();
         return Component.isDebug;
     }
 
