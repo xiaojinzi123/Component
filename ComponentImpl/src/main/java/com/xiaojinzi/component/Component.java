@@ -103,6 +103,7 @@ public class Component {
     @NonNull
     @AnyThread
     public static Config getConfig() {
+        checkInit();
         return mConfig;
     }
 
@@ -111,7 +112,6 @@ public class Component {
      */
     @AnyThread
     public static boolean isDebug() {
-        checkInit();
         return Component.isDebug;
     }
 

@@ -20,8 +20,7 @@
 
         <activity android:name=".view.ProxyAct">
             <intent-filter>
-                <data
-                    android:scheme="component" />
+                <data android:scheme="component" />
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
