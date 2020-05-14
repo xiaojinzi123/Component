@@ -94,4 +94,8 @@ public class ModuleConfig {
         public static final String SHOULD_NOT_APPEAR = "shouldNotAppear";
     }
 
+    public static class Test {
+        public static final String NAME = "test_";
+    }
+
 }

@@ -93,6 +93,6 @@ public class ComponentConstants {
      * 整串字符串放到 https://jex.im/regulex 就可以看到效果
      */
     public static final String HOST_REGEX =
-            "^([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*$";
+            "^([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|_)*$";
 
 }
