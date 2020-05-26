@@ -1,6 +1,10 @@
 package com.xiaojinzi.component.cache;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.xiaojinzi.component.support.Utils;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,12 +14,16 @@ import java.util.Set;
 
 /**
  * ================================================
- * LRU 即 Least Recently Used,最近最少使用,当缓存满了,会优先淘汰那些最近最不常访问的数据
+ * LRU 即 Least Recently Used, 最近最少使用,当缓存满了,
+ * 会优先淘汰那些最近最不常访问的数据
+ *
  * @see Cache
  * ================================================
  */
 public class LruCache<K, V> implements Cache<K, V> {
-    private final LinkedHashMap<K, V> cache = new LinkedHashMap<>(100, 0.75f, true);
+
+    private final LinkedHashMap<K, V> cache =
+            new LinkedHashMap<>(100, 0.75f, true);
     private final int initialMaxSize;
     private int maxSize;
     private int currentSize = 0;
@@ -23,7 +31,7 @@ public class LruCache<K, V> implements Cache<K, V> {
     /**
      * Constructor for LruCache.
      *
-     * @param size 这个缓存的最大 size,这个 size 所使用的单位必须和 {@link #getItemSize(Object)} 所使用的单位一致.
+     * @param size 这个缓存的最大 size,这个 size 所使用的单位必须和 {@link #getItemSize(Object, Object)} 所使用的单位一致.
      */
     public LruCache(int size) {
         this.initialMaxSize = size;
@@ -52,14 +60,14 @@ public class LruCache<K, V> implements Cache<K, V> {
      * @param value 每个 {@code item} value 所占用的 size
      * @return 单个 item 的 {@code size}
      */
-    protected int getItemSize(K key,V value) {
+    protected int getItemSize(K key, V value) {
         return 1;
     }
 
-    private int safeSizeOf(K key,V value) {
+    private int safeSizeOf(K key, V value) {
         int result = getItemSize(key, value);
         if (result < 0) {
-            throw new IllegalStateException("Negative size: " + key + "=" + value);
+            throw new IllegalStateException("Negative Size: " + key + "=" + value);
         }
         return result;
     }
@@ -101,7 +109,8 @@ public class LruCache<K, V> implements Cache<K, V> {
      * @return {@code true} 为在容器中含有这个 {@code key}, 否则为 {@code false}
      */
     @Override
-    public synchronized boolean containsKey(K key) {
+    public synchronized boolean containsKey(@NonNull K key) {
+        Utils.checkNullPointer(key, "key");
         return cache.containsKey(key);
     }
 
@@ -123,7 +132,8 @@ public class LruCache<K, V> implements Cache<K, V> {
      */
     @Override
     @Nullable
-    public synchronized V get(K key) {
+    public synchronized V get(@NonNull K key) {
+        Utils.checkNullPointer(key, "key");
         return cache.get(key);
     }
 
@@ -140,22 +150,21 @@ public class LruCache<K, V> implements Cache<K, V> {
      */
     @Override
     @Nullable
-    public synchronized V put(K key, V value) {
-        final int itemSize = safeSizeOf(key,value);
+    public synchronized V put(@NonNull K key, @Nullable V value) {
+        Utils.checkNullPointer(key, "key");
+        final int itemSize = safeSizeOf(key, value);
         if (itemSize >= maxSize) {
             onItemEvicted(key, value);
             return null;
         }
-
         final V result = cache.put(key, value);
         if (value != null) {
-            currentSize += safeSizeOf(key,value);
+            currentSize += safeSizeOf(key, value);
         }
         if (result != null) {
-            currentSize -= safeSizeOf(key,result);
+            currentSize -= safeSizeOf(key, result);
         }
         evict();
-
         return result;
     }
 
@@ -168,10 +177,11 @@ public class LruCache<K, V> implements Cache<K, V> {
      */
     @Override
     @Nullable
-    public synchronized V remove(K key) {
+    public synchronized V remove(@NonNull K key) {
+        Utils.checkNullPointer(key, "key");
         final V value = cache.remove(key);
         if (value != null) {
-            currentSize -= safeSizeOf(key,value);
+            currentSize -= safeSizeOf(key, value);
         }
         return value;
     }
@@ -186,6 +196,7 @@ public class LruCache<K, V> implements Cache<K, V> {
 
     /**
      * 当指定的 size 小于当前缓存已占用的总 size 时,会开始清除缓存中最近最少使用的条目
+     * 从头开始删除, 直到 size 满足
      *
      * @param size {@code size}
      */
@@ -199,18 +210,19 @@ public class LruCache<K, V> implements Cache<K, V> {
             last = iterator.next();
             final K key = last.getKey();
             final V value = last.getValue();
-
             iterator.remove();
-            currentSize -= safeSizeOf(key,value);
+            currentSize -= safeSizeOf(key, value);
             onItemEvicted(key, value);
         }
     }
 
     /**
-     * 当缓存中已占用的总 size 大于所能允许的最大 size ,会使用  {@link #trimToSize(int)} 开始清除满足条件的条目
+     * 当缓存中已占用的总 size 大于所能允许的最大 size,
+     * 会使用  {@link #trimToSize(int)} 开始清除满足条件的条目
      */
     private void evict() {
         trimToSize(maxSize);
     }
+
 }
 

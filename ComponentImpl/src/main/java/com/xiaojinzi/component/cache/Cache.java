@@ -2,6 +2,7 @@ package com.xiaojinzi.component.cache;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import java.util.Set;
 
 
@@ -44,18 +45,18 @@ public interface Cache<K, V> {
      * @return {@code value}
      */
     @Nullable
-    V get(K key);
+    V get(@NonNull K key);
 
     /**
      * 将 {@code key} 和 {@code value} 以条目的形式加入缓存,如果这个 {@code key} 在缓存中已经有对应的 {@code value}
      * 则此 {@code value} 被新的 {@code value} 替换并返回,如果为 {@code null} 说明是一个新条目
      *
-     * @param key {@code key}
+     * @param key   {@code key}
      * @param value {@code value}
      * @return 如果这个 {@code key} 在容器中已经储存有 {@code value}, 则返回之前的 {@code value} 否则返回 {@code null}
      */
     @Nullable
-    V put(K key, V value);
+    V put(@NonNull K key, @Nullable V value);
 
     /**
      * 移除缓存中这个 {@code key} 所对应的条目,并返回所移除条目的 value
@@ -65,7 +66,7 @@ public interface Cache<K, V> {
      * @return 如果这个 {@code key} 在容器中已经储存有 {@code value} 并且删除成功则返回删除的 {@code value}, 否则返回 {@code null}
      */
     @Nullable
-    V remove(K key);
+    V remove(@NonNull K key);
 
     /**
      * 如果这个 {@code key} 在缓存中有对应的 value 并且不为 {@code null}, 则返回 {@code true}
@@ -73,13 +74,14 @@ public interface Cache<K, V> {
      * @param key {@code key}
      * @return {@code true} 为在容器中含有这个 {@code key}, 否则为 {@code false}
      */
-    boolean containsKey(K key);
+    boolean containsKey(@NonNull K key);
 
     /**
      * 返回当前缓存中含有的所有 {@code key}
      *
      * @return {@code keySet}
      */
+    @NonNull
     Set<K> keySet();
 
     /**
