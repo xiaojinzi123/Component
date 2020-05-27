@@ -16,7 +16,6 @@ ext.versions = [
 
 ext.libs = [
         // Google 提供的
-        support_annotations : "com.android.support:support-annotations:${versions.support_lib}",
         support_v4          : "com.android.support:support-v4:$versions.support_lib",
         appcompat_v7        : "com.android.support:appcompat-v7:${versions.support_lib}",
         recyclerview        : "com.android.support:recyclerview-v7:${versions.support_lib}",
