@@ -5,12 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.xiaojinzi.base.ModuleConfig;
-import com.xiaojinzi.base.service.inter.user.UserService;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
 import com.xiaojinzi.component1.R;
 
 /**
