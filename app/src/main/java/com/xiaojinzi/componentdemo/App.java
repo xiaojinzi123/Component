@@ -9,6 +9,12 @@ import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
+import java.util.Arrays;
+
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+
 public class App extends Application {
 
     @Override
@@ -44,6 +50,7 @@ public class App extends Application {
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();
         }
+
     }
 
 }
