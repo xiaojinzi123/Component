@@ -64,7 +64,11 @@ public class ServiceManager {
                 if (callable == null) {
                     return null;
                 } else {
-                    return (T) callable.get();
+                    try {
+                        return (T) Utils.checkNullPointer(callable.get());
+                    } catch (Exception e) {
+                        return null;
+                    }
                 }
             }
         });

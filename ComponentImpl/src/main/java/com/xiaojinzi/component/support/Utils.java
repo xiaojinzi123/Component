@@ -126,12 +126,22 @@ public class Utils {
      * 检查字符串是否为空
      */
     public static String checkStringNullPointer(@Nullable String value,
-                                                     @NonNull String parameterName,
-                                                     @Nullable String desc) {
+                                                @NonNull String parameterName,
+                                                @Nullable String desc) {
         if (value == null || value.isEmpty()) {
             throw new NullPointerException(
                     STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL + (desc == null ? "" : "," + desc)
             );
+        }
+        return value;
+    }
+
+    /**
+     * 检查对象是否为空
+     */
+    public static <T> T checkNullPointer(@Nullable T value) {
+        if (Component.isDebug() && value == null) {
+            throw new NullPointerException();
         }
         return value;
     }
@@ -220,7 +230,11 @@ public class Utils {
     @AnyThread
     public static <T> T mainThreadCallable(@NonNull final Callable<T> callable) {
         if (isMainThread()) {
-            return callable.get();
+            try {
+                return Utils.checkNullPointer(callable.get());
+            } catch (Exception e) {
+                return null;
+            }
         } else {
             final AtomicReference<T> tAtomicReference = new AtomicReference<>();
             final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
@@ -228,13 +242,15 @@ public class Utils {
                 @Override
                 public void run() {
                     try {
-                        tAtomicReference.set(callable.get());
-                    } catch (RuntimeException e) {
-                        exceptionAtomicReference.set(e);
+                        tAtomicReference.set(Utils.checkNullPointer(callable.get()));
+                    } catch (RuntimeException e1) {
+                        exceptionAtomicReference.set(e1);
+                    } catch (Exception e2) {
+                        exceptionAtomicReference.set(new RuntimeException(e2));
                     }
                 }
             });
-            // 线程空转
+            // 线程空转, 等待两个之中有一个为空
             while (tAtomicReference.get() == null && exceptionAtomicReference.get() == null) {
             }
             if (exceptionAtomicReference.get() != null) {
