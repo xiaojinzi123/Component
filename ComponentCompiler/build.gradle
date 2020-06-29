@@ -20,7 +20,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     if (rootProject.ext.isDependMavenOnline) {
         implementation androidxLibs.component_annotation
-    }else {
+    } else {
         implementation project(':ComponentApi')
     }
 }
