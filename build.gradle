@@ -7,7 +7,7 @@ buildscript {
 
     ext.kotlin_version = '1.3.72'
     ext.component_group_id = "com.xiaojinzi"
-    ext.isDependMavenOnline = true
+    ext.isDependMavenOnline = false
     // ext.component_asm_util_class_output_path = "./Temp/ASMUtil.class"
     // 注解生成器生成的文件 json 信息都在这里面
     ext.component_router_doc_folder = "./Doc"
