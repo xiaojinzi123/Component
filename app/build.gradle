@@ -65,7 +65,6 @@ dependencies {
     api project(':Module2')
     api project(':ModuleHelp')
     api project(':ModuleUser')
-    api project(':ModuleTest')
 
     if (rootProject.ext.isDependMavenOnline) {
         kapt libs.component_compiler
