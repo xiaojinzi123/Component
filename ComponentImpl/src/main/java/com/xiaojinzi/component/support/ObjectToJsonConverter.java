@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Json 转化器
