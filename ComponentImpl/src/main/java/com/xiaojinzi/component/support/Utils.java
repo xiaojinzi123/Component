@@ -226,37 +226,46 @@ public class Utils {
      * @param <T>      具体返回的值
      * @return 具体返回的值
      */
-    @Nullable
+    @NonNull
     @AnyThread
     public static <T> T mainThreadCallable(@NonNull final Callable<T> callable) {
-        if (isMainThread()) {
-            try {
-                return Utils.checkNullPointer(callable.get());
-            } catch (Exception e) {
-                return null;
+        return mainThreadCallNullable(new CallNullable<T>() {
+            @Nullable
+            @Override
+            public T get() {
+                return callable.get();
             }
+        });
+    }
+
+    @Nullable
+    @AnyThread
+    public static <T> T mainThreadCallNullable(@NonNull final CallNullable<T> callable) {
+        if (isMainThread()) {
+            return callable.get();
         } else {
+            final AtomicReference<Boolean> haveException = new AtomicReference<>();
             final AtomicReference<T> tAtomicReference = new AtomicReference<>();
             final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
             Utils.postActionToMainThreadAnyway(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        tAtomicReference.set(Utils.checkNullPointer(callable.get()));
-                    } catch (RuntimeException e1) {
-                        exceptionAtomicReference.set(e1);
-                    } catch (Exception e2) {
-                        exceptionAtomicReference.set(new RuntimeException(e2));
+                        tAtomicReference.set(callable.get());
+                        haveException.set(false);
+                    } catch (RuntimeException e) {
+                        exceptionAtomicReference.set(e);
+                        haveException.set(true);
                     }
                 }
             });
-            // 线程空转, 等待两个之中有一个为空
-            while (tAtomicReference.get() == null && exceptionAtomicReference.get() == null) {
+            while (haveException.get() == null) {
             }
-            if (exceptionAtomicReference.get() != null) {
+            if (haveException.get().booleanValue()) {
                 throw exceptionAtomicReference.get();
+            } else {
+                return tAtomicReference.get();
             }
-            return tAtomicReference.get();
         }
     }
 

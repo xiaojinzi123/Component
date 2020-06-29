@@ -15,6 +15,7 @@ public abstract class SingletonCallable<T> implements Callable<T> {
     private volatile T instance;
 
     @Override
+    @NonNull
     public final T get() {
         if (null == instance) {
             synchronized (this) {

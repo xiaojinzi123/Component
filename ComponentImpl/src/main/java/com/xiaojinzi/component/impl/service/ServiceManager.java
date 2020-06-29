@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.Callable;
+import com.xiaojinzi.component.support.CallNullable;
 import com.xiaojinzi.component.support.Utils;
 
 import java.util.Collections;
@@ -56,7 +57,7 @@ public class ServiceManager {
     @Nullable
     @AnyThread
     public static <T> T get(@NonNull final Class<T> tClass) {
-        return Utils.mainThreadCallable(new Callable<T>() {
+        return Utils.mainThreadCallNullable(new CallNullable<T>() {
             @NonNull
             @Override
             public T get() {
@@ -64,11 +65,7 @@ public class ServiceManager {
                 if (callable == null) {
                     return null;
                 } else {
-                    try {
-                        return (T) Utils.checkNullPointer(callable.get());
-                    } catch (Exception e) {
-                        return null;
-                    }
+                    return (T) Utils.checkNullPointer(callable.get());
                 }
             }
         });

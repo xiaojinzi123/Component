@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.Function1;
+import com.xiaojinzi.component.support.CallNullable;
 import com.xiaojinzi.component.support.Utils;
 
 import java.util.Collections;
@@ -62,7 +62,7 @@ public class FragmentManager {
     @AnyThread
     public static Fragment get(@NonNull final String flag, @Nullable final Bundle bundle) {
         Utils.checkNullPointer(flag, "fragment flag");
-        return Utils.mainThreadCallable(new Callable<Fragment>() {
+        return Utils.mainThreadCallNullable(new CallNullable<Fragment>() {
             @NonNull
             @Override
             public Fragment get() {

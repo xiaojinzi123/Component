@@ -85,6 +85,16 @@ public class TestServiceAct extends AppCompatActivity {
         }
     }
 
+    public void test(View view) {
+        new Thread() {
+            @Override
+            public void run() {
+                TestInterface testInterface = ServiceManager.get(TestInterface.class);
+                Toast.makeText(TestServiceAct.this, "testInterface == " + testInterface, Toast.LENGTH_SHORT).show();
+            }
+        }.start();
+    }
+
     public void rxServiceUse1(View view) {
         RxServiceManager.with(AnnoMethodService.class)
                 .map(service -> service.test())
@@ -119,6 +129,10 @@ public class TestServiceAct extends AppCompatActivity {
                         Toast.makeText(TestServiceAct.this, "可以不用处理的错误,错误信息：" + Utils.getRealThrowable(throwable), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public interface TestInterface {
+        void test();
     }
 
 }

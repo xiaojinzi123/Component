@@ -19,6 +19,6 @@ public interface Callable<T> {
      * @return 获取实现对象
      */
     @NonNull
-    T get() throws Exception;
+    T get();
 
 }
