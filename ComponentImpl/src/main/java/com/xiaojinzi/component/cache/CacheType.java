@@ -2,6 +2,7 @@ package com.xiaojinzi.component.cache;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.xiaojinzi.component.support.Utils;
 
@@ -27,7 +28,9 @@ public interface CacheType {
 
         @Override
         public int calculateCacheSize(Context context) {
-            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            Utils.checkNullPointer(context, "context");
+            ActivityManager activityManager =
+                    (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             int targetMemoryCacheSize;
             if (Utils.isLowMemoryDevice(activityManager)) {
                 targetMemoryCacheSize = activityManager.getMemoryClass() / 6;
@@ -44,15 +47,12 @@ public interface CacheType {
 
     /**
      * 返回框架内需要缓存的模块对应的 {@code id}
-     *
-     * @return
      */
     int getCacheTypeId();
 
     /**
      * 计算对应模块需要的缓存大小
-     *
-     * @return
      */
-    int calculateCacheSize(Context context);
+    int calculateCacheSize(@NonNull Context context);
+
 }

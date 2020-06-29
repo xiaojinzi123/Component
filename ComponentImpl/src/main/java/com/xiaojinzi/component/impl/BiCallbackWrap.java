@@ -7,8 +7,6 @@ import com.xiaojinzi.component.support.Utils;
 
 /**
  * 为了实现 {@link BiCallback} 用户的这个 Callback 的各个方法最多只能执行一次
- *
- * @param <T>
  */
 class BiCallbackWrap<T> implements BiCallback<T> {
 

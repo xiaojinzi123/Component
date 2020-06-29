@@ -5,15 +5,13 @@ import androidx.annotation.NonNull;
 
 /**
  * 模块管理中心注册的类
- *
- * @param <T>
  */
 public interface IComponentCenter<T> {
 
     /**
      * 注册
      *
-     * @param t
+     * @param t 注册的目标
      */
     @MainThread
     void register(T t);
@@ -21,7 +19,7 @@ public interface IComponentCenter<T> {
     /**
      * 通过host注册
      *
-     * @param host
+     * @param host 需要注册的 host
      */
     @MainThread
     void register(@NonNull String host);
@@ -29,7 +27,7 @@ public interface IComponentCenter<T> {
     /**
      * 反注册
      *
-     * @param t
+     * @param t 反注册的目标
      */
     @MainThread
     void unregister(T t);
@@ -37,7 +35,7 @@ public interface IComponentCenter<T> {
     /**
      * 通过 host 反注册
      *
-     * @param host
+     * @param host 反注册的 host
      */
     @MainThread
     void unregister(@NonNull String host);

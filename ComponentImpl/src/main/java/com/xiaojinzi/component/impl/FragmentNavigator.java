@@ -31,7 +31,6 @@ public class FragmentNavigator {
     /**
      * 此方法会在之后的版本删除. 请使用 {@link FragmentNavigator} 中的 putXXX 方法
      *
-     * @param bundle
      * @see #putAll(Bundle)
      */
     @Deprecated

@@ -1,134 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".view.MainAct">
+    android:layout_height="match_parent">
 
-    <com.xiaojinzi.componentdemo.view.XFlowLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:h_space="1dp"
-        app:v_space="1dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".view.MainAct">
+
+        <com.xiaojinzi.componentdemo.view.XFlowLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:h_space="1dp"
+            app:v_space="1dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="loadAppModule"
+                android:text="加载App模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="unloadAppModule"
+                android:text="卸载App模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="loadUserModule"
+                android:text="加载User模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="unloadUserModule"
+                android:text="卸载User模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="loadHelpModule"
+                android:text="加载Help模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="unloadHelpModule"
+                android:text="卸载Help模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="loadModule1Module"
+                android:text="加载Module1模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="unloadModule1Module"
+                android:text="卸载Module1模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="loadModule2Module"
+                android:text="加载Module2模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="unloadModule2Module"
+                android:text="卸载Module2模块"
+                android:textAllCaps="false"
+                android:textSize="10dp" />
+
+        </com.xiaojinzi.componentdemo.view.XFlowLayout>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="loadAppModule"
-            android:text="加载App模块"
-            android:textAllCaps="false" />
+            android:onClick="testRouter"
+            android:text="测试跳转"
+            android:textSize="10dp" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="unloadAppModule"
-            android:text="卸载App模块"
-            android:textAllCaps="false" />
+            android:onClick="testRouterForFragment"
+            android:text="跳转Fragment"
+            android:textAllCaps="false"
+            android:textSize="10dp" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="loadUserModule"
-            android:text="加载User模块"
-            android:textAllCaps="false" />
+            android:onClick="testWebRouter"
+            android:text="测试Web跳转"
+            android:textAllCaps="false"
+            android:textSize="10dp" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="unloadUserModule"
-            android:text="卸载User模块"
-            android:textAllCaps="false" />
+            android:onClick="testService"
+            android:text="测试服务使用"
+            android:textSize="10dp" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="loadHelpModule"
-            android:text="加载Help模块"
-            android:textAllCaps="false" />
+            android:onClick="testQuality"
+            android:text="测试代码质量(每次发布这里面的每一项都要通过)"
+            android:textSize="10dp" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="unloadHelpModule"
-            android:text="卸载Help模块"
-            android:textAllCaps="false" />
+            android:onClick="intentRouter1"
+            android:text="获取 Intent 发送一个通知, 点击通知出发路由\n使用 Component 自带的默认代理界面"
+            android:textAllCaps="false"
+            android:textSize="10dp" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="loadModule1Module"
-            android:text="加载Module1模块"
-            android:textAllCaps="false" />
+            android:onClick="intentRouter2"
+            android:text="获取 Intent 发送一个通知, 点击通知出发路由\n使用自定义的代理界面(本界面)"
+            android:textAllCaps="false"
+            android:textSize="10dp" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="unloadModule1Module"
-            android:text="卸载Module1模块"
-            android:textAllCaps="false" />
+    </LinearLayout>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="loadModule2Module"
-            android:text="加载Module2模块"
-            android:textAllCaps="false" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="unloadModule2Module"
-            android:text="卸载Module2模块"
-            android:textAllCaps="false" />
-
-    </com.xiaojinzi.componentdemo.view.XFlowLayout>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="testRouter"
-        android:text="测试跳转" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="testRouterForFragment"
-        android:text="跳转Fragment"
-        android:textAllCaps="false" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="testWebRouter"
-        android:text="测试Web跳转"
-        android:textAllCaps="false" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="testService"
-        android:text="测试服务使用" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="testQuality"
-        android:text="测试代码质量(每次发布这里面的每一项都要通过)" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="intentRouter1"
-        android:text="获取 Intent 发送一个通知, 点击通知出发路由\n使用 Component 自带的默认代理界面"
-        android:textAllCaps="false" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="intentRouter2"
-        android:text="获取 Intent 发送一个通知, 点击通知出发路由\n使用自定义的代理界面(本界面)"
-        android:textAllCaps="false" />
-
-</LinearLayout>
+</ScrollView>

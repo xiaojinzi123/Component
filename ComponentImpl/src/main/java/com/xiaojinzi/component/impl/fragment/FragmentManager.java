@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.Function1;
+import com.xiaojinzi.component.support.CallNullable;
 import com.xiaojinzi.component.support.Utils;
 
 import java.util.Collections;
@@ -36,11 +36,12 @@ public class FragmentManager {
     /**
      * 你可以注册一个服务,服务的初始化可以是 懒加载的
      *
-     * @param flag
-     * @param function
+     * @param flag 用 {@link com.xiaojinzi.component.anno.FragmentAnno} 标记 {@link Fragment} 的字符串
+     * @param function function
      */
     @AnyThread
-    public static void register(@NonNull String flag, @NonNull Function1<Bundle, ? extends Fragment> function) {
+    public static void register(@NonNull String flag,
+                                @NonNull Function1<Bundle, ? extends Fragment> function) {
         Utils.checkNullPointer(flag, "flag");
         Utils.checkNullPointer(function, "function");
         map.put(flag, function);
@@ -62,7 +63,7 @@ public class FragmentManager {
     @AnyThread
     public static Fragment get(@NonNull final String flag, @Nullable final Bundle bundle) {
         Utils.checkNullPointer(flag, "fragment flag");
-        return Utils.mainThreadCallable(new Callable<Fragment>() {
+        return Utils.mainThreadCallNullable(new CallNullable<Fragment>() {
             @NonNull
             @Override
             public Fragment get() {

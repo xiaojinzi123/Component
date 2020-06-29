@@ -32,8 +32,8 @@ public interface BiCallback<T> extends OnRouterCancel, OnRouterError {
     /**
      * 做一个转化
      *
-     * @param <T>
-     * @param <R>
+     * @param <T> T 转化为 R
+     * @param <R> T 转化为 R
      */
     abstract class Map<T, R> implements BiCallback<T>, Function<T, R> {
 

@@ -9,3 +9,4 @@ include ':app', ':ComponentPlugin',
         ':ComponentApi',
         ':ComponentCompiler',
         ':ComponentImpl'
+include ':ModuleTest'

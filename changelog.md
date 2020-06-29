@@ -1,4 +1,11 @@
 
+#### [v1.8.2.3](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.3)
+- 优化了 Host 名称中不可以配置 _ 的问题. 但是一定不是开头哦
+- 修复 ServiceManager.get() 或者 FragmentManager.get() 方法在子线程中调用的时候, 如果没有实现类就会死循环的问题
+
+#### [v1.8.2.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.2)
+- 当不使用框架的 ActivityResult, 可以填写 requestCode 使用普通的 startActivityResult
+
 #### [v1.8.2.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.1)
 
 - 修复之前修改 `impl` 模块的包名引起的 `ProxtActivity` 失效的问题

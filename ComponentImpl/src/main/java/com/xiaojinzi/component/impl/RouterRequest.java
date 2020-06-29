@@ -362,14 +362,20 @@ public class RouterRequest {
         protected Consumer<Intent> intentConsumer;
 
         /**
-         * 跳转前的 Callback
+         * 路由开始之前
          */
         @Nullable
         protected Action beforAction;
 
+        /**
+         * 执行 {@link Activity#startActivity(Intent)} 之前
+         */
         @Nullable
         protected Action beforStartAction;
 
+        /**
+         * 执行 {@link Activity#startActivity(Intent)} 之后
+         */
         @Nullable
         protected Action afterStartAction;
 

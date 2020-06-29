@@ -17,6 +17,8 @@ public class ComponentUtil {
      */
     public static final String IMPL_OUTPUT_PKG = "com.xiaojinzi.component.impl";
 
+    public static final String IMPL_OUTPUT_PKG_PATH = "com/xiaojinzi/component/impl";
+
     /**
      * 点
      */

@@ -103,6 +103,7 @@ public class Component {
     @NonNull
     @AnyThread
     public static Config getConfig() {
+        checkInit();
         return mConfig;
     }
 
@@ -182,7 +183,7 @@ public class Component {
                 }
             }
         } catch (Exception ignore) {
-            LogUtil.log("field '" + target.getClass().getName() + "' inject fail");
+            LogUtil.log("class '" + target.getClass().getName() + "' inject fail");
         }
     }
 

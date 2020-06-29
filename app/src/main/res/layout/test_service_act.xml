@@ -9,6 +9,13 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="test"
+        android:text="test"
+        android:textAllCaps="false" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:onClick="rxServiceUse1"
         android:text="RxService获取AnnoMethodService并且调用test"
         android:textAllCaps="false" />

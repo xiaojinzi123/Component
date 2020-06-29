@@ -31,7 +31,7 @@ abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
     /**
      * 用作销毁一些缓存
      *
-     * @param app
+     * @param app {@link Application}
      */
     @Override
     public void onCreate(@NonNull Application app) {

@@ -20,19 +20,7 @@
 
         <activity android:name=".view.ProxyAct">
             <intent-filter>
-                <data
-                    android:scheme="component" />
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".view.ProxyAct1">
-            <intent-filter>
-                <data
-                    android:scheme="component" />
+                <data android:scheme="component" />
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

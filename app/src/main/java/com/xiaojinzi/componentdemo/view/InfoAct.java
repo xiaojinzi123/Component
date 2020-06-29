@@ -9,9 +9,6 @@ import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RouterAnno(
         path = ModuleConfig.App.INFO
 )

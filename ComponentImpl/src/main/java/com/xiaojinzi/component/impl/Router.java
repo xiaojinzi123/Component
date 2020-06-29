@@ -143,9 +143,9 @@ public class Router {
     /**
      * 拿到一个接口的实现类
      *
-     * @param apiClass
-     * @param <T>
-     * @return
+     * @param apiClass 路由接口 Api class
+     * @param <T>      路由接口 Api class 的实例对象
+     * @return 路由接口 Api class 的实例对象
      */
     @NonNull
     @AnyThread
@@ -195,7 +195,7 @@ public class Router {
     /**
      * 取消一个 Fragment 的有关路由任务
      *
-     * @param fragment
+     * @param fragment {@link Fragment}
      */
     @MainThread
     public static void cancel(@NonNull Fragment fragment) {

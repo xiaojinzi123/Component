@@ -86,6 +86,16 @@ public class TestServiceAct extends AppCompatActivity {
         }
     }
 
+    public void test(View view) {
+        new Thread() {
+            @Override
+            public void run() {
+                TestInterface testInterface = ServiceManager.get(TestInterface.class);
+                System.out.println("testInterface = " + testInterface);
+            }
+        }.start();
+    }
+
     public void rxServiceUse1(View view) {
         RxServiceManager.with(AnnoMethodService.class)
                 .map(service -> service.test())
@@ -109,17 +119,14 @@ public class TestServiceAct extends AppCompatActivity {
                 .flatMap((Function<Component1Service, SingleSource<String>>) service -> service.testError())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-                        Toast.makeText(TestServiceAct.this, "完成服务的调用啦,内容是：" + s, Toast.LENGTH_SHORT).show();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Toast.makeText(TestServiceAct.this, "可以不用处理的错误,错误信息：" + Utils.getRealThrowable(throwable), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .subscribe(
+                        s -> Toast.makeText(TestServiceAct.this, "完成服务的调用啦,内容是：" + s, Toast.LENGTH_SHORT).show(),
+                        throwable -> Toast.makeText(TestServiceAct.this, "可以不用处理的错误,错误信息：" + Utils.getRealThrowable(throwable), Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    public interface TestInterface {
+        void test();
     }
 
 }

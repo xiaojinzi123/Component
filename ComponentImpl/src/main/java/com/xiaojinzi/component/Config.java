@@ -2,7 +2,9 @@ package com.xiaojinzi.component;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.xiaojinzi.component.support.ObjectToJsonConverter;
 import com.xiaojinzi.component.support.Utils;
 
 /**
@@ -22,6 +24,7 @@ public class Config {
     private boolean isTipWhenUseApplication;
     private boolean isUseRouteRepeatCheckInterceptor = true;
     private long routeRepeatCheckDuration = 1000;
+    private ObjectToJsonConverter objectToJsonConverter;
 
     private Config(@NonNull Builder builder) {
         this.application = builder.application;
@@ -31,6 +34,7 @@ public class Config {
         this.defaultScheme = builder.defaultScheme;
         this.isUseRouteRepeatCheckInterceptor = builder.isUseRouteRepeatCheckInterceptor;
         this.routeRepeatCheckDuration = builder.routeRepeatCheckDuration;
+        this.objectToJsonConverter = builder.objectToJsonConverter;
     }
 
     @NonNull
@@ -63,6 +67,11 @@ public class Config {
         return routeRepeatCheckDuration;
     }
 
+    @Nullable
+    public ObjectToJsonConverter getObjectToJsonConverter() {
+        return objectToJsonConverter;
+    }
+
     @NonNull
     public static Builder with(@NonNull Application application) {
         return new Builder(application);
@@ -77,6 +86,7 @@ public class Config {
         private boolean isTipWhenUseApplication = true;
         private boolean isUseRouteRepeatCheckInterceptor = true;
         private long routeRepeatCheckDuration = 1000;
+        private ObjectToJsonConverter objectToJsonConverter;
 
         private boolean isUsed = false;
 
@@ -121,6 +131,11 @@ public class Config {
 
         public Builder routeRepeatCheckDuration(long routeRepeatCheckDuration) {
             this.routeRepeatCheckDuration = routeRepeatCheckDuration;
+            return this;
+        }
+
+        public Builder objectToJsonConverter(ObjectToJsonConverter objectToJsonConverter) {
+            this.objectToJsonConverter = objectToJsonConverter;
             return this;
         }
 

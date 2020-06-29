@@ -39,8 +39,6 @@ public class Utils {
 
     /**
      * 在主线程执行任务
-     *
-     * @param r
      */
     @AnyThread
     public static void postActionToMainThread(@NonNull Runnable r) {
@@ -128,12 +126,22 @@ public class Utils {
      * 检查字符串是否为空
      */
     public static String checkStringNullPointer(@Nullable String value,
-                                                     @NonNull String parameterName,
-                                                     @Nullable String desc) {
+                                                @NonNull String parameterName,
+                                                @Nullable String desc) {
         if (value == null || value.isEmpty()) {
             throw new NullPointerException(
                     STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL + (desc == null ? "" : "," + desc)
             );
+        }
+        return value;
+    }
+
+    /**
+     * 检查对象是否为空
+     */
+    public static <T> T checkNullPointer(@Nullable T value) {
+        if (Component.isDebug() && value == null) {
+            throw new NullPointerException();
         }
         return value;
     }
@@ -218,12 +226,25 @@ public class Utils {
      * @param <T>      具体返回的值
      * @return 具体返回的值
      */
-    @Nullable
+    @NonNull
     @AnyThread
     public static <T> T mainThreadCallable(@NonNull final Callable<T> callable) {
+        return mainThreadCallNullable(new CallNullable<T>() {
+            @Nullable
+            @Override
+            public T get() {
+                return callable.get();
+            }
+        });
+    }
+
+    @Nullable
+    @AnyThread
+    public static <T> T mainThreadCallNullable(@NonNull final CallNullable<T> callable) {
         if (isMainThread()) {
             return callable.get();
         } else {
+            final AtomicReference<Boolean> haveException = new AtomicReference<>();
             final AtomicReference<T> tAtomicReference = new AtomicReference<>();
             final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
             Utils.postActionToMainThreadAnyway(new Runnable() {
@@ -231,18 +252,20 @@ public class Utils {
                 public void run() {
                     try {
                         tAtomicReference.set(callable.get());
+                        haveException.set(false);
                     } catch (RuntimeException e) {
                         exceptionAtomicReference.set(e);
+                        haveException.set(true);
                     }
                 }
             });
-            // 线程空转
-            while (tAtomicReference.get() == null && exceptionAtomicReference.get() == null) {
+            while (haveException.get() == null) {
             }
-            if (exceptionAtomicReference.get() != null) {
+            if (haveException.get().booleanValue()) {
                 throw exceptionAtomicReference.get();
+            } else {
+                return tAtomicReference.get();
             }
-            return tAtomicReference.get();
         }
     }
 

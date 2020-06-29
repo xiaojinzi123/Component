@@ -6,8 +6,6 @@ import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 
 /**
  * 表示一个接受一个参数的接口
- *
- * @param <T>
  */
 @CheckClassNameAnno
 public interface Consumer<T> {
