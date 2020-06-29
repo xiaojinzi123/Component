@@ -90,7 +90,7 @@ public class TestServiceAct extends AppCompatActivity {
             @Override
             public void run() {
                 TestInterface testInterface = ServiceManager.get(TestInterface.class);
-                Toast.makeText(TestServiceAct.this, "testInterface == " + testInterface, Toast.LENGTH_SHORT).show();
+                System.out.println("testInterface = " + testInterface);
             }
         }.start();
     }
