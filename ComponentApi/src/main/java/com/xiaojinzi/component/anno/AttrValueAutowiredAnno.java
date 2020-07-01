@@ -15,8 +15,9 @@ import java.lang.annotation.Target;
 public @interface AttrValueAutowiredAnno {
 
     /**
-     * 需要注入的 Key：
+     * 需要注入的 Key
+     * key 可以是多个
      */
-    String value();
+    String[] value();
 
 }

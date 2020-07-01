@@ -1,18 +1,24 @@
 package com.xiaojinzi.component.bean;
 
+import com.xiaojinzi.component.anno.ImplicitUseAnno;
+
 public class ActivityAttrDocBean {
 
-    private String attrKey;
+    @ImplicitUseAnno
+    private String[] attrKey;
+    @ImplicitUseAnno
     private String attrType;
 
-    public String getAttrKey() {
+    @ImplicitUseAnno
+    public String[] getAttrKey() {
         return attrKey;
     }
 
-    public void setAttrKey(String attrKey) {
+    public void setAttrKey(String[] attrKey) {
         this.attrKey = attrKey;
     }
 
+    @ImplicitUseAnno
     public String getAttrType() {
         return attrType;
     }

@@ -66,6 +66,8 @@ public class ParameterSupport {
     public static final String KEY_URI = "_componentRouterUri";
 
     public static void syncUriToBundle(@NonNull Uri uri, @NonNull Bundle bundle) {
+        Utils.checkNullPointer(uri, "uri");
+        Utils.checkNullPointer(bundle, "bundle");
         Bundle routerParameterBundle = new Bundle();
         Set<String> queryParameterNames = uri.getQueryParameterNames();
         if (queryParameterNames != null) {
@@ -80,6 +82,7 @@ public class ParameterSupport {
 
     @Nullable
     public static Uri getUriIgnoreError(@NonNull Intent intent) {
+        Utils.checkNullPointer(intent, "intent");
         try {
             String uriStr = getUriAsString(intent);
             return uriStr == null ? null : Uri.parse(uriStr);
@@ -90,12 +93,14 @@ public class ParameterSupport {
 
     @Nullable
     public static Uri getUri(@NonNull Intent intent) {
+        Utils.checkNullPointer(intent, "intent");
         String uriStr = getUriAsString(intent);
         return uriStr == null ? null : Uri.parse(uriStr);
     }
 
     @Nullable
     public static Uri getUriIgnoreError(@NonNull Bundle bundle) {
+        Utils.checkNullPointer(bundle, "bundle");
         try {
             String uriStr = getUriAsString(bundle);
             return uriStr == null ? null : Uri.parse(uriStr);
@@ -106,26 +111,34 @@ public class ParameterSupport {
 
     @Nullable
     public static Uri getUri(@NonNull Bundle bundle) {
+        Utils.checkNullPointer(bundle, "bundle");
         String uriStr = getUriAsString(bundle);
         return uriStr == null ? null : Uri.parse(uriStr);
     }
 
     @Nullable
     public static String getUriAsString(@NonNull Bundle bundle) {
-        return bundle == null ? null : bundle.getString(KEY_URI);
+        Utils.checkNullPointer(bundle, "bundle");
+        return bundle.getString(KEY_URI);
     }
 
     @Nullable
     public static String getUriAsString(@NonNull Intent intent) {
-        if (intent == null) {
+        Utils.checkNullPointer(intent, "intent");
+        if (intent.getExtras() == null) {
             return null;
         } else {
-            if (intent.getExtras() == null) {
-                return null;
-            } else {
-                return intent.getExtras().getString(KEY_URI);
-            }
+            return intent.getExtras().getString(KEY_URI);
         }
+    }
+
+    public boolean isExist(@NonNull Bundle bundle, @NonNull String key) {
+        Utils.checkNullPointer(bundle, "bundle");
+        Utils.checkStringNullPointer(key, "key");
+        // 如果 query 或者普通传值中有这个 key, 就代表有这个值. 不做值的类型的判断的.
+        return (bundle.getBundle(KEY_URI_QUERY_BUNDLE) != null &&
+                bundle.getBundle(KEY_URI_QUERY_BUNDLE).containsKey(key)) ||
+                bundle.containsKey(key);
     }
 
     // ============================================================== 查询 query 的方法开始 ==============================================================

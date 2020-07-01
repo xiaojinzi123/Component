@@ -187,11 +187,9 @@ public class AutowireProcessor extends BaseProcessor {
     }
 
     private void createRouterAttrDocJson() throws IOException {
-
         if (!isRouterDocEnable()) {
             return;
         }
-
         File attrFolder = new File(routerDocFolder, "attr");
         if (attrFolder.exists() && attrFolder.isFile()) {
             attrFolder.delete();
