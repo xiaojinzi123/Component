@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>@{title}</title>
+    <title>Componnet Router</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -50,7 +50,8 @@
                     <span v-if="item.activityAttrDocs == null">无</span>
                     <table v-else frame="void" border="0" cellpadding="0" cellspacing="0">
                         <tr v-for="attrItem in item.activityAttrDocs" style="font-size: 14px;">
-                            <th>{{attrItem.attrKey}}</th>
+                            <th v-if="attrItem.attrKey.length != 1">{{attrItem.attrKey}}</th>
+                            <th v-if="attrItem.attrKey.length == 1">{{attrItem.attrKey[0]}}</th>
                             <th>{{attrItem.attrType}}</th>
                         </tr>
                     </table>

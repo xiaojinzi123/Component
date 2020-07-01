@@ -132,7 +132,7 @@ public class ParameterSupport {
         }
     }
 
-    public boolean isExist(@NonNull Bundle bundle, @NonNull String key) {
+    public static boolean containsKey(@NonNull Bundle bundle, @NonNull String key) {
         Utils.checkNullPointer(bundle, "bundle");
         Utils.checkStringNullPointer(key, "key");
         // 如果 query 或者普通传值中有这个 key, 就代表有这个值. 不做值的类型的判断的.
