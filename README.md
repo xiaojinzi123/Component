@@ -64,7 +64,7 @@
 - [x] 整个设计贴近原生,对原生的代码入侵极少,尽最大的可能保留原生的代码
 - [x] 支持依赖注入、支持目标界面的路由参数
 - [X] 跨模块调用
-- [x] 支持业务组件生命周期(被加载和被卸载)
+- [x] 支持业务组件[生命周期](https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)(被加载和被卸载)
 - [x] 配套的 `Idea Plugin` 方便快速浏览,持续会更新此 [插件](https://github.com/xiaojinzi123/RouterGoPlugin)
 - [x] 完美支持 `RxJava2`(使用`rx`库)
 - [x] 服务发现(跨模块调用)和路由分开设计
@@ -72,7 +72,7 @@
 - [x] [业务模块单独运行]([https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E5%8D%95%E7%8B%AC%E8%BF%90%E8%A1%8C](https://github.com/xiaojinzi123/Component/wiki/业务组件单独运行))
 - [x] 路由跳转功能
     - [x] 支持[生成文档](https://github.com/xiaojinzi123/Component/wiki/%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90)
-    - [x] 支持获取目标的 `ProxyIntent`
+    - [x] 支持获取目标的 [ProxyIntent](https://github.com/xiaojinzi123/Component/wiki/ProxyIntent)
     - [x] 支持标准 `URI` 的使用
     - [x] 无缝对接 `H5`
       - [x] `H5` 只需利用 `URL` 即可任意路由到任何界面(只需下面一段统一的跳转. 完全不需要关心目标界面是否需要登陆、定位、权限等.)
@@ -85,7 +85,7 @@
       - [x] `H5` 发起路由不需要关心目标界面需要做的先决条件(框架的[页面拦截器](https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A#%E9%A1%B5%E9%9D%A2%E6%8B%A6%E6%88%AA%E5%99%A8)已经帮您做完) 
     - [x] 支持原生的[跳转动画](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E5%8A%A8%E7%94%BB)
     - [x] 支持跳转 `Fragment`(也就是跨组件获取`Fragment`)
-    - [x] 路由拦截器执行线程设计是主线程
+    - [x] 路由拦截器执行线程设计是主线程, 整体是异步的(这点很多人不理解, 没有关系. 先用起来之后在慢慢理解)
       - 在路由拦截器的执行线程的设计上,考虑到用户平时书写的 `90%` 代码都是在主线程的,<br/>所以路由拦截器的执行线程也设计为主线程执行,可以让您放心的操作 `UI`、弹框等操作.<br/>同时提供 `Callback` 机制可以在拦截器中做任何耗时的任务<br/>这点绝对是压倒性的优势,不仅整体是 `异步` 的,而且拦截器中能像平常一样写实现的代码
     - [x] 路由的取消,基本上没有路由框架支持路由的取消,这也是一个很大的优势!
       - [x] 手动用代码取消某次路由
@@ -118,6 +118,7 @@
   - [依赖和配置](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE)
   - [依赖和配置 For AndroidX](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE-AndroidX)
 - [Activity注解使用](https://github.com/xiaojinzi123/Component/wiki/RouterAnno-%E6%B3%A8%E8%A7%A3)
+- [组件生命周期](https://github.com/xiaojinzi123/Component/wiki/%E4%B8%9A%E5%8A%A1%E7%BB%84%E4%BB%B6%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)
 - 跳转
   - [跳转 Fragment](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-Fragment)
   - [跳转-接口路由的方式](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E6%8E%A5%E5%8F%A3%E8%B7%AF%E7%94%B1%E7%9A%84%E6%96%B9%E5%BC%8F)
