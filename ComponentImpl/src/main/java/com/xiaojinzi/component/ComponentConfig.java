@@ -10,9 +10,9 @@ import com.xiaojinzi.component.support.Utils;
 /**
  * 这是组件化的一个配置类
  *
- * @see Component#init(boolean, Config)
+ * @see Component#init(boolean, ComponentConfig)
  */
-public class Config {
+public class ComponentConfig {
 
     @NonNull
     private Application application;
@@ -26,7 +26,7 @@ public class Config {
     private long routeRepeatCheckDuration = 1000;
     private ObjectToJsonConverter objectToJsonConverter;
 
-    private Config(@NonNull Builder builder) {
+    private ComponentConfig(@NonNull Builder builder) {
         this.application = builder.application;
         this.isOptimizeInit = builder.isOptimizeInit;
         this.isAutoRegisterModule = builder.isAutoRegisterModule;
@@ -140,7 +140,7 @@ public class Config {
         }
 
         @NonNull
-        public Config build() {
+        public ComponentConfig build() {
             // 参数检查
             Utils.checkNullPointer(this.application, "application");
             Utils.checkNullPointer(this.defaultScheme, "application");
@@ -154,7 +154,7 @@ public class Config {
             }
             isUsed = true;
             // 提前创建对象
-            Config config = new Config(this);
+            ComponentConfig config = new ComponentConfig(this);
             // 解除占用
             this.application = null;
             this.defaultScheme = null;

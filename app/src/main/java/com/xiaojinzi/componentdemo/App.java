@@ -2,9 +2,8 @@ package com.xiaojinzi.componentdemo;
 
 import android.app.Application;
 
-import com.google.gson.Gson;
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.Config;
+import com.xiaojinzi.component.ComponentConfig;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
@@ -18,7 +17,7 @@ public class App extends Application {
         // 初始化组件化相关
         Component.init(
                 BuildConfig.DEBUG,
-                Config.with(this)
+                ComponentConfig.with(this)
                         .defaultScheme("router")
                         // 使用内置的路由重复检查的拦截器, 如果为 true,
                         // 那么当两个相同的路由发生在指定的时间内后一个路由就会被拦截
@@ -32,7 +31,7 @@ public class App extends Application {
                         // 自动加载所有模块, 依赖上面的 optimizeInit(true)
                         .autoRegisterModule(true)
                         // demo 测试, 线上并没有, 请勿配置
-                        .objectToJsonConverter(obj -> new Gson().toJson(obj))
+                        // .objectToJsonConverter(obj -> new Gson().toJson(obj))
                         // 执行构建
                         .build()
         );

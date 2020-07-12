@@ -35,8 +35,7 @@ public class Component {
     /**
      * 配置对象
      */
-    private static Config mConfig = null;
-
+    private static ComponentConfig mConfig = null;
 
     private Component() {
     }
@@ -44,10 +43,10 @@ public class Component {
     /**
      * 初始化
      *
-     * @see Config 初始化的配置对象
+     * @see ComponentConfig 初始化的配置对象
      */
     @MainThread
-    public static void init(boolean isDebug, @NonNull Config config) {
+    public static void init(boolean isDebug, @NonNull ComponentConfig config) {
 
         // 做必要的检查
         if (isInit) {
@@ -102,7 +101,7 @@ public class Component {
 
     @NonNull
     @AnyThread
-    public static Config getConfig() {
+    public static ComponentConfig getConfig() {
         checkInit();
         return mConfig;
     }
@@ -186,5 +185,4 @@ public class Component {
             LogUtil.log("class '" + target.getClass().getName() + "' inject fail");
         }
     }
-
 }
