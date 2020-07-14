@@ -35,5 +35,7 @@
 -keep class **.**RouterApiGenerated {*;}
 #几个用户自定义或者自动生成到其他包下的应该不混淆
 -keep class * implements com.xiaojinzi.component.impl.RouterInterceptor{*;}
+-keep class * implements com.xiaojinzi.component.support.IBaseLifecycle{*;}
+-keep class * implements com.xiaojinzi.component.application.IApplicationLifecycle{*;}
 -keep class * implements com.xiaojinzi.component.application.IComponentApplication{*;}
 -keep class * implements com.xiaojinzi.component.support.Inject{*;}

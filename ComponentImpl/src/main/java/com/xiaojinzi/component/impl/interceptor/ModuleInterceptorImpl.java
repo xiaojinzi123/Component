@@ -34,7 +34,7 @@ abstract class ModuleInterceptorImpl implements IComponentHostInterceptor {
      * @param app {@link Application}
      */
     @Override
-    public void onModuleCreate(@NonNull Application app) {
+    public void onCreate(@NonNull Application app) {
         // empty
     }
 
@@ -42,7 +42,7 @@ abstract class ModuleInterceptorImpl implements IComponentHostInterceptor {
      * 用作销毁一些缓存
      */
     @Override
-    public void onModuleDestroy() {
+    public void onDestroy() {
         // empty
     }
 

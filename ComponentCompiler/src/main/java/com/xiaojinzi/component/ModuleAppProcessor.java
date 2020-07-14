@@ -72,14 +72,14 @@ public class ModuleAppProcessor extends BaseHostProcessor {
 
     private void parseAnnotation(Set<? extends Element> moduleAppElements) {
         applicationList.clear();
-        TypeMirror typeApplication = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.APPLICATION_INTERFACE_CLASS_NAME).asType();
+        TypeMirror typeApplicationLifecycle = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.APPLICATION_LIFECYCLE_INTERFACE_CLASS_NAME).asType();
         for (Element element : moduleAppElements) {
             TypeMirror tm = element.asType();
             if (!(element instanceof TypeElement)) {
                 throw new ProcessException(element + " is not a 'TypeElement' ");
             }
-            if (!mTypes.isSubtype(tm, typeApplication)) {
-                throw new ProcessException(element + " you must implement IComponentApplication interface");
+            if (!mTypes.isSubtype(tm, typeApplicationLifecycle)) {
+                throw new ProcessException(element + " you must implement IApplicationLifecycle interface");
             }
             // 如果是一个 Application
             ModuleAppAnno moduleApp = element.getAnnotation(ModuleAppAnno.class);

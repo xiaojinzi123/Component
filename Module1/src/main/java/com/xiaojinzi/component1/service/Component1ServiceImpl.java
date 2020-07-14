@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.xiaojinzi.base.service.inter.component1.Component1Service;
 import com.xiaojinzi.component.anno.ServiceAnno;
-import com.xiaojinzi.component.support.IModuleLifecycle;
+import com.xiaojinzi.component.service.IServiceLifecycle;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Single;
 
 @ServiceAnno(Component1Service.class)
-public class Component1ServiceImpl implements Component1Service, IModuleLifecycle {
+public class Component1ServiceImpl implements Component1Service, IServiceLifecycle {
 
     private Random r = new Random();
     private Context context;
@@ -43,12 +43,12 @@ public class Component1ServiceImpl implements Component1Service, IModuleLifecycl
     }
 
     @Override
-    public void onModuleCreate(@NonNull Application app) {
+    public void onCreate(@NonNull Application app) {
         System.out.println("");
     }
 
     @Override
-    public void onModuleDestroy() {
+    public void onDestroy() {
         System.out.println("");
     }
 

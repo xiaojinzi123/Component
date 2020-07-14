@@ -11,10 +11,10 @@ import com.xiaojinzi.component.service.IComponentHostService;
  */
 abstract class ModuleServiceImpl implements IComponentHostService {
     @Override
-    public void onModuleCreate(Application app) {
+    public void onCreate(Application app) {
     }
 
     @Override
-    public void onModuleDestroy() {
+    public void onDestroy() {
     }
 }

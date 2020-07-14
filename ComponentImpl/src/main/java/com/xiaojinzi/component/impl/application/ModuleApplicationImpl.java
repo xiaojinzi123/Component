@@ -4,7 +4,7 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 
 import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.application.IComponentApplication;
+import com.xiaojinzi.component.application.IApplicationLifecycle;
 import com.xiaojinzi.component.application.IComponentHostApplication;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ abstract class ModuleApplicationImpl implements IComponentHostApplication {
     /**
      * Application的集合
      */
-    protected List<IComponentApplication> moduleAppList = new ArrayList<>();
+    protected List<IApplicationLifecycle> moduleAppList = new ArrayList<>();
 
     /**
      * 是否初始化了list,懒加载
@@ -42,7 +42,7 @@ abstract class ModuleApplicationImpl implements IComponentHostApplication {
         if (moduleAppList == null) {
             return;
         }
-        for (IComponentApplication application : moduleAppList) {
+        for (IApplicationLifecycle application : moduleAppList) {
             application.onCreate(app);
         }
     }
@@ -55,7 +55,7 @@ abstract class ModuleApplicationImpl implements IComponentHostApplication {
         if (moduleAppList == null) {
             return;
         }
-        for (IComponentApplication application : moduleAppList) {
+        for (IApplicationLifecycle application : moduleAppList) {
             application.onDestroy();
         }
     }

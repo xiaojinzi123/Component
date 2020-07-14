@@ -16,11 +16,11 @@ import java.util.Set;
 abstract class ModuleFragmentImpl implements IComponentHostFragment {
 
     @Override
-    public void onModuleCreate(Application app) {
+    public void onCreate(Application app) {
     }
 
     @Override
-    public void onModuleDestroy() {
+    public void onDestroy() {
     }
 
     @NonNull

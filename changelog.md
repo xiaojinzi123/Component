@@ -1,6 +1,7 @@
 
 #### [v1.8.2.4(开发中)](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.4)
 - 预计支持属性注入多个属性. 主要用于兼容如果想变动 key 的问题.
+- 支持 @ServiceAnno 标记的服务实现类, 可以可选的实现 IModuleLifecycle 接口来接受模块的生命周期的回调
 
 #### [v1.8.2.3](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.3)
 - 优化了 Host 名称中不可以配置 _ 的问题. 但是一定不是开头哦

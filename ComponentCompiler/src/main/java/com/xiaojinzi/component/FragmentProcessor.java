@@ -147,12 +147,12 @@ public class FragmentProcessor extends BaseHostProcessor {
         ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, NAME_OF_APPLICATION)
                 .addModifiers(Modifier.FINAL)
                 .build();
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onModuleCreate")
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onCreate")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addParameter(parameterSpec)
                 .addModifiers(Modifier.PUBLIC);
-        methodSpecBuilder.addStatement("super.onModuleCreate(application)");
+        methodSpecBuilder.addStatement("super.onCreate(application)");
         final AtomicInteger atomicInteger = new AtomicInteger();
         annoElementList.forEach(new Consumer<Element>() {
             @Override
@@ -215,11 +215,11 @@ public class FragmentProcessor extends BaseHostProcessor {
 
     private MethodSpec generateOnDestroyMethod() {
         TypeName returnType = TypeName.VOID;
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onModuleDestroy")
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onDestroy")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
-        methodSpecBuilder.addStatement("super.onModuleDestroy()");
+        methodSpecBuilder.addStatement("super.onDestroy()");
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {

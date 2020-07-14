@@ -4,9 +4,12 @@ import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.support.Callable;
+import com.xiaojinzi.component.service.IServiceLifecycle;
+import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.CallNullable;
+import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.SingletonCallable;
 import com.xiaojinzi.component.support.Utils;
 
@@ -52,7 +55,16 @@ public class ServiceManager {
         }
         if (callable instanceof SingletonCallable) {
             if (((SingletonCallable<Object>) callable).isInit()) {
-                return (T) callable.get();
+                final T t = (T) callable.get();
+                if (t instanceof IServiceLifecycle) {
+                    Utils.mainThreadAction(new Action() {
+                        @Override
+                        public void run() {
+                            ((IServiceLifecycle) t).onDestroy();
+                        }
+                    });
+                }
+                return t;
             }
         }
         return null;
@@ -76,7 +88,19 @@ public class ServiceManager {
                 if (callable == null) {
                     return null;
                 } else {
-                    return (T) Utils.checkNullPointer(callable.get());
+                    T t = null;
+                    boolean isNeedCallOnCreateMethod = true;
+                    if (callable instanceof SingletonCallable) { // 如果是单利的
+                        if (((SingletonCallable<Object>) callable).isInit()) {
+                            isNeedCallOnCreateMethod = false;
+                        }
+                    }
+                    // 如果没创建, 这时候会创建了目标 service 对象
+                    t = (T) Utils.checkNullPointer(callable.get());
+                    if (isNeedCallOnCreateMethod && t instanceof IServiceLifecycle) {
+                        ((IServiceLifecycle) t).onCreate(Component.getApplication());
+                    }
+                    return t;
                 }
             }
         });

@@ -2,7 +2,7 @@ package com.xiaojinzi.component2.service
 
 import android.app.Application
 import com.xiaojinzi.component.anno.ServiceAnno
-import com.xiaojinzi.component.support.IModuleLifecycle
+import com.xiaojinzi.component.service.IServiceLifecycle
 
 /**
  * time   : 2018/12/06
@@ -10,16 +10,16 @@ import com.xiaojinzi.component.support.IModuleLifecycle
  * @author : xiaojinzi
  */
 @ServiceAnno(value = [TestInterface::class], singleTon = false)
-class TestInterfaceImpl : TestInterface, IModuleLifecycle {
+class TestInterfaceImpl : TestInterface, IServiceLifecycle {
 
     override fun doSomeThing() {
         TODO("Not yet implemented")
     }
 
-    override fun onModuleCreate(app: Application) {
+    override fun onCreate(app: Application) {
     }
 
-    override fun onModuleDestroy() {
+    override fun onDestroy() {
     }
 
 }

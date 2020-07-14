@@ -4,7 +4,6 @@ import android.app.Application
 import android.widget.Toast
 import com.xiaojinzi.base.service.inter.component2.Component2Service
 import com.xiaojinzi.component.anno.ServiceAnno
-import com.xiaojinzi.component.support.IModuleLifecycle
 
 /**
  * time   : 2018/12/06

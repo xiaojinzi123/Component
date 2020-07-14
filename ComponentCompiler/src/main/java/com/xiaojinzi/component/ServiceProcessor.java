@@ -44,9 +44,6 @@ public class ServiceProcessor extends BaseHostProcessor {
 
     private static final String NAME_OF_APPLICATION = "application";
 
-    private TypeElement typeElementLifecycle;
-
-    private ClassName classNameLifecycle;
     private ClassName classNameServiceContainer;
     private ClassName lazyLoadClassName;
     private ClassName singletonLazyLoadClassName;
@@ -56,8 +53,6 @@ public class ServiceProcessor extends BaseHostProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-        typeElementLifecycle = mElements.getTypeElement(ComponentConstants.BASE_LIFECYCLE_INTERFACE_CLASS_NAME);
-        classNameLifecycle = ClassName.get(typeElementLifecycle);
         final TypeElement typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.SERVICE_CLASS_NAME);
         classNameServiceContainer = ClassName.get(typeElementServiceContainer);
         final TypeElement service1TypeElement = mElements.getTypeElement(ComponentConstants.CALLABLE_CLASS_NAME);
@@ -130,12 +125,12 @@ public class ServiceProcessor extends BaseHostProcessor {
         ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, NAME_OF_APPLICATION)
                 .addModifiers(Modifier.FINAL)
                 .build();
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onModuleCreate")
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onCreate")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addParameter(parameterSpec)
                 .addModifiers(Modifier.PUBLIC);
-        methodSpecBuilder.addStatement("super.onModuleCreate(application)");
+        methodSpecBuilder.addStatement("super.onCreate(application)");
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {
@@ -159,8 +154,6 @@ public class ServiceProcessor extends BaseHostProcessor {
                     serviceImplTypeMirror = mElements.getTypeElement(serviceImplClassName).asType();
                     serviceImplTypeName = TypeName.get(serviceImplTypeMirror);
                 }
-                isExtendModuleLifecycle = mTypes.isSubtype(serviceImplTypeMirror, typeElementLifecycle.asType());
-
                 ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
                 String implName = "implName" + atomicInteger.incrementAndGet();
                 MethodSpec.Builder getOrRawMethodBuilder = MethodSpec.methodBuilder(anno.singleTon() ? "getRaw" : "get")
@@ -174,13 +167,6 @@ public class ServiceProcessor extends BaseHostProcessor {
                 } else {
                     getOrRawMethodBuilder
                             .addStatement("$T $N = $N($N)", serviceImplTypeName, serviceName, serviceImplCallPath, (isMethodParameterEmpty ? "" : NAME_OF_APPLICATION));
-                }
-                if (isExtendModuleLifecycle) {
-                    getOrRawMethodBuilder
-                            .beginControlFlow("if ($N instanceof $T)", serviceName, typeElementLifecycle)
-                            .addStatement("$T moduleLifecycle = ($T)$N", typeElementLifecycle, typeElementLifecycle, serviceName)
-                            .addStatement("moduleLifecycle.onModuleCreate($N)", NAME_OF_APPLICATION)
-                            .endControlFlow();
                 }
                 getOrRawMethodBuilder
                         .addStatement("return $N", serviceName)
@@ -204,41 +190,19 @@ public class ServiceProcessor extends BaseHostProcessor {
 
     private MethodSpec generateOnDestroyMethod() {
         TypeName returnType = TypeName.VOID;
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onModuleDestroy")
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onDestroy")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
-        methodSpecBuilder.addStatement("super.onModuleDestroy()");
+        methodSpecBuilder.addStatement("super.onDestroy()");
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {
                 ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
-                TypeMirror serviceImplTypeMirror = null;
-                boolean isExtendModuleLifecycle = false;
-                if (element instanceof ExecutableElement) {
-                    // 注解在方法上了
-                    ExecutableElement methodElement = (ExecutableElement) element;
-                    serviceImplTypeMirror = methodElement.getReturnType();
-                } else {
-                    String serviceImplClassName = element.toString();
-                    serviceImplTypeMirror = mElements.getTypeElement(serviceImplClassName).asType();
-                }
-                isExtendModuleLifecycle = mTypes.isSubtype(serviceImplTypeMirror, typeElementLifecycle.asType());
-
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 for (String interServiceClassNameStr : interServiceClassNames) {
                     ClassName interServiceClassName = ClassName.get(mElements.getTypeElement(interServiceClassNameStr));
-                    String serviceName = "service" + atomicInteger.incrementAndGet();
-                    if (isExtendModuleLifecycle) {
-                        methodSpecBuilder.addStatement("$T $N = $T.unregister($T.class)", interServiceClassName, serviceName, classNameServiceContainer, interServiceClassName);
-                        methodSpecBuilder
-                                .beginControlFlow("if ($N instanceof $T)", serviceName, typeElementLifecycle)
-                                .addStatement("$T moduleLifecycle = ($T)$N", typeElementLifecycle, typeElementLifecycle, serviceName)
-                                .addStatement("moduleLifecycle.onModuleDestroy()")
-                                .endControlFlow();
-                    } else {
-                        methodSpecBuilder.addStatement("$T.unregister($T.class)", classNameServiceContainer, interServiceClassName);
-                    }
+                    methodSpecBuilder.addStatement("$T.unregister($T.class)", classNameServiceContainer, interServiceClassName);
                 }
             }
         });

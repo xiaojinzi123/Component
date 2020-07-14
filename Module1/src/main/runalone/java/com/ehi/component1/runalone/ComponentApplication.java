@@ -4,10 +4,9 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 
 import com.xiaojinzi.component.anno.ModuleAppAnno;
-import com.xiaojinzi.component.application.IComponentApplication;
 
 @ModuleAppAnno
-public class ComponentApplication implements IComponentApplication {
+public class ComponentApplication implements IApplicationLifecycle {
 
     @Override
     public void onCreate(@NonNull Application app) {
