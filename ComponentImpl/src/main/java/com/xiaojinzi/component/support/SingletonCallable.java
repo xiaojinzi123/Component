@@ -14,6 +14,10 @@ public abstract class SingletonCallable<T> implements Callable<T> {
     @Nullable
     private volatile T instance;
 
+    public boolean isInit(){
+        return instance != null;
+    }
+
     @Override
     @NonNull
     public final T get() {

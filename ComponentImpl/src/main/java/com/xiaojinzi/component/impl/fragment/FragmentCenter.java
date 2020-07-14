@@ -47,7 +47,7 @@ public class FragmentCenter implements IComponentCenterFragment {
             return;
         }
         moduleFragmentMap.put(service.getHost(), service);
-        service.onCreate(Component.getApplication());
+        service.onModuleCreate(Component.getApplication());
     }
 
     @Override
@@ -65,7 +65,7 @@ public class FragmentCenter implements IComponentCenterFragment {
             return;
         }
         moduleFragmentMap.remove(moduleService.getHost());
-        moduleService.onDestroy();
+        moduleService.onModuleDestroy();
     }
 
     @Override

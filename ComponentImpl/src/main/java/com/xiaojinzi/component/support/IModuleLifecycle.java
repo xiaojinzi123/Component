@@ -15,9 +15,9 @@ import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 public interface IModuleLifecycle {
 
     @MainThread
-    void onCreate(@NonNull Application app);
+    void onModuleCreate(@NonNull Application app);
 
     @MainThread
-    void onDestroy();
+    void onModuleDestroy();
 
 }

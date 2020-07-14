@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.CallNullable;
+import com.xiaojinzi.component.support.SingletonCallable;
 import com.xiaojinzi.component.support.Utils;
 
 import java.util.Collections;
@@ -44,9 +45,17 @@ public class ServiceManager {
     @Nullable
     @AnyThread
     public static <T> T unregister(@NonNull Class<T> tClass) {
-        T t = get(tClass);
-        serviceMap.remove(tClass);
-        return t;
+        // 需要判断到是否已经初始化了, 如果还没初始化就返回 null
+        Callable<?> callable = serviceMap.remove(tClass);
+        if (callable == null) {
+            return null;
+        }
+        if (callable instanceof SingletonCallable) {
+            if (((SingletonCallable<Object>) callable).isInit()) {
+                return (T) callable.get();
+            }
+        }
+        return null;
     }
 
     /**

@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 
-//@ServiceAnno(value = {Component1Service.class})
 @ServiceAnno(Component1Service.class)
 public class Component1ServiceImpl implements Component1Service, IModuleLifecycle {
 
@@ -44,13 +43,13 @@ public class Component1ServiceImpl implements Component1Service, IModuleLifecycl
     }
 
     @Override
-    public void onCreate(@NonNull Application app) {
-
+    public void onModuleCreate(@NonNull Application app) {
+        System.out.println("");
     }
 
     @Override
-    public void onDestroy() {
-
+    public void onModuleDestroy() {
+        System.out.println("");
     }
 
 }

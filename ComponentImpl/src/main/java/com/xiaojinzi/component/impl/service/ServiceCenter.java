@@ -45,7 +45,7 @@ public class ServiceCenter implements IComponentCenterService {
             return;
         }
         moduleServiceMap.put(service.getHost(), service);
-        service.onCreate(Component.getApplication());
+        service.onModuleCreate(Component.getApplication());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ServiceCenter implements IComponentCenterService {
             return;
         }
         moduleServiceMap.remove(moduleService.getHost());
-        moduleService.onDestroy();
+        moduleService.onModuleDestroy();
     }
 
     @Override

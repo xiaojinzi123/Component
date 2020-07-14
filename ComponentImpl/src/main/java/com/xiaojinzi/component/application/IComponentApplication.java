@@ -1,10 +1,11 @@
 package com.xiaojinzi.component.application;
 
+import android.app.Application;
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 
 import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.support.IModuleLifecycle;
 
 /**
  * 这是生命周期接口
@@ -13,5 +14,12 @@ import com.xiaojinzi.component.support.IModuleLifecycle;
  */
 @MainThread
 @CheckClassNameAnno
-public interface IComponentApplication extends IModuleLifecycle {
+public interface IComponentApplication {
+
+    @MainThread
+    void onCreate(@NonNull Application app);
+
+    @MainThread
+    void onDestroy();
+
 }

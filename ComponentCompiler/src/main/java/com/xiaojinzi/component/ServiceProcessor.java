@@ -44,15 +44,19 @@ public class ServiceProcessor extends BaseHostProcessor {
 
     private static final String NAME_OF_APPLICATION = "application";
 
+    private TypeElement typeElementLifecycle;
+
     private ClassName classNameLifecycle;
     private ClassName classNameServiceContainer;
     private ClassName lazyLoadClassName;
     private ClassName singletonLazyLoadClassName;
 
+    private final AtomicInteger atomicInteger = new AtomicInteger();
+
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-        final TypeElement typeElementLifecycle = mElements.getTypeElement(ComponentConstants.BASE_LIFECYCLE_INTERFACE_CLASS_NAME);
+        typeElementLifecycle = mElements.getTypeElement(ComponentConstants.BASE_LIFECYCLE_INTERFACE_CLASS_NAME);
         classNameLifecycle = ClassName.get(typeElementLifecycle);
         final TypeElement typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.SERVICE_CLASS_NAME);
         classNameServiceContainer = ClassName.get(typeElementServiceContainer);
@@ -126,71 +130,66 @@ public class ServiceProcessor extends BaseHostProcessor {
         ParameterSpec parameterSpec = ParameterSpec.builder(applicationName, NAME_OF_APPLICATION)
                 .addModifiers(Modifier.FINAL)
                 .build();
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onCreate")
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onModuleCreate")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addParameter(parameterSpec)
                 .addModifiers(Modifier.PUBLIC);
-        methodSpecBuilder.addStatement("super.onCreate(application)");
-        final AtomicInteger atomicInteger = new AtomicInteger();
+        methodSpecBuilder.addStatement("super.onModuleCreate(application)");
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {
                 String serviceImplCallPath = null;
+                TypeMirror serviceImplTypeMirror = null;
                 TypeName serviceImplTypeName = null;
+                boolean isExtendModuleLifecycle = false;
+                boolean isMethodParameterEmpty = false;
                 if (element instanceof ExecutableElement) {
                     // 注解在方法上了
                     ExecutableElement methodElement = (ExecutableElement) element;
-                    serviceImplTypeName = TypeName.get(methodElement.getReturnType());
+                    serviceImplTypeMirror = methodElement.getReturnType();
+                    serviceImplTypeName = TypeName.get(serviceImplTypeMirror);
+                    isMethodParameterEmpty = methodElement.getParameters().size() == 0;
                     // 获取声明这个方法的类的 TypeElement
                     TypeElement declareClassType = (TypeElement) methodElement.getEnclosingElement();
                     // 调用这个静态方法的全路径
                     serviceImplCallPath = declareClassType.toString() + "." + methodElement.getSimpleName();
                 } else {
                     String serviceImplClassName = element.toString();
-                    serviceImplTypeName = TypeName.get(mElements.getTypeElement(serviceImplClassName).asType());
+                    serviceImplTypeMirror = mElements.getTypeElement(serviceImplClassName).asType();
+                    serviceImplTypeName = TypeName.get(serviceImplTypeMirror);
                 }
+                isExtendModuleLifecycle = mTypes.isSubtype(serviceImplTypeMirror, typeElementLifecycle.asType());
+
                 ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
                 String implName = "implName" + atomicInteger.incrementAndGet();
-                if (anno.singleTon()) {
-                    MethodSpec.Builder getRawMethodBuilder = MethodSpec.methodBuilder("getRaw")
-                            .addAnnotation(Override.class)
-                            .addModifiers(Modifier.PROTECTED);
-                    if (serviceImplCallPath == null) {
-                        boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
-                        getRawMethodBuilder
-                                .addStatement("return new $T($N)", serviceImplTypeName, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
-                                .returns(TypeName.get(element.asType()));
-                    } else {
-                        getRawMethodBuilder
-                                .addStatement("return $N()", serviceImplCallPath)
-                                .returns(serviceImplTypeName);
-                    }
-                    TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(singletonLazyLoadClassName, serviceImplTypeName))
-                            .addMethod(getRawMethodBuilder.build())
-                            .build();
-                    methodSpecBuilder.addStatement("$T $N = $L", lazyLoadClassName, implName, innerTypeSpec);
+                MethodSpec.Builder getOrRawMethodBuilder = MethodSpec.methodBuilder(anno.singleTon() ? "getRaw" : "get")
+                        .addAnnotation(Override.class)
+                        .addModifiers(anno.singleTon() ? Modifier.PROTECTED : Modifier.PUBLIC);
+                String serviceName = "service" + atomicInteger.incrementAndGet();
+                if (serviceImplCallPath == null) {
+                    boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
+                    getOrRawMethodBuilder
+                            .addStatement("$T $N = new $T($N)", serviceImplTypeName, serviceName, serviceImplTypeName, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION));
                 } else {
-                    MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder("get")
-                            .addAnnotation(Override.class)
-                            .addModifiers(Modifier.PUBLIC);
-                    if (serviceImplCallPath == null) {
-                        boolean haveDefaultConstructor = isHaveDefaultConstructor(element.toString());
-                        getMethodBuilder
-                                .addStatement("return new $T($N)", serviceImplTypeName, (haveDefaultConstructor ? "" : NAME_OF_APPLICATION))
-                                .returns(TypeName.get(element.asType()));
-                    } else {
-                        getMethodBuilder
-                                .addStatement("return $N()", serviceImplCallPath)
-                                .returns(serviceImplTypeName);
-                    }
-                    TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(lazyLoadClassName, serviceImplTypeName))
-                            .addMethod(getMethodBuilder.build())
-                            .build();
-                    methodSpecBuilder.addStatement("$T $N = $L", lazyLoadClassName, implName, innerTypeSpec);
+                    getOrRawMethodBuilder
+                            .addStatement("$T $N = $N($N)", serviceImplTypeName, serviceName, serviceImplCallPath, (isMethodParameterEmpty ? "" : NAME_OF_APPLICATION));
                 }
+                if (isExtendModuleLifecycle) {
+                    getOrRawMethodBuilder
+                            .beginControlFlow("if ($N instanceof $T)", serviceName, typeElementLifecycle)
+                            .addStatement("$T moduleLifecycle = ($T)$N", typeElementLifecycle, typeElementLifecycle, serviceName)
+                            .addStatement("moduleLifecycle.onModuleCreate($N)", NAME_OF_APPLICATION)
+                            .endControlFlow();
+                }
+                getOrRawMethodBuilder
+                        .addStatement("return $N", serviceName)
+                        .returns(serviceImplTypeName);
+                TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
+                        .addSuperinterface(ParameterizedTypeName.get(anno.singleTon() ? singletonLazyLoadClassName : lazyLoadClassName, serviceImplTypeName))
+                        .addMethod(getOrRawMethodBuilder.build())
+                        .build();
+                methodSpecBuilder.addStatement("$T $N = $L", lazyLoadClassName, implName, innerTypeSpec);
 
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 for (String interServiceClassName : interServiceClassNames) {
@@ -205,18 +204,41 @@ public class ServiceProcessor extends BaseHostProcessor {
 
     private MethodSpec generateOnDestroyMethod() {
         TypeName returnType = TypeName.VOID;
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onDestroy")
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("onModuleDestroy")
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
-        methodSpecBuilder.addStatement("super.onDestroy()");
+        methodSpecBuilder.addStatement("super.onModuleDestroy()");
         annoElementList.forEach(new Consumer<Element>() {
             @Override
             public void accept(Element element) {
                 ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
+                TypeMirror serviceImplTypeMirror = null;
+                boolean isExtendModuleLifecycle = false;
+                if (element instanceof ExecutableElement) {
+                    // 注解在方法上了
+                    ExecutableElement methodElement = (ExecutableElement) element;
+                    serviceImplTypeMirror = methodElement.getReturnType();
+                } else {
+                    String serviceImplClassName = element.toString();
+                    serviceImplTypeMirror = mElements.getTypeElement(serviceImplClassName).asType();
+                }
+                isExtendModuleLifecycle = mTypes.isSubtype(serviceImplTypeMirror, typeElementLifecycle.asType());
+
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
-                for (String interServiceClassName : interServiceClassNames) {
-                    methodSpecBuilder.addStatement("$T.unregister($T.class)", classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)));
+                for (String interServiceClassNameStr : interServiceClassNames) {
+                    ClassName interServiceClassName = ClassName.get(mElements.getTypeElement(interServiceClassNameStr));
+                    String serviceName = "service" + atomicInteger.incrementAndGet();
+                    if (isExtendModuleLifecycle) {
+                        methodSpecBuilder.addStatement("$T $N = $T.unregister($T.class)", interServiceClassName, serviceName, classNameServiceContainer, interServiceClassName);
+                        methodSpecBuilder
+                                .beginControlFlow("if ($N instanceof $T)", serviceName, typeElementLifecycle)
+                                .addStatement("$T moduleLifecycle = ($T)$N", typeElementLifecycle, typeElementLifecycle, serviceName)
+                                .addStatement("moduleLifecycle.onModuleDestroy()")
+                                .endControlFlow();
+                    } else {
+                        methodSpecBuilder.addStatement("$T.unregister($T.class)", classNameServiceContainer, interServiceClassName);
+                    }
                 }
             }
         });
