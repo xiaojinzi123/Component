@@ -44,6 +44,7 @@ public class ServiceProcessor extends BaseHostProcessor {
 
     private static final String NAME_OF_APPLICATION = "application";
 
+    private ClassName classNameLifecycle;
     private ClassName classNameServiceContainer;
     private ClassName lazyLoadClassName;
     private ClassName singletonLazyLoadClassName;
@@ -51,6 +52,8 @@ public class ServiceProcessor extends BaseHostProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
+        final TypeElement typeElementLifecycle = mElements.getTypeElement(ComponentConstants.BASE_LIFECYCLE_INTERFACE_CLASS_NAME);
+        classNameLifecycle = ClassName.get(typeElementLifecycle);
         final TypeElement typeElementServiceContainer = mElements.getTypeElement(ComponentConstants.SERVICE_CLASS_NAME);
         classNameServiceContainer = ClassName.get(typeElementServiceContainer);
         final TypeElement service1TypeElement = mElements.getTypeElement(ComponentConstants.CALLABLE_CLASS_NAME);
@@ -88,7 +91,6 @@ public class ServiceProcessor extends BaseHostProcessor {
     }
 
     private void createImpl() {
-
         String claName = ComponentUtil.genHostServiceClassName(componentHost);
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf('.'));

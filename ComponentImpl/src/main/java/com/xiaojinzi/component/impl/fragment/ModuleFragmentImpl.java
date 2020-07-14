@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @author xiaojinzi
  */
-abstract class MuduleFragmentImpl implements IComponentHostFragment {
+abstract class ModuleFragmentImpl implements IComponentHostFragment {
 
     @Override
     public void onCreate(Application app) {

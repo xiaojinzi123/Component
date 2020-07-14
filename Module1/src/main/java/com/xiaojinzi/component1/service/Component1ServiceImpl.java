@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.xiaojinzi.base.service.inter.component1.Component1Service;
 import com.xiaojinzi.component.anno.ServiceAnno;
+import com.xiaojinzi.component.support.IModuleLifecycle;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +16,7 @@ import io.reactivex.Single;
 
 //@ServiceAnno(value = {Component1Service.class})
 @ServiceAnno(Component1Service.class)
-public class Component1ServiceImpl implements Component1Service {
+public class Component1ServiceImpl implements Component1Service, IModuleLifecycle {
 
     private Random r = new Random();
     private Context context;
@@ -40,6 +41,16 @@ public class Component1ServiceImpl implements Component1Service {
             return Single.just("test error")
                     .delay(2, TimeUnit.SECONDS);
         }
+    }
+
+    @Override
+    public void onCreate(@NonNull Application app) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+
     }
 
 }

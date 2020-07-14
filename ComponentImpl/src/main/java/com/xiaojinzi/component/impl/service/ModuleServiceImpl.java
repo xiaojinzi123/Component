@@ -9,7 +9,7 @@ import com.xiaojinzi.component.service.IComponentHostService;
  *
  * @author xiaojinzi
  */
-abstract class MuduleServiceImpl implements IComponentHostService {
+abstract class ModuleServiceImpl implements IComponentHostService {
     @Override
     public void onCreate(Application app) {
     }

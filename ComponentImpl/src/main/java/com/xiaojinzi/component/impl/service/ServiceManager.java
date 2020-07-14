@@ -43,8 +43,10 @@ public class ServiceManager {
 
     @Nullable
     @AnyThread
-    public static <T> void unregister(@NonNull Class<T> tClass) {
+    public static <T> T unregister(@NonNull Class<T> tClass) {
+        T t = get(tClass);
         serviceMap.remove(tClass);
+        return t;
     }
 
     /**
