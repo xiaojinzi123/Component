@@ -37,5 +37,6 @@
 -keep class * implements com.xiaojinzi.component.impl.RouterInterceptor{*;}
 -keep class * implements com.xiaojinzi.component.support.IBaseLifecycle{*;}
 -keep class * implements com.xiaojinzi.component.application.IApplicationLifecycle{*;}
+-keep class * implements com.xiaojinzi.component.service.IServiceLifecycle{*;}
 -keep class * implements com.xiaojinzi.component.application.IComponentApplication{*;}
 -keep class * implements com.xiaojinzi.component.support.Inject{*;}
