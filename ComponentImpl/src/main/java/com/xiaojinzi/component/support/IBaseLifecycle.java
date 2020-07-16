@@ -1,8 +1,9 @@
 package com.xiaojinzi.component.support;
 
 import android.app.Application;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 

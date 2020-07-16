@@ -11,8 +11,8 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = "7"
-targetCompatibility = "7"
+sourceCompatibility = "8"
+targetCompatibility = "8"
 
 group='com.xiaojinzi.component'
 version="${versions.component_plugin_upload_version}"
