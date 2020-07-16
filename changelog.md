@@ -1,7 +1,10 @@
 
-#### [v1.8.2.4(开发中)](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.4)
-- 预计支持属性注入多个属性. 主要用于兼容如果想变动 key 的问题.
-- 支持 @ServiceAnno 标记的服务实现类, 可以可选的实现 IModuleLifecycle 接口来接受模块的生命周期的回调
+#### [v1.8.3](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.3)
+- 增加 java8 的发布维度
+- 支持属性注入多个属性. 主要用于兼容如果想变动 key 的问题.
+- 支持 @ServiceAnno 标记的服务实现类, 可以可选的实现 IServiceLifecycle 接口来接受模块的生命周期的回调
+- 用户自定义的模块生命周期类, 需要实现 IApplicationLifecycle 接口, 而不是老的 IComponentApplication 接口, 虽说老的目前也支持, 但是若干版本之后会删除
+- 内部优化类结构. 需要更新新的[混淆配置](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE-AndroidX#%E6%B7%B7%E6%B7%86%E9%85%8D%E7%BD%AE)
 
 #### [v1.8.2.3](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.3)
 - 优化了 Host 名称中不可以配置 _ 的问题. 但是一定不是开头哦

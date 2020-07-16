@@ -10,7 +10,6 @@ class Test1Fragment : Fragment() {
 
     companion object {
         @FragmentAnno("component2.test1Fragment2")
-        @JvmStatic
         fun newInstance(bundle: Bundle): Test1Fragment {
             val f = Test1Fragment()
             f.arguments = bundle

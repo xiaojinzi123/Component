@@ -36,7 +36,9 @@ public class ServiceManager {
             Collections.synchronizedMap(new HashMap<Class, Callable<?>>());
 
     /**
-     * 你可以注册一个服务,服务的初始化可以是 懒加载的
+     * 你可以注册一个服务,服务的初始化可以是懒加载的
+     * 注册的时候, 不会初始化目标 Service 的
+     * {@link #get(Class)} 方法内部才会初始化目标 Service
      */
     @AnyThread
     public static <T> void register(@NonNull Class<T> tClass, @NonNull Callable<? extends T> callable) {
