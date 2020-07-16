@@ -23,6 +23,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
 
     public static final String NORMALLINE = "---------------------------";
 
+    /*当没有配置 host 信息或者配置错误的异常*/
     public static final RuntimeException NULLHOSTEXCEPTION = new RuntimeException("the host must not be null,you must define host in build.gradle file,such as:\n\n" +
             "defaultConfig {\n" +
             "    minSdkVersion 14\n" +
@@ -35,6 +36,21 @@ public abstract class BaseProcessor extends AbstractProcessor {
             "        }\n" +
             "    }\n" +
             "}\n  \n");
+
+    /*当没有依赖实现库的异常*/
+    public static final RuntimeException IMPL_NOT_BE_DEPENDENT_ON = new RuntimeException(
+            "Did your module depend on component-impl or component-impl-rx? \n" +
+                    "if your project is androidx, please config \n" +
+                    "api 'com.github.xiaojinzi123.Component:component-impl:<version>-androidx' \n" +
+                    "or\n" +
+                    "api 'com.github.xiaojinzi123.Component:component-impl-rx:<version>-androidx' \n" +
+                    "Otherwise, config \n" +
+                    "api 'com.github.xiaojinzi123.Component:component-impl:<version>' \n" +
+                    "or\n" +
+                    "api 'com.github.xiaojinzi123.Component:component-impl-rx:<version>' \n" +
+                    "<version> is the last version of Component, don't forget to replace" +
+                    "see https://github.com/xiaojinzi123/Component/releases"
+    );
 
     protected String routerDocFolder = null;
     protected boolean routerDocEnable;
@@ -80,8 +96,12 @@ public abstract class BaseProcessor extends AbstractProcessor {
         mTypes = processingEnv.getTypeUtils();
         mElements = processingEnv.getElementUtils();
 
-        mTypeElementComponentGeneratedAnno = mElements.getTypeElement(ComponentConstants.COMPONENT_GENERATED_ANNO_CLASS_NAME);
-        mClassNameComponentGeneratedAnno = ClassName.get(mTypeElementComponentGeneratedAnno);
+        try {
+            mTypeElementComponentGeneratedAnno = mElements.getTypeElement(ComponentConstants.COMPONENT_GENERATED_ANNO_CLASS_NAME);
+            mClassNameComponentGeneratedAnno = ClassName.get(mTypeElementComponentGeneratedAnno);
+        } catch (Exception e) {
+            throw IMPL_NOT_BE_DEPENDENT_ON;
+        }
 
         mTypeElementString = mElements.getTypeElement(ComponentConstants.JAVA_STRING);
         mTypeElementInteger = mElements.getTypeElement(ComponentConstants.JAVA_INTEGER);
@@ -112,7 +132,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
 
     }
 
-    protected boolean isRouterDocEnable(){
+    protected boolean isRouterDocEnable() {
         return routerDocEnable && (routerDocFolder != null && !routerDocFolder.isEmpty());
     }
 

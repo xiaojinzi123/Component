@@ -5,10 +5,10 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.anno.ModuleAppAnno;
-import com.xiaojinzi.component.application.IComponentApplication;
+import com.xiaojinzi.component.application.IApplicationLifecycle;
 
 @ModuleAppAnno()
-public class Component1Application implements IComponentApplication {
+public class Component1Application implements IApplicationLifecycle {
 
     @NonNull
     private static Application mApp;

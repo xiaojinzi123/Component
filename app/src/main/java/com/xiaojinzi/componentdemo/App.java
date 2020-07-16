@@ -45,7 +45,6 @@ public class App extends Application {
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();
         }
-
     }
 
 }

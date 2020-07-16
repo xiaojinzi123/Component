@@ -21,13 +21,13 @@ import com.xiaojinzi.component1.R;
 )
 public class TestInjectAct3 extends BaseAct {
 
-    @AttrValueAutowiredAnno("testName")
+    @AttrValueAutowiredAnno({"testName", "name"})
     String testName;
 
-    @AttrValueAutowiredAnno("testAge")
+    @AttrValueAutowiredAnno({"testAge", "age"})
     int testAge;
 
-    @AttrValueAutowiredAnno("testUser")
+    @AttrValueAutowiredAnno({"testUser", "user"})
     User testUser;
 
     @ServiceAutowiredAnno

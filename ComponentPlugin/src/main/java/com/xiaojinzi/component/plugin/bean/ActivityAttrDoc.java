@@ -1,16 +1,18 @@
 package com.xiaojinzi.component.plugin.bean;
 
+import java.util.List;
+
 public class ActivityAttrDoc {
 
-    private String attrKey;
+    private List<String> attrKey;
 
     private String attrType;
 
-    public String getAttrKey() {
+    public List<String> getAttrKey() {
         return attrKey;
     }
 
-    public void setAttrKey(String attrKey) {
+    public void setAttrKey(List<String> attrKey) {
         this.attrKey = attrKey;
     }
 

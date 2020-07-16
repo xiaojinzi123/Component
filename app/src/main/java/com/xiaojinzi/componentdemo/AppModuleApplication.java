@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.xiaojinzi.component.anno.ModuleAppAnno;
-import com.xiaojinzi.component.application.IComponentApplication;
+import com.xiaojinzi.component.application.IApplicationLifecycle;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.impl.RouterListener;
@@ -14,7 +14,7 @@ import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.support.Utils;
 
 @ModuleAppAnno()
-public class AppModuleApplication implements IComponentApplication {
+public class AppModuleApplication implements IApplicationLifecycle {
 
     private final String TAG = "自定义实现的路由监听";
 

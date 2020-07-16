@@ -18,7 +18,11 @@ import androidx.fragment.app.Fragment;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.Callback;
 import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.RouterErrorResult;
+import com.xiaojinzi.component.impl.RouterRequest;
+import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
@@ -136,7 +140,6 @@ public class MainAct extends AppCompatActivity {
     }
 
     public void intentRouter1(View view) {
-
         Intent intent = Router.newProxyIntentBuilder()
                 .host(ModuleConfig.User.NAME)
                 .path(ModuleConfig.User.PERSON_CENTER)

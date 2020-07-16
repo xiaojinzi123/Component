@@ -22,7 +22,7 @@ import java.util.Set;
  *
  * @author : xiaojinzi
  */
-abstract class MuduleInterceptorImpl implements IComponentHostInterceptor {
+abstract class ModuleInterceptorImpl implements IComponentHostInterceptor {
 
     protected Map<String, Class<? extends RouterInterceptor>> interceptorMap = new HashMap<>();
 

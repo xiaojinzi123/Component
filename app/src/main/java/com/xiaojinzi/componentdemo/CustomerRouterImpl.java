@@ -1,5 +1,6 @@
 package com.xiaojinzi.componentdemo;
 
+import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -82,6 +83,15 @@ public class CustomerRouterImpl {
 
     @ServiceAnno(value = AnnoMethodService.class)
     public static AnnoMethodService getTestService() {
+        return (AnnoMethodService) Proxy.newProxyInstance(
+                AnnoMethodService.class.getClassLoader(),
+                new Class[]{AnnoMethodService.class},
+                (proxy, method, args) -> "hello msg from proxy class"
+        );
+    }
+
+    @ServiceAnno(value = AnnoMethodService.class)
+    public static AnnoMethodService getTestService1(@NonNull Application application) {
         return (AnnoMethodService) Proxy.newProxyInstance(
                 AnnoMethodService.class.getClassLoader(),
                 new Class[]{AnnoMethodService.class},

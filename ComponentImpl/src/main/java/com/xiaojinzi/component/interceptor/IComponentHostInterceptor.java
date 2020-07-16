@@ -4,9 +4,9 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.xiaojinzi.component.application.IComponentApplication;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.interceptor.InterceptorBean;
+import com.xiaojinzi.component.support.IBaseLifecycle;
 import com.xiaojinzi.component.support.IHost;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.Set;
  * @author : xiaojinzi
  */
 public interface IComponentHostInterceptor
-        extends IComponentInterceptor, IComponentApplication, IHost {
+        extends IComponentInterceptor, IBaseLifecycle, IHost {
 
     /**
      * 获取全局的拦截器列表,外面使用的地方做了缓存

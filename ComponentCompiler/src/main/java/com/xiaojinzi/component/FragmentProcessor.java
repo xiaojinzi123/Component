@@ -90,16 +90,16 @@ public class FragmentProcessor extends BaseHostProcessor {
             if (anno == null) {
                 continue;
             }
-            String[] interceptorNames = anno.value();
-            for (String interceptorName : interceptorNames) {
-                if ("".equalsIgnoreCase(interceptorName)) {
-                    throw new ProcessException("the name of interceptor can't be empty or null");
+            String[] fragmentNames = anno.value();
+            for (String fragmentName : fragmentNames) {
+                if ("".equalsIgnoreCase(fragmentName)) {
+                    throw new ProcessException("the name of fragment can't be empty or null");
                 }
-                // 模块不能有相同的
-                if (nameSet.contains(interceptorName)) {
-                    throw new ProcessException("the name of '" + interceptorName + "' is already exist");
+                // 一个模块不能有相同的名称, 如果模块之间有相同的只能 debug 的时候开启 check 检查
+                if (nameSet.contains(fragmentName)) {
+                    throw new ProcessException("the name of '" + fragmentName + "' is already exist");
                 }
-                nameSet.add(interceptorName);
+                nameSet.add(fragmentName);
             }
             annoElementList.add(element);
         }
