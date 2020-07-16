@@ -9,8 +9,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-sourceCompatibility = "7"
-targetCompatibility = "7"
+sourceCompatibility = "8"
+targetCompatibility = "8"
 
 dependencies {
     implementation 'com.google.auto.service:auto-service:1.0-rc7'
