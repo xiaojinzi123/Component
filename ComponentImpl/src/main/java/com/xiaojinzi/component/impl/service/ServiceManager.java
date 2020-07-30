@@ -44,12 +44,15 @@ public class ServiceManager {
     public static <T> void register(@NonNull Class<T> tClass, @NonNull Callable<? extends T> callable) {
         Utils.checkNullPointer(tClass, "tClass");
         Utils.checkNullPointer(callable, "callable");
+        // 先卸载, 因为覆盖的话, 生命周期的销毁就走不了
+        unregister(tClass);
         serviceMap.put(tClass, callable);
     }
 
     @Nullable
     @AnyThread
     public static <T> T unregister(@NonNull Class<T> tClass) {
+        Utils.checkNullPointer(tClass, "tClass");
         // 需要判断到是否已经初始化了, 如果还没初始化就返回 null
         Callable<?> callable = serviceMap.remove(tClass);
         if (callable == null) {

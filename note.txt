@@ -1,5 +1,12 @@
 signature 是签名文件, 文件的密码都是 123456, 或者 xiaojinzi
 
+发布的时候分支合并操作流程
+develop -> master
+master -> master-java8
+master -> master-androidx
+master-androidx-java8
+master -> develop
+
 每次发布的流程
 
 - 简单走一下各个跳转的流程
