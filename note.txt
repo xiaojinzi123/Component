@@ -11,6 +11,13 @@ compileOptions {
 }
 ```
 
+发布的时候分支合并操作流程
+develop -> master
+master -> master-java8
+master -> master-androidx
+master-androidx-java8
+master -> develop
+
 每次发布的流程
 
 - 简单走一下各个跳转的流程
