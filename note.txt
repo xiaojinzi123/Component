@@ -15,7 +15,7 @@ compileOptions {
 develop -> master
 master -> master-java8
 master -> master-androidx
-master-androidx-java8
+master -> androidx-java8
 master -> develop
 
 每次发布的流程
