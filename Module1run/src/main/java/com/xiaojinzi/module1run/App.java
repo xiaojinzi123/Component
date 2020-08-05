@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
@@ -16,7 +16,7 @@ public class App extends Application {
 
         // 初始化组件化相关
         Component.init(
-                BuildConfig.DEBUG, ComponentConfig.with(this)
+                BuildConfig.DEBUG, Config.with(this)
                         .build()
         );
 

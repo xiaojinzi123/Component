@@ -3,7 +3,7 @@ package com.xiaojinzi.componentdemo;
 import android.app.Application;
 
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.ComponentConfig;
+import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
@@ -17,7 +17,7 @@ public class App extends Application {
         // 初始化组件化相关
         Component.init(
                 BuildConfig.DEBUG,
-                ComponentConfig.with(this)
+                Config.with(this)
                         .defaultScheme("router")
                         // 使用内置的路由重复检查的拦截器, 如果为 true,
                         // 那么当两个相同的路由发生在指定的时间内后一个路由就会被拦截

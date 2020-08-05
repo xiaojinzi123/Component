@@ -35,7 +35,7 @@ public class Component {
     /**
      * 配置对象
      */
-    private static ComponentConfig mConfig = null;
+    private static Config mConfig = null;
 
     private Component() {
     }
@@ -43,10 +43,10 @@ public class Component {
     /**
      * 初始化
      *
-     * @see ComponentConfig 初始化的配置对象
+     * @see Config 初始化的配置对象
      */
     @MainThread
-    public static void init(boolean isDebug, @NonNull ComponentConfig config) {
+    public static void init(boolean isDebug, @NonNull Config config) {
 
         // 做必要的检查
         if (isInit) {
@@ -101,7 +101,7 @@ public class Component {
 
     @NonNull
     @AnyThread
-    public static ComponentConfig getConfig() {
+    public static Config getConfig() {
         checkInit();
         return mConfig;
     }
