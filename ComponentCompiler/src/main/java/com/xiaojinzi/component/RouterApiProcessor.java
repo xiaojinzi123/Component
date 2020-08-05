@@ -483,7 +483,9 @@ public class RouterApiProcessor extends BaseProcessor {
                 } else {
                     // 说明是想匹配 resultCode
                     if (navigateAnnotation.resultCodeMatch() != Integer.MIN_VALUE) {
-                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.CALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
+                        if (callBackParameter == null) {
+                            throw new ProcessException("do you forget to add parameter(" + ComponentConstants.CALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
+                        }
                     }
                 }
             }

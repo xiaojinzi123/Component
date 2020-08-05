@@ -2,7 +2,6 @@ package com.xiaojinzi.componentdemo;
 
 import android.app.Application;
 
-import com.google.gson.Gson;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.impl.application.ModuleManager;
@@ -32,7 +31,7 @@ public class App extends Application {
                         // 自动加载所有模块, 依赖上面的 optimizeInit(true)
                         .autoRegisterModule(true)
                         // demo 测试, 线上并没有, 请勿配置
-                        .objectToJsonConverter(obj -> new Gson().toJson(obj))
+                        // .objectToJsonConverter(obj -> new Gson().toJson(obj))
                         // 执行构建
                         .build()
         );

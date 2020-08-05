@@ -124,6 +124,12 @@ public interface SampleApi {
 
     @NavigateAnno(forIntent = true, resultCodeMatch = Activity.RESULT_OK)
     @PathAnno(ModuleConfig.Module1.TEST)
+    void test8_void(Context context,
+                               @ParameterAnno("data") String data,
+                               BiCallback<Intent> callback);
+
+    @NavigateAnno(forIntent = true, resultCodeMatch = Activity.RESULT_OK)
+    @PathAnno(ModuleConfig.Module1.TEST)
     NavigationDisposable test8(Context context,
                                @ParameterAnno("data") String data,
                                BiCallback<Intent> callback);
@@ -135,11 +141,23 @@ public interface SampleApi {
 
     @NavigateAnno(resultCodeMatch = Activity.RESULT_OK)
     @PathAnno(ModuleConfig.Module1.TEST)
-    Completable test9(Context context);
+    void test9(Context context, Callback callback);
+
+    @NavigateAnno(resultCodeMatch = Activity.RESULT_OK)
+    @PathAnno(ModuleConfig.Module1.TEST)
+    Completable test9_rx(Context context);
 
     @NavigateAnno(forIntent = true, resultCodeMatch = Activity.RESULT_OK)
     @PathAnno(ModuleConfig.Module1.TEST)
-    Single<Intent> test10(Context context);
+    void test10(Context context, BiCallback<Intent> callback);
+
+    @NavigateAnno(forIntent = true, resultCodeMatch = Activity.RESULT_OK)
+    @PathAnno(ModuleConfig.Module1.TEST)
+    NavigationDisposable test10_disposable(Context context, BiCallback<Intent> callback);
+
+    @NavigateAnno(forIntent = true, resultCodeMatch = Activity.RESULT_OK)
+    @PathAnno(ModuleConfig.Module1.TEST)
+    Single<Intent> test10_rx(Context context);
 
     @PathAnno(ModuleConfig.Module1.TEST)
     Completable test11(Context context);

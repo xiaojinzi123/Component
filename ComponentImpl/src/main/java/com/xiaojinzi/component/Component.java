@@ -37,7 +37,6 @@ public class Component {
      */
     private static Config mConfig = null;
 
-
     private Component() {
     }
 
@@ -186,5 +185,4 @@ public class Component {
             LogUtil.log("class '" + target.getClass().getName() + "' inject fail");
         }
     }
-
 }
