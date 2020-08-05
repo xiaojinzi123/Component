@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
+import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.application.IComponentCenterApplication;
 import com.xiaojinzi.component.application.IComponentHostApplication;
@@ -80,7 +81,7 @@ public class ModuleManager implements IComponentCenterApplication {
     }
 
     /**
-     * 自动注册, 需要开启 {@link com.xiaojinzi.component.Config.Builder#optimizeInit(boolean)}
+     * 自动注册, 需要开启 {@link Config.Builder#optimizeInit(boolean)}
      * 表示使用 Gradle 插件优化初始化
      */
     public void autoRegister() {
