@@ -1,5 +1,8 @@
 
-#### [v1.8.3](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.3)
+#### [v1.8.3.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.2)
+- 修复 void method(Context context, Callback callback); 这中 Api 接口方法生成代码失败的问题
+
+#### [v1.8.3.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.1)
 - 增加 java8 的发布维度
 - 支持属性注入多个属性. 主要用于兼容如果想变动 key 的问题.
 - 支持 @ServiceAnno 标记的服务实现类, 可以可选的实现 IServiceLifecycle 接口来接受模块的生命周期的回调
