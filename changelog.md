@@ -1,11 +1,16 @@
 
+#### [v1.8.3.3](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.3)
+- 删除 1.8.3.1 增加的 Service 生命周期的功能. 实践得知, 这功能并不正确
+- ServiceManager 的反注册方法改为没有返回值.
+- 
+
 #### [v1.8.3.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.2)
 - 修复 void method(Context context, Callback callback); 这中 Api 接口方法生成代码失败的问题
 
 #### [v1.8.3.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.1)
 - 增加 java8 的发布维度
 - 支持属性注入多个属性. 主要用于兼容如果想变动 key 的问题.
-- 支持 @ServiceAnno 标记的服务实现类, 可以可选的实现 IServiceLifecycle 接口来接受模块的生命周期的回调
+- ~~支持 @ServiceAnno 标记的服务实现类, 可以可选的实现 IServiceLifecycle 接口来接受模块的生命周期的回调~~ 此功能将被删除.
 - 用户自定义的模块生命周期类, 需要实现 IApplicationLifecycle 接口, 而不是老的 IComponentApplication 接口, 虽说老的目前也支持, 但是若干版本之后会删除
 - 内部优化类结构. 需要更新新的[混淆配置](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE-AndroidX#%E6%B7%B7%E6%B7%86%E9%85%8D%E7%BD%AE)
 

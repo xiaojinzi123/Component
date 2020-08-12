@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.service.IServiceLifecycle;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.CallNullable;
 import com.xiaojinzi.component.support.Callable;
@@ -44,35 +43,24 @@ public class ServiceManager {
     public static <T> void register(@NonNull Class<T> tClass, @NonNull Callable<? extends T> callable) {
         Utils.checkNullPointer(tClass, "tClass");
         Utils.checkNullPointer(callable, "callable");
-        // 先卸载, 因为覆盖的话, 生命周期的销毁就走不了
         unregister(tClass);
         serviceMap.put(tClass, callable);
     }
 
     @Nullable
     @AnyThread
-    public static <T> T unregister(@NonNull Class<T> tClass) {
+    public static <T> void unregister(@NonNull Class<T> tClass) {
         Utils.checkNullPointer(tClass, "tClass");
         // 需要判断到是否已经初始化了, 如果还没初始化就返回 null
         Callable<?> callable = serviceMap.remove(tClass);
         if (callable == null) {
-            return null;
+            return;
         }
         if (callable instanceof SingletonCallable) {
             if (((SingletonCallable<Object>) callable).isInit()) {
-                final T t = (T) callable.get();
-                if (t instanceof IServiceLifecycle) {
-                    Utils.mainThreadAction(new Action() {
-                        @Override
-                        public void run() {
-                            ((IServiceLifecycle) t).onDestroy();
-                        }
-                    });
-                }
-                return t;
+                ((SingletonCallable<Object>) callable).destroy();
             }
         }
-        return null;
     }
 
     /**
@@ -93,18 +81,8 @@ public class ServiceManager {
                 if (callable == null) {
                     return null;
                 } else {
-                    T t = null;
-                    boolean isNeedCallOnCreateMethod = true;
-                    if (callable instanceof SingletonCallable) { // 如果是单利的
-                        if (((SingletonCallable<Object>) callable).isInit()) {
-                            isNeedCallOnCreateMethod = false;
-                        }
-                    }
                     // 如果没创建, 这时候会创建了目标 service 对象
-                    t = (T) Utils.checkNullPointer(callable.get());
-                    if (isNeedCallOnCreateMethod && t instanceof IServiceLifecycle) {
-                        ((IServiceLifecycle) t).onCreate(Component.getApplication());
-                    }
+                    T t = (T) Utils.checkNullPointer(callable.get());
                     return t;
                 }
             }
