@@ -47,26 +47,23 @@ public class Component {
      */
     @MainThread
     public static void init(boolean isDebug, @NonNull Config config) {
-
         // 做必要的检查
         if (isInit) {
             throw new RuntimeException("you have init Component already!");
         }
         Utils.checkMainThread();
         Utils.checkNullPointer(config, "config");
-
         Component.isDebug = isDebug;
         mConfig = config;
+        if (isDebug) {
+            printComponent();
+        }
         // 注册
         mConfig.getApplication().registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
         if (mConfig.isOptimizeInit() && mConfig.isAutoRegisterModule()) {
             ModuleManager.getInstance().autoRegister();
         }
         isInit = true;
-        if (isDebug) {
-            printComponent();
-        }
-
     }
 
     /**
