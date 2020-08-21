@@ -106,7 +106,7 @@ public class ModuleManager implements IComponentCenterApplication {
             for (String host : hosts) {
                 IComponentHostApplication moduleApplication = findModuleApplication(host);
                 if (moduleApplication == null) {
-                    LogUtil.log("模块 '" + host + "' 加载失败, 请根据链接中的内容自行排查! \n " + ISSUE);
+                    LogUtil.log("模块 '" + host + "' 加载失败, 请根据链接中的内容自行排查! \n " + Component.COMMON_ERROR_ISSUE);
                 } else {
                     register(moduleApplication);
                 }

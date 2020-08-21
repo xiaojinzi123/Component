@@ -22,6 +22,11 @@ import com.xiaojinzi.component.support.Utils;
  */
 public class Component {
 
+    public static final String GITHUB_URL = "https://github.com/xiaojinzi123/Component";
+    public static final String DOC_URL = "https://github.com/xiaojinzi123/Component/wiki";
+    public static final String COMMON_ERROR_ISSUE = "https://github.com/xiaojinzi123/Component/issues/21";
+    public static final String ROUTER_UES_NOTE = "https://github.com/xiaojinzi123/Component/wiki/%E4%B8%BB%E9%A1%B5#%E7%89%B9%E5%88%AB%E6%B3%A8%E6%84%8F";
+
     /**
      * 是否初始化过了
      */
@@ -89,9 +94,9 @@ public class Component {
         sb.append("             *********\n");
 
         sb.append("感谢您选择 Component 组件化框架. \n有任何问题欢迎提 issue 或者扫描 github 上的二维码进入群聊@群主\n")
-                .append("Github 地址：https://github.com/xiaojinzi123/Component")
-                .append("\n文档地址：https://github.com/xiaojinzi123/Component/wiki")
-                .append("\n错误排查指南：" + ModuleManager.ISSUE)
+                .append("Github 地址：" + GITHUB_URL)
+                .append("\n文档地址：" + DOC_URL)
+                .append("\n错误排查指南：" + COMMON_ERROR_ISSUE)
                 .append("\n ");
 
         LogUtil.logw(sb.toString());

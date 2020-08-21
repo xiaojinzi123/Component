@@ -142,7 +142,8 @@ public class RouterCenter implements IComponentCenterRouter {
         Context rawContext = request.getRawContext();
         // 如果 Context 和 Fragment 中的 Context 都是 null
         if (rawContext == null) {
-            throw new NavigationFailException("is your fragment or Activity is Destoried?");
+            throw new NavigationFailException("is your fragment or Activity is Destoried?\n" +
+                    "see " + Component.ROUTER_UES_NOTE);
         }
         Intent intent = null;
         if (target.getTargetClass() != null) {

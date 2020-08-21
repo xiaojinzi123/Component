@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -18,13 +17,11 @@ import android.widget.Toast;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.impl.Callback;
 import com.xiaojinzi.component.impl.Router;
-import com.xiaojinzi.component.impl.RouterErrorResult;
-import com.xiaojinzi.component.impl.RouterRequest;
-import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
+
+import java.net.URISyntaxException;
 
 /**
  * 启动界面
@@ -133,7 +130,7 @@ public class MainAct extends AppCompatActivity {
                 .forward();
     }
 
-    public void testQuality(View view) {
+    public void testQuality(View view) throws URISyntaxException {
         Router.withApi(AppApi.class)
                 .goToTestQuality()
                 .subscribe();
