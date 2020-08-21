@@ -11,15 +11,13 @@ import java.lang.annotation.Target;
  * 重试注解
  */
 @MainThreadCreateAnno
-@Target({ElementType.TYPE)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
 public @interface RetryAnno {
 
     /**
-     * 这个 Fragment 对应的唯一 ID
-     *
-     * @return 对应 Fragment 的一个标记, 不能重复
+     * 大于 0 才是有效的
      */
-    String[] value();
+    int value() default 0;
 
 }
