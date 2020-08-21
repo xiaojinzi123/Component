@@ -121,7 +121,6 @@ public class MainAct extends AppCompatActivity {
                 .with(this)
                 .host(ModuleConfig.Help.NAME)
                 .path(ModuleConfig.Help.TEST_WEB_ROUTER)
-                .autoCancel()
                 .afterStartAction(() -> {
                     overridePendingTransition(
                             android.R.anim.fade_in,
