@@ -81,13 +81,13 @@ public class RouterRequest {
     public final Bundle options;
 
     /**
-     * Intent 的 flag
+     * Intent 的 flag, 集合不可更改
      */
     @NonNull
     public final List<Integer> intentFlags;
 
     /**
-     * Intent 的 类别
+     * Intent 的 类别, 集合不可更改
      */
     @NonNull
     public final List<String> intentCategories;
@@ -158,9 +158,7 @@ public class RouterRequest {
         // 这两个集合是不可以更改的
         intentCategories = Collections.unmodifiableList(builder.intentCategories);
         intentFlags = Collections.unmodifiableList(builder.intentFlags);
-        if (builder.bundle != null) {
-            this.bundle.putAll(builder.bundle);
-        }
+        this.bundle.putAll(builder.bundle);
         intentConsumer = builder.intentConsumer;
         beforAction = builder.beforAction;
         beforStartAction = builder.beforStartAction;
@@ -301,7 +299,10 @@ public class RouterRequest {
             }
         }
 
-        builder.bundle = bundle;
+        if (builder.bundle == null) {
+            builder.bundle = new Bundle();
+        }
+        builder.bundle.putAll(bundle);
         builder.requestCode = requestCode;
         builder.isForResult = isForResult;
         builder.options = options;

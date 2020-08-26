@@ -10,8 +10,11 @@ import com.xiaojinzi.component.impl.RouterInterceptor;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -35,25 +38,19 @@ public class DialogShowInterceptor implements RouterInterceptor {
         }
         final ProgressDialog dialog = ProgressDialog.show(rawContext, "温馨提示", "耗时操作进行中,2秒后结束", true, false);
         dialog.show();
-        Single
-                .fromCallable(new Callable<String>() {
-                    @Override
-                    public String call() throws Exception {
-                        return "test";
-                    }
-                })
+        Disposable disposable = Completable.complete()
                 .delay(2, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doOnEvent(new BiConsumer<String, Throwable>() {
+                .doOnEvent(new Consumer<Throwable>() {
                     @Override
-                    public void accept(String s, Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) throws Exception {
                         dialog.dismiss();
                     }
                 })
-                .subscribe(new Consumer<String>() {
+                .subscribe(new Action() {
                     @Override
-                    public void accept(String s) throws Exception {
+                    public void run() throws Exception {
                         chain.proceed(chain.request());
                     }
                 }, new Consumer<Throwable>() {

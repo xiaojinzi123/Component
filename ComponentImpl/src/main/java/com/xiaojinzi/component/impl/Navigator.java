@@ -1097,6 +1097,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
         @Override
         public void onSuccess(@NonNull RouterResult result) {
+            Utils.checkNullPointer(result);
             synchronized (this) {
                 if (isEnd()) {
                     return;
@@ -1108,6 +1109,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
         @Override
         public void onError(@NonNull Throwable error) {
+            Utils.checkNullPointer(error);
             synchronized (this) {
                 if (isEnd()) {
                     return;
@@ -1404,9 +1406,9 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
         /**
          * @param interceptors 拦截器的即可
-         * @param index 要执行的拦截器的下标
+         * @param index        要执行的拦截器的下标
          * @param request      第一次这个对象是不需要的
-         * @param callback 用户的 {@link Callback}
+         * @param callback     用户的 {@link Callback}
          */
         public InterceptorChain(@NonNull List<RouterInterceptor> interceptors, int index,
                                 @NonNull RouterRequest request, @NonNull RouterInterceptor.Callback callback) {
