@@ -130,7 +130,7 @@ public class MainAct extends AppCompatActivity {
                 .forward();
     }
 
-    public void testQuality(View view) throws URISyntaxException {
+    public void testQuality(View view) throws Exception {
         Router.withApi(AppApi.class)
                 .goToTestQuality()
                 .subscribe();
