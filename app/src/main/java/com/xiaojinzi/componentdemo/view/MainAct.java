@@ -21,8 +21,6 @@ import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.componentdemo.R;
 
-import java.net.URISyntaxException;
-
 /**
  * 启动界面
  */
