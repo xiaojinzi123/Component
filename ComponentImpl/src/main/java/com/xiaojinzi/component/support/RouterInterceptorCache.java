@@ -2,9 +2,9 @@ package com.xiaojinzi.component.support;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.RouterAnno;
@@ -38,7 +38,7 @@ public class RouterInterceptorCache {
      * 内部做了缓存,如果缓存中没有就会反射创建拦截器对象
      */
     @Nullable
-    @MainThread
+    @UiThread
     public static synchronized RouterInterceptor getInterceptorByClass(@NonNull Class<? extends RouterInterceptor> tClass) {
         RouterInterceptor t = ClassCache.get(tClass);
         if (t != null) {

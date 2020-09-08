@@ -1,10 +1,10 @@
 package com.xiaojinzi.base.service.inter.component1;
 
-import android.support.annotation.MainThread;
+import android.support.annotation.UiThread;
 
 import io.reactivex.Single;
 
-@MainThread
+@UiThread
 public interface Component1Service {
 
     void doSomeThing();

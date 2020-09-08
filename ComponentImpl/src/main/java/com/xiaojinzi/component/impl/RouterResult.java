@@ -48,8 +48,6 @@ public class RouterResult {
 
     /**
      * 获取可能由拦截器修改过的 request 对象,大部分没有被修改的其实就是最原始的 request 对象
-     *
-     * @return
      */
     @NonNull
     public RouterRequest getFinalRequest() {

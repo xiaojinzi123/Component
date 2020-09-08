@@ -12,6 +12,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -194,7 +195,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator intentConsumer(@Nullable @MainThread Consumer<Intent> intentConsumer) {
+    public Navigator intentConsumer(@Nullable @UiThread Consumer<Intent> intentConsumer) {
         super.intentConsumer(intentConsumer);
         return this;
     }
@@ -212,7 +213,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator beforAction(@Nullable @MainThread Action action) {
+    public Navigator beforAction(@Nullable @UiThread Action action) {
         super.beforAction(action);
         return this;
     }
@@ -230,19 +231,19 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
-    public Navigator afterAction(@Nullable @MainThread Action action) {
+    public Navigator afterAction(@Nullable @UiThread Action action) {
         super.afterAction(action);
         return this;
     }
 
     @Override
-    public Navigator afterErrorAction(@Nullable @MainThread Action action) {
+    public Navigator afterErrorAction(@Nullable @UiThread Action action) {
         super.afterErrorAction(action);
         return this;
     }
 
     @Override
-    public Navigator afterEventAction(@Nullable @MainThread Action action) {
+    public Navigator afterEventAction(@Nullable @UiThread Action action) {
         super.afterEventAction(action);
         return this;
     }
@@ -518,6 +519,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     @Override
+    @NonNull
     public RouterRequest build() {
         RouterRequest routerRequest = super.build();
         // 如果是随机的 requestCode, 则生成
@@ -589,7 +591,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 回调方法
      */
     @AnyThread
-    public void forwardForResultCode(@NonNull @MainThread final BiCallback<Integer> callback) {
+    public void forwardForResultCode(@NonNull @UiThread final BiCallback<Integer> callback) {
         navigateForResultCode(callback);
     }
 
@@ -601,7 +603,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @NonNull
     @AnyThread
     @CheckResult
-    public NavigationDisposable navigateForResultCode(@NonNull @MainThread final BiCallback<Integer> callback) {
+    public NavigationDisposable navigateForResultCode(@NonNull @UiThread final BiCallback<Integer> callback) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Integer>(callback) {
             @NonNull
             @Override
@@ -618,7 +620,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @AnyThread
     public void forwardForResultCodeMatch(
-            @NonNull @MainThread final Callback callback, final int expectedResultCode) {
+            @NonNull @UiThread final Callback callback, final int expectedResultCode) {
         navigateForResultCodeMatch(callback, expectedResultCode);
     }
 
@@ -631,7 +633,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @AnyThread
     @CheckResult
     public NavigationDisposable navigateForResultCodeMatch(
-            @NonNull @MainThread final Callback callback, final int expectedResultCode) {
+            @NonNull @UiThread final Callback callback, final int expectedResultCode) {
         return navigateForResult(new BiCallback<ActivityResult>() {
             @Override
             public void onSuccess(@NonNull RouterResult result, @NonNull ActivityResult activityResult) {
@@ -661,7 +663,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @AnyThread
     public void forwardForIntentAndResultCodeMatch(
-            @NonNull @MainThread final BiCallback<Intent> callback, final int expectedResultCode) {
+            @NonNull @UiThread final BiCallback<Intent> callback, final int expectedResultCode) {
         navigateForIntentAndResultCodeMatch(callback, expectedResultCode);
     }
 
@@ -674,7 +676,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @AnyThread
     @CheckResult
     public NavigationDisposable navigateForIntentAndResultCodeMatch(
-            @NonNull @MainThread final BiCallback<Intent> callback,
+            @NonNull @UiThread final BiCallback<Intent> callback,
             final int expectedResultCode) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Intent>(callback) {
             @NonNull
@@ -691,7 +693,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 回调方法
      */
     @AnyThread
-    public void forwardForIntent(@NonNull @MainThread final BiCallback<Intent> callback) {
+    public void forwardForIntent(@NonNull @UiThread final BiCallback<Intent> callback) {
         navigateForIntent(callback);
     }
 
@@ -703,7 +705,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @NonNull
     @AnyThread
     @CheckResult
-    public NavigationDisposable navigateForIntent(@NonNull @MainThread final BiCallback<Intent> callback) {
+    public NavigationDisposable navigateForIntent(@NonNull @UiThread final BiCallback<Intent> callback) {
         return navigateForResult(new BiCallback.Map<ActivityResult, Intent>(callback) {
             @NonNull
             @Override
@@ -719,7 +721,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 这里是为了拿返回的东西是不可以为空的
      */
     @AnyThread
-    public void forwardForResult(@NonNull @MainThread final BiCallback<ActivityResult> callback) {
+    public void forwardForResult(@NonNull @UiThread final BiCallback<ActivityResult> callback) {
         navigateForResult(callback);
     }
 
@@ -733,7 +735,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @AnyThread
     @CheckResult
     public NavigationDisposable navigateForResult(
-            @NonNull @MainThread final BiCallback<ActivityResult> callback) {
+            @NonNull @UiThread final BiCallback<ActivityResult> callback) {
         Utils.checkNullPointer(callback, "callback");
         return realNavigateForResult(callback);
     }
@@ -762,7 +764,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param callback 路由的回调
      */
     @AnyThread
-    public void forward(@Nullable @MainThread final Callback callback) {
+    public void forward(@Nullable @UiThread final Callback callback) {
         navigate(callback);
     }
 
@@ -770,7 +772,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     @AnyThread
     @CheckResult
     public synchronized NavigationDisposable navigate(
-            @Nullable @MainThread final Callback callback) {
+            @Nullable @UiThread final Callback callback) {
         // 构建请求对象
         RouterRequest originalRequest = null;
         // 可取消对象
@@ -868,7 +870,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 但是没有那个必要去做这件事情了,等到有必要的时候再说,基本不会出现并且出现了也不是什么问题
      */
     @NonNull
-    @MainThread
+    @UiThread
     private NavigationDisposable doNavigateForResult(@NonNull final BiCallback<ActivityResult> biCallback) {
         // 直接 gg
         Utils.checkNullPointer(biCallback, "biCallback");
@@ -903,7 +905,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
             // 可能是一个 空实现
             finalNavigationDisposable = navigate(new CallbackAdapter() {
                 @Override
-                @MainThread
+                @UiThread
                 public void onSuccess(@NonNull final RouterResult routerResult) {
                     super.onSuccess(routerResult);
                     // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
@@ -919,7 +921,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 }
 
                 @Override
-                @MainThread
+                @UiThread
                 public void onError(@NonNull RouterErrorResult errorResult) {
                     super.onError(errorResult);
                     Help.removeRequestCode(errorResult.getOriginalRequest());
@@ -928,7 +930,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                 }
 
                 @Override
-                @MainThread
+                @UiThread
                 public void onCancel(@NonNull RouterRequest originalRequest) {
                     super.onCancel(originalRequest);
                     rxFragment.removeActivityResultConsumer(originalRequest);
@@ -1023,7 +1025,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
     /**
      * 返回自定义的拦截器
      */
-    @MainThread
+    @UiThread
     private static List<RouterInterceptor> getCustomInterceptors(@NonNull RouterRequest originalRequest,
                                                                  @Nullable List<Object> customInterceptors) throws InterceptorNotFoundException {
         if (customInterceptors == null || customInterceptors.isEmpty()) {
@@ -1162,7 +1164,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 最后确认 {@link Uri} 的目标没被改变的时候
      * 就可以加载 {@link DoActivityStartInterceptor} 执行跳转了.
      */
-    @MainThread
+    @UiThread
     private static class PageInterceptor implements RouterInterceptor {
 
         @NonNull
@@ -1203,7 +1205,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 最后确认 {@link Uri} 的目标没被改变的时候
      * 就可以加载 {@link DoActivityStartInterceptor} 执行跳转了.
      */
-    @MainThread
+    @UiThread
     private static class PageInterceptorUriCheckInterceptor implements RouterInterceptor {
 
         @NonNull
@@ -1284,7 +1286,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 1.如果跳转的时候没有发生异常, 说明可以跳转过去
      * 如果失败了进行降级处理
      */
-    @MainThread
+    @UiThread
     private static class DoActivityStartInterceptor implements RouterInterceptor {
 
         @NonNull
@@ -1299,7 +1301,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
          * @throws Exception
          */
         @Override
-        @MainThread
+        @UiThread
         public void intercept(final Chain chain) throws Exception {
             // 这个 request 对象已经不是最原始的了,但是可能是最原始的,就看拦截器是否更改了这个对象了
             RouterRequest finalRequest = chain.request();

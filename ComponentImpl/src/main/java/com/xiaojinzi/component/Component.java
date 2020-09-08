@@ -7,6 +7,7 @@ import android.support.annotation.AnyThread;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.Inject;
@@ -50,7 +51,7 @@ public class Component {
      *
      * @see Config 初始化的配置对象
      */
-    @MainThread
+    @UiThread
     public static void init(boolean isDebug, @NonNull Config config) {
         // 做必要的检查
         if (isInit) {
@@ -135,22 +136,22 @@ public class Component {
         }
     }
 
-    @MainThread
+    @UiThread
     public static void inject(@NonNull Object target) {
         inject(target, null, true, true);
     }
 
-    @MainThread
+    @UiThread
     public static void injectAttrValueFromIntent(@NonNull Object target, @Nullable Intent intent) {
         injectAttrValueFromBundle(target, intent == null ? null : intent.getExtras());
     }
 
-    @MainThread
+    @UiThread
     public static void injectAttrValueFromBundle(@NonNull Object target, @Nullable Bundle bundle) {
         inject(target, bundle, true, false);
     }
 
-    @MainThread
+    @UiThread
     public static void injectService(@NonNull Object target) {
         inject(target, null, false, true);
     }
@@ -163,7 +164,7 @@ public class Component {
      * @param isAutoWireAttrValue 是否注入属性值
      * @param isAutoWireService   是否注入 Service
      */
-    @MainThread
+    @UiThread
     private static void inject(@NonNull Object target, @Nullable Bundle bundle,
                                boolean isAutoWireAttrValue,
                                boolean isAutoWireService) {

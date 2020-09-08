@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.impl.RouterRequest;
 
@@ -10,7 +10,7 @@ import com.xiaojinzi.component.impl.RouterRequest;
  */
 public class RouterRequestHelp {
 
-    @MainThread
+    @UiThread
     public static void executeBeforAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
         if (request.beforAction != null) {
@@ -18,7 +18,7 @@ public class RouterRequestHelp {
         }
     }
 
-    @MainThread
+    @UiThread
     public static void executeAfterAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
         if (request.afterAction != null) {
@@ -27,7 +27,7 @@ public class RouterRequestHelp {
         executeAfterEventAction(request);
     }
 
-    @MainThread
+    @UiThread
     public static void executeAfterErrorAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
         if (request.afterErrorAction != null) {
@@ -36,7 +36,7 @@ public class RouterRequestHelp {
         executeAfterEventAction(request);
     }
 
-    @MainThread
+    @UiThread
     public static void executeAfterEventAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
         if (request.afterEventAction != null) {

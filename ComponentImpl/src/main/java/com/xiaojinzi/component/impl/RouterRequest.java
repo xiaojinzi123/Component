@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -278,9 +278,8 @@ public class RouterRequest {
     /**
      * 这里转化的对象会比 {@link Builder} 对象中的参数少一个 {@link Builder#url}
      * 因为 uri 转化为了 scheme,host,path,queryMap 那么这时候就不需要 url 了
-     *
-     * @return
      */
+    @NonNull
     public Builder toBuilder() {
 
         Builder builder = new Builder();
@@ -411,32 +410,32 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder beforAction(@Nullable @MainThread Action action) {
+        public Builder beforAction(@Nullable @UiThread Action action) {
             this.beforAction = action;
             return this;
         }
 
-        public Builder beforStartAction(@Nullable @MainThread Action action) {
+        public Builder beforStartAction(@Nullable @UiThread Action action) {
             this.beforStartAction = action;
             return this;
         }
 
-        public Builder afterStartAction(@Nullable @MainThread Action action) {
+        public Builder afterStartAction(@Nullable @UiThread Action action) {
             this.afterStartAction = action;
             return this;
         }
 
-        public Builder afterAction(@Nullable @MainThread Action action) {
+        public Builder afterAction(@Nullable @UiThread Action action) {
             this.afterAction = action;
             return this;
         }
 
-        public Builder afterErrorAction(@Nullable @MainThread Action action) {
+        public Builder afterErrorAction(@Nullable @UiThread Action action) {
             this.afterErrorAction = action;
             return this;
         }
 
-        public Builder afterEventAction(@Nullable @MainThread Action action) {
+        public Builder afterEventAction(@Nullable @UiThread Action action) {
             this.afterEventAction = action;
             return this;
         }
@@ -457,7 +456,7 @@ public class RouterRequest {
          *                       更改的机会,最好别更改内部的参数等的信息,这里提供出来其实主要是可以让你调用Intent
          *                       的 {@link Intent#addFlags(int)} 等方法,并不是给你修改内部的 bundle 的
          */
-        public Builder intentConsumer(@Nullable @MainThread Consumer<Intent> intentConsumer) {
+        public Builder intentConsumer(@Nullable @UiThread Consumer<Intent> intentConsumer) {
             this.intentConsumer = intentConsumer;
             return this;
         }
@@ -718,6 +717,7 @@ public class RouterRequest {
          *
          * @return 可能会抛出一个运行时异常, 由于您的参数在构建 uri 的时候出现的异常
          */
+        @NonNull
         public RouterRequest build() {
             return new RouterRequest(this);
         }
