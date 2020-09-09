@@ -2,7 +2,13 @@
 #### [v1.8.3.3](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.3)
 - 删除 1.8.3.1 增加的 Service 生命周期的功能. 实践得知, 这功能并不正确
 - ServiceManager 的反注册方法改为没有返回值.
-- 
+- @MainThread 注解全都改为 @UiThread
+- afterAction 的执行用的 request 修复为 finalRequest, 而不是 originRequest
+- 增加一些方法的 @NonNull 注解
+- 修复 RouterRequest的bundle变为RouterRequest.Builder.Bundle 地址传递的问题, 应该为值传递
+- 增加模块加载失败时候的 url 链接, 可以帮助排查错误
+- 调整 Logo 输出的位置
+- 修复生成的路由表的 ArrayList 的泛型警告问题
 
 #### [v1.8.3.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.2)
 - 修复 void method(Context context, Callback callback); 这中 Api 接口方法生成代码失败的问题
