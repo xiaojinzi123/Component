@@ -27,7 +27,6 @@ public class CustomerRouterImpl {
     /**
      * 自定义实现跳转到打电话的界面,并且自动完成打电话权限的申请
      */
-    @Nullable
     @RouterAnno(
             host = ModuleConfig.System.NAME,
             path = ModuleConfig.System.CALL_PHONE,
@@ -49,7 +48,6 @@ public class CustomerRouterImpl {
      * @param request
      * @return
      */
-    @Nullable
     @RouterAnno(
             host = ModuleConfig.System.NAME,
             path = ModuleConfig.System.TAKE_PHONE,
