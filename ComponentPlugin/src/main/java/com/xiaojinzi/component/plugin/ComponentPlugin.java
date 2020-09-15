@@ -25,18 +25,26 @@ import java.util.List;
 public class ComponentPlugin implements Plugin<Project> {
 
     public static final String ROUTER_FOLDER = "component_router_doc_folder";
-    public static final String ROUTER_ENABLE = "componnet_router_doc_enable";
+    public static final String ROUTER_ENABLE = "component_router_doc_enable";
 
     @Override
     public void apply(final Project project) {
         BaseAppModuleExtension appModuleExtension = (BaseAppModuleExtension) project.getProperties().get("android");
+        Object asmDisable = project.findProperty("component_asm_disable");
         Object asmUtilOutputPath = project.findProperty("component_asm_util_class_output_path");
+        boolean asmDisableBool = false;
+        if (asmDisable instanceof Boolean) {
+            asmDisableBool = (boolean) asmDisable;
+        }
         // may be null
         String asmUtilOutputPathStr = null;
         if (asmUtilOutputPath instanceof String) {
             asmUtilOutputPathStr = (String) asmUtilOutputPath;
         }
-        appModuleExtension.registerTransform(new ModifyASMUtilTransform(asmUtilOutputPathStr));
+        // 不禁用的话, 才注册
+        if (!asmDisableBool) {
+            appModuleExtension.registerTransform(new ModifyASMUtilTransform(asmUtilOutputPathStr));
+        }
         // 生成文档功能的
         routerDocTask(project);
         cleanTask(project);

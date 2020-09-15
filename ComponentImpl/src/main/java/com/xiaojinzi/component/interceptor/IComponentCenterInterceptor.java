@@ -1,10 +1,10 @@
 package com.xiaojinzi.component.interceptor;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 
-import com.xiaojinzi.component.support.IComponentCenter;
 import com.xiaojinzi.component.impl.RouterInterceptor;
+import com.xiaojinzi.component.support.IComponentCenter;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public interface IComponentCenterInterceptor extends IComponentInterceptor, ICom
      * @return 全局的拦截器列表
      */
     @NonNull
-    @MainThread
+    @UiThread
     List<RouterInterceptor> getGlobalInterceptorList();
 
 }

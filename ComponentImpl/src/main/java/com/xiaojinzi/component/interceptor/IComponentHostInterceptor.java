@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.interceptor;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.impl.RouterInterceptor;
@@ -27,7 +27,7 @@ public interface IComponentHostInterceptor
      * 让外面使用的地方去初始化也可以
      */
     @NonNull
-    @MainThread
+    @UiThread
     List<InterceptorBean> globalInterceptorList();
 
     /**
@@ -36,14 +36,14 @@ public interface IComponentHostInterceptor
      * 拦截器做检查
      */
     @NonNull
-    @MainThread
+    @UiThread
     Set<String> getInterceptorNames();
 
     /**
      * 获取拦截器集合
      */
     @NonNull
-    @MainThread
+    @UiThread
     Map<String, Class<? extends RouterInterceptor>> getInterceptorMap();
 
 }

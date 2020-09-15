@@ -336,9 +336,9 @@ public class RouterProcessor extends BaseHostProcessor {
 
                 // 声明一个拦截器的集合.
                 String interceptorListName = "interceptorList" + atomicInteger.incrementAndGet();
-                initMapMethodSpecBuilder.addStatement("$N<$T> $N = new $T($L)",
+                initMapMethodSpecBuilder.addStatement("$N<$T> $N = new $N<$T>($L)",
                         ComponentConstants.JAVA_LIST, pageInterceptorBeanTypeElement, interceptorListName,
-                        ArrayList.class, routerBean.getTotalInterceptorSize());
+                        ComponentConstants.JAVA_ARRAYLIST, pageInterceptorBeanTypeElement, routerBean.getTotalInterceptorSize());
                 initMapMethodSpecBuilder.addStatement("$N.setPageInterceptors($N)", routerBeanName, interceptorListName);
 
                 // 拦截器的代码的生成

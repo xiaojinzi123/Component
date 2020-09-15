@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.AnyThread;
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
 
 import com.xiaojinzi.component.Component;
@@ -178,7 +178,7 @@ public class Router {
      *
      * @param act 要取消的 {@link Activity}
      */
-    @MainThread
+    @UiThread
     public static void cancel(@NonNull Activity act) {
         Utils.checkMainThread();
         synchronized (mNavigationDisposableList) {
@@ -197,7 +197,7 @@ public class Router {
      *
      * @param fragment {@link Fragment}
      */
-    @MainThread
+    @UiThread
     public static void cancel(@NonNull Fragment fragment) {
         Utils.checkMainThread();
         synchronized (mNavigationDisposableList) {

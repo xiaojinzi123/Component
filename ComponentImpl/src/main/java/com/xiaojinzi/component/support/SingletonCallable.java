@@ -31,6 +31,10 @@ public abstract class SingletonCallable<T> implements Callable<T> {
         return instance;
     }
 
+    public synchronized final void destroy() {
+        instance = null;
+    }
+
     /**
      * 获取真正的对象
      */

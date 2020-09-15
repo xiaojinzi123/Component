@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.SOURCE)
-public @interface MainThreadCreateAnno {
+public @interface UiThreadCreateAnno {
 }

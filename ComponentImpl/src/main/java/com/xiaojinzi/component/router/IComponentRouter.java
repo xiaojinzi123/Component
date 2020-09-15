@@ -1,8 +1,8 @@
 package com.xiaojinzi.component.router;
 
 import android.net.Uri;
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.RouterRequest;
@@ -24,7 +24,7 @@ public interface IComponentRouter {
      *
      * @throws android.content.ActivityNotFoundException
      */
-    @MainThread
+    @UiThread
     void openUri(@NonNull RouterRequest routerRequest) throws Exception;
 
     /**
@@ -64,7 +64,7 @@ public interface IComponentRouter {
      * @throws Exception
      */
     @NonNull
-    @MainThread
+    @UiThread
     List<RouterInterceptor> listPageInterceptors(@NonNull Uri uri) throws Exception;
 
     /**
@@ -72,7 +72,7 @@ public interface IComponentRouter {
      * 获取该 URI 对应的降级需要执行的拦截器
      */
     @NonNull
-    @MainThread
+    @UiThread
     List<RouterInterceptor> listDegradeInterceptors(@NonNull Uri uri) throws Exception;
 
 }
