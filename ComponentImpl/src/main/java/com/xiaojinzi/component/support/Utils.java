@@ -9,9 +9,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.AnyThread;
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.error.RouterRuntimeException;
@@ -271,7 +271,7 @@ public class Utils {
 
     @AnyThread
     @SuppressLint("WrongThread")
-    public static void mainThreadAction(@NonNull @MainThread final Action action) {
+    public static void mainThreadAction(@NonNull @UiThread final Action action) {
         if (isMainThread()) {
             action.run();
         } else {

@@ -1,7 +1,8 @@
 package com.xiaojinzi.component.impl;
 
-import androidx.annotation.MainThread;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 
 /**
  * 路由监听器,目前就只有三种情况,其实还有 RxJava 支持的 RxRouter 成功的和失败的
@@ -9,7 +10,7 @@ import androidx.annotation.NonNull;
  *
  * @author xiaojinzi
  */
-@MainThread
+@UiThread
 public interface RouterListener {
 
     /**
@@ -17,7 +18,7 @@ public interface RouterListener {
      *
      * @param successResult 成功的对象
      */
-    @MainThread
+    @UiThread
     void onSuccess(@NonNull RouterResult successResult) throws Exception;
 
     /**
@@ -25,7 +26,7 @@ public interface RouterListener {
      *
      * @param errorResult 失败的对象
      */
-    @MainThread
+    @UiThread
     void onError(RouterErrorResult errorResult) throws Exception;
 
     /**
@@ -33,7 +34,7 @@ public interface RouterListener {
      *
      * @param originalRequest 最原始的请求对象
      */
-    @MainThread
+    @UiThread
     void onCancel(@NonNull RouterRequest originalRequest) throws Exception;
 
 }

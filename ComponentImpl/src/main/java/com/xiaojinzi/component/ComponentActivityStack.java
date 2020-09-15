@@ -1,9 +1,9 @@
 package com.xiaojinzi.component;
 
 import android.app.Activity;
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 import com.xiaojinzi.component.support.Utils;
 
@@ -28,7 +28,7 @@ public class ComponentActivityStack {
         private static ComponentActivityStack INSTANCE = new ComponentActivityStack();
     }
 
-    @MainThread
+    @UiThread
     public static ComponentActivityStack getInstance() {
         return Holder.INSTANCE;
     }

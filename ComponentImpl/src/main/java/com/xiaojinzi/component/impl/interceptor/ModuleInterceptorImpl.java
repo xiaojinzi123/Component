@@ -48,7 +48,7 @@ abstract class ModuleInterceptorImpl implements IComponentHostInterceptor {
 
     @Override
     @NonNull
-    @MainThread
+    @UiThread
     public List<InterceptorBean> globalInterceptorList() {
         return Collections.emptyList();
     }
@@ -57,7 +57,7 @@ abstract class ModuleInterceptorImpl implements IComponentHostInterceptor {
      * 初始化拦截器的集合
      */
     @CallSuper
-    @MainThread
+    @UiThread
     protected void initInterceptorMap() {
         isInitMap = true;
     }
@@ -82,7 +82,7 @@ abstract class ModuleInterceptorImpl implements IComponentHostInterceptor {
 
     @Override
     @Nullable
-    @MainThread
+    @UiThread
     public RouterInterceptor getByName(@Nullable String name) {
         if (name == null) {
             return null;

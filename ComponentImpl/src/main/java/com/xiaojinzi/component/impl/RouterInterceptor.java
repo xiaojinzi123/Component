@@ -1,8 +1,8 @@
 package com.xiaojinzi.component.impl;
 
 import androidx.annotation.AnyThread;
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.RouterInterceptorCache;
@@ -31,7 +31,7 @@ public interface RouterInterceptor {
      *
      * @param chain 拦截器执行连接器
      */
-    @MainThread
+    @UiThread
     void intercept(@NonNull Chain chain) throws Exception;
 
     /**

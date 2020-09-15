@@ -1,8 +1,8 @@
 package com.xiaojinzi.component.support;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 import com.xiaojinzi.component.impl.Callback;
 import com.xiaojinzi.component.impl.RouterErrorResult;
@@ -15,25 +15,25 @@ import com.xiaojinzi.component.impl.RouterResult;
 public class CallbackAdapter implements Callback {
 
     @Override
-    @MainThread
+    @UiThread
     public void onSuccess(@NonNull RouterResult result) {
         // empty
     }
 
     @Override
-    @MainThread
+    @UiThread
     public void onError(RouterErrorResult errorResult) {
         // empty
     }
 
     @Override
-    @MainThread
+    @UiThread
     public void onEvent(@Nullable RouterResult successResult, @Nullable RouterErrorResult errorResult) {
         // empty
     }
 
     @Override
-    @MainThread
+    @UiThread
     public void onCancel(@NonNull RouterRequest originalRequest) {
         // empty
     }
