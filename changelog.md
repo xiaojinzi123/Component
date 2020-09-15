@@ -9,6 +9,8 @@
 - 增加模块加载失败时候的 url 链接, 可以帮助排查错误
 - 调整 Logo 输出的位置
 - 修复生成的路由表的 ArrayList 的泛型警告问题
+- 修改 componnet 拼写错误的问题.
+- 增加 component_asm_disable 配置, 可以让 Gradle 插件禁用 ASM 的功能. 因为有些人就只用 RouterDoc 的功能
 
 #### [v1.8.3.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.2)
 - 修复 void method(Context context, Callback callback); 这中 Api 接口方法生成代码失败的问题
@@ -30,10 +32,10 @@
 #### [v1.8.2.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.1)
 
 - 修复之前修改 `impl` 模块的包名引起的 `ProxtActivity` 失效的问题
-- `router` 文档增加控制是否生成文档的 `boolean` 的开关. `componnet_router_doc_enable`
-    - 配置方式和 `componnet_router_doc_folder` 一致. 比如 ext.componnet_router_doc_enable = true
+- `router` 文档增加控制是否生成文档的 `boolean` 的开关. `component_router_doc_enable`
+    - 配置方式和 `componnet_router_doc_folder` 一致. 比如 ext.component_router_doc_enable = true
 - 同时注解驱动器的 `RouterDoc` 属性配置改为 `RouterDocFolder`
-- 注解驱动器也增加一个文档是否生成的开关 `RouterDocEable`, 一般 `RouterDocEable` 这个值随着 `componnet_router_doc_enable` 变化即可
+- 注解驱动器也增加一个文档是否生成的开关 `RouterDocEable`, 一般 `RouterDocEable` 这个值随着 `component_router_doc_enable` 变化即可
 
 #### [v1.8.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2)
 

@@ -20,7 +20,7 @@ android {
                 arguments = [
                         "HOST"           : "app",
                         "RouterDocFolder": project.property("component_router_doc_folder"),
-                        "RouterDocEnable": String.valueOf(project.property("componnet_router_doc_enable"))
+                        "RouterDocEnable": String.valueOf(project.property("component_router_doc_enable"))
                 ]
             }
         }
