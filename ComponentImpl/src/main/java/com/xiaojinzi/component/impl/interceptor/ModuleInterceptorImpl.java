@@ -4,7 +4,7 @@ import android.app.Application;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.MainThread;
+import androidx.annotation.UiThread;
 
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.interceptor.IComponentHostInterceptor;
