@@ -1,8 +1,8 @@
 package com.xiaojinzi.component.impl;
 
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.OnRouterCancel;
@@ -31,7 +31,7 @@ public interface Callback extends OnRouterError, OnRouterCancel {
      * @see Navigator#navigate(Callback)
      * @see Navigator#navigateForResultCodeMatch(Callback, int)
      */
-    @MainThread
+    @UiThread
     void onSuccess(@NonNull RouterResult result);
 
     /**
@@ -40,7 +40,7 @@ public interface Callback extends OnRouterError, OnRouterCancel {
      * @param successResult 路由成功时候的返回对象,成功的对象
      * @param errorResult   发生的错误对象
      */
-    @MainThread
+    @UiThread
     void onEvent(@Nullable RouterResult successResult, @Nullable RouterErrorResult errorResult);
 
 }

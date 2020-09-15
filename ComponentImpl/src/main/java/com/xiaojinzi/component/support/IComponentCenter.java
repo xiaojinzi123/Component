@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 
 /**
  * 模块管理中心注册的类
@@ -13,7 +13,7 @@ public interface IComponentCenter<T> {
      *
      * @param t 注册的目标
      */
-    @MainThread
+    @UiThread
     void register(T t);
 
     /**
@@ -21,7 +21,7 @@ public interface IComponentCenter<T> {
      *
      * @param host 需要注册的 host
      */
-    @MainThread
+    @UiThread
     void register(@NonNull String host);
 
     /**
@@ -29,7 +29,7 @@ public interface IComponentCenter<T> {
      *
      * @param t 反注册的目标
      */
-    @MainThread
+    @UiThread
     void unregister(T t);
 
     /**
@@ -37,7 +37,7 @@ public interface IComponentCenter<T> {
      *
      * @param host 反注册的 host
      */
-    @MainThread
+    @UiThread
     void unregister(@NonNull String host);
 
 }

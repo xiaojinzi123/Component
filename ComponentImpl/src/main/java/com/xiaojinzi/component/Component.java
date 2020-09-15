@@ -7,6 +7,7 @@ import android.support.annotation.AnyThread;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.Inject;
@@ -21,6 +22,11 @@ import com.xiaojinzi.component.support.Utils;
  * @author : xiaojinzi
  */
 public class Component {
+
+    public static final String GITHUB_URL = "https://github.com/xiaojinzi123/Component";
+    public static final String DOC_URL = "https://github.com/xiaojinzi123/Component/wiki";
+    public static final String COMMON_ERROR_ISSUE = "https://github.com/xiaojinzi123/Component/issues/21";
+    public static final String ROUTER_UES_NOTE = "https://github.com/xiaojinzi123/Component/wiki/%E4%B8%BB%E9%A1%B5#%E7%89%B9%E5%88%AB%E6%B3%A8%E6%84%8F";
 
     /**
      * 是否初始化过了
@@ -45,28 +51,25 @@ public class Component {
      *
      * @see Config 初始化的配置对象
      */
-    @MainThread
+    @UiThread
     public static void init(boolean isDebug, @NonNull Config config) {
-
         // 做必要的检查
         if (isInit) {
             throw new RuntimeException("you have init Component already!");
         }
         Utils.checkMainThread();
         Utils.checkNullPointer(config, "config");
-
         Component.isDebug = isDebug;
         mConfig = config;
+        if (isDebug) {
+            printComponent();
+        }
         // 注册
         mConfig.getApplication().registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
         if (mConfig.isOptimizeInit() && mConfig.isAutoRegisterModule()) {
             ModuleManager.getInstance().autoRegister();
         }
         isInit = true;
-        if (isDebug) {
-            printComponent();
-        }
-
     }
 
     /**
@@ -92,8 +95,9 @@ public class Component {
         sb.append("             *********\n");
 
         sb.append("感谢您选择 Component 组件化框架. \n有任何问题欢迎提 issue 或者扫描 github 上的二维码进入群聊@群主\n")
-                .append("Github 地址：https://github.com/xiaojinzi123/Component")
-                .append("\n文档地址：https://github.com/xiaojinzi123/Component/wiki")
+                .append("Github 地址：" + GITHUB_URL)
+                .append("\n文档地址：" + DOC_URL)
+                .append("\n错误排查指南：" + COMMON_ERROR_ISSUE)
                 .append("\n ");
 
         LogUtil.logw(sb.toString());
@@ -132,22 +136,22 @@ public class Component {
         }
     }
 
-    @MainThread
+    @UiThread
     public static void inject(@NonNull Object target) {
         inject(target, null, true, true);
     }
 
-    @MainThread
+    @UiThread
     public static void injectAttrValueFromIntent(@NonNull Object target, @Nullable Intent intent) {
         injectAttrValueFromBundle(target, intent == null ? null : intent.getExtras());
     }
 
-    @MainThread
+    @UiThread
     public static void injectAttrValueFromBundle(@NonNull Object target, @Nullable Bundle bundle) {
         inject(target, bundle, true, false);
     }
 
-    @MainThread
+    @UiThread
     public static void injectService(@NonNull Object target) {
         inject(target, null, false, true);
     }
@@ -160,7 +164,7 @@ public class Component {
      * @param isAutoWireAttrValue 是否注入属性值
      * @param isAutoWireService   是否注入 Service
      */
-    @MainThread
+    @UiThread
     private static void inject(@NonNull Object target, @Nullable Bundle bundle,
                                boolean isAutoWireAttrValue,
                                boolean isAutoWireService) {

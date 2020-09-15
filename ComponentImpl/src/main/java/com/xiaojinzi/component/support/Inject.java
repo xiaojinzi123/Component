@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
@@ -19,7 +20,7 @@ public interface Inject<T> {
      *
      * @param target 目标
      */
-    @MainThread
+    @UiThread
     void injectAttrValue(@NonNull T target);
 
     /**
@@ -28,7 +29,7 @@ public interface Inject<T> {
      * @param target 目标
      * @param bundle 数据源的 bundle
      */
-    @MainThread
+    @UiThread
     void injectAttrValue(@NonNull T target, @NonNull Bundle bundle);
 
     /**
@@ -36,7 +37,7 @@ public interface Inject<T> {
      *
      * @param target 目标
      */
-    @MainThread
+    @UiThread
     void injectService(@NonNull T target);
 
 }

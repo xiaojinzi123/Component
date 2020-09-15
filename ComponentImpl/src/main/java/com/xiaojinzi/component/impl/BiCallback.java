@@ -1,8 +1,8 @@
 package com.xiaojinzi.component.impl;
 
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.Function;
@@ -26,7 +26,7 @@ public interface BiCallback<T> extends OnRouterCancel, OnRouterError {
      * @param result 路由成功的对象
      * @param t      返回的对象
      */
-    @MainThread
+    @UiThread
     void onSuccess(@NonNull RouterResult result, @NonNull T t);
 
     /**

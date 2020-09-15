@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.fragment;
 
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.support.IBaseLifecycle;
 import com.xiaojinzi.component.support.IHost;
@@ -20,7 +20,7 @@ public interface IComponentHostFragment extends IBaseLifecycle, IHost {
      * 第二：在注解驱动器中, 做了避免重复的操作
      */
     @NonNull
-    @MainThread
+    @UiThread
     Set<String> getFragmentNameSet();
 
 }

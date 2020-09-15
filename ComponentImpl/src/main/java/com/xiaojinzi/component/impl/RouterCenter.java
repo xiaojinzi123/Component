@@ -5,9 +5,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -96,7 +96,7 @@ public class RouterCenter implements IComponentCenterRouter {
     }
 
     @Override
-    @MainThread
+    @UiThread
     public void openUri(@NonNull final RouterRequest routerRequest) throws Exception {
         doOpenUri(routerRequest);
     }
@@ -105,7 +105,7 @@ public class RouterCenter implements IComponentCenterRouter {
      * @param request             路由请求对象
      * @param routerDegradeIntent 一个降级的 Intent
      */
-    @MainThread
+    @UiThread
     public void routerDegrade(@NonNull RouterRequest request, @NonNull Intent routerDegradeIntent) throws Exception {
         String uriString = request.uri.toString();
         if (routerDegradeIntent == null) {
@@ -119,7 +119,7 @@ public class RouterCenter implements IComponentCenterRouter {
      *
      * @param request 路由请求对象
      */
-    @MainThread
+    @UiThread
     private void doOpenUri(@NonNull final RouterRequest request) throws Exception {
         if (!Utils.isMainThread()) {
             throw new NavigationFailException("Router must run on main thread");
@@ -142,7 +142,8 @@ public class RouterCenter implements IComponentCenterRouter {
         Context rawContext = request.getRawContext();
         // 如果 Context 和 Fragment 中的 Context 都是 null
         if (rawContext == null) {
-            throw new NavigationFailException("is your fragment or Activity is Destoried?");
+            throw new NavigationFailException("is your fragment or Activity is Destoried?\n" +
+                    "see " + Component.ROUTER_UES_NOTE);
         }
         Intent intent = null;
         if (target.getTargetClass() != null) {
@@ -162,7 +163,7 @@ public class RouterCenter implements IComponentCenterRouter {
      * @param request 请求对象
      * @param intent  Intent
      */
-    @MainThread
+    @UiThread
     private void doStartIntent(@NonNull RouterRequest request,
                                Intent intent) throws Exception {
         // 前置工作

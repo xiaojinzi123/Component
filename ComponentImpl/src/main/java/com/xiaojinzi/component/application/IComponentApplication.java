@@ -1,15 +1,13 @@
 package com.xiaojinzi.component.application;
 
-import android.support.annotation.MainThread;
+import android.support.annotation.UiThread;
 
-import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.support.IBaseLifecycle;
 
 /**
  * @see IApplicationLifecycle
  */
-@MainThread
+@UiThread
 @CheckClassNameAnno
 public interface IComponentApplication extends IApplicationLifecycle {
 }

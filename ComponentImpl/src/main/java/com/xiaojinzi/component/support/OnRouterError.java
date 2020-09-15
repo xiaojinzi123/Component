@@ -1,11 +1,9 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.impl.RouterErrorResult;
-import com.xiaojinzi.component.support.NavigationDisposable;
 
 /**
  * 被取消了回调接口
@@ -17,7 +15,7 @@ public interface OnRouterError {
      *
      * @param errorResult 路由失败的对象
      */
-    @MainThread
+    @UiThread
     void onError(@NonNull RouterErrorResult errorResult);
 
 }

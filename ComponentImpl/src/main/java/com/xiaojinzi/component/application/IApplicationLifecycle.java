@@ -1,8 +1,7 @@
 package com.xiaojinzi.component.application;
 
-import android.support.annotation.MainThread;
+import android.support.annotation.UiThread;
 
-import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.anno.ModuleAppAnno;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.IBaseLifecycle;
@@ -14,7 +13,7 @@ import com.xiaojinzi.component.support.IBaseLifecycle;
  * 你可以实现此接口或者{@link IComponentApplication} 接口, 但是建议实现此接口.
  * 老接口 {@link IComponentApplication} 会在将来某个版本删除
  */
-@MainThread
+@UiThread
 @CheckClassNameAnno
 public interface IApplicationLifecycle extends IBaseLifecycle {
 }
