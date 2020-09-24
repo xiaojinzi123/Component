@@ -16,6 +16,7 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
+import com.xiaojinzi.component.anno.support.NotAppUseAnno;
 import com.xiaojinzi.component.bean.PageInterceptorBean;
 import com.xiaojinzi.component.bean.RouterBean;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
@@ -53,6 +54,7 @@ import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
  * @author xiaojinzi
  * @hide
  */
+@NotAppUseAnno
 @CheckClassNameAnno
 public class RouterCenter implements IComponentCenterRouter {
 
