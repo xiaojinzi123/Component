@@ -54,7 +54,9 @@ public class ServiceCenter implements IComponentCenterService {
         Utils.checkStringNullPointer(host, "host");
         if (!moduleServiceMap.containsKey(host)) {
             IComponentHostService moduleService = findModuleService(host);
-            register(moduleService);
+            if (moduleService != null) {
+                register(moduleService);
+            }
         }
     }
 
