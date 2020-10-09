@@ -11,6 +11,7 @@ import com.xiaojinzi.component.router.IComponentCenterRouterDegrade;
 import com.xiaojinzi.component.router.IComponentHostRouterDegrade;
 import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.RouterDegradeCache;
+import com.xiaojinzi.component.support.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,36 +110,37 @@ public class RouterDegradeCenter implements IComponentCenterRouterDegrade {
     }
 
     @Override
-    public void register(@Nullable IComponentHostRouterDegrade routerDegrade) {
-        if (routerDegrade == null) {
-            return;
-        }
+    public void register(@NonNull IComponentHostRouterDegrade routerDegrade) {
+        Utils.checkNullPointer(routerDegrade);
         isRouterDegradeListHaveChange = true;
         moduleRouterDegradeMap.put(routerDegrade.getHost(), routerDegrade);
     }
 
     @Override
     public void register(@NonNull String host) {
-        if (moduleRouterDegradeMap.containsKey(host)) {
-            return;
+        Utils.checkStringNullPointer(host, "host");
+        if (!moduleRouterDegradeMap.containsKey(host)) {
+            IComponentHostRouterDegrade moduleRouterDegrade = findModuleRouterDegrade(host);
+            if (moduleRouterDegrade != null) {
+                register(moduleRouterDegrade);
+            }
         }
-        IComponentHostRouterDegrade moduleRouterDegrade = findModuleRouterDegrade(host);
-        register(moduleRouterDegrade);
     }
 
     @Override
-    public void unregister(@Nullable IComponentHostRouterDegrade routerDegrade) {
-        if (routerDegrade == null) {
-            return;
-        }
+    public void unregister(@NonNull IComponentHostRouterDegrade routerDegrade) {
+        Utils.checkNullPointer(routerDegrade);
         moduleRouterDegradeMap.remove(routerDegrade.getHost());
         isRouterDegradeListHaveChange = true;
     }
 
     @Override
     public void unregister(@NonNull String host) {
+        Utils.checkStringNullPointer(host, "host");
         IComponentHostRouterDegrade moduleRouterDegrade = moduleRouterDegradeMap.get(host);
-        unregister(moduleRouterDegrade);
+        if (moduleRouterDegrade != null) {
+            unregister(moduleRouterDegrade);
+        }
     }
 
     @Nullable
@@ -146,7 +148,7 @@ public class RouterDegradeCenter implements IComponentCenterRouterDegrade {
         try {
             if (Component.getConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleRouterDegradeAsmImpl(host);
-            }else {
+            } else {
                 Class<? extends IComponentHostRouterDegrade> clazz = null;
                 String className = ComponentUtil.genHostRouterDegradeClassName(host);
                 clazz = (Class<? extends IComponentHostRouterDegrade>) Class.forName(className);

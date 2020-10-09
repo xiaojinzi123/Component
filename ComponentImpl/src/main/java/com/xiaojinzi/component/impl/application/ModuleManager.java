@@ -2,6 +2,7 @@ package com.xiaojinzi.component.impl.application;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.Config;
@@ -27,8 +28,6 @@ import java.util.Map;
  * @author xiaojinzi
  */
 public class ModuleManager implements IComponentCenterApplication {
-
-    public static final String ISSUE = "https://github.com/xiaojinzi123/Component/issues/21";
 
     /**
      * 单例对象
@@ -58,27 +57,30 @@ public class ModuleManager implements IComponentCenterApplication {
 
     @Override
     public void register(@NonNull IComponentHostApplication moduleApp) {
+        Utils.checkNullPointer(moduleApp);
         if (moduleApplicationMap.containsKey(moduleApp.getHost())) {
             LogUtil.loge("The module \"" + moduleApp.getHost() + "\" is already registered");
+        } else {
+            moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
+            moduleApp.onCreate(Component.getApplication());
+            LogUtil.loge(moduleApp.getHost() + " 加载了, 准备通知");
+            notifyModuleChanged();
         }
-        moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
-        moduleApp.onCreate(Component.getApplication());
     }
 
     @Override
     public void register(@NonNull String host) {
-        if (host == null || "".equals(host)) {
-            throw new RuntimeException("the host can't be null or empty");
-        }
+        Utils.checkNullPointer(host, "host");
         if (moduleApplicationMap.containsKey(host)) {
-            LogUtil.log("the host '" + host + "' is already load");
+            LogUtil.loge("the host '" + host + "' is already load");
             return;
-        }
-        IComponentHostApplication moduleApplication = findModuleApplication(host);
-        if (moduleApplication == null) {
-            LogUtil.log("模块 '" + host + "' 加载失败");
         } else {
-            register(moduleApplication);
+            IComponentHostApplication moduleApplication = findModuleApplication(host);
+            if (moduleApplication == null) {
+                LogUtil.log("模块 '" + host + "' 加载失败, 请根据链接中的内容自行排查! \n " + Component.COMMON_ERROR_ISSUE);
+            } else {
+                register(moduleApplication);
+            }
         }
     }
 
@@ -104,23 +106,17 @@ public class ModuleManager implements IComponentCenterApplication {
     public void registerArr(@Nullable String... hosts) {
         if (hosts != null) {
             for (String host : hosts) {
-                IComponentHostApplication moduleApplication = findModuleApplication(host);
-                if (moduleApplication == null) {
-                    LogUtil.log("模块 '" + host + "' 加载失败, 请根据链接中的内容自行排查! \n " + Component.COMMON_ERROR_ISSUE);
-                } else {
-                    register(moduleApplication);
-                }
+                register(host);
             }
         }
     }
 
     @Override
-    public void unregister(@Nullable IComponentHostApplication moduleApp) {
-        if (moduleApp == null) {
-            return;
-        }
+    public void unregister(@NonNull IComponentHostApplication moduleApp) {
+        Utils.checkNullPointer(moduleApp);
         moduleApplicationMap.remove(moduleApp.getHost());
         moduleApp.onDestroy();
+        notifyModuleChanged();
     }
 
     @Override
@@ -169,6 +165,30 @@ public class ModuleManager implements IComponentCenterApplication {
             }
         }
         return result;
+    }
+
+    @UiThread
+    private void notifyModuleChanged() {
+        final int compareValue = Utils.COUNTER.incrementAndGet();
+        Utils.postDelayActionToMainThread(new Runnable() {
+            @Override
+            public void run() {
+                // 说明没有改变过
+                if (compareValue == Utils.COUNTER.get()) {
+                    LogUtil.loge("通知 " + compareValue);
+                    doNotifyModuleChanged();
+                } else {
+                    LogUtil.loge("放弃通知 " + compareValue);
+                }
+            }
+        }, Component.getConfig().getNotifyModuleChangedDelayTime());
+    }
+
+    @UiThread
+    private void doNotifyModuleChanged() {
+        for (IComponentHostApplication hostApplication : moduleApplicationMap.values()) {
+            hostApplication.onModuleChanged(Component.getApplication());
+        }
     }
 
     /**

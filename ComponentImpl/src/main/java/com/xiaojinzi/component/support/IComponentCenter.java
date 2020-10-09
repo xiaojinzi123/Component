@@ -14,7 +14,7 @@ public interface IComponentCenter<T> {
      * @param t 注册的目标
      */
     @UiThread
-    void register(T t);
+    void register(@NonNull T t);
 
     /**
      * 通过host注册
@@ -30,7 +30,7 @@ public interface IComponentCenter<T> {
      * @param t 反注册的目标
      */
     @UiThread
-    void unregister(T t);
+    void unregister(@NonNull T t);
 
     /**
      * 通过 host 反注册

@@ -1,11 +1,13 @@
 package com.xiaojinzi.component.impl.application;
 
 import android.app.Application;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.application.IApplicationLifecycle;
 import com.xiaojinzi.component.application.IComponentHostApplication;
+import com.xiaojinzi.component.application.IModuleNotifyChanged;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +32,13 @@ abstract class ModuleApplicationImpl implements IComponentHostApplication {
      */
     protected boolean hasInitList = false;
 
+    @CallSuper
     protected void initList() {
         hasInitList = true;
     }
 
     @Override
+    @CallSuper
     public void onCreate(@NonNull Application app) {
         if (!hasInitList) {
             initList();
@@ -48,6 +52,7 @@ abstract class ModuleApplicationImpl implements IComponentHostApplication {
     }
 
     @Override
+    @CallSuper
     public void onDestroy() {
         if (!hasInitList) {
             initList();
@@ -60,4 +65,13 @@ abstract class ModuleApplicationImpl implements IComponentHostApplication {
         }
     }
 
+    @Override
+    public void onModuleChanged(@NonNull Application app) {
+        for (IApplicationLifecycle applicationLifecycle : moduleAppList) {
+            if (applicationLifecycle instanceof IModuleNotifyChanged) {
+                ((IModuleNotifyChanged) applicationLifecycle).onModuleChanged(app);
+            }
+        }
+    }
+    
 }
