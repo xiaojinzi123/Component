@@ -2,6 +2,8 @@ package com.xiaojinzi.component.impl;
 
 import android.support.annotation.NonNull;
 
+import com.xiaojinzi.component.support.Utils;
+
 /**
  * 这个类表示一次成功路由的返回结果对象
  * time   : 2018/11/10
@@ -28,6 +30,8 @@ public class RouterResult {
      * @param finalRequest    可能修改过的请求,也可能是和原始请求一样
      */
     public RouterResult(@NonNull RouterRequest originalRequest, @NonNull RouterRequest finalRequest) {
+        Utils.checkNullPointer(originalRequest);
+        Utils.checkNullPointer(finalRequest);
         this.mOriginalRequest = originalRequest;
         this.mFinalRequest = finalRequest;
     }
@@ -44,8 +48,6 @@ public class RouterResult {
 
     /**
      * 获取可能由拦截器修改过的 request 对象,大部分没有被修改的其实就是最原始的 request 对象
-     *
-     * @return
      */
     @NonNull
     public RouterRequest getFinalRequest() {

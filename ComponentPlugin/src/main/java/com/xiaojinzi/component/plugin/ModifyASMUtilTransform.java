@@ -117,6 +117,7 @@ public class ModifyASMUtilTransform extends BaseTransform {
                                     routerDegradeMap, serviceMap, fragmentMap
                             );
                             try {
+                                // 生成到桌面用来测试
                                 if (mAsmUtilOutputPathStr != null && !"".equals(mAsmUtilOutputPathStr)) {
                                     File file = new File(mAsmUtilOutputPathStr);
                                     file.delete();
@@ -130,7 +131,6 @@ public class ModifyASMUtilTransform extends BaseTransform {
                             } catch (Exception ignore) {
                                 // ignore
                             }
-                            // 生成到桌面用来测试
                             ZipEntry asmUtiZipEntry = new ZipEntry(jarEntry.getName());
                             asmUtiZipEntry.setSize(bytes.length);
                             CRC32 crc = new CRC32();

@@ -3,6 +3,7 @@ package com.xiaojinzi.component.support;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.application.IComponentHostApplication;
 import com.xiaojinzi.component.fragment.IComponentHostFragment;
@@ -42,13 +43,17 @@ import java.util.List;
  * 对于有些人觉得这个时间无所谓, 其实我也这么觉得. 但是就是有人受不了这么多次的反射. 那么怎么办呢？
  * <p>
  * 现在初始化的时候获取实现需要用户选择使用 ASM 还是 反射的方式.
- * {@link com.xiaojinzi.component.Config.Builder#optimizeInit(boolean)} 可以设置是否使用 ASM 的方式
+ * {@link Config.Builder#optimizeInit(boolean)} 可以设置是否使用 ASM 的方式
  * 具体的示例代码可以参看 {@link ModuleManager#findModuleApplication(String)}.
  * 所以这个类有啥用呢？简单点说就是我们会利用插件, 在编译之后对此类的空方法填上一些代码. 让他是以正常的 new 对象
  * 的方式返回的, 而不是反射. 而抽取出这个类, 是为了字节码改动的范围尽可能的小.
  * <p>
- * 里面生成多少代码, 取决于你有多少模块被打包进来, 但是加载哪些模块还是你自己说了算的 {@link ModuleManager#registerArr(String...)}
+ * 里面生成多少代码, 取决于你有多少模块被打包进来,
  * 这个类只是生成了本身需要反射获取的对象而已, 加快几毫秒的启动速度
+ * 加载哪些模块还是你自己说了算的 {@link ModuleManager#registerArr(String...)}, 如果你想自动加载
+ * 全部的模块, 也有方法.
+ * 你可以设置 {@link Config.Builder#autoRegisterModule(boolean)} 去让框架自动加载全部.
+ * 你也可以自己使用 {@link ModuleManager#autoRegister()} 去自动加载全部
  *
  * @author xiaojinzi
  */

@@ -34,7 +34,7 @@ public class ConditionCache {
             // 创建拦截器
             t = tClass.newInstance();
             if (t == null) {
-                throw new InstantiationException("do you write default constructor or a constructor with parameter 'Application' or  a constructor with parameter 'Context' ");
+                throw new InstantiationException("do you write a default constructor");
             } else {
                 ClassCache.put(tClass, t);
             }

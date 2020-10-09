@@ -20,16 +20,13 @@ android {
                 arguments = [
                         "HOST"           : "app",
                         "RouterDocFolder": project.property("component_router_doc_folder"),
-                        "RouterDocEnable": String.valueOf(project.property("componnet_router_doc_enable"))
+                        "RouterDocEnable": String.valueOf(project.property("component_router_doc_enable"))
                 ]
             }
         }
     }
     buildTypes {
         release {
-            debuggable = true
-            jniDebuggable = true
-            renderscriptDebuggable = true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -73,4 +70,7 @@ dependencies {
     }
     // 内存检测的
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+
+    implementation "org.java-websocket:Java-WebSocket:1.5.1"
+
 }

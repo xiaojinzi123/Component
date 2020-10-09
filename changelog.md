@@ -1,8 +1,27 @@
 
-#### [v1.8.3](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.3)
+#### [v1.8.3.4](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.4)
+- 增加一个可选的 IModuleNotifyChanged 接口, 用来接收模块加载的变化
+
+#### [v1.8.3.3](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.3)
+- 删除 1.8.3.1 增加的 Service 生命周期的功能. 实践得知, 这功能并不正确
+- ServiceManager 的反注册方法改为没有返回值.
+- @MainThread 注解全都改为 @UiThread
+- afterAction 的执行用的 request 修复为 finalRequest, 而不是 originRequest
+- 增加一些方法的 @NonNull 注解
+- 修复 RouterRequest的bundle变为RouterRequest.Builder.Bundle 地址传递的问题, 应该为值传递
+- 增加模块加载失败时候的 url 链接, 可以帮助排查错误
+- 调整 Logo 输出的位置
+- 修复生成的路由表的 ArrayList 的泛型警告问题
+- 修改 componnet 拼写错误的问题.
+- 增加 component_asm_disable 配置, 可以让 Gradle 插件禁用 ASM 的功能. 因为有些人就只用 RouterDoc 的功能
+
+#### [v1.8.3.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.2)
+- 修复 void method(Context context, Callback callback); 这中 Api 接口方法生成代码失败的问题
+
+#### [v1.8.3.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.1)
 - 增加 java8 的发布维度
 - 支持属性注入多个属性. 主要用于兼容如果想变动 key 的问题.
-- 支持 @ServiceAnno 标记的服务实现类, 可以可选的实现 IServiceLifecycle 接口来接受模块的生命周期的回调
+- ~~支持 @ServiceAnno 标记的服务实现类, 可以可选的实现 IServiceLifecycle 接口来接受模块的生命周期的回调~~ 此功能将被删除.
 - 用户自定义的模块生命周期类, 需要实现 IApplicationLifecycle 接口, 而不是老的 IComponentApplication 接口, 虽说老的目前也支持, 但是若干版本之后会删除
 - 内部优化类结构. 需要更新新的[混淆配置](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE-AndroidX#%E6%B7%B7%E6%B7%86%E9%85%8D%E7%BD%AE)
 
@@ -16,10 +35,10 @@
 #### [v1.8.2.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2.1)
 
 - 修复之前修改 `impl` 模块的包名引起的 `ProxtActivity` 失效的问题
-- `router` 文档增加控制是否生成文档的 `boolean` 的开关. `componnet_router_doc_enable`
-    - 配置方式和 `componnet_router_doc_folder` 一致. 比如 ext.componnet_router_doc_enable = true
+- `router` 文档增加控制是否生成文档的 `boolean` 的开关. `component_router_doc_enable`
+    - 配置方式和 `componnet_router_doc_folder` 一致. 比如 ext.component_router_doc_enable = true
 - 同时注解驱动器的 `RouterDoc` 属性配置改为 `RouterDocFolder`
-- 注解驱动器也增加一个文档是否生成的开关 `RouterDocEable`, 一般 `RouterDocEable` 这个值随着 `componnet_router_doc_enable` 变化即可
+- 注解驱动器也增加一个文档是否生成的开关 `RouterDocEable`, 一般 `RouterDocEable` 这个值随着 `component_router_doc_enable` 变化即可
 
 #### [v1.8.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.2)
 

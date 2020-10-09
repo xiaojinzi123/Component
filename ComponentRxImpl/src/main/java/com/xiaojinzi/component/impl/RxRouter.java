@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.CheckResult;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.util.SparseArray;
 
@@ -89,44 +89,44 @@ public class RxRouter extends Router {
         }
 
         @Override
-        public RxNavigator beforAction(@NonNull @MainThread Action action) {
+        public RxNavigator beforAction(@NonNull @UiThread Action action) {
             super.beforAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator beforStartAction(@NonNull @MainThread Action action) {
+        public RxNavigator beforStartAction(@NonNull @UiThread Action action) {
             super.beforStartAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterStartAction(@NonNull @MainThread Action action) {
+        public RxNavigator afterStartAction(@NonNull @UiThread Action action) {
             super.afterStartAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterAction(@NonNull @MainThread Action action) {
+        public RxNavigator afterAction(@NonNull @UiThread Action action) {
             super.afterAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterErrorAction(@Nullable @MainThread Action action) {
+        public RxNavigator afterErrorAction(@Nullable @UiThread Action action) {
             super.afterErrorAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterEventAction(@Nullable @MainThread Action action) {
+        public RxNavigator afterEventAction(@Nullable @UiThread Action action) {
             super.afterEventAction(action);
             return this;
         }
 
         @Override
         public RxNavigator intentConsumer(
-                @NonNull @MainThread com.xiaojinzi.component.support.Consumer<Intent> intentConsumer) {
+                @NonNull @UiThread com.xiaojinzi.component.support.Consumer<Intent> intentConsumer) {
             super.intentConsumer(intentConsumer);
             return this;
         }
@@ -589,7 +589,7 @@ public class RxRouter extends Router {
                     // 可能是一个 空实现,这些个回调都是回调在主线程的
                     final NavigationDisposable navigationDisposable = navigate(new CallbackAdapter() {
                         @Override
-                        @MainThread
+                        @UiThread
                         public void onSuccess(@NonNull RouterResult routerResult) {
                             super.onSuccess(routerResult);
                             if (emitter != null && !emitter.isDisposed()) {
@@ -598,7 +598,7 @@ public class RxRouter extends Router {
                         }
 
                         @Override
-                        @MainThread
+                        @UiThread
                         public void onError(@NonNull RouterErrorResult errorResult) {
                             super.onError(errorResult);
                             RxHelp.onErrorSolve(emitter, errorResult.getError());
@@ -660,7 +660,7 @@ public class RxRouter extends Router {
          * 发射错误,目前这些个发射错误都是为了 {@link RxRouter} 写的,发射的错误和正确的 item 被发射都应该
          * 最终发射在主线程
          */
-        private static void onErrorEmitter(@MainThread final SingleEmitter<? extends Object> emitter,
+        private static void onErrorEmitter(@UiThread final SingleEmitter<? extends Object> emitter,
                                            @NonNull final Throwable e) {
             if (emitter == null || emitter.isDisposed()) {
                 return;
@@ -684,7 +684,7 @@ public class RxRouter extends Router {
          * @param emitter {@link Completable} 的发射器
          * @param e 跑出的异常
          */
-        private static void onErrorEmitter(@MainThread final CompletableEmitter emitter,
+        private static void onErrorEmitter(@UiThread final CompletableEmitter emitter,
                                            @NonNull final Throwable e) {
             if (emitter == null || emitter.isDisposed()) {
                 return;

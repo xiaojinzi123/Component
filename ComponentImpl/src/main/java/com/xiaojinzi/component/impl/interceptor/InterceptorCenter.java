@@ -1,8 +1,8 @@
 package com.xiaojinzi.component.impl.interceptor;
 
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentUtil;
@@ -81,7 +81,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     /**
      * 获取全局拦截器
      */
-    @MainThread
+    @UiThread
     public List<RouterInterceptor> getGlobalInterceptorList() {
         if (isInterceptorListHaveChange) {
             loadAllGlobalInterceptor();
@@ -91,35 +91,35 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     }
 
     @Override
-    public void register(@Nullable IComponentHostInterceptor interceptor) {
-        if (interceptor == null) {
-            return;
+    public void register(@NonNull IComponentHostInterceptor hostInterceptor) {
+        Utils.checkNullPointer(hostInterceptor);
+        if (!moduleInterceptorMap.containsKey(hostInterceptor.getHost())) {
+            isInterceptorListHaveChange = true;
+            moduleInterceptorMap.put(hostInterceptor.getHost(), hostInterceptor);
+            // 子拦截器列表
+            Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = hostInterceptor.getInterceptorMap();
+            mInterceptorMap.putAll(childInterceptorMap);
         }
-        isInterceptorListHaveChange = true;
-        moduleInterceptorMap.put(interceptor.getHost(), interceptor);
-        // 子拦截器列表
-        Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = interceptor.getInterceptorMap();
-        mInterceptorMap.putAll(childInterceptorMap);
     }
 
     @Override
     public void register(@NonNull String host) {
-        if (moduleInterceptorMap.containsKey(host)) {
-            return;
+        Utils.checkStringNullPointer(host, "host");
+        if (!moduleInterceptorMap.containsKey(host)) {
+            IComponentHostInterceptor moduleInterceptor = findModuleInterceptor(host);
+            if (moduleInterceptor != null) {
+                register(moduleInterceptor);
+            }
         }
-        IComponentHostInterceptor moduleInterceptor = findModuleInterceptor(host);
-        register(moduleInterceptor);
     }
 
     @Override
-    public void unregister(@Nullable IComponentHostInterceptor interceptor) {
-        if (interceptor == null) {
-            return;
-        }
-        moduleInterceptorMap.remove(interceptor.getHost());
+    public void unregister(@NonNull IComponentHostInterceptor hostInterceptor) {
+        Utils.checkNullPointer(hostInterceptor);
+        moduleInterceptorMap.remove(hostInterceptor.getHost());
         isInterceptorListHaveChange = true;
         // 子拦截器列表
-        Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = interceptor.getInterceptorMap();
+        Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = hostInterceptor.getInterceptorMap();
         for (Map.Entry<String, Class<? extends RouterInterceptor>> entry : childInterceptorMap.entrySet()) {
             mInterceptorMap.remove(entry.getKey());
             RouterInterceptorCache.removeCache(entry.getValue());
@@ -128,14 +128,17 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
 
     @Override
     public void unregister(@NonNull String host) {
+        Utils.checkStringNullPointer(host, "host");
         IComponentHostInterceptor moduleInterceptor = moduleInterceptorMap.get(host);
-        unregister(moduleInterceptor);
+        if (moduleInterceptor != null) {
+            unregister(moduleInterceptor);
+        }
     }
 
     /**
      * 按顺序弄好所有全局拦截器
      */
-    @MainThread
+    @UiThread
     private void loadAllGlobalInterceptor() {
         mGlobalInterceptorList.clear();
         List<InterceptorBean> totalList = new ArrayList<>();
@@ -163,7 +166,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     }
 
     @Nullable
-    @MainThread
+    @UiThread
     public IComponentHostInterceptor findModuleInterceptor(String host) {
         Utils.checkMainThread();
         try {
@@ -183,7 +186,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
 
     @Nullable
     @Override
-    @MainThread
+    @UiThread
     public RouterInterceptor getByName(@Nullable String interceptorName) {
         if (interceptorName == null) {
             return null;
@@ -203,7 +206,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     /**
      * 做拦截器的名称是否重复的工作
      */
-    @MainThread
+    @UiThread
     public void check() {
         Utils.checkMainThread();
         Set<String> set = new HashSet<>();

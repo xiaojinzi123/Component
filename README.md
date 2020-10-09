@@ -85,6 +85,7 @@
       - [x] `H5` 发起路由不需要关心目标界面需要做的先决条件(框架的[页面拦截器](https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A#%E9%A1%B5%E9%9D%A2%E6%8B%A6%E6%88%AA%E5%99%A8)已经帮您做完) 
     - [x] 支持原生的[跳转动画](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E5%8A%A8%E7%94%BB)
     - [x] 支持跳转 `Fragment`(也就是跨组件获取`Fragment`)
+    - [x] 支持[单 Activity 多 Fragment 架构](https://github.com/xiaojinzi123/Component/wiki/%E5%8D%95-Activity-%E5%A4%9A-Fragment)
     - [x] 路由拦截器执行线程设计是主线程, 整体是异步的(这点很多人不理解, 没有关系. 先用起来之后在慢慢理解)
       - 在路由拦截器的执行线程的设计上,考虑到用户平时书写的 `90%` 代码都是在主线程的,<br/>所以路由拦截器的执行线程也设计为主线程执行,可以让您放心的操作 `UI`、弹框等操作.<br/>同时提供 `Callback` 机制可以在拦截器中做任何耗时的任务<br/>这点绝对是压倒性的优势,不仅整体是 `异步` 的,而且拦截器中能像平常一样写实现的代码
     - [x] 路由的取消,基本上没有路由框架支持路由的取消,这也是一个很大的优势!

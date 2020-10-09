@@ -7,6 +7,7 @@ import android.support.annotation.AnyThread;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
@@ -45,7 +46,7 @@ class RouterUtil {
     }
 
 
-    @MainThread
+    @UiThread
     private static void cancelCallbackOnMainThread(@Nullable RouterRequest request,
                                                    @Nullable final OnRouterCancel callback) {
         if (request == null) {
@@ -72,7 +73,7 @@ class RouterUtil {
         deliveryListener(null, errorResult, null);
     }
 
-    @MainThread
+    @UiThread
     private static void errorCallbackOnMainThread(@Nullable final Callback callback,
                                                   @Nullable final BiCallback biCallback,
                                                   @NonNull final RouterErrorResult errorResult) {
@@ -115,7 +116,7 @@ class RouterUtil {
         deliveryListener(successResult, null, null);
     }
 
-    @MainThread
+    @UiThread
     private static void successCallbackOnMainThread(@Nullable final Callback callback,
                                                     @NonNull final RouterResult result) {
         Utils.checkNullPointer(result, "result");
@@ -126,7 +127,7 @@ class RouterUtil {
         }
         // 执行 Request 中 的 afterCallback
         try {
-            RouterRequestHelp.executeAfterAction(result.getOriginalRequest());
+            RouterRequestHelp.executeAfterAction(result.getFinalRequest());
         } catch (Exception e) {
             throw new RouterRuntimeException("afterJumpCallback or afterEventCallback can't throw any exception!", e);
         }
@@ -148,7 +149,7 @@ class RouterUtil {
         });
     }
 
-    @MainThread
+    @UiThread
     public static void deliveryListenerOnMainThread(@Nullable final RouterResult successResult,
                                                     @Nullable final RouterErrorResult errorResult,
                                                     @Nullable final RouterRequest cancelRequest) {
