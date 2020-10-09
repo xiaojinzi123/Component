@@ -63,7 +63,6 @@ public class ModuleManager implements IComponentCenterApplication {
         } else {
             moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
             moduleApp.onCreate(Component.getApplication());
-            LogUtil.loge(moduleApp.getHost() + " 加载了, 准备通知");
             notifyModuleChanged();
         }
     }
