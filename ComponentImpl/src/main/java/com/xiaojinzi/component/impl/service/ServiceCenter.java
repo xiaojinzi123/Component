@@ -9,6 +9,7 @@ import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.service.IComponentCenterService;
 import com.xiaojinzi.component.service.IComponentHostService;
 import com.xiaojinzi.component.support.ASMUtil;
+import com.xiaojinzi.component.support.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,40 +41,43 @@ public class ServiceCenter implements IComponentCenterService {
     }
 
     @Override
-    public void register(@Nullable IComponentHostService service) {
-        if (service == null) {
-            return;
+    public void register(@NonNull IComponentHostService service) {
+        Utils.checkNullPointer(service);
+        if (!moduleServiceMap.containsKey(service.getHost())) {
+            moduleServiceMap.put(service.getHost(), service);
+            service.onCreate(Component.getApplication());
         }
-        moduleServiceMap.put(service.getHost(), service);
-        service.onCreate(Component.getApplication());
     }
 
     @Override
     public void register(@NonNull String host) {
-        if (moduleServiceMap.containsKey(host)) {
-            return;
+        Utils.checkStringNullPointer(host, "host");
+        if (!moduleServiceMap.containsKey(host)) {
+            IComponentHostService moduleService = findModuleService(host);
+            if (moduleService != null) {
+                register(moduleService);
+            }
         }
-        IComponentHostService moduleService = findModuleService(host);
-        register(moduleService);
     }
 
     @Override
-    public void unregister(@Nullable IComponentHostService moduleService) {
-        if (moduleService == null) {
-            return;
-        }
+    public void unregister(@NonNull IComponentHostService moduleService) {
+        Utils.checkNullPointer(moduleService);
         moduleServiceMap.remove(moduleService.getHost());
         moduleService.onDestroy();
     }
 
     @Override
     public void unregister(@NonNull String host) {
+        Utils.checkStringNullPointer(host, "host");
         IComponentHostService moduleService = moduleServiceMap.get(host);
-        unregister(moduleService);
+        if (moduleService != null) {
+            unregister(moduleService);
+        }
     }
 
     @Nullable
-    public IComponentHostService findModuleService(String host) {
+    public IComponentHostService findModuleService(@NonNull String host) {
         try {
             if (Component.getConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleServiceAsmImpl(host);

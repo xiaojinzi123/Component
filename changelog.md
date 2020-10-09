@@ -1,4 +1,7 @@
 
+#### [v1.8.3.4](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.4)
+- 增加一个可选的 IModuleNotifyChanged 接口, 用来接收模块加载的变化
+
 #### [v1.8.3.3](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.3)
 - 删除 1.8.3.1 增加的 Service 生命周期的功能. 实践得知, 这功能并不正确
 - ServiceManager 的反注册方法改为没有返回值.

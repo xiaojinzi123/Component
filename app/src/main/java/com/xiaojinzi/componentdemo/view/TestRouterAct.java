@@ -558,7 +558,6 @@ public class TestRouterAct extends BaseAct {
     }
 
     public void testBeforAndAfterAction(View view) {
-
         RxRouter
                 .with(this)
                 .host(ModuleConfig.System.NAME)

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.xiaojinzi.component.anno.ModuleAppAnno;
 import com.xiaojinzi.component.application.IApplicationLifecycle;
+import com.xiaojinzi.component.application.IModuleNotifyChanged;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.impl.RouterListener;
@@ -14,7 +15,7 @@ import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.support.Utils;
 
 @ModuleAppAnno()
-public class AppModuleApplication implements IApplicationLifecycle {
+public class AppModuleApplication implements IApplicationLifecycle, IModuleNotifyChanged {
 
     private final String TAG = "自定义实现的路由监听";
 
@@ -53,6 +54,11 @@ public class AppModuleApplication implements IApplicationLifecycle {
     @Override
     public void onDestroy() {
         Router.removeRouterListener(listener);
+    }
+
+    @Override
+    public void onModuleChanged(@NonNull Application app) {
+        System.out.println("123123");
     }
 
 }

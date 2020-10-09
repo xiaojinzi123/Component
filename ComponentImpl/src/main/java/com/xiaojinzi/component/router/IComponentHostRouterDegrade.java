@@ -18,8 +18,6 @@ public interface IComponentHostRouterDegrade extends IHost {
 
     /**
      * 获取这个模块的降级处理
-     *
-     * @throws Exception
      */
     @NonNull
     List<RouterDegradeBean> listRouterDegrade();
