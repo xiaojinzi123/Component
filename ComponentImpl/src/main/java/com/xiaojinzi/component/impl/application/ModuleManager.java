@@ -175,10 +175,10 @@ public class ModuleManager implements IComponentCenterApplication {
             public void run() {
                 // 说明没有改变过
                 if (compareValue == Utils.COUNTER.get()) {
-                    LogUtil.loge("通知 " + compareValue);
+                    // LogUtil.loge("通知 " + compareValue);
                     doNotifyModuleChanged();
                 } else {
-                    LogUtil.loge("放弃通知 " + compareValue);
+                    // LogUtil.loge("放弃通知 " + compareValue);
                 }
             }
         }, Component.getConfig().getNotifyModuleChangedDelayTime());
