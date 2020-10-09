@@ -2,6 +2,7 @@ package com.xiaojinzi.component.impl.application;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.Config;
@@ -27,8 +28,6 @@ import java.util.Map;
  * @author xiaojinzi
  */
 public class ModuleManager implements IComponentCenterApplication {
-
-    public static final String ISSUE = "https://github.com/xiaojinzi123/Component/issues/21";
 
     /**
      * 单例对象
@@ -64,6 +63,8 @@ public class ModuleManager implements IComponentCenterApplication {
         } else {
             moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
             moduleApp.onCreate(Component.getApplication());
+            LogUtil.loge(moduleApp.getHost() + " 加载了, 准备通知");
+            notifyModuleChanged();
         }
     }
 
@@ -115,6 +116,7 @@ public class ModuleManager implements IComponentCenterApplication {
         Utils.checkNullPointer(moduleApp);
         moduleApplicationMap.remove(moduleApp.getHost());
         moduleApp.onDestroy();
+        notifyModuleChanged();
     }
 
     @Override
@@ -163,6 +165,30 @@ public class ModuleManager implements IComponentCenterApplication {
             }
         }
         return result;
+    }
+
+    @UiThread
+    private void notifyModuleChanged() {
+        final int compareValue = Utils.COUNTER.incrementAndGet();
+        Utils.postDelayActionToMainThread(new Runnable() {
+            @Override
+            public void run() {
+                // 说明没有改变过
+                if (compareValue == Utils.COUNTER.get()) {
+                    LogUtil.loge("通知 " + compareValue);
+                    doNotifyModuleChanged();
+                } else {
+                    LogUtil.loge("放弃通知 " + compareValue);
+                }
+            }
+        }, Component.getConfig().getNotifyModuleChangedDelayTime());
+    }
+
+    @UiThread
+    private void doNotifyModuleChanged() {
+        for (IComponentHostApplication hostApplication : moduleApplicationMap.values()) {
+            hostApplication.onModuleChanged(Component.getApplication());
+        }
     }
 
     /**

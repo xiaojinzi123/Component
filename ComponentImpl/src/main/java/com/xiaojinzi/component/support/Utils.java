@@ -16,6 +16,7 @@ import android.support.annotation.UiThread;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.error.RouterRuntimeException;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -25,6 +26,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author : xiaojinzi
  */
 public class Utils {
+
+    public static final AtomicInteger COUNTER = new AtomicInteger(0);
 
     private static final String STR_PARAMETER = "parameter '";
     private static final String STR_CAN_NOT_BE_NULL = "' can't be null";
@@ -36,6 +39,14 @@ public class Utils {
      * 主线程的Handler
      */
     private static Handler h = new Handler(Looper.getMainLooper());
+
+    /**
+     * 在主线程延迟执行任务
+     */
+    @AnyThread
+    public static void postDelayActionToMainThread(@NonNull @UiThread Runnable r, long delayMillis) {
+        h.postDelayed(r, delayMillis);
+    }
 
     /**
      * 在主线程执行任务
