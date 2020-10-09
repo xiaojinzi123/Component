@@ -1,17 +1,13 @@
 package com.xiaojinzi.component.impl.application;
 
 import android.app.Application;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.application.IApplicationLifecycle;
 import com.xiaojinzi.component.application.IComponentHostApplication;
-import com.xiaojinzi.component.application.IModuleChanged;
-import com.xiaojinzi.component.support.Utils;
+import com.xiaojinzi.component.application.IModuleNotifyChanged;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +68,8 @@ abstract class ModuleApplicationImpl implements IComponentHostApplication {
     @Override
     public void onModuleChanged(@NonNull Application app) {
         for (IApplicationLifecycle applicationLifecycle : moduleAppList) {
-            if (applicationLifecycle instanceof IModuleChanged) {
-                ((IModuleChanged) applicationLifecycle).onModuleChanged(app);
+            if (applicationLifecycle instanceof IModuleNotifyChanged) {
+                ((IModuleNotifyChanged) applicationLifecycle).onModuleChanged(app);
             }
         }
     }

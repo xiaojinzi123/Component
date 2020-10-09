@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 
 @UiThread
-public interface IModuleChanged {
+public interface IModuleNotifyChanged {
 
     /**
      * 当加载的模块发生变化的时候会调用
