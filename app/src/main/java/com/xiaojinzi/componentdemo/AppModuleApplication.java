@@ -12,6 +12,7 @@ import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.impl.RouterListener;
 import com.xiaojinzi.component.impl.RouterRequest;
 import com.xiaojinzi.component.impl.RouterResult;
+import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.Utils;
 
 @ModuleAppAnno()
@@ -58,7 +59,7 @@ public class AppModuleApplication implements IApplicationLifecycle, IModuleNotif
 
     @Override
     public void onModuleChanged(@NonNull Application app) {
-        System.out.println("123123");
+        LogUtil.loge("模块发生变化啦");
     }
 
 }
