@@ -9,6 +9,7 @@ import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.fragment.IComponentCenterFragment;
 import com.xiaojinzi.component.fragment.IComponentHostFragment;
 import com.xiaojinzi.component.support.ASMUtil;
+import com.xiaojinzi.component.support.Utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,36 +43,39 @@ public class FragmentCenter implements IComponentCenterFragment {
     }
 
     @Override
-    public void register(@Nullable IComponentHostFragment service) {
-        if (service == null) {
-            return;
+    public void register(@NonNull IComponentHostFragment hostFragment) {
+        Utils.checkNullPointer(hostFragment);
+        if (!moduleFragmentMap.containsKey(hostFragment.getHost())) {
+            moduleFragmentMap.put(hostFragment.getHost(), hostFragment);
+            hostFragment.onCreate(Component.getApplication());
         }
-        moduleFragmentMap.put(service.getHost(), service);
-        service.onCreate(Component.getApplication());
     }
 
     @Override
     public void register(@NonNull String host) {
-        if (moduleFragmentMap.containsKey(host)) {
-            return;
+        Utils.checkStringNullPointer(host, "host");
+        if (!moduleFragmentMap.containsKey(host)) {
+            IComponentHostFragment moduleService = findModuleService(host);
+            if (moduleService != null) {
+                register(moduleService);
+            }
         }
-        IComponentHostFragment moduleService = findModuleService(host);
-        register(moduleService);
     }
 
     @Override
-    public void unregister(@Nullable IComponentHostFragment moduleService) {
-        if (moduleService == null) {
-            return;
-        }
-        moduleFragmentMap.remove(moduleService.getHost());
-        moduleService.onDestroy();
+    public void unregister(@NonNull IComponentHostFragment hostFragment) {
+        Utils.checkNullPointer(hostFragment);
+        moduleFragmentMap.remove(hostFragment.getHost());
+        hostFragment.onDestroy();
     }
 
     @Override
     public void unregister(@NonNull String host) {
+        Utils.checkStringNullPointer(host, "host");
         IComponentHostFragment moduleService = moduleFragmentMap.get(host);
-        unregister(moduleService);
+        if (moduleService != null) {
+            unregister(moduleService);
+        }
     }
 
     @Nullable

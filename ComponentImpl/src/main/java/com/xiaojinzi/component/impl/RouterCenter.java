@@ -21,6 +21,7 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.ComponentConstants;
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
+import com.xiaojinzi.component.anno.support.NotAppUseAnno;
 import com.xiaojinzi.component.bean.PageInterceptorBean;
 import com.xiaojinzi.component.bean.RouterBean;
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
@@ -58,6 +59,7 @@ import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
  * @author xiaojinzi
  * @hide
  */
+@NotAppUseAnno
 @CheckClassNameAnno
 public class RouterCenter implements IComponentCenterRouter {
 
@@ -232,7 +234,7 @@ public class RouterCenter implements IComponentCenterRouter {
                 } else {
                     throw new NavigationFailException("the context or fragment both are null");
                 }
-            }else { // startActivityForResult
+            } else { // startActivityForResult
                 Activity rawAct = null;
                 if ((rawAct = Utils.getActivityFromContext(request.context)) != null) {
                     rawAct.startActivityForResult(intent, request.requestCode, request.options);
@@ -346,7 +348,7 @@ public class RouterCenter implements IComponentCenterRouter {
      * 找到那个 Activity 中隐藏的一个 Fragment,如果找的到就会用这个 Fragment 拿来跳转
      */
     @Nullable
-    private Fragment findFragment(Context context) {
+    private Fragment findFragment(@NonNull Context context) {
         Fragment result = null;
         Activity act = Utils.getActivityFromContext(context);
         if (act instanceof FragmentActivity) {
@@ -357,36 +359,35 @@ public class RouterCenter implements IComponentCenterRouter {
     }
 
     @Nullable
-    private Fragment findFragment(Fragment fragment) {
-        Fragment result = null;
-        if (fragment != null) {
-            result = fragment.getChildFragmentManager().findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
-        }
-        return result;
+    private Fragment findFragment(@NonNull Fragment fragment) {
+        return fragment.getChildFragmentManager().findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
     }
 
     @Override
-    public void register(IComponentHostRouter router) {
-        if (router == null) {
-            return;
+    public void register(@NonNull IComponentHostRouter router) {
+        Utils.checkNullPointer(router);
+        if (!hostRouterMap.containsKey(router.getHost())) {
+            hostRouterMap.put(router.getHost(), router);
+            routerMap.putAll(router.getRouterMap());
         }
-        hostRouterMap.put(router.getHost(), router);
-        routerMap.putAll(router.getRouterMap());
     }
 
     @Override
     public void register(@NonNull String host) {
-        IComponentHostRouter router = findUiRouter(host);
-        register(router);
+        Utils.checkStringNullPointer(host, "host");
+        if (!hostRouterMap.containsKey(host)) {
+            IComponentHostRouter router = findUiRouter(host);
+            if (router != null) {
+                register(router);
+            }
+        }
     }
 
     @Override
-    public void unregister(IComponentHostRouter router) {
-        if (router == null) {
-            return;
-        }
-        hostRouterMap.remove(router.getHost());
-        Map<String, RouterBean> childRouterMap = router.getRouterMap();
+    public void unregister(@NonNull IComponentHostRouter hostRouter) {
+        Utils.checkNullPointer(hostRouter);
+        hostRouterMap.remove(hostRouter);
+        Map<String, RouterBean> childRouterMap = hostRouter.getRouterMap();
         if (childRouterMap != null) {
             // key = host/path
             for (String key : childRouterMap.keySet()) {
@@ -397,8 +398,11 @@ public class RouterCenter implements IComponentCenterRouter {
 
     @Override
     public void unregister(@NonNull String host) {
-        IComponentHostRouter router = hostRouterMap.remove(host);
-        unregister(router);
+        Utils.checkStringNullPointer(host, "host");
+        IComponentHostRouter hostRouter = hostRouterMap.get(host);
+        if (hostRouter != null) {
+            unregister(hostRouter);
+        }
     }
 
     /**
@@ -428,7 +432,7 @@ public class RouterCenter implements IComponentCenterRouter {
         Set<String> set = new HashSet<>();
         for (Map.Entry<String, IComponentHostRouter> entry : hostRouterMap.entrySet()) {
             IComponentHostRouter childRouter = entry.getValue();
-            if (childRouter == null || childRouter.getRouterMap() == null) {
+            if (childRouter == null) {
                 continue;
             }
             Map<String, RouterBean> childRouterMap = childRouter.getRouterMap();

@@ -25,6 +25,7 @@ public class Config {
     private boolean isUseRouteRepeatCheckInterceptor = true;
     private long routeRepeatCheckDuration = 1000;
     private ObjectToJsonConverter objectToJsonConverter;
+    private long notifyModuleChangedDelayTime;
 
     private Config(@NonNull Builder builder) {
         this.application = builder.application;
@@ -35,6 +36,7 @@ public class Config {
         this.isUseRouteRepeatCheckInterceptor = builder.isUseRouteRepeatCheckInterceptor;
         this.routeRepeatCheckDuration = builder.routeRepeatCheckDuration;
         this.objectToJsonConverter = builder.objectToJsonConverter;
+        this.notifyModuleChangedDelayTime = builder.notifyModuleChangedDelayTime;
     }
 
     @NonNull
@@ -72,6 +74,10 @@ public class Config {
         return objectToJsonConverter;
     }
 
+    public long getNotifyModuleChangedDelayTime() {
+        return notifyModuleChangedDelayTime;
+    }
+
     @NonNull
     public static Builder with(@NonNull Application application) {
         return new Builder(application);
@@ -87,7 +93,9 @@ public class Config {
         private boolean isUseRouteRepeatCheckInterceptor = true;
         private long routeRepeatCheckDuration = 1000;
         private ObjectToJsonConverter objectToJsonConverter;
+        private long notifyModuleChangedDelayTime = 800L;
 
+        /*标记是否已经使用*/
         private boolean isUsed = false;
 
         public Builder(@NonNull Application application) {
@@ -136,6 +144,11 @@ public class Config {
 
         public Builder objectToJsonConverter(ObjectToJsonConverter objectToJsonConverter) {
             this.objectToJsonConverter = objectToJsonConverter;
+            return this;
+        }
+
+        public Builder notifyModuleChangedDelayTime(long notifyModuleChangedDelayTime) {
+            this.notifyModuleChangedDelayTime = notifyModuleChangedDelayTime;
             return this;
         }
 
