@@ -1,5 +1,5 @@
 ext.androidxVersions = [
-        constraintLayout: "2.0.1",
+        constraintLayout: "2.0.2",
         appcompat       : "1.2.0"
 ]
 
