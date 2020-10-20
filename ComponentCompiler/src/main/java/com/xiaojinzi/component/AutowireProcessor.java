@@ -20,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -97,7 +98,11 @@ public class AutowireProcessor extends BaseProcessor {
         arrayListClassName = ClassName.get(arrayListTypeElement);
 
         activityTypeMirror = mElements.getTypeElement(ComponentConstants.ANDROID_ACTIVITY).asType();
-        fragmentTypeMirror = mElements.getTypeElement(ComponentConstants.ANDROID_FRAGMENT).asType();
+        TypeElement typeElementFragment = mElements.getTypeElement(ComponentConstants.ANDROID_FRAGMENT);
+        if (typeElementFragment == null) {
+            throw new ProcessException(getAddDependencyTip(Arrays.asList(ComponentConstants.ANDROID_FRAGMENT), false));
+        }
+        fragmentTypeMirror = typeElementFragment.asType();
 
     }
 
