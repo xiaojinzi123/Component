@@ -15,7 +15,9 @@ import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.error.RouterRuntimeException;
+import com.xiaojinzi.component.error.RunTimeTimeoutException;
 
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -261,16 +263,25 @@ public class Utils {
             Utils.postActionToMainThreadAnyway(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        tAtomicReference.set(callable.get());
-                        haveException.set(false);
-                    } catch (RuntimeException e) {
-                        exceptionAtomicReference.set(e);
-                        haveException.set(true);
+                    if (haveException.get() == null) {
+                        try {
+                            tAtomicReference.set(callable.get());
+                            haveException.set(false);
+                        } catch (RuntimeException e) {
+                            exceptionAtomicReference.set(e);
+                            haveException.set(true);
+                        }
                     }
                 }
             });
+            // 当前的时间戳
+            long currentTimeMillis = System.currentTimeMillis();
             while (haveException.get() == null) {
+                // 如果超过了 3 秒, 认为是死锁了, 因为正常根本不可能等这么久
+                if ((System.currentTimeMillis() - currentTimeMillis) > 3000) {
+                    exceptionAtomicReference.set(new RunTimeTimeoutException("Component mainThreadCallNullable method timeout"));
+                    haveException.set(true);
+                }
             }
             if (haveException.get().booleanValue()) {
                 throw exceptionAtomicReference.get();

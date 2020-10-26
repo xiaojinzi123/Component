@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
+import com.xiaojinzi.component.error.NotSupportException;
 import com.xiaojinzi.component.support.Action;
 import com.xiaojinzi.component.support.CallNullable;
 import com.xiaojinzi.component.support.Callable;
@@ -15,6 +16,7 @@ import com.xiaojinzi.component.support.Utils;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 服务的容器,使用这个服务容器你需要判断获取到的服务是否为空,对于使用者来说还是比较不方便的
@@ -26,6 +28,7 @@ import java.util.Map;
 public class ServiceManager {
 
     private ServiceManager() {
+        throw new NotSupportException("can't to create");
     }
 
     /**
@@ -87,6 +90,16 @@ public class ServiceManager {
                 }
             }
         });
+    }
+
+    /**
+     * @return 肯定不会为 null
+     * @see #get(Class)
+     */
+    @NonNull
+    @AnyThread
+    public static <T> T requiredGet(@NonNull final Class<T> tClass) {
+        return Utils.checkNullPointer(get(tClass));
     }
 
 }
