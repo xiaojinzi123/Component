@@ -33,6 +33,8 @@ public class Utils {
 
     private static final String STR_PARAMETER = "parameter '";
     private static final String STR_CAN_NOT_BE_NULL = "' can't be null";
+    private static final String MAIN_THREAD_ERROR_MSG = "Component mainThreadCall method timeout, A deadlock was happened. see: https://github.com/xiaojinzi123/Component/issues/79";
+    private static final long MAIN_THREAD_TIME_OUT = 3000;
 
     private Utils() {
     }
@@ -278,8 +280,8 @@ public class Utils {
             long currentTimeMillis = System.currentTimeMillis();
             while (haveException.get() == null) {
                 // 如果超过了 3 秒, 认为是死锁了, 因为正常根本不可能等这么久
-                if ((System.currentTimeMillis() - currentTimeMillis) > 3000) {
-                    exceptionAtomicReference.set(new RunTimeTimeoutException("Component mainThreadCallNullable method timeout"));
+                if ((System.currentTimeMillis() - currentTimeMillis) > MAIN_THREAD_TIME_OUT) {
+                    exceptionAtomicReference.set(new RunTimeTimeoutException(MAIN_THREAD_ERROR_MSG));
                     haveException.set(true);
                 }
             }
@@ -292,7 +294,6 @@ public class Utils {
     }
 
     @AnyThread
-    @SuppressLint("WrongThread")
     public static void mainThreadAction(@NonNull @UiThread final Action action) {
         if (isMainThread()) {
             action.run();
@@ -310,8 +311,14 @@ public class Utils {
                     }
                 }
             });
+            // 当前的时间戳
+            long currentTimeMillis = System.currentTimeMillis();
             // 线程空转.
             while (resultAtomicReference.get() == null && exceptionAtomicReference.get() == null) {
+                // 如果超过了 3 秒, 认为是死锁了, 因为正常根本不可能等这么久
+                if ((System.currentTimeMillis() - currentTimeMillis) > MAIN_THREAD_TIME_OUT) {
+                    exceptionAtomicReference.set(new RunTimeTimeoutException(MAIN_THREAD_ERROR_MSG));
+                }
             }
             if (exceptionAtomicReference.get() != null) {
                 throw exceptionAtomicReference.get();

@@ -69,6 +69,22 @@
             android:textAllCaps="false"
             android:textSize="@dimen/test_quality_textsize_small" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="testDeadlock1"
+            android:text="测试死锁问题1"
+            android:textAllCaps="false"
+            android:textSize="@dimen/test_quality_textsize_small" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="testDeadlock2"
+            android:text="测试死锁问题2"
+            android:textAllCaps="false"
+            android:textSize="@dimen/test_quality_textsize_small" />
+
     </com.xiaojinzi.componentdemo.view.XFlowLayout>
 
     <android.support.v4.widget.NestedScrollView

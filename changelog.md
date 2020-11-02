@@ -1,4 +1,7 @@
 
+#### [v1.8.3.5](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.5)
+- 增加当发生死锁的时候, 错误信息的报错, 方便用户排查. 具体可以看 [#79](https://github.com/xiaojinzi123/Component/issues/79) 这个 issue
+
 #### [v1.8.3.4](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.4)
 - 增加一个可选的 IModuleNotifyChanged 接口, 用来接收模块加载的变化
 

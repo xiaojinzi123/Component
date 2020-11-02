@@ -1163,7 +1163,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * 这个原理就是, 本身是一个 执行器 (Chain),当你调用 proceed 方法的时候,会创建下一个拦截器的执行对象
      * 然后调用当前拦截器的 intercept 方法
      */
-    private static class InterceptorChain implements RouterInterceptor.Chain {
+    public static class InterceptorChain implements RouterInterceptor.Chain {
 
         /**
          * 每一个拦截器执行器 {@link RouterInterceptor.Chain}
@@ -1209,28 +1209,50 @@ public class Navigator extends RouterRequest.Builder implements Call {
             this.mCallback = callback;
         }
 
+        /**
+         * 拦截器是否是否已经走完
+         */
+        protected synchronized final boolean isCompletedProcess() {
+            return mIndex >= mInterceptors.size();
+        }
+
+        protected final int index() {
+            return mIndex;
+        }
+
+        @NonNull
+        protected final List<RouterInterceptor> interceptors() {
+            return mInterceptors;
+        }
+
+        @NonNull
+        protected final RouterInterceptor.Callback rawCallback() {
+            return mCallback;
+        }
+
         @Override
-        public RouterRequest request() {
+        public final RouterRequest request() {
             // 第一个拦截器的
             return mRequest;
         }
 
         @Override
         public RouterInterceptor.Callback callback() {
-            return mCallback;
+            return rawCallback();
         }
 
         @Override
-        public void proceed(final RouterRequest request) {
-            proceed(request, mCallback);
+        public final void proceed(final RouterRequest request) {
+            proceed(request, callback());
         }
 
-        private void proceed(@NonNull final RouterRequest request, @NonNull final RouterInterceptor.Callback callback) {
+        private final void proceed(@NonNull final RouterRequest request, @NonNull final RouterInterceptor.Callback callback) {
             // ui 线程上执行
             Utils.postActionToMainThreadAnyway(new Runnable() {
                 @Override
                 public void run() {
                     try {
+                        // 如果已经结束, 对不起就不执行了
                         if (callback().isEnd()) {
                             return;
                         }
@@ -1239,7 +1261,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
                             return;
                         }
                         ++calls;
-                        if (mIndex >= mInterceptors.size()) {
+                        if (isCompletedProcess()) {
                             callback().onError(new NavigationFailException(new IndexOutOfBoundsException(
                                     "size = " + mInterceptors.size() + ",index = " + mIndex)));
                         } else if (calls > 1) { // 调用了两次
