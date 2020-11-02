@@ -7,11 +7,11 @@ ext.versions = [
         version_name                   : "1.0",
         support_lib                    : "28.0.0",
         // 第三方控件的版本号
-        constraintLayout               : '2.0.2',
+        constraintLayout               : '2.0.4',
         rxjava                         : '2.2.20',
         rxandroid                      : "2.1.1",
-        component_version              : "1.8.3.4",
-        component_plugin_upload_version: "1.8.3.4"
+        component_version              : "1.8.3.5",
+        component_plugin_upload_version: "1.8.3.5"
 ]
 
 ext.libs = [

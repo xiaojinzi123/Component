@@ -17,6 +17,7 @@ import com.xiaojinzi.component.support.OnRouterError;
  *
  * @author xiaojinzi
  */
+@UiThread
 @CheckClassNameAnno
 public interface Callback extends OnRouterError, OnRouterCancel {
 

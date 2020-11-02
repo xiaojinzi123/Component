@@ -1159,6 +1159,136 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
+     * 拦截器多个连接着走的执行器,源代码来源于 OkHTTP
+     * 这个原理就是, 本身是一个 执行器 (Chain),当你调用 proceed 方法的时候,会创建下一个拦截器的执行对象
+     * 然后调用当前拦截器的 intercept 方法
+     */
+    public static class InterceptorChain implements RouterInterceptor.Chain {
+
+        /**
+         * 每一个拦截器执行器 {@link RouterInterceptor.Chain}
+         * 都会有上一个拦截器给的 request 对象或者初始化的一个 request,用于在下一个拦截器
+         * 中获取到 request 对象,并且支持拦截器自定义修改 request 对象或者直接创建一个新的传给下一个拦截器执行器
+         */
+        @NonNull
+        private final RouterRequest mRequest;
+
+        /**
+         * 这个是拦截器的回调,这个用户不能自定义,一直都是一个对象
+         */
+        @NonNull
+        private final RouterInterceptor.Callback mCallback;
+
+        /**
+         * 拦截器列表,所有要执行的拦截器列表
+         */
+        @NonNull
+        private final List<RouterInterceptor> mInterceptors;
+
+        /**
+         * 拦截器的下标
+         */
+        private final int mIndex;
+
+        /**
+         * 调用的次数,如果超过1次就做相应的错误处理
+         */
+        private int calls;
+
+        /**
+         * @param interceptors 拦截器的即可
+         * @param index        要执行的拦截器的下标
+         * @param request      第一次这个对象是不需要的
+         * @param callback     用户的 {@link Callback}
+         */
+        public InterceptorChain(@NonNull List<RouterInterceptor> interceptors, int index,
+                                @NonNull RouterRequest request, @NonNull RouterInterceptor.Callback callback) {
+            this.mInterceptors = interceptors;
+            this.mIndex = index;
+            this.mRequest = request;
+            this.mCallback = callback;
+        }
+
+        /**
+         * 拦截器是否是否已经走完
+         */
+        protected synchronized final boolean isCompletedProcess() {
+            return mIndex >= mInterceptors.size();
+        }
+
+        protected final int index() {
+            return mIndex;
+        }
+
+        @NonNull
+        protected final List<RouterInterceptor> interceptors() {
+            return mInterceptors;
+        }
+
+        @NonNull
+        protected final RouterInterceptor.Callback rawCallback() {
+            return mCallback;
+        }
+
+        @Override
+        public final RouterRequest request() {
+            // 第一个拦截器的
+            return mRequest;
+        }
+
+        @Override
+        public RouterInterceptor.Callback callback() {
+            return rawCallback();
+        }
+
+        @Override
+        public final void proceed(final RouterRequest request) {
+            proceed(request, callback());
+        }
+
+        private final void proceed(@NonNull final RouterRequest request, @NonNull final RouterInterceptor.Callback callback) {
+            // ui 线程上执行
+            Utils.postActionToMainThreadAnyway(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // 如果已经结束, 对不起就不执行了
+                        if (callback().isEnd()) {
+                            return;
+                        }
+                        if (request == null) {
+                            callback().onError(new NavigationFailException("the reqest is null,you can't call 'proceed' method with null reqest,such as 'chain.proceed(null)'"));
+                            return;
+                        }
+                        ++calls;
+                        if (isCompletedProcess()) {
+                            callback().onError(new NavigationFailException(new IndexOutOfBoundsException(
+                                    "size = " + mInterceptors.size() + ",index = " + mIndex)));
+                        } else if (calls > 1) { // 调用了两次
+                            callback().onError(new NavigationFailException(
+                                    "interceptor " + mInterceptors.get(mIndex - 1)
+                                            + " must call proceed() exactly once"));
+                        } else {
+                            // current Interceptor
+                            RouterInterceptor interceptor = mInterceptors.get(mIndex);
+                            // 当拦截器最后一个的时候,就不是这个类了,是 DoActivityStartInterceptor 了
+                            InterceptorChain next = new InterceptorChain(mInterceptors, mIndex + 1,
+                                    request, callback);
+                            // 提前同步 Query 到 Bundle
+                            next.request().syncUriToBundle();
+                            // 用户自定义的部分,必须在主线程
+                            interceptor.intercept(next);
+                        }
+                    } catch (Exception e) {
+                        callback().onError(e);
+                    }
+                }
+            });
+        }
+
+    }
+
+    /**
      * 处理页面拦截器的. 因为页面拦截器可能会更改 {@link Uri}. 导致目标改变.
      * 那么新的页面拦截器也应该被加载执行.
      * 最后确认 {@link Uri} 的目标没被改变的时候
@@ -1367,113 +1497,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
             return result;
         }
 
-    }
-
-    /**
-     * 拦截器多个连接着走的执行器,源代码来源于 OkHTTP
-     * 这个原理就是,本身是一个 执行器 (Chain),当你调用 proceed 方法的时候,会创建下一个拦截器的执行对象
-     * 然后调用当前拦截器的 intercept 方法
-     */
-    private static class InterceptorChain implements RouterInterceptor.Chain {
-
-        /**
-         * 每一个拦截器执行器 {@link RouterInterceptor.Chain}
-         * 都会有上一个拦截器给的 request 对象或者初始化的一个 request,用于在下一个拦截器
-         * 中获取到 request 对象,并且支持拦截器自定义修改 request 对象或者直接创建一个新的传给下一个拦截器执行器
-         */
-        @NonNull
-        private final RouterRequest mRequest;
-
-        /**
-         * 这个是拦截器的回调,这个用户不能自定义,一直都是一个对象
-         */
-        @NonNull
-        private final RouterInterceptor.Callback mCallback;
-
-        /**
-         * 拦截器列表,所有要执行的拦截器列表
-         */
-        @NonNull
-        private final List<RouterInterceptor> mInterceptors;
-
-        /**
-         * 拦截器的下标
-         */
-        private final int mIndex;
-
-        /**
-         * 调用的次数,如果超过1次就做相应的错误处理
-         */
-        private int calls;
-
-        /**
-         * @param interceptors 拦截器的即可
-         * @param index        要执行的拦截器的下标
-         * @param request      第一次这个对象是不需要的
-         * @param callback     用户的 {@link Callback}
-         */
-        public InterceptorChain(@NonNull List<RouterInterceptor> interceptors, int index,
-                                @NonNull RouterRequest request, @NonNull RouterInterceptor.Callback callback) {
-            this.mInterceptors = interceptors;
-            this.mIndex = index;
-            this.mRequest = request;
-            this.mCallback = callback;
-        }
-
-        @Override
-        public RouterRequest request() {
-            // 第一个拦截器的
-            return mRequest;
-        }
-
-        @Override
-        public RouterInterceptor.Callback callback() {
-            return mCallback;
-        }
-
-        @Override
-        public void proceed(final RouterRequest request) {
-            proceed(request, mCallback);
-        }
-
-        private void proceed(@NonNull final RouterRequest request, @NonNull final RouterInterceptor.Callback callback) {
-            // ui 线程上执行
-            Utils.postActionToMainThreadAnyway(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (callback().isEnd()) {
-                            return;
-                        }
-                        if (request == null) {
-                            callback().onError(new NavigationFailException("the reqest is null,you can't call 'proceed' method with null reqest,such as 'chain.proceed(null)'"));
-                            return;
-                        }
-                        ++calls;
-                        if (mIndex >= mInterceptors.size()) {
-                            callback().onError(new NavigationFailException(new IndexOutOfBoundsException(
-                                    "size = " + mInterceptors.size() + ",index = " + mIndex)));
-                        } else if (calls > 1) { // 调用了两次
-                            callback().onError(new NavigationFailException(
-                                    "interceptor " + mInterceptors.get(mIndex - 1)
-                                            + " must call proceed() exactly once"));
-                        } else {
-                            // 当拦截器最后一个的时候,就不是这个类了,是 DoActivityStartInterceptor 了
-                            InterceptorChain next = new InterceptorChain(mInterceptors, mIndex + 1,
-                                    request, callback);
-                            // current Interceptor
-                            RouterInterceptor interceptor = mInterceptors.get(mIndex);
-                            // 提前同步 Query 到 Bundle
-                            next.request().syncUriToBundle();
-                            // 用户自定义的部分,必须在主线程
-                            interceptor.intercept(next);
-                        }
-                    } catch (Exception e) {
-                        callback().onError(e);
-                    }
-                }
-            });
-        }
     }
 
     /**
