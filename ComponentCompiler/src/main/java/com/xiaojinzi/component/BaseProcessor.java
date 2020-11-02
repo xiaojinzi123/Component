@@ -3,6 +3,8 @@ package com.xiaojinzi.component;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -125,11 +127,31 @@ public abstract class BaseProcessor extends AbstractProcessor {
         mClassNameNonNull = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_NONNULL));
 
         if (mClassNameKeep == null || mClassNameNonNull == null) {
-            throw new ProcessException("Your configuration is wrong. " +
+            String addDependencyTip = getAddDependencyTip(Arrays.asList(
+                    ComponentConstants.ANDROID_ANNOTATION_KEEP,
+                    ComponentConstants.ANDROID_ANNOTATION_NONNULL
+            ), true);
+            throw new ProcessException(addDependencyTip + " \nif you add dependency already, then your configuration is wrong. " +
                     "If you use androidx, see https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE-AndroidX " +
                     "\n else see https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE");
         }
 
+    }
+
+    protected String getAddDependencyTip(List<String> classPathList, boolean isOr) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < classPathList.size(); i++) {
+            String classPath = classPathList.get(i);
+            if (i == 0) {
+                sb.append("'")
+                        .append(classPath)
+                        .append("'");
+            } else {
+                sb.append(" ").append(isOr ? "or" : "and").append(" ").append("'").append(classPath).append("'");
+            }
+        }
+        sb.append(" ").append("can't be found, did you add dependency to build.gradle?");
+        return sb.toString();
     }
 
     protected boolean isRouterDocEnable() {
