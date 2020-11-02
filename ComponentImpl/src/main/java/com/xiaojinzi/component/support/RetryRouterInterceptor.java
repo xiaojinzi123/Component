@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.impl.Navigator;
 import com.xiaojinzi.component.impl.RouterInterceptor;
