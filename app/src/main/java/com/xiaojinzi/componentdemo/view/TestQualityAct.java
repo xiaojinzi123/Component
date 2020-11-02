@@ -12,9 +12,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.xiaojinzi.base.ModuleConfig;
+import com.xiaojinzi.base.service.inter.user.UserService;
 import com.xiaojinzi.base.view.BaseAct;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.RxRouter;
+import com.xiaojinzi.component.impl.service.ServiceManager;
+import com.xiaojinzi.component.support.Action;
+import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.Utils;
 import com.xiaojinzi.componentdemo.R;
 import com.xiaojinzi.componentdemo.test.CancelTest;
@@ -287,6 +291,44 @@ public class TestQualityAct extends BaseAct implements TestContext {
                 })
                 .activityResultCall()
                 .subscribe();
+    }
+
+    public void testDeadlock1(View view) {
+        new Thread(){
+            @Override
+            public void run() {
+                lockTest(() -> {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        // ignore
+                    }
+                    Utils.mainThreadAction(new Action() {
+                        @Override
+                        public void run() {
+                            System.out.println("123123");
+                        }
+                    });
+                    String result = Utils.mainThreadCallable(() -> "hello");
+                    System.out.println("result = " + result);
+                });
+            }
+        }.start();
+        Utils.postDelayActionToMainThread(new Runnable() {
+            @Override
+            public void run() {
+                lockTest(() -> {
+                    System.out.println("23123");
+                });
+            }
+        }, 1000);
+    }
+
+    public void testDeadlock2(View view) {
+    }
+
+    private synchronized void lockTest(@NonNull Runnable runnable) {
+        runnable.run();
     }
 
 }

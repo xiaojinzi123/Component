@@ -15,7 +15,6 @@ public abstract class BaseHostProcessor extends BaseProcessor {
     // 在每一个 module 中配置的 HOST 的信息
     protected String componentHost = null;
 
-
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
