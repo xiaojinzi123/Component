@@ -27,6 +27,7 @@ public class App extends Application {
                         .routeRepeatCheckDuration(1000)
                         // 是否打印日志提醒你哪些路由使用了 Application 为 Context 进行跳转
                         .tipWhenUseApplication(true)
+                        // 通知模块变化的延迟时间间隔
                         .notifyModuleChangedDelayTime(200)
                         // 开启启动优化, 必须配套使用 Gradle 插件
                         .optimizeInit(true)

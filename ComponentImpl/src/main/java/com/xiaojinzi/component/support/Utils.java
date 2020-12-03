@@ -106,8 +106,9 @@ public class Utils {
      * 获取真实的错误对象,有时候一个 {@link Throwable#getCause()} 就是自己本身,下面的代码看上去是死循环了
      * 但是 {@link Throwable#getCause()} 方法内部做了判断
      */
-    @Nullable
+    @NonNull
     public static Throwable getRealThrowable(@NonNull Throwable throwable) {
+        Utils.checkNullPointer(throwable);
         while (throwable.getCause() != null) {
             throwable = throwable.getCause();
         }
@@ -231,98 +232,6 @@ public class Utils {
     public static void checkMainThread() {
         if (!isMainThread()) {
             throw new RouterRuntimeException("the thread is not main thread!");
-        }
-    }
-
-    /**
-     * 主线程去获取一个东东
-     *
-     * @param callable 回调对象, 可返回一个值
-     * @param <T>      具体返回的值
-     * @return 具体返回的值
-     */
-    @NonNull
-    @AnyThread
-    public static <T> T mainThreadCallable(@NonNull final Callable<T> callable) {
-        return mainThreadCallNullable(new CallNullable<T>() {
-            @Nullable
-            @Override
-            public T get() {
-                return callable.get();
-            }
-        });
-    }
-
-    @Nullable
-    @AnyThread
-    public static <T> T mainThreadCallNullable(@NonNull final CallNullable<T> callable) {
-        if (isMainThread()) {
-            return callable.get();
-        } else {
-            final AtomicReference<Boolean> haveException = new AtomicReference<>();
-            final AtomicReference<T> tAtomicReference = new AtomicReference<>();
-            final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
-            Utils.postActionToMainThreadAnyway(new Runnable() {
-                @Override
-                public void run() {
-                    if (haveException.get() == null) {
-                        try {
-                            tAtomicReference.set(callable.get());
-                            haveException.set(false);
-                        } catch (RuntimeException e) {
-                            exceptionAtomicReference.set(e);
-                            haveException.set(true);
-                        }
-                    }
-                }
-            });
-            // 当前的时间戳
-            long currentTimeMillis = System.currentTimeMillis();
-            while (haveException.get() == null) {
-                // 如果超过了 3 秒, 认为是死锁了, 因为正常根本不可能等这么久
-                if ((System.currentTimeMillis() - currentTimeMillis) > MAIN_THREAD_TIME_OUT) {
-                    exceptionAtomicReference.set(new RunTimeTimeoutException(MAIN_THREAD_ERROR_MSG));
-                    haveException.set(true);
-                }
-            }
-            if (haveException.get().booleanValue()) {
-                throw exceptionAtomicReference.get();
-            } else {
-                return tAtomicReference.get();
-            }
-        }
-    }
-
-    @AnyThread
-    public static void mainThreadAction(@NonNull @UiThread final Action action) {
-        if (isMainThread()) {
-            action.run();
-        } else {
-            final AtomicReference<Object> resultAtomicReference = new AtomicReference<>();
-            final AtomicReference<RuntimeException> exceptionAtomicReference = new AtomicReference<>();
-            Utils.postActionToMainThreadAnyway(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        action.run();
-                        resultAtomicReference.set(0);
-                    } catch (RuntimeException e) {
-                        exceptionAtomicReference.set(e);
-                    }
-                }
-            });
-            // 当前的时间戳
-            long currentTimeMillis = System.currentTimeMillis();
-            // 线程空转.
-            while (resultAtomicReference.get() == null && exceptionAtomicReference.get() == null) {
-                // 如果超过了 3 秒, 认为是死锁了, 因为正常根本不可能等这么久
-                if ((System.currentTimeMillis() - currentTimeMillis) > MAIN_THREAD_TIME_OUT) {
-                    exceptionAtomicReference.set(new RunTimeTimeoutException(MAIN_THREAD_ERROR_MSG));
-                }
-            }
-            if (exceptionAtomicReference.get() != null) {
-                throw exceptionAtomicReference.get();
-            }
         }
     }
 

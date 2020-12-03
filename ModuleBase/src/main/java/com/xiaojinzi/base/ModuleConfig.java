@@ -87,7 +87,7 @@ public class ModuleConfig {
     }
 
     public static class Help {
-        public static final String NAME = "help";
+        public static final String NAME = "www.xiaojinzi.help";
         public static final String WEB = "web";
         public static final String TEST_WEB_ROUTER = "testWebRouter";
         public static final String CANCEL_FOR_TEST = "cancelForTest";
