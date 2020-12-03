@@ -46,13 +46,15 @@
     <img height=22 src="https://xiaojinzi.oss-cn-shanghai.aliyuncs.com/blogImages/fluidicon.png" />
 </a>
 
-## Demo体验(扫码或者点击图片即可下载)
+## 1. Demo体验
+
+扫码或者点击图片即可下载
 
 <a href="https://github.com/xiaojinzi123/Component/releases/download/v1.7.6.1/app-release.apk">
     <img height=180 src="./imgs/demoApk.png" />
 </a>
 
-## Component 的功能
+## 2. Component 的功能
 
 组件化方案真的有很多,那么这个组件化方案优秀在哪里？相比于 `ARouter`、`WMRouter`、`ActivityRouter`、`CC`、`DDComponent`
 等开源的组件化框架, 有哪些一样或者更加优秀的点
@@ -104,16 +106,13 @@
     - [x] **0** 配置拿到目标界面返回的 `ActivityResult`, 很多框架不支持或者需要入侵 `BaseActivity`. 绝对的优势
       - [ ] 和系统的行为一样,当 `Context` 是 `Application` 或者 `Service 的 Context` 或者 `ContentProvider 的 Context `的时候, **不支持获取ActivityResult**, 如果真的有需要, 你可以使用栈顶的 `Activity` 来充当 `Context`
       - [x] 除第一点说的几个 `Context`, 其他的情况都是支持的,包括 `Dialog` 中获取到的 `Context`.
+- [ ] `注解驱动器` 不支持增量更新, 暂时不知道怎么去做
 
-## 目前存在的问题
-
-- `注解驱动器` 不支持增量更新, 暂时不知道怎么去做
-
-## hello world
+## 3. hello world
 
 [最简单的 hello world](https://github.com/xiaojinzi123/Component/wiki)
 
-## 更详细的使用
+## 4. 完整文档
 
 - 依赖和配置
   - [依赖和配置](https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE)
@@ -134,18 +133,15 @@
 - [更新日志](./changelog.md)
 
 **了解更多请看 [wiki](https://github.com/xiaojinzi123/Component/wiki/) 更多功能等你来发现**
+**有关的文章 [到底什么是组件化](https://blog.csdn.net/u011692041/article/details/92572758) **
 
-## 有关的文章
-
-- [到底什么是组件化](https://blog.csdn.net/u011692041/article/details/92572758)
-
-## 配套的 `Idea Plugin`
+## 5. 配套的 `Idea Plugin`
 
 `Android Studio` 中搜索插件名称：RouterGo, 即可下载对应的插件
 
 [RouterGo 源码地址：帮助你快速导航到目标界面或者目标拦截器,你值得拥有!](https://github.com/xiaojinzi123/RouterGoPlugin)
 
-## `Component` 项目结构(Demo + 库源码)
+## 6. `Component` 项目结构(Demo + 库源码)
 
 - `demo` 示例代码
     - `app`                 --> 壳工程
@@ -164,18 +160,19 @@
         - 优化初始化的方式, 优化反射加载模块为正常的 `new` 对象的方式, 利用字节码修改技术
         - 生成路由文档
 
-## 扫码进群
+
+## 7. 扫码进群
 
 <div>
     <img src="./imgs/qq_group1.JPG" width="210px" height="300px" />
     <img src="./imgs/qq_group2.JPG" width="210px" height="300px" />
 </div>
 
-## 如果你觉得项目不错, 就请我喝杯咖啡吧! 一块钱也是爱!
+## 8. 如果你觉得项目不错, 就请我喝杯咖啡吧! 一块钱也是爱!
 
 <img height=200 src="./imgs/collectQRCode.png" />
 
-## License
+## 9. License
 
 ```
 Licensed under the Apache License, Version 2.0 (the "License");
