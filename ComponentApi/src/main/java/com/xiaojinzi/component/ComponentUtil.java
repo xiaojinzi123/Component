@@ -17,8 +17,6 @@ public class ComponentUtil {
      */
     public static final String IMPL_OUTPUT_PKG = "com.xiaojinzi.component.impl";
 
-    public static final String IMPL_OUTPUT_PKG_PATH = "com/xiaojinzi/component/impl";
-
     /**
      * 点
      */
@@ -42,12 +40,12 @@ public class ComponentUtil {
     /**
      * 生成的文件名称的后缀
      */
-    public static final String MODULE_APPLCATION = "ModuleApplicationGenerated";
+    public static final String MODULE_APPLCATION = "ModuleAppGenerated";
 
     /**
      * 生成的文件名称的后缀
      */
-    public static final String MODULE_APPLCATION_DEFAULT = "ModuleApplicationGeneratedDefault";
+    public static final String MODULE_APPLCATION_DEFAULT = "ModuleAppGeneratedDefault";
 
     /**
      * 生成的文件名称的后缀
@@ -90,12 +88,62 @@ public class ComponentUtil {
     /**
      * 首字母小写
      */
-    public static String firstCharUpperCase(String str) {
+    /*public static String firstCharUpperCase(String str) {
         char[] ch = str.toCharArray();
         if (ch[0] >= 'a' && ch[0] <= 'z') {
             ch[0] = (char) (ch[0] - 32);
         }
         return new String(ch);
+    }*/
+
+    public static char charUpperCase(char target) {
+        if (target >= 'a' && target <= 'z') {
+            target = (char) (target - 32);
+        }
+        return target;
+    }
+
+    /**
+     * 转化 host 为一个合理的 Class name
+     */
+    public static String transformHostForClass(String host) {
+        StringBuffer sb = new StringBuffer();
+        char[] hostChars = host.toCharArray();
+        for (int i = 0; i < hostChars.length; i++) {
+            char itemChar = hostChars[i];
+            // 是否是字母
+            boolean isLetter = (itemChar >= 'a' && itemChar <= 'z') ||
+                    (itemChar >= 'A' && itemChar <= 'Z');
+            // 是否是数字
+            boolean isNumber = itemChar >= '0' && itemChar <= '9';
+            // 是否转化为 _
+            boolean isTransform = false;
+            boolean needUpperCase = false;
+            if (i == 0) {
+                if (isLetter) {
+                    // 是字母需要转化为大写
+                    needUpperCase = true;
+                } else  {
+                    // 第一位如果不是字母, 一定要转化
+                    isTransform = true;
+                }
+            } else  {
+                // 如果不是字母也不是数字
+                if (!isLetter && !isNumber) {
+                    isTransform = true;
+                }
+            }
+            if (isTransform) {
+                sb.append("_");
+            } else  {
+                if (needUpperCase) {
+                    sb.append(charUpperCase(itemChar));
+                } else  {
+                    sb.append(itemChar);
+                }
+            }
+        }
+        return sb.toString();
     }
 
     public static String genRouterApiImplClassName(Class apiClass) {
@@ -103,31 +151,31 @@ public class ComponentUtil {
     }
 
     public static String genHostModuleApplicationClassName(String host) {
-        return IMPL_OUTPUT_PKG + DOT + "application" + DOT + firstCharUpperCase(host) + MODULE_APPLCATION;
+        return IMPL_OUTPUT_PKG + DOT + "application" + DOT + transformHostForClass(host) + MODULE_APPLCATION;
     }
 
     public static String genDefaultHostModuleApplicationClassName(String host) {
-        return IMPL_OUTPUT_PKG + DOT + "application" + DOT + firstCharUpperCase(host) + MODULE_APPLCATION_DEFAULT;
+        return IMPL_OUTPUT_PKG + DOT + "application" + DOT + transformHostForClass(host) + MODULE_APPLCATION_DEFAULT;
     }
 
     public static String genHostRouterClassName(String host) {
-        return IMPL_OUTPUT_PKG + DOT + firstCharUpperCase(host) + UIROUTER;
+        return IMPL_OUTPUT_PKG + DOT + transformHostForClass(host) + UIROUTER;
     }
 
     public static String genHostRouterDegradeClassName(String host) {
-        return IMPL_OUTPUT_PKG + DOT + firstCharUpperCase(host) + UIROUTER_DEGRADE;
+        return IMPL_OUTPUT_PKG + DOT + transformHostForClass(host) + UIROUTER_DEGRADE;
     }
 
     public static String genHostServiceClassName(String host) {
-        return IMPL_OUTPUT_PKG + DOT + "service" + DOT + firstCharUpperCase(host) + SERVICE;
+        return IMPL_OUTPUT_PKG + DOT + "service" + DOT + transformHostForClass(host) + SERVICE;
     }
 
     public static String genHostInterceptorClassName(String host) {
-        return IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + firstCharUpperCase(host) + INTERCEPTOR;
+        return IMPL_OUTPUT_PKG + DOT + "interceptor" + DOT + transformHostForClass(host) + INTERCEPTOR;
     }
 
     public static String genHostFragmentClassName(String host) {
-        return IMPL_OUTPUT_PKG + DOT + "fragment" + DOT + firstCharUpperCase(host) + Fragment;
+        return IMPL_OUTPUT_PKG + DOT + "fragment" + DOT + transformHostForClass(host) + Fragment;
     }
 
 }

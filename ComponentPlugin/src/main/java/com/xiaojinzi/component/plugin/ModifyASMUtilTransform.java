@@ -230,14 +230,14 @@ public class ModifyASMUtilTransform extends BaseTransform {
 
     private void doFilterApplicationName(String className) {
         if (className.startsWith(IMPL_OUTPUT_PKG_PATH + "/application")
-                && (className.endsWith("ModuleApplicationGeneratedDefault.class") ||
-                className.endsWith("ModuleApplicationGenerated.class"))
+                && (className.endsWith("ModuleAppGeneratedDefault.class") ||
+                className.endsWith("ModuleAppGenerated.class"))
         ) {
             String simpleName = className.substring(className.lastIndexOf("/") + 1);
             // 拿到 host 的名称
-            String hostName = simpleName.substring(0, simpleName.indexOf("ModuleApplicationGenerated"));
+            String hostName = simpleName.substring(0, simpleName.indexOf("ModuleAppGenerated"));
             // 如果是 default 的, 需要看 map 中是否已经存在了
-            if (className.endsWith("ModuleApplicationGeneratedDefault.class")) {
+            if (className.endsWith("ModuleAppGeneratedDefault.class")) {
                 // 如果不存在才能进去
                 if (!applicationMap.containsKey(hostName)) {
                     applicationMap.put(hostName, simpleName);
