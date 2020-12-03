@@ -5,7 +5,7 @@
     <application>
         <meta-data
             android:name="HOST_help"
-            android:value="help" />
+            android:value="www.xiaojinzi.help" />
         <activity android:name="com.xiaojinzi.component.help.view.WebAct" />
         <activity android:name=".view.ShouldNotAppearAct"/>
         <activity android:name=".view.CancelForTestAct" />

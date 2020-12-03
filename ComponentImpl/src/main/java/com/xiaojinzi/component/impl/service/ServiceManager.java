@@ -76,20 +76,14 @@ public class ServiceManager {
     @Nullable
     @AnyThread
     public static <T> T get(@NonNull final Class<T> tClass) {
-        return Utils.mainThreadCallNullable(new CallNullable<T>() {
-            @NonNull
-            @Override
-            public T get() {
-                Callable<?> callable = serviceMap.get(tClass);
-                if (callable == null) {
-                    return null;
-                } else {
-                    // 如果没创建, 这时候会创建了目标 service 对象
-                    T t = (T) Utils.checkNullPointer(callable.get());
-                    return t;
-                }
-            }
-        });
+        Callable<?> callable = serviceMap.get(tClass);
+        if (callable == null) {
+            return null;
+        } else {
+            // 如果没创建, 这时候会创建了目标 service 对象
+            T t = (T) Utils.checkNullPointer(callable.get());
+            return t;
+        }
     }
 
     /**

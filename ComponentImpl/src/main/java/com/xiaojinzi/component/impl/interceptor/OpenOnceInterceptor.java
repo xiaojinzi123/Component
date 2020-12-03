@@ -49,7 +49,7 @@ public class OpenOnceInterceptor implements RouterInterceptor {
         // 如果之前有了并且时间少于一定的时间
         if (map.containsKey(hostAndPath) && (currentTime - map.get(hostAndPath)) < Component.getConfig().getRouteRepeatCheckDuration()) {
             chain.callback().onError(new NavigationFailException("same request can't launch twice in a second, target uri is：" + uri.toString()));
-        }else {
+        } else {
             map.put(hostAndPath, currentTime);
             // 放过执行
             chain.proceed(chain.request());
@@ -57,7 +57,7 @@ public class OpenOnceInterceptor implements RouterInterceptor {
         cleanOverdue();
     }
 
-    private void cleanOverdue(){
+    private void cleanOverdue() {
         long currentTime = System.currentTimeMillis();
         List<String> keys = new ArrayList<>();
         for (String key : map.keySet()) {

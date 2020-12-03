@@ -1,4 +1,8 @@
 
+#### [v1.8.3.6](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.5)
+- [#79](https://github.com/xiaojinzi123/Component/issues/79) 为了解决死锁. 放弃了 Fragment 和 服务发现的创建一定保证主线程的逻辑. 避免死锁发生. 
+- host 的配置支持了任意的字符串, 比如: www.baidu.com, www.module.user. 没有任何限制了
+
 #### [v1.8.3.5](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.5)
 - 增加当发生死锁的时候, 错误信息的报错, 方便用户排查. 具体可以看 [#79](https://github.com/xiaojinzi123/Component/issues/79) 这个 issue
 

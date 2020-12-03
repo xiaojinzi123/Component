@@ -802,8 +802,15 @@ public class Navigator extends RouterRequest.Builder implements Call {
             if (autoCancel && Utils.getActivityFromContext(originalRequest.context) != null) {
                 Router.mNavigationDisposableList.add(interceptorCallback);
             }
-            // 真正的去执行路由
-            realNavigate(originalRequest, customInterceptors, interceptorCallback);
+            final RouterRequest finalOriginalRequest = originalRequest;
+            final InterceptorCallback finalInterceptorCallback = interceptorCallback;
+            Utils.postActionToMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    // 真正的去执行路由
+                    realNavigate(finalOriginalRequest, customInterceptors, finalInterceptorCallback);
+                }
+            });
             // 返回对象
             return interceptorCallback;
         } catch (Exception e) { // 发生路由错误
@@ -971,7 +978,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      * @param customInterceptors        自定义的拦截器
      * @param routerInterceptorCallback 回调对象
      */
-    @AnyThread
+    @UiThread
     private void realNavigate(@NonNull final RouterRequest originalRequest,
                               @Nullable final List<Object> customInterceptors,
                               @NonNull final RouterInterceptor.Callback routerInterceptorCallback) {
@@ -990,26 +997,20 @@ public class Navigator extends RouterRequest.Builder implements Call {
             }
         });
 
-        // 主线程上执行, 卡住线程
-        Utils.mainThreadAction(new Action() {
-            @Override
-            public void run() {
-                // 添加路由检查拦截器
-                if (useRouteRepeatCheck) {
-                    allInterceptors.add(OpenOnceInterceptor.getInstance());
-                }
-                // 添加共有拦截器
-                allInterceptors.addAll(
-                        InterceptorCenter.getInstance().getGlobalInterceptorList()
-                );
-                // 添加用户自定义的拦截器
-                allInterceptors.addAll(
-                        getCustomInterceptors(originalRequest, customInterceptors)
-                );
-                // 负责加载目标 Intent 的页面拦截器的拦截器. 此拦截器后不可再添加其他拦截器
-                allInterceptors.add(new PageInterceptor(originalRequest, allInterceptors));
-            }
-        });
+        // 添加路由检查拦截器
+        if (useRouteRepeatCheck) {
+            allInterceptors.add(OpenOnceInterceptor.getInstance());
+        }
+        // 添加共有拦截器
+        allInterceptors.addAll(
+                InterceptorCenter.getInstance().getGlobalInterceptorList()
+        );
+        // 添加用户自定义的拦截器
+        allInterceptors.addAll(
+                getCustomInterceptors(originalRequest, customInterceptors)
+        );
+        // 负责加载目标 Intent 的页面拦截器的拦截器. 此拦截器后不可再添加其他拦截器
+        allInterceptors.add(new PageInterceptor(originalRequest, allInterceptors));
 
         // 创建执行器
         final RouterInterceptor.Chain chain = new InterceptorChain(

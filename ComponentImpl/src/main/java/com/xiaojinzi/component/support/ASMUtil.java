@@ -63,7 +63,12 @@ public class ASMUtil {
     /**
      * 获取所有模块的名称, 内部的实现由于 Gradle 插件修改字节码实现
      * NOTE: 此方法不是给用户使用的. 请不要使用. 这里的模块名字首字母一定是大写的
-     * 而你自己定义的就可能首字母是小写的. 所以请勿使用, 这里的仅限框架内部使用
+     * 并且一些字符可能已经发生转化, 和你配置的 host 是有出入的. 用户层面千万不要使用
+     * 用户的 host 会经过这个方法经过转化
+     * {@link com.xiaojinzi.component.ComponentUtil#transformHostForClass(String)}
+     * 转化为一个合理的可以被 class name 使用的字符串. 多次调用等同于一次.
+     * Gradle 插件只能拿到转化过后的, 能保证加载模块成功, 但是还原不出原来的 host 的.
+     * 所以用户不要使用哦哦, 这里的仅限框架内部使用
      *
      * @return 返回所有模块的名称
      */
