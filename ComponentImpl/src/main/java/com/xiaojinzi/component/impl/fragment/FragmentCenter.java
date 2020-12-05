@@ -82,7 +82,9 @@ public class FragmentCenter implements IComponentCenterFragment {
     public IComponentHostFragment findModuleService(String host) {
         try {
             if (Component.getConfig().isOptimizeInit()) {
-                return ASMUtil.findModuleFragmentAsmImpl(host);
+                return ASMUtil.findModuleFragmentAsmImpl(
+                        ComponentUtil.transformHostForClass(host)
+                );
             } else {
                 Class<? extends IComponentHostFragment> clazz = null;
                 String className = ComponentUtil.genHostFragmentClassName(host);

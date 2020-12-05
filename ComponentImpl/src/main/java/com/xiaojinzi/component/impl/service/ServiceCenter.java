@@ -80,7 +80,9 @@ public class ServiceCenter implements IComponentCenterService {
     public IComponentHostService findModuleService(@NonNull String host) {
         try {
             if (Component.getConfig().isOptimizeInit()) {
-                return ASMUtil.findModuleServiceAsmImpl(host);
+                return ASMUtil.findModuleServiceAsmImpl(
+                        ComponentUtil.transformHostForClass(host)
+                );
             } else {
                 Class<? extends IComponentHostService> clazz = null;
                 String className = ComponentUtil.genHostServiceClassName(host);

@@ -412,7 +412,9 @@ public class RouterCenter implements IComponentCenterRouter {
     public IComponentHostRouter findUiRouter(String host) {
         try {
             if (Component.getConfig().isOptimizeInit()) {
-                return ASMUtil.findModuleRouterAsmImpl(host);
+                return ASMUtil.findModuleRouterAsmImpl(
+                        ComponentUtil.transformHostForClass(host)
+                );
             } else {
                 Class<? extends IComponentHostRouter> clazz = null;
                 String className = ComponentUtil.genHostRouterClassName(host);
