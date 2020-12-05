@@ -122,11 +122,10 @@ public abstract class BaseProcessor extends AbstractProcessor {
 
         mTypeNameString = TypeName.get(mTypeElementString.asType());
 
-        // androidx 和 非 androidx 的两个注解
-        mClassNameKeep = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_KEEP));
-        mClassNameNonNull = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_NONNULL));
+        TypeElement keepTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_KEEP);
+        TypeElement nonNullTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_NONNULL);
 
-        if (mClassNameKeep == null || mClassNameNonNull == null) {
+        if (keepTypeElement == null || nonNullTypeElement == null) {
             String addDependencyTip = getAddDependencyTip(Arrays.asList(
                     ComponentConstants.ANDROID_ANNOTATION_KEEP,
                     ComponentConstants.ANDROID_ANNOTATION_NONNULL
@@ -135,6 +134,10 @@ public abstract class BaseProcessor extends AbstractProcessor {
                     "If you use androidx, see https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE-AndroidX " +
                     "\n else see https://github.com/xiaojinzi123/Component/wiki/%E4%BE%9D%E8%B5%96%E5%92%8C%E9%85%8D%E7%BD%AE");
         }
+
+        // androidx 和 非 androidx 的两个注解
+        mClassNameKeep = ClassName.get(keepTypeElement);
+        mClassNameNonNull = ClassName.get(nonNullTypeElement);
 
     }
 
