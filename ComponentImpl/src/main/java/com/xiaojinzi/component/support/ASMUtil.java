@@ -87,7 +87,7 @@ public class ASMUtil {
      * @return 返回对应模块的 Application {@link IComponentHostApplication}
      */
     @Nullable
-    public static IComponentHostApplication findModuleApplicationAsmImpl(String host) {
+    public static IComponentHostApplication findModuleApplicationAsmImpl(@NonNull String host) {
         return null;
     }
 
@@ -98,7 +98,7 @@ public class ASMUtil {
      * @return 返回对应模块的 Application {@link IComponentHostInterceptor}
      */
     @Nullable
-    public static IComponentHostInterceptor findModuleInterceptorAsmImpl(String host) {
+    public static IComponentHostInterceptor findModuleInterceptorAsmImpl(@NonNull String host) {
         return null;
     }
 
@@ -109,7 +109,7 @@ public class ASMUtil {
      * @return 返回对应模块的 {@link IComponentHostRouter}
      */
     @Nullable
-    public static IComponentHostRouter findModuleRouterAsmImpl(String host) {
+    public static IComponentHostRouter findModuleRouterAsmImpl(@NonNull String host) {
         return null;
     }
 
@@ -120,7 +120,7 @@ public class ASMUtil {
      * @return 返回对应模块的 {@link IComponentHostRouterDegrade}
      */
     @Nullable
-    public static IComponentHostRouterDegrade findModuleRouterDegradeAsmImpl(String host) {
+    public static IComponentHostRouterDegrade findModuleRouterDegradeAsmImpl(@NonNull String host) {
         return null;
     }
 
@@ -131,7 +131,7 @@ public class ASMUtil {
      * @return 返回对应模块的 {@link IComponentHostService}
      */
     @Nullable
-    public static IComponentHostService findModuleServiceAsmImpl(String host) {
+    public static IComponentHostService findModuleServiceAsmImpl(@NonNull String host) {
         return null;
     }
 
@@ -142,7 +142,7 @@ public class ASMUtil {
      * @return 返回对应模块的 {@link IComponentHostFragment}
      */
     @Nullable
-    public static IComponentHostFragment findModuleFragmentAsmImpl(String host) {
+    public static IComponentHostFragment findModuleFragmentAsmImpl(@NonNull String host) {
         return null;
     }
 
