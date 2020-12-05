@@ -122,9 +122,12 @@ public abstract class BaseProcessor extends AbstractProcessor {
 
         mTypeNameString = TypeName.get(mTypeElementString.asType());
 
+        TypeElement keepTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_KEEP);
+        TypeElement nonNullTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_NONNULL);
+
         // androidx 和 非 androidx 的两个注解
-        mClassNameKeep = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_KEEP));
-        mClassNameNonNull = ClassName.get(mElements.getTypeElement(ComponentConstants.ANDROID_ANNOTATION_NONNULL));
+        mClassNameKeep = ClassName.get(keepTypeElement);
+        mClassNameNonNull = ClassName.get(nonNullTypeElement);
 
         if (mClassNameKeep == null || mClassNameNonNull == null) {
             String addDependencyTip = getAddDependencyTip(Arrays.asList(
