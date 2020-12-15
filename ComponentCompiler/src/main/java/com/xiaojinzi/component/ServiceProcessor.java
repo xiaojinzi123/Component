@@ -179,7 +179,7 @@ public class ServiceProcessor extends BaseHostProcessor {
 
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 for (String interServiceClassName : interServiceClassNames) {
-                    methodSpecBuilder.addStatement("$T.register($T.class,$N)", classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)), implName);
+                    methodSpecBuilder.addStatement("$T.register($T.class, $S, $N)", classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)), anno.name(), implName);
                 }
 
             }
@@ -202,7 +202,7 @@ public class ServiceProcessor extends BaseHostProcessor {
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 for (String interServiceClassNameStr : interServiceClassNames) {
                     ClassName interServiceClassName = ClassName.get(mElements.getTypeElement(interServiceClassNameStr));
-                    methodSpecBuilder.addStatement("$T.unregister($T.class)", classNameServiceContainer, interServiceClassName);
+                    methodSpecBuilder.addStatement("$T.unregister($T.class, $S)", classNameServiceContainer, interServiceClassName, anno.name());
                 }
             }
         });

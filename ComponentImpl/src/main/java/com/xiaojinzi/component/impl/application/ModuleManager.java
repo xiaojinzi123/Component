@@ -193,15 +193,13 @@ public class ModuleManager implements IComponentCenterApplication {
     }
 
     /**
-     * 使用者应该在开发阶段调用这个函数来检查以下的问题：
-     * 1.路由表在不同的子路由表中是否有重复
-     * 2.服务在不同模块中的声明是否也有重复的名称
+     * 请使用 {@link Component#check()}
+     *
+     * @deprecated 未来版本会删除
      */
+    @Deprecated
     public void check() {
-        RouterCenter.getInstance().check();
-        InterceptorCenter.getInstance().check();
-        FragmentCenter.getInstance().check();
-        // Service 不需要检查, 反正如果重复了就覆盖. 没得选
+        Component.check();
     }
 
 }
