@@ -85,6 +85,12 @@ public class ServiceProcessor extends BaseHostProcessor {
             if (anno == null) {
                 continue;
             }
+            List<String> classNames = getInterServiceClassNames(anno);
+            if (anno.name().length != 0) { // 如果 name 填写了, 那么久必须和 class 数组一致
+                if (anno.name().length != classNames.size()) {
+                    throw new RuntimeException(element.getSimpleName() + " @ServiceAnno: The length of name[] must equal to the length of value[] when length > 0");
+                }
+            }
             annoElementList.add(element);
         }
     }
@@ -178,10 +184,12 @@ public class ServiceProcessor extends BaseHostProcessor {
                 methodSpecBuilder.addStatement("$T $N = $L", lazyLoadClassName, implName, innerTypeSpec);
 
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
-                for (String interServiceClassName : interServiceClassNames) {
-                    methodSpecBuilder.addStatement("$T.register($T.class, $S, $N)", classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)), anno.name(), implName);
+                boolean isUseOne = anno.name().length == 0;
+                for (int i = 0; i < interServiceClassNames.size(); i++) {
+                    String interServiceClassName = interServiceClassNames.get(i);
+                    String name = isUseOne ? "" : anno.name()[i];
+                    methodSpecBuilder.addStatement("$T.register($T.class, $S, $N)", classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)), name, implName);
                 }
-
             }
         });
 
@@ -200,9 +208,12 @@ public class ServiceProcessor extends BaseHostProcessor {
             public void accept(Element element) {
                 ServiceAnno anno = element.getAnnotation(ServiceAnno.class);
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
-                for (String interServiceClassNameStr : interServiceClassNames) {
+                boolean isUseOne = anno.name().length == 0;
+                for (int i = 0; i < interServiceClassNames.size(); i++) {
+                    String interServiceClassNameStr = interServiceClassNames.get(i);
+                    String name = isUseOne ? "" : anno.name()[i];
                     ClassName interServiceClassName = ClassName.get(mElements.getTypeElement(interServiceClassNameStr));
-                    methodSpecBuilder.addStatement("$T.unregister($T.class, $S)", classNameServiceContainer, interServiceClassName, anno.name());
+                    methodSpecBuilder.addStatement("$T.unregister($T.class, $S)", classNameServiceContainer, interServiceClassName, name);
                 }
             }
         });
@@ -230,9 +241,9 @@ public class ServiceProcessor extends BaseHostProcessor {
         List<String> implClassNames = new ArrayList<>();
         try {
             implClassNames.clear();
-            Class[] interceptors = anno.value();
-            for (Class interceptor : interceptors) {
-                implClassNames.add(interceptor.getName());
+            Class[] classes = anno.value();
+            for (Class clazz : classes) {
+                implClassNames.add(clazz.getName());
             }
         } catch (MirroredTypesException e) {
             implClassNames.clear();

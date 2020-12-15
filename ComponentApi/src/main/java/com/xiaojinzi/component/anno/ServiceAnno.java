@@ -24,7 +24,7 @@ public @interface ServiceAnno {
      * 实现类唯一的名字. debug 的时候可以开启检查
      * 会检查出重名的
      */
-    String name() default "";
+    String[] name() default {};
 
     /**
      * 是否是单例,默认是单例模式的
