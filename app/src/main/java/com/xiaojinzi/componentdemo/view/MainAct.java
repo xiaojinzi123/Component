@@ -138,7 +138,7 @@ public class MainAct extends AppCompatActivity {
     public void intentRouter1(View view) {
         Intent intent = Router.newProxyIntentBuilder()
                 .host(ModuleConfig.User.NAME)
-                .path(ModuleConfig.User.PERSON_CENTER)
+                .path(ModuleConfig.User.PERSON_CENTER + "1")
                 .buildProxyIntent();
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -155,7 +155,7 @@ public class MainAct extends AppCompatActivity {
     public void intentRouter2(View view) {
         Intent intent = Router.newProxyIntentBuilder()
                 .host(ModuleConfig.User.NAME)
-                .path(ModuleConfig.User.PERSON_CENTER)
+                .path(ModuleConfig.User.PERSON_CENTER + "1")
                 .proxyActivity(this.getClass())
                 .buildProxyIntent();
         NotificationManager notificationManager =

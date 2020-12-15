@@ -9,7 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 
+import com.xiaojinzi.component.impl.RouterCenter;
 import com.xiaojinzi.component.impl.application.ModuleManager;
+import com.xiaojinzi.component.impl.fragment.FragmentCenter;
+import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
 import com.xiaojinzi.component.support.Inject;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.Utils;
@@ -189,4 +192,18 @@ public class Component {
             LogUtil.log("class '" + target.getClass().getName() + "' inject fail");
         }
     }
+
+    /**
+     * 使用者应该在开发阶段调用这个函数来检查以下的问题：
+     * 1.路由表在不同的子路由表中是否有重复
+     * 2.服务在不同模块中的声明是否也有重复的名称
+     */
+    public static void check() {
+        if (isDebug()) {
+            RouterCenter.getInstance().check();
+            InterceptorCenter.getInstance().check();
+            FragmentCenter.getInstance().check();
+        }
+    }
+
 }

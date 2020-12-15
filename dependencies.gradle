@@ -10,8 +10,8 @@ ext.versions = [
         constraintLayout               : '2.0.4',
         rxjava                         : '2.2.20',
         rxandroid                      : "2.1.1",
-        component_version              : "1.8.3.6",
-        component_plugin_upload_version: "1.8.3.6"
+        component_version              : "1.8.4",
+        component_plugin_upload_version: "1.8.4"
 ]
 
 ext.libs = [

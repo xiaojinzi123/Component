@@ -42,9 +42,7 @@ public class App extends Application {
         // 如果你依赖了 rx 版本, 请加上这句配置. 忽略一些不想处理的错误
         // 如果不是 rx 的版本, 请忽略
         RxErrorIgnoreUtil.ignoreError();
-        if (BuildConfig.DEBUG) {
-            ModuleManager.getInstance().check();
-        }
+        Component.check();
     }
 
 }

@@ -55,8 +55,6 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     api project(':ModuleBase')
     api project(':Module1')
     api project(':Module2')

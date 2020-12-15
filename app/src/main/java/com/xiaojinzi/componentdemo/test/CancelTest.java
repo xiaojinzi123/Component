@@ -24,7 +24,7 @@ public class CancelTest implements TestExecutor {
     public Completable execute(TestContext testContext) {
         mTestContext = testContext;
         return Completable.concatArray(
-                testContext.wrapTask(cancelImmediately1()).doOnComplete(() -> testContext.addTaskPassMsg("cancelImmediately")),
+                testContext.wrapTask(cancelImmediately()).doOnComplete(() -> testContext.addTaskPassMsg("cancelImmediately")),
                 testContext.wrapTask(cancelImmediately1()).doOnComplete(() -> testContext.addTaskPassMsg("cancelImmediately1")),
                 testContext.wrapTask(cancelFromActivityWhenActivityFinish()).doOnComplete(() -> testContext.addTaskPassMsg("cancelFromActivityWhenActivityFinish")),
                 testContext.wrapTask(cancelFromFragmentWhenActivityFinish()).doOnComplete(() -> testContext.addTaskPassMsg("cancelFromFragmentWhenActivityFinish"))
