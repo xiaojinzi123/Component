@@ -31,7 +31,7 @@ public class LoginInterceptor implements RouterInterceptor {
     @Override
     public void intercept(final Chain chain) throws Exception {
         final Context context = chain.request().getRawOrTopActivity();
-        UserService userService = ServiceManager.get(UserService.class);
+        UserService userService = ServiceManager.get(UserService.class, "user1");
         if (userService == null) {
             chain.callback().onError(new ServiceNotFoundException("can't found UserService"));
             return;
