@@ -29,7 +29,7 @@ public class TestInjectAct4 extends BaseAct {
     @AttrValueAutowiredAnno("name")
     String name = compareStr;
 
-    @ServiceAutowiredAnno
+    @ServiceAutowiredAnno(name = "user1")
     UserService userService;
 
     @Override
