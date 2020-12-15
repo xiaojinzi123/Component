@@ -13,4 +13,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.CLASS)
 public @interface ServiceAutowiredAnno {
+
+    String name() default "";
+
 }

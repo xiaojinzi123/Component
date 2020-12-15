@@ -483,7 +483,7 @@ public class AutowireProcessor extends BaseProcessor {
 
         if (serviceAutowiredAnno != null) {
             methodBuilder.addComment("may be null here");
-            methodBuilder.addStatement("$N = $T.get($T.class)", parameterName, serviceTypeElement, parameterTypeName);
+            methodBuilder.addStatement("$N = $T.get($T.class, $S)", parameterName, serviceTypeElement, parameterTypeName, serviceAutowiredAnno.name());
         }
 
     }
