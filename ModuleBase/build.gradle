@@ -37,6 +37,8 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     api androidxLibs.appcompat
     api androidxLibs.constraintLayout
     api libs.rxjava

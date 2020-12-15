@@ -1,4 +1,3 @@
-//apply plugin: 'com.xiaojinzi.test'
 apply plugin: 'com.android.library'
 
 android {

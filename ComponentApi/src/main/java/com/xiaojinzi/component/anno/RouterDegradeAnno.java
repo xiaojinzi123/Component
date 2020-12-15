@@ -1,9 +1,9 @@
 package com.xiaojinzi.component.anno;
 
 /**
- * 这个注解是标记一个类为降级的处理, 注解标记了降级是针对哪个目标进行的
- * 当对应的目标出现跳转失败的时候, 会自动直接 @RouterDegradeAnno 注解标记的
- * 因为全局的希望他优先级比较低, 所以大家使用的时候尽量用好这个优先级
+ * 这个注解是标记一个类为降级的处理
+ * 此注解也是返回一个 Intent, 不支持页面拦截器.
+ * 返回的 intent 在匹配的情况下立马用作跳转的 intent 使用
  */
 public @interface RouterDegradeAnno {
 

@@ -26,9 +26,7 @@ public class App extends Application {
         // 装载各个业务组件
         ModuleManager.getInstance().registerArr("module1App", ModuleConfig.Module1.NAME);
 
-        if (BuildConfig.DEBUG) {
-            ModuleManager.getInstance().check();
-        }
+        Component.check();
 
     }
 

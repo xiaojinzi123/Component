@@ -5,7 +5,7 @@ buildscript {
     apply from: "dependencies.gradle"
     apply from: "dependencies_androidx.gradle"
 
-    ext.kotlin_version = '1.4.20'
+    ext.kotlin_version = '1.4.21'
     ext.component_group_id = "com.xiaojinzi"
     ext.isDependMavenOnline = false
     // ext.component_asm_util_class_output_path = "./Temp/ASMUtil.class"
