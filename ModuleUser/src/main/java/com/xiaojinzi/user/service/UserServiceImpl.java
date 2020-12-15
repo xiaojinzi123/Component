@@ -8,7 +8,7 @@ import com.xiaojinzi.component.anno.ServiceAnno;
  *
  * @author : xiaojinzi
  */
-@ServiceAnno(value = UserService.class, name = "user1")
+@ServiceAnno(value = {UserService.class, UserService.class}, name = {"user1", "user2"})
 public class UserServiceImpl implements UserService {
 
     /**
