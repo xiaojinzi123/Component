@@ -55,16 +55,13 @@ public class ServiceManager {
         Utils.checkNullPointer(name, "name");
         Utils.checkNullPointer(callable, "callable");
         synchronized (serviceMap) {
-            unregister(tClass);
             HashMap<String, Callable<?>> implServiceMap = serviceMap.get(tClass);
             if (implServiceMap == null) {
                 implServiceMap = new HashMap<>();
                 serviceMap.put(tClass, implServiceMap);
             }
-            if (Component.isDebug()) {
-                if (implServiceMap.containsKey(name)) {
-                    throw new RuntimeException("the key of " + name + " is exist");
-                }
+            if (implServiceMap.containsKey(name)) {
+                throw new RuntimeException("the key of " + name + " is exist");
             }
             implServiceMap.put(name, callable);
         }
