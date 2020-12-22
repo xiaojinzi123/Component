@@ -3,16 +3,17 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion versions.android_compile_sdk
     defaultConfig {
-        minSdkVersion versions.android_min_sdk
+        minSdkVersion 14
         targetSdkVersion versions.android_target_sdk
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
         javaCompileOptions {
             annotationProcessorOptions {
-                // arguments = ["HOST": "component1"]
                 arguments = [
-                        "HOST"           : "component1",
+                        "HOST"           : "www.xiaojinzi.help",
                         "RouterDocFolder": project.property("component_router_doc_folder"),
                         "RouterDocEnable": String.valueOf(project.property("component_router_doc_enable"))
                 ]
@@ -30,11 +31,13 @@ android {
 }
 
 dependencies {
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':ModuleBase')
+    api project(':Test:ModuleBase')
     if (rootProject.ext.isDependMavenOnline) {
         annotationProcessor libs.component_compiler
     } else {
         annotationProcessor project(':ComponentCompiler')
     }
+
 }

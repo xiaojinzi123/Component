@@ -37,7 +37,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':ModuleBase')
+    api project(':Test:ModuleBase')
     if (rootProject.ext.isDependMavenOnline) {
         kapt libs.component_compiler
     } else {

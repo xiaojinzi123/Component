@@ -1,11 +1,13 @@
-include ':app', ':ComponentPlugin',
-        ':Module1run',
-        ':ModuleHelp',
-        ':ComponentRxImpl',
-        ':Module1',
-        ':Module2',
-        ':ModuleUser',
-        ':ModuleBase',
+include ':ComponentPlugin',
         ':ComponentApi',
         ':ComponentCompiler',
-        ':ComponentImpl'
+        ':ComponentImpl',
+        ':ComponentRxImpl'
+include ':Test',
+        ':Test:app',
+        ':Test:Module1run',
+        ':Test:ModuleHelp',
+        ':Test:Module1',
+        ':Test:Module2',
+        ':Test:ModuleUser',
+        ':Test:ModuleBase'

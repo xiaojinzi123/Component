@@ -42,8 +42,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    api project(':Module1')
-    api project(':ModuleBase')
+    api project(':Test:Module1')
+    api project(':Test:ModuleBase')
 
     if (rootProject.ext.isDependMavenOnline) {
         annotationProcessor libs.component_compiler
