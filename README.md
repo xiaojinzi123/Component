@@ -38,9 +38,9 @@
     <img height=180 src="./imgs/demoApk.png" />
 </a>
 
-## 2. Hello World
+## 2. Hello World 文档
 
-[最简单的 Hello World](https://github.com/xiaojinzi123/Component/wiki/%E4%B8%BB%E9%A1%B5)
+[最简单的 Hello World 文档](https://github.com/xiaojinzi123/Component/wiki/%E4%B8%BB%E9%A1%B5)
 
 ## 3. Component 的功能
 
