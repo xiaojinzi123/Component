@@ -15,6 +15,7 @@ ext.versions = [
 ]
 
 ext.libs = [
+        kt_coroutines_core  :'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2',
         // Google 提供的
         support_v4          : "com.android.support:support-v4:$versions.support_lib",
         appcompat_v7        : "com.android.support:appcompat-v7:${versions.support_lib}",
