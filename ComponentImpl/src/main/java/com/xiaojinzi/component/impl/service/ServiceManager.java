@@ -61,7 +61,7 @@ public class ServiceManager {
                 serviceMap.put(tClass, implServiceMap);
             }
             if (implServiceMap.containsKey(name)) {
-                throw new RuntimeException("the key of " + name + " is exist");
+                throw new RuntimeException(tClass.getSimpleName() + " the key of " + name + " is exist");
             }
             implServiceMap.put(name, callable);
         }
