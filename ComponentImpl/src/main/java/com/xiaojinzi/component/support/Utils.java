@@ -119,10 +119,11 @@ public class Utils {
      * 是否是由于某一个错误引起的
      */
     public static boolean isCauseBy(@NonNull Throwable throwable, @NonNull Class<? extends Throwable> clazz) {
+        Utils.checkNullPointer(throwable);
         if (throwable.getClass() == clazz) {
             return true;
         }
-        while (throwable.getClass() != null) {
+        while (throwable.getCause() != null) {
             throwable = throwable.getCause();
             if (throwable.getClass() == clazz) {
                 return true;

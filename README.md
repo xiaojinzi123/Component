@@ -1,22 +1,6 @@
 
 **`Component` 一定以最快的速度解决您的 `issue`, 提供解决方案.**
 
-**相信 Component 能成为最优秀的那个框架! 开源于 2018.8.8**
-
-从 **17** 年下旬就用在公司的产品上了. 虽然不像巨型 `App` 那样庞大. 但是日活也有好几万, `Activity` 界面也有 `200+`, 
-经过这么久的洗礼, `Component` 早就度过了初期的艰难阶段. 现在 `Component` 越来越稳定也越来越好. 
-同时作者也希望 `Component` 能一直保持活力, 本着解决用户 `Bug` 放在首位, 为用户服务为己任. 相信 `Component`
-会持续在组件化方面保持领先. 并且之后也会不断发现用户的需求, 然后迭代. 希望你们能积极的提 `issue`, 
-告诉我你们在组件化方面的困恼!
-
-如果可以的话, 请点个 `star`
-
-很多选型的人有这么个疑问: 有了 `ARouter` 为啥要有 `Component`. 
-我这里在这里做一个回答.
-
-`ARouter` 是最早出现的组件化的一个实现方案, 早不一定最好. 很多人看见 `ARouter` `star` 的数量和阿里出的框架就会产生莫名的信任.基本都会优先选择 `ARouter`. 
-组件化方案不同于一个简单的 `UI` 库、控件库, 作为技术选型的你应该做一个比较深入的了解, 然后选择你认为好的、合适的.
-
 可以说到目前为止, 基于 `URI` 方面的所有路由框架中(`ARouter`、`WMRouter`、`ActivityRouter` ...) `Component` 是最强大和完善的组件化框架.
 
 选择一个更好、更全面的、更稳定、更有发展前景的框架更是你们技术团队或者技术负责人要做的事情!
@@ -54,7 +38,11 @@
     <img height=180 src="./imgs/demoApk.png" />
 </a>
 
-## 2. Component 的功能
+## 2. Hello World 文档
+
+[最简单的 Hello World 文档](https://github.com/xiaojinzi123/Component/wiki/%E4%B8%BB%E9%A1%B5)
+
+## 3. Component 的功能
 
 组件化方案真的有很多,那么这个组件化方案优秀在哪里？相比于 `ARouter`、`WMRouter`、`ActivityRouter`、`CC`、`DDComponent`
 等开源的组件化框架, 有哪些一样或者更加优秀的点
@@ -107,10 +95,6 @@
       - [ ] 和系统的行为一样,当 `Context` 是 `Application` 或者 `Service 的 Context` 或者 `ContentProvider 的 Context `的时候, **不支持获取ActivityResult**, 如果真的有需要, 你可以使用栈顶的 `Activity` 来充当 `Context`
       - [x] 除第一点说的几个 `Context`, 其他的情况都是支持的,包括 `Dialog` 中获取到的 `Context`.
 - [ ] `注解驱动器` 不支持增量更新, 暂时不知道怎么去做
-
-## 3. hello world
-
-[最简单的 hello world](https://github.com/xiaojinzi123/Component/wiki)
 
 ## 4. 完整文档
 
