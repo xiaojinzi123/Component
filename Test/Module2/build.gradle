@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.android_compile_sdk
@@ -7,17 +10,20 @@ android {
         targetSdkVersion versions.android_target_sdk
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
         javaCompileOptions {
             annotationProcessorOptions {
-                // arguments = ["HOST": "component1"]
+                // arguments = ["HOST": "component2"]
                 arguments = [
-                        "HOST"           : "component1",
+                        "HOST"           : "component2",
                         "RouterDocFolder": project.property("component_router_doc_folder"),
                         "RouterDocEnable": String.valueOf(project.property("component_router_doc_enable"))
                 ]
             }
         }
+
     }
 
     buildTypes {
@@ -36,10 +42,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':ModuleBase')
+    api project(':Test:ModuleBase')
     if (rootProject.ext.isDependMavenOnline) {
-        annotationProcessor libs.component_compiler
+        kapt libs.component_compiler
     } else {
-        annotationProcessor project(':ComponentCompiler')
+        kapt project(':ComponentCompiler')
     }
 }
