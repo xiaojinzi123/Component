@@ -5,7 +5,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.github.xiaojinzi123'
 
-archivesBaseName = "component-impl-rx"
+archivesBaseName = "component-impl-ktx"
 
 android {
     compileSdkVersion versions.android_compile_sdk
