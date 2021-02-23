@@ -55,11 +55,11 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    api project(':Test:ModuleBase')
-    api project(':Test:Module1')
-    api project(':Test:Module2')
-    api project(':Test:ModuleHelp')
-    api project(':Test:ModuleUser')
+    api project(':Demo:ModuleBase')
+    api project(':Demo:Module1')
+    api project(':Demo:Module2')
+    api project(':Demo:ModuleHelp')
+    api project(':Demo:ModuleUser')
 
     if (rootProject.ext.isDependMavenOnline) {
         kapt libs.component_compiler

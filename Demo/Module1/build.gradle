@@ -1,9 +1,8 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion versions.android_compile_sdk
     defaultConfig {
-        applicationId "com.xiaojinzi.module1run"
         minSdkVersion versions.android_min_sdk
         targetSdkVersion versions.android_target_sdk
         versionCode 1
@@ -11,11 +10,16 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                // 配置业务模块的模块名称
-                arguments = ["HOST": "module1App"]
+                // arguments = ["HOST": "component1"]
+                arguments = [
+                        "HOST"           : "component1",
+                        "RouterDocFolder": project.property("component_router_doc_folder"),
+                        "RouterDocEnable": String.valueOf(project.property("component_router_doc_enable"))
+                ]
             }
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,32 +27,14 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    dexOptions {
-        javaMaxHeapSize "8g"
-        //控制dex包内的方法数上限
-        preDexLibraries = false
-        additionalParameters = ['--multi-dex',
-                                '--set-max-idx-number=48000']
-        //控制dex包内的方法数上限
-    }
-
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-
-    api project(':Test:Module1')
-    api project(':Test:ModuleBase')
-
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api project(':Demo:ModuleBase')
     if (rootProject.ext.isDependMavenOnline) {
         annotationProcessor libs.component_compiler
     } else {
         annotationProcessor project(':ComponentCompiler')
     }
-
 }
