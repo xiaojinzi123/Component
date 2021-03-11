@@ -8,6 +8,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.xiaojinzi.component.anno.ConditionalAnno;
 import com.xiaojinzi.component.anno.ServiceAnno;
 import com.xiaojinzi.component.anno.ServiceDecoratorAnno;
 
@@ -167,41 +168,50 @@ public class ServiceProcessor extends BaseHostProcessor {
             TypeMirror serviceDecoratorImplTypeMirror = mElements.getTypeElement(serviceImplClassName).asType();
             final TypeName serviceDecoratorImplTypeName = TypeName.get(serviceDecoratorImplTypeMirror);
             final ServiceDecoratorAnno anno = entry.getValue().getAnnotation(ServiceDecoratorAnno.class);
+            final ConditionalAnno conditionalAnno = entry.getValue().getAnnotation(ConditionalAnno.class);
+            // 添加条件的 if
+            boolean isHaveConditional = false;
+            if (conditionalAnno != null) {
+                StringBuffer conditionsSB = new StringBuffer();
+                List<String> conditionsImplClassNames = getConditionsImplClassName(conditionalAnno);
+                List<Object> conditionsArgs = new ArrayList<>(2 * conditionsImplClassNames.size());
+                Utils.generateCondition(mElements, mConditionCacheTypeElement, conditionsSB, conditionsArgs, conditionsImplClassNames);
+                methodSpecBuilder.beginControlFlow("if(" + conditionsSB.toString() + ")", conditionsArgs.toArray());
+                isHaveConditional = true;
+            }
             final String implName = "implName" + atomicInteger.incrementAndGet();
-            List<String> classNames = getInterServiceClassNames(anno);
-            classNames.forEach(new Consumer<String>() {
-                @Override
-                public void accept(String implClassStr) {
-                    ClassName decoratorInterfaceClassName = ClassName.get(mElements.getTypeElement(implClassStr));
-                    String serviceDecoratorName = "serviceDecorator" + atomicInteger.incrementAndGet();
-                    MethodSpec.Builder priorityMethodBuilder = MethodSpec.methodBuilder("priority")
-                            .addAnnotation(Override.class)
-                            .addModifiers(Modifier.PUBLIC);
-                    priorityMethodBuilder
-                            .addStatement("return $L", anno.priority())
-                            .returns(int.class);
-                    MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder("get")
-                            .addParameter(decoratorInterfaceClassName, "target")
-                            .addAnnotation(Override.class)
-                            .addModifiers(Modifier.PUBLIC);
-                    getMethodBuilder
-                            .addStatement("$T $N = new $T(target)", serviceDecoratorImplTypeName, serviceDecoratorName, serviceDecoratorImplTypeName);
-                    getMethodBuilder
-                            .addStatement("return $N", serviceDecoratorName)
-                            .returns(decoratorInterfaceClassName);
-                    TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
-                            .addSuperinterface(ParameterizedTypeName.get(decoratorCallableClassName, decoratorInterfaceClassName))
-                            .addMethod(getMethodBuilder.build())
-                            .addMethod(priorityMethodBuilder.build())
-                            .build();
-                    methodSpecBuilder.addStatement("$T $N = $L", decoratorCallableClassName, implName, innerTypeSpec);
-                    methodSpecBuilder.addStatement(
-                            "$T.registerDecorator($T.class, $S, $N)",
-                            classNameServiceContainer, decoratorInterfaceClassName, entry.getKey(), implName
-                    );
-
-                }
-            });
+            String implClassStr = getInterServiceClassNames(anno);
+            ClassName decoratorInterfaceClassName = ClassName.get(mElements.getTypeElement(implClassStr));
+            String serviceDecoratorName = "serviceDecorator" + atomicInteger.incrementAndGet();
+            MethodSpec.Builder priorityMethodBuilder = MethodSpec.methodBuilder("priority")
+                    .addAnnotation(Override.class)
+                    .addModifiers(Modifier.PUBLIC);
+            priorityMethodBuilder
+                    .addStatement("return $L", anno.priority())
+                    .returns(int.class);
+            MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder("get")
+                    .addParameter(decoratorInterfaceClassName, "target")
+                    .addAnnotation(Override.class)
+                    .addModifiers(Modifier.PUBLIC);
+            getMethodBuilder
+                    .addStatement("$T $N = new $T(target)", serviceDecoratorImplTypeName, serviceDecoratorName, serviceDecoratorImplTypeName);
+            getMethodBuilder
+                    .addStatement("return $N", serviceDecoratorName)
+                    .returns(decoratorInterfaceClassName);
+            TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
+                    .addSuperinterface(ParameterizedTypeName.get(decoratorCallableClassName, decoratorInterfaceClassName))
+                    .addMethod(getMethodBuilder.build())
+                    .addMethod(priorityMethodBuilder.build())
+                    .build();
+            methodSpecBuilder.addStatement("$T $N = $L", decoratorCallableClassName, implName, innerTypeSpec);
+            methodSpecBuilder.addStatement(
+                    "$T.registerDecorator($T.class, $S, $N)",
+                    classNameServiceContainer, decoratorInterfaceClassName, entry.getKey(), implName
+            );
+            // 条件的结束
+            if (isHaveConditional) {
+                methodSpecBuilder.endControlFlow();
+            }
         }
         serviceAnnoElementList.forEach(new Consumer<Element>() {
             @Override
@@ -252,10 +262,11 @@ public class ServiceProcessor extends BaseHostProcessor {
                 boolean isUseOne = anno.name().length == 0;
                 for (int i = 0; i < interServiceClassNames.size(); i++) {
                     String interServiceClassName = interServiceClassNames.get(i);
+                    ClassName implClassName = ClassName.get(mElements.getTypeElement(interServiceClassName));
                     String name = isUseOne ? "" : anno.name()[i];
                     methodSpecBuilder.addStatement(
                             "$T.register($T.class, $S, $N)",
-                            classNameServiceContainer, ClassName.get(mElements.getTypeElement(interServiceClassName)), name, implName
+                            classNameServiceContainer, implClassName, name, implName
                     );
                 }
             }
@@ -273,12 +284,8 @@ public class ServiceProcessor extends BaseHostProcessor {
         methodSpecBuilder.addStatement("super.onDestroy()");
         for (final Map.Entry<String, Element> entry : serviceDecoratorAnnoElementList.entrySet()) {
             final ServiceDecoratorAnno anno = entry.getValue().getAnnotation(ServiceDecoratorAnno.class);
-            List<String> interServiceClassNames = getInterServiceClassNames(anno);
-            for (int i = 0; i < interServiceClassNames.size(); i++) {
-                String interServiceClassNameStr = interServiceClassNames.get(i);
-                ClassName interServiceClassName = ClassName.get(mElements.getTypeElement(interServiceClassNameStr));
-                methodSpecBuilder.addStatement("$T.unregisterDecorator($T.class, $S)", classNameServiceContainer, interServiceClassName, entry.getKey());
-            }
+            ClassName interServiceClassName = ClassName.get(mElements.getTypeElement(getInterServiceClassNames(anno)));
+            methodSpecBuilder.addStatement("$T.unregisterDecorator($T.class, $S)", classNameServiceContainer, interServiceClassName, entry.getKey());
         }
         serviceAnnoElementList.forEach(new Consumer<Element>() {
             @Override
@@ -329,17 +336,28 @@ public class ServiceProcessor extends BaseHostProcessor {
         return implClassNames;
     }
 
-    private List<String> getInterServiceClassNames(ServiceDecoratorAnno anno) {
+    private String getInterServiceClassNames(ServiceDecoratorAnno anno) {
+        try {
+            return anno.value().getName();
+        } catch (MirroredTypesException e) {
+            List<? extends TypeMirror> typeMirrors = e.getTypeMirrors();
+            return typeMirrors.get(0).toString();
+        }
+    }
+
+    private List<String> getConditionsImplClassName(ConditionalAnno anno) {
         List<String> implClassNames = new ArrayList<>();
         try {
             implClassNames.clear();
-            Class[] classes = anno.value();
-            for (Class clazz : classes) {
-                implClassNames.add(clazz.getName());
+            //这里会报错，此时在catch中获取到拦截器的全类名
+            final Class[] interceptors = anno.conditions();
+            // 这个循环其实不会走,我就随便写的,不过最好也不要删除
+            for (Class interceptor : interceptors) {
+                implClassNames.add(interceptor.getName());
             }
         } catch (MirroredTypesException e) {
             implClassNames.clear();
-            List<? extends TypeMirror> typeMirrors = e.getTypeMirrors();
+            final List<? extends TypeMirror> typeMirrors = e.getTypeMirrors();
             for (TypeMirror typeMirror : typeMirrors) {
                 implClassNames.add(typeMirror.toString());
             }

@@ -162,7 +162,7 @@ public class ServiceManager {
      * @return 返回一个增强的目标对象的装饰者
      */
     @NotAppUseAnno
-    private static <T> T decorate(@NonNull final Class<T> tClass, @NonNull T target) {
+    public static <T> T decorate(@NonNull final Class<T> tClass, @NonNull T target) {
         Utils.checkNullPointer(tClass, "tClass");
         Utils.checkNullPointer(target, "target");
         T result = target;

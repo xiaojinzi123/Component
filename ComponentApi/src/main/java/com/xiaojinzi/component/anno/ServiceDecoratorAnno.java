@@ -20,7 +20,7 @@ public @interface ServiceDecoratorAnno {
     /**
      * 这个服务对应的接口
      */
-    Class[] value();
+    Class value();
 
     /**
      * 优先级, 值越大优先级越高
