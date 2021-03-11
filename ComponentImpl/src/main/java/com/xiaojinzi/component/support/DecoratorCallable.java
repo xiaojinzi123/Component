@@ -19,7 +19,7 @@ public interface DecoratorCallable<T> {
     T get(@NonNull T target);
 
     /**
-     * 获取优先级
+     * 优先级, 值越大, 对应的装饰者执行的顺序越靠前
      */
     int priority();
 

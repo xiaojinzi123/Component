@@ -51,7 +51,6 @@ public class ServiceManager {
      *
      * @param tClass   装饰目标的接口
      * @param uid      注册的这个装饰者的唯一的标记
-     * @param priority 优先级, 值越大, 对应的装饰者执行的顺序越靠前
      * @param callable 装饰者的对象获取者
      * @param <T>      装饰目标
      */
@@ -59,7 +58,6 @@ public class ServiceManager {
     @NotAppUseAnno
     public static <T> void registerDecorator(@NonNull Class<T> tClass,
                                              @NonNull String uid,
-                                             int priority,
                                              @NonNull DecoratorCallable<? extends T> callable) {
         Utils.checkNullPointer(tClass, "tClass");
         Utils.checkNullPointer(uid, "uid");
