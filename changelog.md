@@ -1,3 +1,8 @@
+#### [v1.9.0](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0)
+- 支持了 Service 的装饰功能. 使用 @ServiceDecoratorAnno 注解标记一个类. 
+- Service 装饰功能支持 Condition.
+- 修复之前的版本卸载模块但是路由卸载不掉的问题
+
 #### [v1.8.8](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.8)
 - kotlin 的协程模块上线啦
 - 这个版本及其之前的版本. 会有模块卸载的时候, 路由表卸载不了的问题
