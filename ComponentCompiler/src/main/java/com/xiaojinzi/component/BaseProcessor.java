@@ -63,6 +63,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
     protected Elements mElements;
 
     protected TypeElement mTypeElementComponentGeneratedAnno;
+    protected TypeElement mConditionCacheTypeElement;
     protected TypeElement mTypeElementString;
     protected TypeElement mTypeElementInteger;
     protected TypeElement mTypeElementList;
@@ -105,6 +106,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
             throw IMPL_NOT_BE_DEPENDENT_ON;
         }
 
+        mConditionCacheTypeElement = mElements.getTypeElement(ComponentConstants.CONDITIONCACHE_CLASS_NAME);
         mTypeElementString = mElements.getTypeElement(ComponentConstants.JAVA_STRING);
         mTypeElementInteger = mElements.getTypeElement(ComponentConstants.JAVA_INTEGER);
         mTypeElementList = mElements.getTypeElement(ComponentConstants.JAVA_LIST);

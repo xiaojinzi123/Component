@@ -1,16 +1,13 @@
 package com.xiaojinzi.component.anno;
 
-import com.xiaojinzi.component.anno.support.UiThreadCreateAnno;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 标记一个接口
+ * 标记一个实现类是某些接口的实现
  */
-@UiThreadCreateAnno
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)
 public @interface ServiceAnno {

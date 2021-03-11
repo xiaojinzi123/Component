@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.Function1;
-import com.xiaojinzi.component.support.CallNullable;
 import com.xiaojinzi.component.support.Utils;
 
 import java.util.Collections;
