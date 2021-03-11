@@ -1,0 +1,74 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.xiaojinzi.component.plugin'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion versions.android_compile_sdk
+    defaultConfig {
+        applicationId "com.xiaojinzi.componentdemo"
+        minSdkVersion versions.android_min_sdk
+        targetSdkVersion versions.android_target_sdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                // 配置业务模块的模块名称
+                // arguments = ["HOST": "app"]
+                arguments = [
+                        "HOST"           : "app",
+                        "RouterDocFolder": project.property("component_router_doc_folder"),
+                        "RouterDocEnable": String.valueOf(project.property("component_router_doc_enable"))
+                ]
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    dexOptions {
+        javaMaxHeapSize "8g"
+        //控制dex包内的方法数上限
+        preDexLibraries = false
+        additionalParameters = ['--multi-dex',
+                                '--set-max-idx-number=48000']
+        //控制dex包内的方法数上限
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    api project(':Demo:ModuleBase')
+    api project(':Demo:Module1')
+    api project(':Demo:Module2')
+    api project(':Demo:ModuleHelp')
+    api project(':Demo:ModuleUser')
+
+    if (rootProject.ext.isDependMavenOnline) {
+        kapt libs.component_compiler
+    } else {
+        kapt project(':ComponentCompiler')
+    }
+    // 内存检测的
+    // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+
+    implementation "org.java-websocket:Java-WebSocket:1.5.1"
+
+}

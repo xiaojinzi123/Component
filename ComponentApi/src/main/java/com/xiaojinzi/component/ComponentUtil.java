@@ -69,6 +69,7 @@ public class ComponentUtil {
     public static final String ROUTER_DEGRADE_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.RouterDegradeAnno";
     public static final String MODULE_APP_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ModuleAppAnno";
     public static final String SERVICE_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ServiceAnno";
+    public static final String SERVICE_DECORATOR_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ServiceDecoratorAnno";
     public static final String PARAMETERANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ParameterAnno";
     public static final String ATTR_VALUE_AUTOWIREDANNO_CLASS_NAME = "com.xiaojinzi.component.anno.AttrValueAutowiredAnno";
     public static final String SERVICEAUTOWIREDANNO_CLASS_NAME = "com.xiaojinzi.component.anno.ServiceAutowiredAnno";

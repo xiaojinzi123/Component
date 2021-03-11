@@ -1,0 +1,54 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion versions.android_compile_sdk
+    defaultConfig {
+        applicationId "com.xiaojinzi.module1run"
+        minSdkVersion versions.android_min_sdk
+        targetSdkVersion versions.android_target_sdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                // 配置业务模块的模块名称
+                arguments = ["HOST": "module1App"]
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    dexOptions {
+        javaMaxHeapSize "8g"
+        //控制dex包内的方法数上限
+        preDexLibraries = false
+        additionalParameters = ['--multi-dex',
+                                '--set-max-idx-number=48000']
+        //控制dex包内的方法数上限
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    api project(':Demo:Module1')
+    api project(':Demo:ModuleBase')
+
+    if (rootProject.ext.isDependMavenOnline) {
+        annotationProcessor libs.component_compiler
+    } else {
+        annotationProcessor project(':ComponentCompiler')
+    }
+
+}

@@ -14,6 +14,7 @@ import kotlin.coroutines.resumeWithException
 /**
  * 完成一个跳转的挂起函数
  */
+@ExperimentalCoroutinesApi
 suspend fun Navigator.await() {
     suspendCancellableCoroutine<Unit> { cot ->
         if (cot.isCompleted) {
@@ -52,7 +53,7 @@ suspend fun Navigator.await() {
  */
 @ExperimentalCoroutinesApi
 suspend fun Navigator.activityResultAwait(): ActivityResult {
-    return suspendCancellableCoroutine<ActivityResult> { cot ->
+    return suspendCancellableCoroutine { cot ->
         if (cot.isCompleted) {
             return@suspendCancellableCoroutine
         }
@@ -87,6 +88,7 @@ suspend fun Navigator.activityResultAwait(): ActivityResult {
 /**
  * 获取 [Intent] 的一个挂起函数
  */
+@ExperimentalCoroutinesApi
 suspend fun Navigator.intentAwait(): Intent {
     return activityResultAwait().apply {
         if (this.data == null) {
@@ -98,6 +100,7 @@ suspend fun Navigator.intentAwait(): Intent {
 /**
  * 获取 [Intent] 的一个挂起函数, 同时支持匹配 resultCode
  */
+@ExperimentalCoroutinesApi
 suspend fun Navigator.intentResultCodeMatchAwait(expectedResultCode: Int): Intent {
     return activityResultAwait().apply {
         if (this.data == null) {
@@ -112,6 +115,7 @@ suspend fun Navigator.intentResultCodeMatchAwait(expectedResultCode: Int): Inten
 /**
  * 获取 ResultCode 的一个挂起函数
  */
+@ExperimentalCoroutinesApi
 suspend fun Navigator.resultCodeAwait(): Int {
     return activityResultAwait().resultCode
 }
@@ -119,6 +123,7 @@ suspend fun Navigator.resultCodeAwait(): Int {
 /**
  * 匹配 ResultCode 的一个挂起函数
  */
+@ExperimentalCoroutinesApi
 suspend fun Navigator.resultCodeMatchAwait(expectedResultCode: Int) {
     activityResultAwait().let {
         if (expectedResultCode != it.resultCode) {

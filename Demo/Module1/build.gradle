@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion versions.android_compile_sdk
+    defaultConfig {
+        minSdkVersion versions.android_min_sdk
+        targetSdkVersion versions.android_target_sdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                // arguments = ["HOST": "component1"]
+                arguments = [
+                        "HOST"           : "component1",
+                        "RouterDocFolder": project.property("component_router_doc_folder"),
+                        "RouterDocEnable": String.valueOf(project.property("component_router_doc_enable"))
+                ]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api project(':Demo:ModuleBase')
+    if (rootProject.ext.isDependMavenOnline) {
+        annotationProcessor libs.component_compiler
+    } else {
+        annotationProcessor project(':ComponentCompiler')
+    }
+}
