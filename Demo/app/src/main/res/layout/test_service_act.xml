@@ -37,6 +37,13 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="callComponent1Method"
+        android:text="调用component1服务提供的方法"
+        android:textAllCaps="false" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:onClick="callComponent2Method"
         android:text="调用component2服务提供的方法"
         android:textAllCaps="false" />

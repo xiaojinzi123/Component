@@ -61,6 +61,14 @@ public class TestServiceAct extends AppCompatActivity {
     Component1Service service1 = null;
     Component2Service service2 = null;
 
+    public void callComponent1Method(View view) {
+        if (service1 == null) {
+            Toast.makeText(this, "请先 find Component2Service服务", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        service1.doSomeThing();
+    }
+
     public void callComponent2Method(View view) {
         if (service2 == null) {
             Toast.makeText(this, "请先 find Component2Service服务", Toast.LENGTH_SHORT).show();

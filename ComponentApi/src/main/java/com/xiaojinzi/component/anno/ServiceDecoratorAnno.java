@@ -13,9 +13,9 @@ import java.lang.annotation.Target;
  * 并且被标记的对象, 必须有增强目标 Service Api 的构造方法
  */
 @UiThreadCreateAnno
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.CLASS)
-public @interface ServiceDecorateAnno {
+public @interface ServiceDecoratorAnno {
 
     /**
      * 这个服务对应的接口

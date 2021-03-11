@@ -19,7 +19,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * 服务的容器,使用这个服务容器你需要判断获取到的服务是否为空,对于使用者来说还是比较不方便的
@@ -44,7 +43,7 @@ public class ServiceManager {
     /**
      * Service 装饰者的集合. 线程不安全的
      */
-    private static final Map<Class, HashMap<String, DecoratorCallable<?>>> serviceDecorateMap = new HashMap<>();
+    private static final Map<Class, HashMap<String, DecoratorCallable<?>>> serviceDecoratorMap = new HashMap<>();
 
     /**
      * 注册一个装饰者
@@ -62,13 +61,13 @@ public class ServiceManager {
         Utils.checkNullPointer(tClass, "tClass");
         Utils.checkNullPointer(uid, "uid");
         Utils.checkNullPointer(callable, "callable");
-        synchronized (serviceDecorateMap) {
-            HashMap<String, DecoratorCallable<?>> map = serviceDecorateMap.get(tClass);
+        synchronized (serviceDecoratorMap) {
+            HashMap<String, DecoratorCallable<?>> map = serviceDecoratorMap.get(tClass);
             if (map == null) {
                 map = new HashMap<>();
-                serviceDecorateMap.put(tClass, map);
+                serviceDecoratorMap.put(tClass, map);
             }
-            if (serviceDecorateMap.containsKey(uid)) {
+            if (serviceDecoratorMap.containsKey(uid)) {
                 throw new RuntimeException(tClass.getSimpleName() + " the key of '" + uid + "' is exist");
             }
             map.put(uid, callable);
@@ -87,8 +86,8 @@ public class ServiceManager {
     public static <T> void unregisterDecorator(@NonNull Class<T> tClass, @NonNull String uid) {
         Utils.checkNullPointer(tClass, "tClass");
         Utils.checkNullPointer(uid, "uid");
-        synchronized (serviceDecorateMap) {
-            HashMap<String, DecoratorCallable<?>> map = serviceDecorateMap.get(tClass);
+        synchronized (serviceDecoratorMap) {
+            HashMap<String, DecoratorCallable<?>> map = serviceDecoratorMap.get(tClass);
             if (map != null) {
                 map.remove(uid);
             }
@@ -167,8 +166,8 @@ public class ServiceManager {
         Utils.checkNullPointer(tClass, "tClass");
         Utils.checkNullPointer(target, "target");
         T result = target;
-        synchronized (serviceDecorateMap) {
-            HashMap<String, DecoratorCallable<?>> map = serviceDecorateMap.get(tClass);
+        synchronized (serviceDecoratorMap) {
+            HashMap<String, DecoratorCallable<?>> map = serviceDecoratorMap.get(tClass);
             if (map != null) {
                 Collection<DecoratorCallable<?>> values = map.values();
                 if (values != null) {
