@@ -7,6 +7,7 @@ import com.xiaojinzi.component.anno.ServiceDecorateAnno
 class Component1ServiceDecorateImpl(private val target: Component1Service) : Component1Service by target {
 
     override fun doSomeThing() {
+        target.doSomeThing()
         println("增强功能成功")
     }
 
