@@ -94,6 +94,7 @@
     - [x] **0** 配置拿到目标界面返回的 `ActivityResult`, 很多框架不支持或者需要入侵 `BaseActivity`. 绝对的优势
       - [ ] 和系统的行为一样,当 `Context` 是 `Application` 或者 `Service 的 Context` 或者 `ContentProvider 的 Context `的时候, **不支持获取ActivityResult**, 如果真的有需要, 你可以使用栈顶的 `Activity` 来充当 `Context`
       - [x] 除第一点说的几个 `Context`, 其他的情况都是支持的,包括 `Dialog` 中获取到的 `Context`.
+      - [x] 如果你想单独使用这个功能, 也可以单独依赖使用, [链接是这里](https://github.com/xiaojinzi123/ActivityResultHelper)
 - [ ] `注解驱动器` 不支持增量更新, 暂时不知道怎么去做
 
 ## 4. 完整文档

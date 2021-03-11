@@ -52,7 +52,6 @@ public class InterceptorProcessor extends BaseHostProcessor {
     private TypeElement collectionsTypeElement;
     private TypeElement interceptorUtilTypeElement;
     private TypeElement interceptorBeanTypeElement;
-    private TypeElement conditionCacheTypeElement;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -60,7 +59,6 @@ public class InterceptorProcessor extends BaseHostProcessor {
         collectionsTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.JAVA_COLLECTIONS);
         interceptorUtilTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.INTERCEPTOR_UTIL_CLASS_NAME);
         interceptorBeanTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.INTERCEPTOR_BEAN_CLASS_NAME);
-        conditionCacheTypeElement = mElements.getTypeElement(com.xiaojinzi.component.ComponentConstants.CONDITIONCACHE_CLASS_NAME);
     }
 
     @Override
@@ -183,10 +181,10 @@ public class InterceptorProcessor extends BaseHostProcessor {
                     // 这个是否有条件才满足的
                     ConditionalAnno conditionalAnno = interceptorBean.element.getAnnotation(ConditionalAnno.class);
                     if (conditionalAnno != null) {
-                        List<String> conditionsImplClassNames = getConditionsImplClassName(conditionalAnno);
                         StringBuffer conditionsSB = new StringBuffer();
+                        List<String> conditionsImplClassNames = getConditionsImplClassName(conditionalAnno);
                         List<Object> conditionsArgs = new ArrayList<>(2 * conditionsImplClassNames.size());
-                        generateCondition(conditionalAnno, conditionsSB, conditionsArgs, conditionsImplClassNames);
+                        Utils.generateCondition(mElements, mConditionCacheTypeElement, conditionsSB, conditionsArgs, conditionsImplClassNames);
                         globalInterceptorListMethodSpecBuilder.beginControlFlow("if(" + conditionsSB.toString() + ")", conditionsArgs.toArray());
                         globalInterceptorListMethodSpecBuilder.addStatement(
                                 "list.add(new $T($T.getInterceptorByClass($T.class),$L))",
@@ -225,7 +223,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
                         List<String> conditionsImplClassNames = getConditionsImplClassName(conditionalAnno);
                         StringBuffer conditionsSB = new StringBuffer();
                         List<Object> conditionsArgs = new ArrayList<>(2 * conditionsImplClassNames.size());
-                        generateCondition(conditionalAnno, conditionsSB, conditionsArgs, conditionsImplClassNames);
+                        Utils.generateCondition(mElements, mConditionCacheTypeElement, conditionsSB, conditionsArgs, conditionsImplClassNames);
                         normalInterceptorInitMapMethodSpecBuilder.beginControlFlow("if(" + conditionsSB.toString() + ")", conditionsArgs.toArray());
                         normalInterceptorInitMapMethodSpecBuilder.addStatement("interceptorMap.put($S, $T.class)", interceptorBean.name, implTypeElement);
                         normalInterceptorInitMapMethodSpecBuilder.endControlFlow();
@@ -236,20 +234,6 @@ public class InterceptorProcessor extends BaseHostProcessor {
             });
         }
         return normalInterceptorInitMapMethodSpecBuilder.build();
-    }
-
-    private void generateCondition(ConditionalAnno conditionalAnno, StringBuffer conditionsSB,
-                                   List<Object> conditionsArgs, List<String> conditionsImplClassNames) {
-        for (int i = 0; i < conditionsImplClassNames.size(); i++) {
-            String conditionClassName = conditionsImplClassNames.get(i);
-            if (i == 0) {
-                conditionsSB.append("$T.getByClass($T.class).matches()");
-            } else {
-                conditionsSB.append(" && $T.getByClass($T.class).matches()");
-            }
-            conditionsArgs.add(conditionCacheTypeElement);
-            conditionsArgs.add(mElements.getTypeElement(conditionClassName));
-        }
     }
 
     private MethodSpec generateInitHostMethod() {

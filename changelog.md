@@ -1,3 +1,12 @@
+#### [v1.8.8](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.8)
+- kotlin 的协程模块上线啦
+- 这个版本及其之前的版本. 会有模块卸载的时候, 路由表卸载不了的问题
+    - 由于真实项目中不会有模块卸载的情况. 所以这个版本暂时未修复. 之前的版本会修复
+    - 至于为什么真实项目中不会卸载. 原因是：卸载之后会有无法预期的问题. 正确的做法是在启动的时候只加载你需要加载的模块. 而不是后续去卸载!
+- 修复 Utils 中的 isCauseBy 方法的 bug
+
+#### [v1.8.6](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.6)
+- Service 支持了多实现. 一个接口. 可以有问个实现类. 但是需要用 name 区分
 
 #### [v1.8.3.6](https://github.com/xiaojinzi123/Component/releases/tag/v1.8.3.5)
 - [#79](https://github.com/xiaojinzi123/Component/issues/79) 为了解决死锁. 放弃了 Fragment 和 服务发现的创建一定保证主线程的逻辑. 避免死锁发生. 
