@@ -179,4 +179,19 @@ public class ComponentUtil {
         return IMPL_OUTPUT_PKG + DOT + "fragment" + DOT + transformHostForClass(host) + Fragment;
     }
 
+    public static String getGetSetMethodName(String name, boolean isGet, boolean isBoolean){
+        StringBuffer sb = new StringBuffer();
+        char firstChar = charUpperCase(name.charAt(0));
+        if (isGet) {
+            sb.append("get");
+        } else  {
+            sb.append("set");
+        }
+        sb.append(firstChar);
+        if (name.length() > 1) {
+            sb.append(name.substring(1));
+        }
+        return sb.toString();
+    }
+
 }

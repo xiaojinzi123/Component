@@ -16,13 +16,14 @@ import kotlinx.android.synthetic.main.component2_act.*
 )
 class Component2Act : BaseAct() {
 
-    @JvmField
     @AttrValueAutowiredAnno("name")
     var name: String? = null
 
-    @JvmField
     @AttrValueAutowiredAnno("data")
     var data: String? = null
+
+    @AttrValueAutowiredAnno(value = ["test1", "test2"])
+    var test_1: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
