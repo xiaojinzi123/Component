@@ -178,14 +178,7 @@ public class AutowireProcessor extends BaseHostProcessor {
      * 创建某个类的Inject实现
      */
     private void createInjectClass(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
-        List<? extends AnnotationMirror> tempList = targetClass.getAnnotationMirrors();
-        boolean isKotlinFile = false;
-        for (AnnotationMirror annotationMirror : tempList) {
-            if (ComponentConstants.KOTLIN_METADATA.equals(annotationMirror.getAnnotationType().toString())) {
-                isKotlinFile = true;
-                break;
-            }
-        }
+        boolean isKotlinFile = Utils.isKotlinFile(targetClass);
         // 拿到注解类的全类名
         String fullClassName = targetClass.getQualifiedName().toString();
         int lastPointIndex = fullClassName.lastIndexOf('.');
@@ -346,7 +339,7 @@ public class AutowireProcessor extends BaseHostProcessor {
             if (keyNames.length == 1) {
                 generateOneGetValueCode(isKotlinFile,
                         variableElement, methodBuilder,
-                        parameterOwnerName , parameterName, bundleCallStr,
+                        parameterOwnerName, parameterName, bundleCallStr,
                         variableTypeMirror,
                         parameterClassName, keyNames[0]);
             } else {
@@ -378,7 +371,9 @@ public class AutowireProcessor extends BaseHostProcessor {
                                          TypeName parameterClassName, String keyName) {
 
         String parameterCallStr = parameterOwnerName + "." + parameterName;
-
+        // 如果最后不为空, 就添加一个语句
+        String tempMethodName = null;
+        boolean isBoolean = false;
         /**
          * 分三部分
          * 1: 基本类型和包装类型
@@ -386,36 +381,26 @@ public class AutowireProcessor extends BaseHostProcessor {
          * 3: 数组类型
          */
         if (parameterClassName.equals(mClassNameString)) { // 如果是一个 String
-            if (isKotlinFile) {
-                methodBuilder.addStatement(
-                        "$L.$L($T.getString($N,$S,$L.$L()))",
-                        parameterOwnerName,
-                        ComponentUtil.getGetSetMethodName(parameterName, false, false),
-                        parameterSupportTypeMirror, bundleCallStr, keyName,
-                        parameterOwnerName,
-                        ComponentUtil.getGetSetMethodName(parameterName, true, false)
-                );
-            } else  {
-                methodBuilder.addStatement("$N = $T.getString($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
-            }
+            tempMethodName = "getString";
         } else if (parameterClassName.equals(charsequenceTypeName)) { // 如果是一个 charsequence
-            methodBuilder.addStatement("$N = $T.getCharSequence($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+            tempMethodName = "getCharSequence";
         } else if (parameterClassName.equals(ClassName.CHAR) || parameterClassName.equals(ClassName.CHAR.box())) { // 如果是一个 char or Char
-            methodBuilder.addStatement("$N = $T.getChar($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+            tempMethodName = "getChar";
         } else if (parameterClassName.equals(ClassName.BYTE) || parameterClassName.equals(ClassName.BYTE.box())) { // 如果是一个byte or Byte
-            methodBuilder.addStatement("$N = $T.getByte($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+            tempMethodName = "getByte";
         } else if (parameterClassName.equals(ClassName.SHORT) || parameterClassName.equals(ClassName.SHORT.box())) { // 如果是一个short or Short
-            methodBuilder.addStatement("$N = $T.getShort($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+            tempMethodName = "getShort";
         } else if (parameterClassName.equals(ClassName.INT) || parameterClassName.equals(ClassName.INT.box())) { // 如果是一个int or Integer
-            methodBuilder.addStatement("$N = $T.getInt($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+            tempMethodName = "getInt";
         } else if (parameterClassName.equals(ClassName.LONG) || parameterClassName.equals(ClassName.LONG.box())) { // 如果是一个long or Long
-            methodBuilder.addStatement("$N = $T.getLong($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+            tempMethodName = "getLong";
         } else if (parameterClassName.equals(ClassName.FLOAT) || parameterClassName.equals(ClassName.FLOAT.box())) { // 如果是一个float or Float
-            methodBuilder.addStatement("$N = $T.getFloat($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+            tempMethodName = "getFloat";
         } else if (parameterClassName.equals(ClassName.DOUBLE) || parameterClassName.equals(ClassName.DOUBLE.box())) { // 如果是一个double or Double
-            methodBuilder.addStatement("$N = $T.getDouble($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+            tempMethodName = "getDouble";
         } else if (parameterClassName.equals(ClassName.BOOLEAN) || parameterClassName.equals(ClassName.BOOLEAN.box())) { // 如果是一个boolean or Boolean
-            methodBuilder.addStatement("$N = $T.getBoolean($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+            tempMethodName = "getBoolean";
+            isBoolean = true;
         } else if (variableTypeMirror instanceof DeclaredType) {
             DeclaredType declaredType = (DeclaredType) variableTypeMirror;
             if (declaredType.asElement() instanceof TypeElement) {
@@ -424,16 +409,32 @@ public class AutowireProcessor extends BaseHostProcessor {
                 if (arrayListClassName.equals(className)) { // 如果外面是 ArrayList
                     List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
                     if (typeArguments.size() == 1) { // 处理泛型个数是一个的
-                        if (mTypes.isSubtype(typeArguments.get(0), parcelableTypeMirror)) { // 如果是 Parcelable 及其子类
-                            methodBuilder.addStatement("$N = $T.getParcelableArrayList($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                        String tempArrayListMethodName = null;
+                        if (mTypeElementString.asType().equals(typeArguments.get(0))) { // 如果是 Array<String>
+                            tempArrayListMethodName = "getStringArrayList";
+                        } else if (mTypes.isSubtype(typeArguments.get(0), parcelableTypeMirror)) { // 如果是 Parcelable 及其子类
+                            tempArrayListMethodName = "getParcelableArrayList";
                         } else if (mTypes.isSubtype(typeArguments.get(0), serializableTypeMirror)) { // 如果是 Serializable 及其子类
-                            methodBuilder.addStatement("$N = $T.getSerializable($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
-                        } else if (mTypeElementString.asType().equals(typeArguments.get(0))) {
-                            methodBuilder.addStatement("$N = $T.getStringArrayList($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                            tempArrayListMethodName = "getSerializable";
                         } else if (charsequenceTypeMirror.equals(typeArguments.get(0))) {
-                            methodBuilder.addStatement("$N = $T.getCharSequenceArrayList($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                            tempArrayListMethodName = "getCharSequenceArrayList";
                         } else if (mTypeElementInteger.asType().equals(typeArguments.get(0))) {
-                            methodBuilder.addStatement("$N = $T.getIntegerArrayList($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                            tempArrayListMethodName = "getIntegerArrayList";
+                        }
+                        if (tempArrayListMethodName != null) {
+                            if (isKotlinFile) {
+                                methodBuilder.addStatement(
+                                        "$L.$L($T.$L($N,$S,$L.$L()))",
+                                        parameterOwnerName,
+                                        ComponentUtil.getGetSetMethodName(parameterName, false, false),
+                                        parameterSupportTypeMirror, tempArrayListMethodName,
+                                        bundleCallStr, keyName,
+                                        parameterOwnerName,
+                                        ComponentUtil.getGetSetMethodName(parameterName, true, false)
+                                );
+                            } else {
+                                methodBuilder.addStatement("$N = $T.$L($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, tempArrayListMethodName, bundleCallStr, keyName, parameterCallStr);
+                            }
                         }
                     }
                 } else if (mClassNameSparseArray.equals(className)) { // 如果是 SparseArray
@@ -483,33 +484,62 @@ public class AutowireProcessor extends BaseHostProcessor {
         } else if (variableTypeMirror instanceof ArrayType) { // 如果是数组
             ArrayType parameterArrayType = (ArrayType) variableTypeMirror;
             TypeName parameterComponentTypeName = ClassName.get(parameterArrayType.getComponentType());
+            String tempArrayMethodName = null;
             // 如果是一个 String[]
             if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
-                methodBuilder.addStatement("$N = $T.getStringArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getStringArray";
             } else if (parameterArrayType.getComponentType().equals(charsequenceTypeElement.asType())) {
-                methodBuilder.addStatement("$N = $T.getCharSequenceArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getCharSequenceArray";
             } else if (parameterArrayType.getComponentType().equals(mTypeElementString.asType())) {
-                methodBuilder.addStatement("$N = $T.getStringArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getStringArray";
             } else if (parameterComponentTypeName.equals(ClassName.BYTE) || parameterComponentTypeName.equals(ClassName.BYTE.box())) { // 如果是 byte
-                methodBuilder.addStatement("$N = $T.getByteArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getByteArray";
             } else if (parameterComponentTypeName.equals(ClassName.CHAR) || parameterComponentTypeName.equals(ClassName.CHAR.box())) { // 如果是 char
-                methodBuilder.addStatement("$N = $T.getCharArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getCharArray";
             } else if (parameterComponentTypeName.equals(ClassName.SHORT) || parameterComponentTypeName.equals(ClassName.SHORT.box())) { // 如果是 short
-                methodBuilder.addStatement("$N = $T.getShortArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getShortArray";
             } else if (parameterComponentTypeName.equals(ClassName.INT) || parameterComponentTypeName.equals(ClassName.INT.box())) { // 如果是 int
-                methodBuilder.addStatement("$N = $T.getIntArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getIntArray";
             } else if (parameterComponentTypeName.equals(ClassName.LONG) || parameterComponentTypeName.equals(ClassName.LONG.box())) { // 如果是 long
-                methodBuilder.addStatement("$N = $T.getLongArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getLongArray";
             } else if (parameterComponentTypeName.equals(ClassName.FLOAT) || parameterComponentTypeName.equals(ClassName.FLOAT.box())) { // 如果是 float
-                methodBuilder.addStatement("$N = $T.getFloatArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getFloatArray";
             } else if (parameterComponentTypeName.equals(ClassName.DOUBLE) || parameterComponentTypeName.equals(ClassName.DOUBLE.box())) { // 如果是 double
-                methodBuilder.addStatement("$N = $T.getDoubleArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getDoubleArray";
             } else if (parameterComponentTypeName.equals(ClassName.BOOLEAN) || parameterComponentTypeName.equals(ClassName.BOOLEAN.box())) { // 如果是 boolean
-                methodBuilder.addStatement("$N = $T.getBooleanArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getBooleanArray";
             } else if (mTypes.isSameType(parameterArrayType.getComponentType(), parcelableTypeMirror)) {  // 如果是 Parcelable
-                methodBuilder.addStatement("$N = $T.getParcelableArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                tempArrayMethodName = "getParcelableArray";
             } else {
                 throw new ProcessException("can't to resolve unknow type parameter(" + variableElement.getEnclosingElement().getSimpleName() + "#" + variableElement.getSimpleName().toString() + ")");
+            }
+            if (isKotlinFile) {
+                methodBuilder.addStatement(
+                        "$L.$L($T.$L($N,$S,$L.$L()))",
+                        parameterOwnerName,
+                        ComponentUtil.getGetSetMethodName(parameterName, false, false),
+                        parameterSupportTypeMirror, tempArrayMethodName,
+                        bundleCallStr, keyName,
+                        parameterOwnerName,
+                        ComponentUtil.getGetSetMethodName(parameterName, true, false)
+                );
+            } else {
+                methodBuilder.addStatement("$N = $T.$L($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, tempArrayMethodName, bundleCallStr, keyName, parameterCallStr);
+            }
+        }
+        if (tempMethodName != null) {
+            if (isKotlinFile) {
+                methodBuilder.addStatement(
+                        "$L.$L($T.$L($N,$S,$L.$L()))",
+                        parameterOwnerName,
+                        ComponentUtil.getGetSetMethodName(parameterName, false, isBoolean),
+                        parameterSupportTypeMirror, tempMethodName,
+                        bundleCallStr, keyName,
+                        parameterOwnerName,
+                        ComponentUtil.getGetSetMethodName(parameterName, true, isBoolean)
+                );
+            } else {
+                methodBuilder.addStatement("$N = $T.$L($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, tempMethodName, bundleCallStr, keyName, parameterCallStr);
             }
         }
     }

@@ -96,7 +96,6 @@ public class ComponentUtil {
         }
         return new String(ch);
     }*/
-
     public static char charUpperCase(char target) {
         if (target >= 'a' && target <= 'z') {
             target = (char) (target - 32);
@@ -124,11 +123,11 @@ public class ComponentUtil {
                 if (isLetter) {
                     // 是字母需要转化为大写
                     needUpperCase = true;
-                } else  {
+                } else {
                     // 第一位如果不是字母, 一定要转化
                     isTransform = true;
                 }
-            } else  {
+            } else {
                 // 如果不是字母也不是数字
                 if (!isLetter && !isNumber) {
                     isTransform = true;
@@ -136,10 +135,10 @@ public class ComponentUtil {
             }
             if (isTransform) {
                 sb.append("_");
-            } else  {
+            } else {
                 if (needUpperCase) {
                     sb.append(charUpperCase(itemChar));
-                } else  {
+                } else {
                     sb.append(itemChar);
                 }
             }
@@ -179,17 +178,27 @@ public class ComponentUtil {
         return IMPL_OUTPUT_PKG + DOT + "fragment" + DOT + transformHostForClass(host) + Fragment;
     }
 
-    public static String getGetSetMethodName(String name, boolean isGet, boolean isBoolean){
+    public static String getGetSetMethodName(String name, boolean isGet, boolean isBoolean) {
         StringBuffer sb = new StringBuffer();
         char firstChar = charUpperCase(name.charAt(0));
-        if (isGet) {
-            sb.append("get");
-        } else  {
-            sb.append("set");
-        }
-        sb.append(firstChar);
-        if (name.length() > 1) {
-            sb.append(name.substring(1));
+
+        if (isBoolean && name.startsWith("is")) {
+            if (isGet) {
+                sb.append("is");
+            } else {
+                sb.append("set");
+            }
+            sb.append(name.substring(2));
+        } else {
+            if (isGet) {
+                sb.append("get");
+            } else {
+                sb.append("set");
+            }
+            sb.append(firstChar);
+            if (name.length() > 1) {
+                sb.append(name.substring(1));
+            }
         }
         return sb.toString();
     }
