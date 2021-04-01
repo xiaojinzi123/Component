@@ -47,7 +47,26 @@ public class ServiceManager {
      */
     private static final Map<Class, HashMap<String, DecoratorCallable<?>>> serviceDecoratorMap = new HashMap<>();
 
+    /**
+     * 需要自动初始化的 Service 的 class
+     */
     private static final Set<Class> autoInitSet = new HashSet<>();
+
+    /**
+     * 注册自动注册的 Service Class
+     */
+    public static <T> void registerAutoInit(@NonNull Class<T> tClass) {
+        Utils.checkNullPointer(tClass, "tClass");
+        autoInitSet.add(tClass);
+    }
+
+    /**
+     * 反注册自动注册的 Service Class
+     */
+    public static <T> void unregisterAutoInit(@NonNull Class<T> tClass) {
+        Utils.checkNullPointer(tClass, "tClass");
+        autoInitSet.remove(tClass);
+    }
 
     /**
      * 注册一个装饰者
@@ -251,7 +270,10 @@ public class ServiceManager {
      * 初始化那些需要自动初始化的 Service
      */
     public static void autoInitService() {
-
+        for (Class targetClass : autoInitSet) {
+            // 初始化实现类
+            ServiceManager.get(targetClass);
+        }
     }
 
 }

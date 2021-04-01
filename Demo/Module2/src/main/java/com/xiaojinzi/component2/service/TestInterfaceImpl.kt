@@ -7,7 +7,7 @@ import com.xiaojinzi.component.anno.ServiceAnno
  *
  * @author : xiaojinzi
  */
-@ServiceAnno(value = [TestInterface::class], singleTon = false)
+@ServiceAnno(value = [TestInterface::class], singleTon = false, autoInit = true)
 class TestInterfaceImpl : TestInterface {
 
     override fun doSomeThing() {
