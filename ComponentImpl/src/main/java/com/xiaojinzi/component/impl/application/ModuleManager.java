@@ -188,7 +188,13 @@ public class ModuleManager implements IComponentCenterApplication {
         for (IComponentHostApplication hostApplication : moduleApplicationMap.values()) {
             hostApplication.onModuleChanged(Component.getApplication());
         }
-        ServiceManager.autoInitService();
+        // 触发自动初始化
+        Utils.postActionToWorkThread(new Runnable() {
+            @Override
+            public void run() {
+                ServiceManager.autoInitService();
+            }
+        });
     }
 
     /**
