@@ -17,8 +17,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 服务的容器,使用这个服务容器你需要判断获取到的服务是否为空,对于使用者来说还是比较不方便的
@@ -44,6 +46,8 @@ public class ServiceManager {
      * Service 装饰者的集合. 线程不安全的
      */
     private static final Map<Class, HashMap<String, DecoratorCallable<?>>> serviceDecoratorMap = new HashMap<>();
+
+    private static final Set<Class> autoInitSet = new HashSet<>();
 
     /**
      * 注册一个装饰者
@@ -241,6 +245,13 @@ public class ServiceManager {
     @AnyThread
     public static <T> T requiredGet(@NonNull final Class<T> tClass, @NonNull String name) {
         return Utils.checkNullPointer(get(tClass, name));
+    }
+
+    /**
+     * 初始化那些需要自动初始化的 Service
+     */
+    public static void autoInitService() {
+
     }
 
 }
