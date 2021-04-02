@@ -1,5 +1,6 @@
 #### [v1.9.0-beta2](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0-beta2)
 - 自动注入支持了 Kotlin 文件的属性了. 不必再使用 @JvmField 注解标记了
+- @ServiceAnno 增加了 autoInit 属性, 这个属性可以让 Service 自动初始化在模块加载之后. 每一个模块加载/卸载都会触发
 
 #### [v1.9.0-beta1](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0-beta1)
 - 支持了 Service 的装饰功能. 使用 @ServiceDecoratorAnno 注解标记一个类. 
