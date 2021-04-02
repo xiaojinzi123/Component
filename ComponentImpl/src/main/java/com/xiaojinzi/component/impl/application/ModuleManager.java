@@ -5,13 +5,11 @@ import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.ComponentUtil;
+import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.application.IComponentCenterApplication;
 import com.xiaojinzi.component.application.IComponentHostApplication;
-import com.xiaojinzi.component.impl.RouterCenter;
-import com.xiaojinzi.component.impl.fragment.FragmentCenter;
-import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
+import com.xiaojinzi.component.impl.service.ServiceManager;
 import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.Utils;
@@ -190,6 +188,13 @@ public class ModuleManager implements IComponentCenterApplication {
         for (IComponentHostApplication hostApplication : moduleApplicationMap.values()) {
             hostApplication.onModuleChanged(Component.getApplication());
         }
+        // 触发自动初始化
+        Utils.postActionToWorkThread(new Runnable() {
+            @Override
+            public void run() {
+                ServiceManager.autoInitService();
+            }
+        });
     }
 
     /**

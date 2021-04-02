@@ -19,7 +19,6 @@ import com.xiaojinzi.base.router.AppApi;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.application.ModuleManager;
-import com.xiaojinzi.component.support.ParameterSupport;
 import com.xiaojinzi.componentdemo.R;
 
 /**
@@ -53,6 +52,7 @@ public class MainAct extends AppCompatActivity {
                     .proxyBundle(bundle)
                     .forward();
         }
+
     }
 
     public void loadAppModule(View v) {
