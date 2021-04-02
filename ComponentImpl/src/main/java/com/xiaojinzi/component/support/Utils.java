@@ -52,6 +52,17 @@ public class Utils {
         h.postDelayed(r, delayMillis);
     }
 
+    @AnyThread
+    public static void postActionToWorkThread(@NonNull final Runnable r) {
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                r.run();
+            }
+        }.start();
+    }
+
     /**
      * 在主线程执行任务
      */

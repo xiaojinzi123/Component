@@ -547,12 +547,6 @@ public class Navigator extends RouterRequest.Builder implements Call {
     }
 
     /**
-     * 路由前的检查
-     */
-    private void onCheck() {
-    }
-
-    /**
      * 检查 forResult 的时候的各个参数是否合格
      */
     private void onCheckForResult() throws Exception {
@@ -848,6 +842,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
 
     @NonNull
     @AnyThread
+    @CheckResult
     private NavigationDisposable realNavigateForResult(@NonNull final BiCallback<ActivityResult> callback) {
         Utils.checkNullPointer(callback, "callback");
         final NavigationDisposable.ProxyNavigationDisposableImpl proxyDisposable =
@@ -877,6 +872,7 @@ public class Navigator extends RouterRequest.Builder implements Call {
      */
     @NonNull
     @UiThread
+    @CheckResult
     private NavigationDisposable doNavigateForResult(@NonNull final BiCallback<ActivityResult> biCallback) {
         // 直接 gg
         Utils.checkNullPointer(biCallback, "biCallback");

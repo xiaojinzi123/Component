@@ -28,4 +28,15 @@ public @interface ServiceAnno {
      */
     boolean singleTon() default true;
 
+    /**
+     * 自动初始化. 当框架初始化后, 框架会 post 一个事件到 Handler
+     * 然后执行自动初始化的工作
+     * 默认实现类是不会初始化的, 除非你框架初始化之后立马用到了.
+     * 而有些场景的 Service 的实现类是需要尽早初始化的. 不管是否用到.
+     * 比如剪切板的 Service, 比如监测网络请求的 Service 等等
+     *
+     * @return 是否自动初始化
+     */
+    boolean autoInit() default false;
+
 }
