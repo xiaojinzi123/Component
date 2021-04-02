@@ -78,6 +78,9 @@ public class ComponentConstants {
     public static final String JAVA_SERIALIZABLE = "java.io.Serializable";
     public static final String JAVA_CHARSEQUENCE = "java.lang.CharSequence";
 
+    public static final String KOTLIN_METADATA = "kotlin.Metadata";
+    public static final String KOTLIN_JVMFIELD = "kotlin.jvm.JvmField";
+
     // RxJava 几种 Observable
 
     public static final String RXJAVA_COMPLETABLE = "io.reactivex.Completable";

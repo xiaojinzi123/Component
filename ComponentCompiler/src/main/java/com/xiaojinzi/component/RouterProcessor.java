@@ -524,20 +524,11 @@ public class RouterProcessor extends BaseHostProcessor {
                 }
                 // 拿到每一个参数
                 VariableElement variableElement = parameters.get(i);
-                TypeName parameterTypeName = ClassName.get(variableElement.asType());
-                // 生成一个不重复的参数名字
-                String parameterName = "paramater" + atomicInteger.incrementAndGet();
                 // 如果要的是 request 对象
                 if (variableElement.asType().equals(routerRequestTypeMirror)) {
                     parameterSB.append(NAME_OF_REQUEST);
                 } else { // 其他类型的情况,是实现序列化的对象,这种时候我们直接要从 bundle 中获取
-                    /*Utils.generateParameterCodeForRouter(
-                            mTypes, variableElement, jumpMethodBuilder,
-                            parameterSupportTypeMirror, parameterName,"request.bundle",
-                            mClassNameString, serializableTypeMirror, parcelableTypeMirror
-                    );
-                    parameterSB.append(parameterName);*/
-                    throw new ProcessException("can relsove parameter " + variableElement.getSimpleName() + " in " + variableElement.getEnclosingElement().getEnclosingElement().getSimpleName() + "." + variableElement.getEnclosingElement().getSimpleName() + " method");
+                    throw new ProcessException("can resolve parameter " + variableElement.getSimpleName() + " in " + variableElement.getEnclosingElement().getEnclosingElement().getSimpleName() + "." + variableElement.getEnclosingElement().getSimpleName() + " method");
                 }
             }
         }

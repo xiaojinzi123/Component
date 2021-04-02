@@ -2,10 +2,23 @@ package com.xiaojinzi.component;
 
 import java.util.List;
 
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
 public class Utils {
+
+    public static boolean isKotlinFile(TypeElement targetClass) {
+        List<? extends AnnotationMirror> tempList = targetClass.getAnnotationMirrors();
+        boolean isKotlinFile = false;
+        for (AnnotationMirror annotationMirror : tempList) {
+            if (ComponentConstants.KOTLIN_METADATA.equals(annotationMirror.getAnnotationType().toString())) {
+                isKotlinFile = true;
+                break;
+            }
+        }
+        return isKotlinFile;
+    }
 
     public static void generateCondition(Elements elements,
                                          TypeElement conditionCacheTypeElement,

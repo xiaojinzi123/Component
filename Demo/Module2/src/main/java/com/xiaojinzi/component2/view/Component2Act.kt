@@ -3,6 +3,7 @@ package com.xiaojinzi.component2.view
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.xiaojinzi.base.ModuleConfig
+import com.xiaojinzi.base.bean.UserWithParcelable
 import com.xiaojinzi.base.view.BaseAct
 import com.xiaojinzi.component.Component
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno
@@ -17,13 +18,35 @@ import kotlinx.android.synthetic.main.component2_act.*
 )
 class Component2Act : BaseAct() {
 
-    @JvmField
+    @AttrValueAutowiredAnno("isVip")
+    var isVip: Boolean? = null
+
+    @AttrValueAutowiredAnno("IsVip1")
+    var IsVip1: Boolean? = null
+
+    @AttrValueAutowiredAnno("iSVip2")
+    var iSVip2: Boolean? = null
+
+    @AttrValueAutowiredAnno("hasOne")
+    var hasOne: Boolean? = null
+
     @AttrValueAutowiredAnno("name")
     var name: String? = null
 
-    @JvmField
     @AttrValueAutowiredAnno("data")
     var data: String? = null
+
+    @AttrValueAutowiredAnno(value = ["test1", "test2"])
+    var test_1: String? = null
+
+    @AttrValueAutowiredAnno("test2")
+    var test_2: Array<String>? = null
+
+    @AttrValueAutowiredAnno("test3")
+    var test_3: ArrayList<String>? = null
+
+    @AttrValueAutowiredAnno("test4")
+    var test_4: ArrayList<UserWithParcelable>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

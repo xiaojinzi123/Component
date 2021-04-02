@@ -257,12 +257,17 @@ public class ServiceProcessor extends BaseHostProcessor {
                         .addMethod(getOrRawMethodBuilder.build())
                         .build();
                 methodSpecBuilder.addStatement("$T $N = $L", lazyLoadClassName, implName, innerTypeSpec);
-
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 boolean isUseOne = anno.name().length == 0;
                 for (int i = 0; i < interServiceClassNames.size(); i++) {
                     String interServiceClassName = interServiceClassNames.get(i);
                     ClassName implClassName = ClassName.get(mElements.getTypeElement(interServiceClassName));
+                    if (anno.autoInit()) {
+                        methodSpecBuilder.addStatement(
+                                "$T.registerAutoInit($T.class)",
+                                classNameServiceContainer, implClassName
+                        );
+                    }
                     String name = isUseOne ? "" : anno.name()[i];
                     methodSpecBuilder.addStatement(
                             "$T.register($T.class, $S, $N)",
@@ -297,6 +302,12 @@ public class ServiceProcessor extends BaseHostProcessor {
                     String interServiceClassNameStr = interServiceClassNames.get(i);
                     String name = isUseOne ? "" : anno.name()[i];
                     ClassName interServiceClassName = ClassName.get(mElements.getTypeElement(interServiceClassNameStr));
+                    if (anno.autoInit()) {
+                        methodSpecBuilder.addStatement(
+                                "$T.unregisterAutoInit($T.class)",
+                                classNameServiceContainer, interServiceClassName
+                        );
+                    }
                     methodSpecBuilder.addStatement("$T.unregister($T.class, $S)", classNameServiceContainer, interServiceClassName, name);
                 }
             }

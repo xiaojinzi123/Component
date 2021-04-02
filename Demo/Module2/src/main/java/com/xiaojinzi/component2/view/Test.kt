@@ -5,12 +5,8 @@ import com.xiaojinzi.component.anno.RouterAnno
 import com.xiaojinzi.component.impl.Router
 import com.xiaojinzi.component.impl.RouterRequest
 
-object Test {
-
-    @RouterAnno(path = "test11")
-    @JvmStatic
-    fun getIntent(request: RouterRequest): Intent {
-        return Intent(request.rawContext, Component2Act::class.java)
-    }
-
+@RouterAnno(path = "test11")
+fun getIntent(request: RouterRequest): Intent {
+    return Intent(request.rawContext, Component2Act::class.java)
 }
+

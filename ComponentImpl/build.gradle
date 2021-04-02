@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.github.xiaojinzi123'
-
 archivesBaseName = "component-impl"
 
 android {
