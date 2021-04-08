@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.xiaojinzi.base.service.inter.component1.Component1Service;
 import com.xiaojinzi.component.anno.ServiceAnno;
+import com.xiaojinzi.component.impl.service.ServiceManager;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
