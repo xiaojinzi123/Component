@@ -8,6 +8,7 @@ import com.xiaojinzi.component.Component
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno
 import com.xiaojinzi.component.anno.RouterAnno
 import com.xiaojinzi.component.impl.Router
+import com.xiaojinzi.component.withHostAndPath
 import com.xiaojinzi.component2.R
 import kotlinx.android.synthetic.main.component2_act.*
 

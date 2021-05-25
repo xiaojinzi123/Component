@@ -1,6 +1,8 @@
 package com.xiaojinzi.component
 
+import android.content.Context
 import android.content.Intent
+import android.support.v4.app.Fragment
 import com.xiaojinzi.component.bean.ActivityResult
 import com.xiaojinzi.component.error.ignore.ActivityResultException
 import com.xiaojinzi.component.impl.*
@@ -10,6 +12,22 @@ import com.xiaojinzi.component.support.NavigationDisposable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
+
+inline fun Fragment.withHost(host: String): Navigator {
+    return Router.with(this).host(host)
+}
+
+inline fun Fragment.withHostAndPath(hostAndPath: String): Navigator {
+    return Router.with(this).hostAndPath(hostAndPath)
+}
+
+inline fun Context.withHost(host: String): Navigator {
+    return Router.with(this).host(host)
+}
+
+inline fun Context.withHostAndPath(hostAndPath: String): Navigator {
+    return Router.with(this).hostAndPath(hostAndPath)
+}
 
 /**
  * 完成一个跳转的挂起函数
