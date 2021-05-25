@@ -14,7 +14,6 @@ import kotlin.coroutines.resumeWithException
 /**
  * 完成一个跳转的挂起函数
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.await() {
     suspendCancellableCoroutine<Unit> { cot ->
         if (cot.isCompleted) {
@@ -51,7 +50,6 @@ suspend fun Call.await() {
 /**
  * 获取 [ActivityResult] 的一个挂起函数
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.activityResultAwait(): ActivityResult {
     return suspendCancellableCoroutine { cot ->
         if (cot.isCompleted) {
@@ -88,7 +86,6 @@ suspend fun Call.activityResultAwait(): ActivityResult {
 /**
  * 获取 [Intent] 的一个挂起函数
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.intentAwait(): Intent {
     return activityResultAwait().apply {
         if (this.data == null) {
@@ -100,7 +97,6 @@ suspend fun Call.intentAwait(): Intent {
 /**
  * 获取 [Intent] 的一个挂起函数, 同时支持匹配 resultCode
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.intentResultCodeMatchAwait(expectedResultCode: Int): Intent {
     return activityResultAwait().apply {
         if (this.data == null) {
@@ -115,7 +111,6 @@ suspend fun Call.intentResultCodeMatchAwait(expectedResultCode: Int): Intent {
 /**
  * 获取 ResultCode 的一个挂起函数
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.resultCodeAwait(): Int {
     return activityResultAwait().resultCode
 }
@@ -123,7 +118,6 @@ suspend fun Call.resultCodeAwait(): Int {
 /**
  * 匹配 ResultCode 的一个挂起函数
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.resultCodeMatchAwait(expectedResultCode: Int) {
     activityResultAwait().let {
         if (expectedResultCode != it.resultCode) {
