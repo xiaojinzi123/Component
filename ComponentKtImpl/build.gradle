@@ -26,8 +26,8 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compileOnly libs.appcompat_v7
     compileOnly libs.kt_coroutines_core
+    compileOnly androidxLibs.appcompat
     if (rootProject.ext.isDependMavenOnline) {
         api libs.component_impl
     }else {
