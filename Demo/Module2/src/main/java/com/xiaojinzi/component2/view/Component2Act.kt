@@ -4,10 +4,14 @@ import android.os.Bundle
 import com.xiaojinzi.base.ModuleConfig
 import com.xiaojinzi.base.bean.UserWithParcelable
 import com.xiaojinzi.base.view.BaseAct
-import com.xiaojinzi.component.Component
+import com.xiaojinzi.component.*
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno
 import com.xiaojinzi.component.anno.RouterAnno
+import com.xiaojinzi.component.impl.Call
+import com.xiaojinzi.component.impl.Callback
 import com.xiaojinzi.component.impl.Router
+import com.xiaojinzi.component.impl.RouterResult
+import com.xiaojinzi.component.support.CallbackAdapter
 import com.xiaojinzi.component2.R
 import kotlinx.android.synthetic.main.component2_act.*
 
@@ -67,6 +71,14 @@ class Component2Act : BaseAct() {
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST)
                 .forward()
+
+        Router
+                .with(this)
+                .host(ModuleConfig.Module2.NAME)
+                .path(ModuleConfig.Module2.MAIN)
+                .forward {
+                    finish()
+                }
 
     }
 

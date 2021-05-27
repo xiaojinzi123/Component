@@ -144,7 +144,7 @@ public class RouterCenter implements IComponentCenterRouter {
         Context rawContext = request.getRawContext();
         // 如果 Context 和 Fragment 中的 Context 都是 null
         if (rawContext == null) {
-            throw new NavigationFailException("is your fragment or Activity is Destoried?\n" +
+            throw new NavigationFailException("is your fragment or Activity is Destroyed?\n" +
                     "see " + Component.ROUTER_UES_NOTE);
         }
         Intent intent = null;
@@ -190,8 +190,8 @@ public class RouterCenter implements IComponentCenterRouter {
             );
         }
 
-        if (request.beforStartAction != null) {
-            request.beforStartAction.run();
+        if (request.beforeStartAction != null) {
+            request.beforeStartAction.run();
         }
 
         // ------------------------------- 启动界面核心代码 ------------------------------- START
