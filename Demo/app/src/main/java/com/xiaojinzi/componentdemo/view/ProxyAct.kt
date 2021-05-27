@@ -10,7 +10,8 @@ class ProxyAct : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.proxy_act)
-        findViewById<TextView>(R.id.tv)!!.text = intent.data.toString()
+        val url = intent.data.toString()
+        findViewById<TextView>(R.id.tv)!!.text = url
     }
 
 }

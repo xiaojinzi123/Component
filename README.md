@@ -74,6 +74,7 @@
         }
         ```
       - [x] `H5` 发起路由不需要关心目标界面需要做的先决条件(框架的[页面拦截器](https://github.com/xiaojinzi123/Component/wiki/%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A#%E9%A1%B5%E9%9D%A2%E6%8B%A6%E6%88%AA%E5%99%A8)已经帮您做完) 
+    - [x] [外部链接跳转](https://github.com/xiaojinzi123/Component/wiki/App-%E5%A4%96%E9%83%A8%E9%93%BE%E6%8E%A5%E8%B7%B3%E8%BD%AC)
     - [x] 支持原生的[跳转动画](https://github.com/xiaojinzi123/Component/wiki/%E8%B7%B3%E8%BD%AC-%E5%8A%A8%E7%94%BB)
     - [x] 支持跳转 `Fragment`(也就是跨组件获取`Fragment`)
     - [x] 支持[单 Activity 多 Fragment 架构](https://github.com/xiaojinzi123/Component/wiki/%E5%8D%95-Activity-%E5%A4%9A-Fragment)

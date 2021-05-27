@@ -11,10 +11,10 @@ import com.xiaojinzi.component.impl.RouterRequest;
 public class RouterRequestHelp {
 
     @UiThread
-    public static void executeBeforAction(@NonNull RouterRequest request) throws Exception {
+    public static void executeBeforeAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
-        if (request.beforAction != null) {
-            request.beforAction.run();
+        if (request.beforeAction != null) {
+            request.beforeAction.run();
         }
     }
 

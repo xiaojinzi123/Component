@@ -8,6 +8,7 @@ import androidx.annotation.WorkerThread;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.anno.support.NotAppUseAnno;
 import com.xiaojinzi.component.error.NotSupportException;
+import com.xiaojinzi.component.error.ServiceRepeatCreateException;
 import com.xiaojinzi.component.support.Callable;
 import com.xiaojinzi.component.support.DecoratorCallable;
 import com.xiaojinzi.component.support.SingletonCallable;
@@ -47,6 +48,8 @@ public class ServiceManager {
      * Service 装饰者的集合. 线程不安全的
      */
     private static final Map<Class, HashMap<String, DecoratorCallable<?>>> serviceDecoratorMap = new HashMap<>();
+
+    private static final Set<String> uniqueServiceSet = new HashSet<>();
 
     /**
      * 需要自动初始化的 Service 的 class
@@ -245,18 +248,23 @@ public class ServiceManager {
         Utils.checkNullPointer(tClass, "tClass");
         Utils.checkNullPointer(name, "name");
         synchronized (serviceMap) {
+            String uniqueName = tClass.getName() + ":" + name;
+            if (uniqueServiceSet.contains(uniqueName)) {
+                throw new ServiceRepeatCreateException("className is " + tClass.getName() + ", serviceName is '" + name + "'");
+            }
+            uniqueServiceSet.add(uniqueName);
+            T result = null;
             HashMap<String, Callable<?>> implServiceMap = serviceMap.get(tClass);
-            if (implServiceMap == null) {
-                return null;
+            if (implServiceMap != null) {
+                Callable<?> callable = implServiceMap.get(name);
+                if (callable != null) {
+                    // 如果没创建, 这时候会创建了目标 service 对象
+                    T t = (T) Utils.checkNullPointer(callable.get());
+                    result = decorate(tClass, t);
+                }
             }
-            Callable<?> callable = implServiceMap.get(name);
-            if (callable == null) {
-                return null;
-            } else {
-                // 如果没创建, 这时候会创建了目标 service 对象
-                T t = (T) Utils.checkNullPointer(callable.get());
-                return decorate(tClass, t);
-            }
+            uniqueServiceSet.remove(uniqueName);
+            return result;
         }
     }
 

@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.CLASS)
-public @interface BeforActionAnno {
+public @interface BeforeStartActionAnno {
 }

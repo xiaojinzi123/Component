@@ -1,20 +1,109 @@
 package com.xiaojinzi.component
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.support.v4.app.Fragment
 import com.xiaojinzi.component.bean.ActivityResult
 import com.xiaojinzi.component.error.ignore.ActivityResultException
 import com.xiaojinzi.component.impl.*
 import com.xiaojinzi.component.impl.BiCallback.BiCallbackAdapter
 import com.xiaojinzi.component.support.CallbackAdapter
 import com.xiaojinzi.component.support.NavigationDisposable
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
+
+inline fun Fragment.withHost(host: String): Navigator {
+    return Router.with(this).host(host)
+}
+
+inline fun Fragment.withHostAndPath(hostAndPath: String): Navigator {
+    return Router.with(this).hostAndPath(hostAndPath)
+}
+
+inline fun Context.withHost(host: String): Navigator {
+    return Router.with(this).host(host)
+}
+
+inline fun Context.withHostAndPath(hostAndPath: String): Navigator {
+    return Router.with(this).hostAndPath(hostAndPath)
+}
+
+fun Call.forward(
+        cancelCallback: (originalRequest: RouterRequest?) -> Unit = {},
+        errorCallback: (errorResult: RouterErrorResult) -> Unit = {},
+        successCallback: (result: RouterResult) -> Unit = {}
+) {
+    this.forward(object : CallbackAdapter() {
+        override fun onSuccess(result: RouterResult) {
+            super.onSuccess(result)
+            successCallback.invoke(result)
+        }
+
+        override fun onError(errorResult: RouterErrorResult) {
+            super.onError(errorResult)
+            errorCallback.invoke(errorResult)
+        }
+
+        override fun onCancel(originalRequest: RouterRequest?) {
+            super.onCancel(originalRequest)
+            cancelCallback.invoke(originalRequest)
+        }
+    })
+}
+
+fun Call.forwardForResultCodeMatch(expectedResultCode: Int = Activity.RESULT_OK, successCallback: (result: RouterResult) -> Unit) {
+    this.forwardForResultCodeMatch(object : CallbackAdapter() {
+        override fun onSuccess(result: RouterResult) {
+            super.onSuccess(result)
+            successCallback.invoke(result)
+        }
+    }, expectedResultCode = expectedResultCode)
+}
+
+fun Call.forwardForResult(
+        routerResultCallback: (result: RouterResult) -> Unit = {},
+        activityResultCallback: (t: ActivityResult) -> Unit
+) {
+    this.forwardForResult(object : BiCallbackAdapter<ActivityResult>() {
+        override fun onSuccess(result: RouterResult, t: ActivityResult) {
+            super.onSuccess(result, t)
+            routerResultCallback.invoke(result)
+            activityResultCallback.invoke(t)
+        }
+    })
+}
+
+fun Call.forwardForIntent(
+        routerResultCallback: (result: RouterResult) -> Unit = {},
+        activityResultCallback: (t: Intent) -> Unit
+) {
+    this.forwardForIntent(object : BiCallbackAdapter<Intent>() {
+        override fun onSuccess(result: RouterResult, t: Intent) {
+            super.onSuccess(result, t)
+            routerResultCallback.invoke(result)
+            activityResultCallback.invoke(t)
+        }
+    })
+}
+
+fun Call.forwardForIntentAndResultCodeMatch(
+        expectedResultCode: Int = Activity.RESULT_OK,
+        routerResultCallback: (result: RouterResult) -> Unit = {},
+        activityResultCallback: (t: Intent) -> Unit
+) {
+    this.forwardForIntentAndResultCodeMatch(object : BiCallbackAdapter<Intent>() {
+        override fun onSuccess(result: RouterResult, t: Intent) {
+            super.onSuccess(result, t)
+            routerResultCallback.invoke(result)
+            activityResultCallback.invoke(t)
+        }
+    }, expectedResultCode = expectedResultCode)
+}
 
 /**
  * 完成一个跳转的挂起函数
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.await() {
     suspendCancellableCoroutine<Unit> { cot ->
         if (cot.isCompleted) {
@@ -51,7 +140,6 @@ suspend fun Call.await() {
 /**
  * 获取 [ActivityResult] 的一个挂起函数
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.activityResultAwait(): ActivityResult {
     return suspendCancellableCoroutine { cot ->
         if (cot.isCompleted) {
@@ -88,7 +176,6 @@ suspend fun Call.activityResultAwait(): ActivityResult {
 /**
  * 获取 [Intent] 的一个挂起函数
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.intentAwait(): Intent {
     return activityResultAwait().apply {
         if (this.data == null) {
@@ -100,7 +187,6 @@ suspend fun Call.intentAwait(): Intent {
 /**
  * 获取 [Intent] 的一个挂起函数, 同时支持匹配 resultCode
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.intentResultCodeMatchAwait(expectedResultCode: Int): Intent {
     return activityResultAwait().apply {
         if (this.data == null) {
@@ -115,7 +201,6 @@ suspend fun Call.intentResultCodeMatchAwait(expectedResultCode: Int): Intent {
 /**
  * 获取 ResultCode 的一个挂起函数
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.resultCodeAwait(): Int {
     return activityResultAwait().resultCode
 }
@@ -123,7 +208,6 @@ suspend fun Call.resultCodeAwait(): Int {
 /**
  * 匹配 ResultCode 的一个挂起函数
  */
-@ExperimentalCoroutinesApi
 suspend fun Call.resultCodeMatchAwait(expectedResultCode: Int) {
     activityResultAwait().let {
         if (expectedResultCode != it.resultCode) {

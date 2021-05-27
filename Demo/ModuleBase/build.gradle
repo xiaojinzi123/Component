@@ -41,14 +41,12 @@ dependencies {
     api libs.gson
 
     if (rootProject.ext.isDependMavenOnline) {
+        api androidxLibs.component_impl_ktx
         api androidxLibs.component_impl_rx
-    } else {
-        api project(':ComponentRxImpl')
-    }
-
-    if (rootProject.ext.isDependMavenOnline) {
         annotationProcessor androidxLibs.component_compiler
     } else {
+        api project(':ComponentKtImpl')
+        api project(':ComponentRxImpl')
         annotationProcessor project(':ComponentCompiler')
     }
 
