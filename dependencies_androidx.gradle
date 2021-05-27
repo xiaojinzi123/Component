@@ -11,5 +11,5 @@ ext.androidxLibs = [
         component_compiler  : "com.github.xiaojinzi123.Component:component-compiler:${versions.component_version}-androidx",
         component_impl      : "com.github.xiaojinzi123.Component:component-impl:${versions.component_version}-androidx",
         component_impl_rx   : "com.github.xiaojinzi123.Component:component-impl-rx:${versions.component_version}-androidx",
-        component_impl_ktx   : "com.github.xiaojinzi123.Component:component-impl-ktx:${versions.component_version}-ktx"
+        component_impl_ktx   : "com.github.xiaojinzi123.Component:component-impl-ktx:${versions.component_version}-androidx"
 ]
