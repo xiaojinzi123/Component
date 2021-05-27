@@ -190,8 +190,8 @@ public class RouterCenter implements IComponentCenterRouter {
             );
         }
 
-        if (request.beforStartAction != null) {
-            request.beforStartAction.run();
+        if (request.beforeStartAction != null) {
+            request.beforeStartAction.run();
         }
 
         // ------------------------------- 启动界面核心代码 ------------------------------- START

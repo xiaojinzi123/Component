@@ -563,7 +563,7 @@ public class TestRouterAct extends BaseAct {
                 .host(ModuleConfig.System.NAME)
                 .path(ModuleConfig.System.CALL_PHONE)
                 .putString("tel", "17321174171")
-                .beforAction(() -> Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show())
+                .beforeAction(() -> Toast.makeText(mContext, "startActivity之前", Toast.LENGTH_SHORT).show())
                 .afterAction(() -> Toast.makeText(mContext, "startActivity之后", Toast.LENGTH_SHORT).show())
                 .forward(new CallbackAdapter() {
                     @Override

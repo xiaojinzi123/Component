@@ -1,3 +1,6 @@
+#### [v1.9.0](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0)
+- befor 相关的方法和名称命名错误的全部更正为 before
+
 #### [v1.9.0-beta2](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0-beta2)
 - 自动注入支持了 Kotlin 文件的属性了. 不必再使用 @JvmField 注解标记了
 - @ServiceAnno 增加了 autoInit 属性, 这个属性可以让 Service 自动初始化在模块加载之后. 每一个模块加载/卸载都会触发

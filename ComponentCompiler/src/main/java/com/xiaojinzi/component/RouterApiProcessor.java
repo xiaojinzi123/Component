@@ -13,8 +13,8 @@ import com.xiaojinzi.component.anno.router.AfterActionAnno;
 import com.xiaojinzi.component.anno.router.AfterErrorActionAnno;
 import com.xiaojinzi.component.anno.router.AfterEventActionAnno;
 import com.xiaojinzi.component.anno.router.AfterStartActionAnno;
-import com.xiaojinzi.component.anno.router.BeforActionAnno;
-import com.xiaojinzi.component.anno.router.BeforStartActionAnno;
+import com.xiaojinzi.component.anno.router.BeforeActionAnno;
+import com.xiaojinzi.component.anno.router.BeforeStartActionAnno;
 import com.xiaojinzi.component.anno.router.CategoryAnno;
 import com.xiaojinzi.component.anno.router.FlagAnno;
 import com.xiaojinzi.component.anno.router.HostAndPathAnno;
@@ -263,8 +263,8 @@ public class RouterApiProcessor extends BaseProcessor {
         VariableElement requestCodeParameter = null;
         VariableElement activityBundleOptionsParameter = null;
         VariableElement intentConsumerParameter = null;
-        VariableElement beforActionParameter = null;
-        VariableElement beforStartActionParameter = null;
+        VariableElement beforeActionParameter = null;
+        VariableElement beforeStartActionParameter = null;
         VariableElement afterStartActionParameter = null;
         VariableElement afterActionParameter = null;
         VariableElement afterErrorActionParameter = null;
@@ -290,10 +290,10 @@ public class RouterApiProcessor extends BaseProcessor {
                 activityBundleOptionsParameter = parameter;
             } else if (intentComsumerParameterizedTypeName.equals(TypeName.get(parameterTypeMirror))) { // 如果是 Consumer<Intent>
                 intentConsumerParameter = parameter;
-            } else if (parameter.getAnnotation(BeforActionAnno.class) != null) { // 如果是 beforAction
-                beforActionParameter = parameter;
-            } else if (parameter.getAnnotation(BeforStartActionAnno.class) != null) { // 如果是 beforStartAction
-                beforStartActionParameter = parameter;
+            } else if (parameter.getAnnotation(BeforeActionAnno.class) != null) { // 如果是 beforeAction
+                beforeActionParameter = parameter;
+            } else if (parameter.getAnnotation(BeforeStartActionAnno.class) != null) { // 如果是 beforeStartAction
+                beforeStartActionParameter = parameter;
             } else if (parameter.getAnnotation(AfterStartActionAnno.class) != null) { // 如果是 afterStartAction
                 afterStartActionParameter = parameter;
             } else if (parameter.getAnnotation(AfterActionAnno.class) != null) { // 如果是 afterAction
@@ -625,13 +625,13 @@ public class RouterApiProcessor extends BaseProcessor {
         }
 
         // 几个 action
-        if (beforActionParameter != null) {
-            routerStatement.append("\n.beforAction($N)");
-            args.add(beforActionParameter.getSimpleName().toString());
+        if (beforeActionParameter != null) {
+            routerStatement.append("\n.beforeAction($N)");
+            args.add(beforeActionParameter.getSimpleName().toString());
         }
-        if (beforStartActionParameter != null) {
-            routerStatement.append("\n.beforStartAction($N)");
-            args.add(beforStartActionParameter.getSimpleName().toString());
+        if (beforeStartActionParameter != null) {
+            routerStatement.append("\n.beforeStartAction($N)");
+            args.add(beforeStartActionParameter.getSimpleName().toString());
         }
         if (afterStartActionParameter != null) {
             routerStatement.append("\n.afterStartAction($N)");
