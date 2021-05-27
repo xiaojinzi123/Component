@@ -7,6 +7,7 @@ import android.support.annotation.UiThread;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.support.OnRouterCancel;
 import com.xiaojinzi.component.support.OnRouterError;
+import com.xiaojinzi.component.support.OnRouterSuccess;
 
 /**
  * 当路由完成的时候,回调这个接口,这时候的完成不一定是成功的,可能是失败的,成功和失败都表示完成
@@ -19,21 +20,7 @@ import com.xiaojinzi.component.support.OnRouterError;
  */
 @UiThread
 @CheckClassNameAnno
-public interface Callback extends OnRouterError, OnRouterCancel {
-
-    /**
-     * 当路由成功(这里泛指两点：)的时候,回调
-     * 这里的路由成功不等同于跳转成功.指的是下面两点：
-     * 1. 普通跳转的跳转成功
-     * 2. 为了匹配 {@link com.xiaojinzi.component.bean.ActivityResult#resultCode} 匹配成功
-     *
-     * @param result 路由成功的对象
-     * @see Navigator#navigate()
-     * @see Navigator#navigate(Callback)
-     * @see Navigator#navigateForResultCodeMatch(Callback, int)
-     */
-    @UiThread
-    void onSuccess(@NonNull RouterResult result);
+public interface Callback extends OnRouterSuccess, OnRouterError, OnRouterCancel {
 
     /**
      * 两个参数肯定有一个不会为空

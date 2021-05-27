@@ -1,5 +1,6 @@
 package com.xiaojinzi.component
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
@@ -9,7 +10,6 @@ import com.xiaojinzi.component.impl.*
 import com.xiaojinzi.component.impl.BiCallback.BiCallbackAdapter
 import com.xiaojinzi.component.support.CallbackAdapter
 import com.xiaojinzi.component.support.NavigationDisposable
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
 
@@ -27,6 +27,78 @@ inline fun Context.withHost(host: String): Navigator {
 
 inline fun Context.withHostAndPath(hostAndPath: String): Navigator {
     return Router.with(this).hostAndPath(hostAndPath)
+}
+
+fun Call.forward(
+        cancelCallback: (originalRequest: RouterRequest?) -> Unit = {},
+        errorCallback: (errorResult: RouterErrorResult) -> Unit = {},
+        successCallback: (result: RouterResult) -> Unit = {}
+) {
+    this.forward(object : CallbackAdapter() {
+        override fun onSuccess(result: RouterResult) {
+            super.onSuccess(result)
+            successCallback.invoke(result)
+        }
+
+        override fun onError(errorResult: RouterErrorResult) {
+            super.onError(errorResult)
+            errorCallback.invoke(errorResult)
+        }
+
+        override fun onCancel(originalRequest: RouterRequest?) {
+            super.onCancel(originalRequest)
+            cancelCallback.invoke(originalRequest)
+        }
+    })
+}
+
+fun Call.forwardForResultCodeMatch(expectedResultCode: Int = Activity.RESULT_OK, successCallback: (result: RouterResult) -> Unit) {
+    this.forwardForResultCodeMatch(object : CallbackAdapter() {
+        override fun onSuccess(result: RouterResult) {
+            super.onSuccess(result)
+            successCallback.invoke(result)
+        }
+    }, expectedResultCode = expectedResultCode)
+}
+
+fun Call.forwardForResult(
+        routerResultCallback: (result: RouterResult) -> Unit = {},
+        activityResultCallback: (t: ActivityResult) -> Unit
+) {
+    this.forwardForResult(object : BiCallbackAdapter<ActivityResult>() {
+        override fun onSuccess(result: RouterResult, t: ActivityResult) {
+            super.onSuccess(result, t)
+            routerResultCallback.invoke(result)
+            activityResultCallback.invoke(t)
+        }
+    })
+}
+
+fun Call.forwardForIntent(
+        routerResultCallback: (result: RouterResult) -> Unit = {},
+        activityResultCallback: (t: Intent) -> Unit
+) {
+    this.forwardForIntent(object : BiCallbackAdapter<Intent>() {
+        override fun onSuccess(result: RouterResult, t: Intent) {
+            super.onSuccess(result, t)
+            routerResultCallback.invoke(result)
+            activityResultCallback.invoke(t)
+        }
+    })
+}
+
+fun Call.forwardForIntentAndResultCodeMatch(
+        expectedResultCode: Int = Activity.RESULT_OK,
+        routerResultCallback: (result: RouterResult) -> Unit = {},
+        activityResultCallback: (t: Intent) -> Unit
+) {
+    this.forwardForIntentAndResultCodeMatch(object : BiCallbackAdapter<Intent>() {
+        override fun onSuccess(result: RouterResult, t: Intent) {
+            super.onSuccess(result, t)
+            routerResultCallback.invoke(result)
+            activityResultCallback.invoke(t)
+        }
+    }, expectedResultCode = expectedResultCode)
 }
 
 /**

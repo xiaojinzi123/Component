@@ -224,7 +224,7 @@ public class RxRouter extends Router {
          * requestCode 会随机的生成
          */
         public RxNavigator requestCodeRandom() {
-            return requestCode(RANDOM_REQUSET_CODE);
+            return requestCode(RANDOM_REQUEST_CODE);
         }
 
         @Override

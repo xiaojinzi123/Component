@@ -341,7 +341,7 @@ public class RouterRequest {
         @NonNull
         protected List<String> intentCategories = new ArrayList<>(2);
 
-        @NonNull
+        @Nullable
         protected Bundle bundle = new Bundle();
 
         @Nullable
@@ -740,13 +740,13 @@ public class RouterRequest {
         @Nullable
         protected String userInfo;
 
-        @NonNull
+        @Nullable
         protected String host;
 
         @Nullable
         protected String path;
 
-        @NonNull
+        @Nullable
         protected Map<String, String> queryMap = new HashMap<>();
 
         public URIBuilder url(@NonNull String url) {

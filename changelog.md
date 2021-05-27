@@ -1,5 +1,6 @@
 #### [v1.9.0](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0)
 - befor 相关的方法和名称命名错误的全部更正为 before
+- Call 发起跳转的方法支持了更多的 Kotlin 扩展来方便调用
 
 #### [v1.9.0-beta2](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0-beta2)
 - 自动注入支持了 Kotlin 文件的属性了. 不必再使用 @JvmField 注解标记了
