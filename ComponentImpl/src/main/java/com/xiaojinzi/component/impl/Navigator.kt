@@ -81,7 +81,7 @@ open class Navigator : RouterRequest.Builder, Call {
         }
     }
 
-    open fun interceptors(vararg interceptorArr: RouterInterceptor): Navigator? {
+    open fun interceptors(vararg interceptorArr: RouterInterceptor): Navigator {
         Utils.debugCheckNullPointer(interceptorArr, "interceptorArr")
         lazyInitCustomInterceptors(interceptorArr.size)
         customInterceptors!!.addAll(interceptorArr.toList())
@@ -105,16 +105,16 @@ open class Navigator : RouterRequest.Builder, Call {
     /**
      * requestCode 会随机的生成
      */
-    open fun requestCodeRandom(): Navigator? {
+    open fun requestCodeRandom(): Navigator {
         return requestCode(RANDOM_REQUEST_CODE)
     }
 
-    open fun autoCancel(autoCancel: Boolean): Navigator? {
+    open fun autoCancel(autoCancel: Boolean): Navigator {
         this.autoCancel = autoCancel
         return this
     }
 
-    open fun useRouteRepeatCheck(useRouteRepeatCheck: Boolean): Navigator? {
+    open fun useRouteRepeatCheck(useRouteRepeatCheck: Boolean): Navigator {
         this.useRouteRepeatCheck = useRouteRepeatCheck
         return this
     }
