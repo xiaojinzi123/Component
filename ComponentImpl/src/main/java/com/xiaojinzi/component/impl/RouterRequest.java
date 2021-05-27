@@ -104,14 +104,14 @@ public class RouterRequest {
      * 中间 post 到主线程的操作
      */
     @Nullable
-    public final Action beforAction;
+    public final Action beforeAction;
 
     /**
      * 这个 {@link Action} 是在 {@link Activity#startActivity(Intent)} 之前调用的.
      * 和 {@link Activity#startActivity(Intent)} 是连着执行的.
      */
     @Nullable
-    public final Action beforStartAction;
+    public final Action beforeStartAction;
 
     /**
      * 这个 {@link Action} 是在 {@link Activity#startActivity(Intent)} 之后调用的.
@@ -160,8 +160,8 @@ public class RouterRequest {
         intentFlags = Collections.unmodifiableList(builder.intentFlags);
         this.bundle.putAll(builder.bundle);
         intentConsumer = builder.intentConsumer;
-        beforAction = builder.beforAction;
-        beforStartAction = builder.beforStartAction;
+        beforeAction = builder.beforeAction;
+        beforeStartAction = builder.beforeStartAction;
         afterStartAction = builder.afterStartAction;
         afterAction = builder.afterAction;
         afterErrorAction = builder.afterErrorAction;
@@ -310,8 +310,8 @@ public class RouterRequest {
         builder.intentFlags = new ArrayList<>(intentFlags);
 
         builder.intentConsumer = intentConsumer;
-        builder.beforAction = beforAction;
-        builder.beforStartAction = beforStartAction;
+        builder.beforeAction = beforeAction;
+        builder.beforeStartAction = beforeStartAction;
         builder.afterStartAction = afterStartAction;
         builder.afterAction = afterAction;
         builder.afterErrorAction = afterErrorAction;
@@ -341,7 +341,7 @@ public class RouterRequest {
         @NonNull
         protected List<String> intentCategories = new ArrayList<>(2);
 
-        @NonNull
+        @Nullable
         protected Bundle bundle = new Bundle();
 
         @Nullable
@@ -365,13 +365,13 @@ public class RouterRequest {
          * 路由开始之前
          */
         @Nullable
-        protected Action beforAction;
+        protected Action beforeAction;
 
         /**
          * 执行 {@link Activity#startActivity(Intent)} 之前
          */
         @Nullable
-        protected Action beforStartAction;
+        protected Action beforeStartAction;
 
         /**
          * 执行 {@link Activity#startActivity(Intent)} 之后
@@ -410,13 +410,13 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder beforAction(@Nullable @UiThread Action action) {
-            this.beforAction = action;
+        public Builder beforeAction(@Nullable @UiThread Action action) {
+            this.beforeAction = action;
             return this;
         }
 
-        public Builder beforStartAction(@Nullable @UiThread Action action) {
-            this.beforStartAction = action;
+        public Builder beforeStartAction(@Nullable @UiThread Action action) {
+            this.beforeStartAction = action;
             return this;
         }
 
@@ -740,13 +740,13 @@ public class RouterRequest {
         @Nullable
         protected String userInfo;
 
-        @NonNull
+        @Nullable
         protected String host;
 
         @Nullable
         protected String path;
 
-        @NonNull
+        @Nullable
         protected Map<String, String> queryMap = new HashMap<>();
 
         public URIBuilder url(@NonNull String url) {
