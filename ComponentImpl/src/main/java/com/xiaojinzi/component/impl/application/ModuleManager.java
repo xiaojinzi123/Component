@@ -14,6 +14,9 @@ import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.Utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -102,8 +105,24 @@ public class ModuleManager implements IComponentCenterApplication {
      */
     public void registerArr(@Nullable String... hosts) {
         if (hosts != null) {
+            List<IComponentHostApplication> appList = new ArrayList<>(hosts.length);
             for (String host : hosts) {
-                register(host);
+                IComponentHostApplication moduleApplication = findModuleApplication(host);
+                if (moduleApplication == null) {
+                    LogUtil.log("模块 '" + host + "' 加载失败, 请根据链接中的内容自行排查! \n " + Component.COMMON_ERROR_ISSUE);
+                } else {
+                    appList.add(moduleApplication);
+                }
+            }
+            // 处理优先级, 数值大的先加载
+            Collections.sort(appList, new Comparator<IComponentHostApplication>() {
+                @Override
+                public int compare(IComponentHostApplication o1, IComponentHostApplication o2) {
+                    return o2.getPriority() - o1.getPriority();
+                }
+            });
+            for (IComponentHostApplication moduleApplication : appList) {
+                register(moduleApplication);
             }
         }
     }
