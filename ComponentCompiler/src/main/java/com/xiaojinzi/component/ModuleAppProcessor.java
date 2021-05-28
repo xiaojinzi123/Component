@@ -14,6 +14,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -44,10 +45,19 @@ public class ModuleAppProcessor extends BaseHostProcessor {
     private TypeElement centerFragmentTypeElement;
     private TypeElement routerCenterTypeElement;
     private TypeElement classCacheTypeElement;
+    private int priority = 0;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
+        Map<String, String> options = processingEnv.getOptions();
+        if (options != null) {
+            String priorityStr = options.get("Priority");
+            try {
+                priority = Integer.parseInt(priorityStr);
+            } catch (Exception ignore) {
+            }
+        }
         centerInterceptorTypeElement = mElements.getTypeElement(ComponentConstants.CENTERINTERCEPTOR_CLASS_NAME);
         centerRouterDegradeTypeElement = mElements.getTypeElement(ComponentConstants.ROUTERDEGRADECENTER_CLASS_NAME);
         centerFragmentTypeElement = mElements.getTypeElement(ComponentConstants.FRAGMENT_CENTER_CALL_CLASS_NAME);
@@ -112,6 +122,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         // superClassName
         ClassName superClass = ClassName.get(mElements.getTypeElement(ComponentUtil.MODULE_APPLICATION_IMPL_CLASS_NAME));
         MethodSpec initHostMethod = generateInitHostMethod();
+        MethodSpec getPriorityMethod = generateGetPriorityMethod();
         MethodSpec initMapMethod = generateInitMapMethod();
         MethodSpec onCreateMethod = generateOnCreateMethod();
         MethodSpec onDestroyMethod = generateOnDestroyMethod();
@@ -122,6 +133,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addModifiers(Modifier.FINAL)
                 .superclass(superClass)
                 .addMethod(initHostMethod)
+                .addMethod(getPriorityMethod)
                 .addMethod(initMapMethod)
                 .addMethod(onCreateMethod)
                 .addMethod(onDestroyMethod)
@@ -203,6 +215,16 @@ public class ModuleAppProcessor extends BaseHostProcessor {
 
         openUriMethodSpecBuilder.addStatement("return $S", componentHost);
         return openUriMethodSpecBuilder.build();
+    }
+
+    private MethodSpec generateGetPriorityMethod() {
+        TypeName returnType = TypeName.get(int.class);
+        MethodSpec.Builder getPriorityMethodSpecBuilder = MethodSpec.methodBuilder("getPriority")
+                .returns(returnType)
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC);
+        getPriorityMethodSpecBuilder.addStatement("return $L", priority);
+        return getPriorityMethodSpecBuilder.build();
     }
 
 }
