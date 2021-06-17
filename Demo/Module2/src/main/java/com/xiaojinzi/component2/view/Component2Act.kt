@@ -1,12 +1,15 @@
 package com.xiaojinzi.component2.view
 
 import android.os.Bundle
+import android.util.SparseArray
 import com.xiaojinzi.base.ModuleConfig
 import com.xiaojinzi.base.bean.UserWithParcelable
+import com.xiaojinzi.base.service.inter.component1.Component1Service
 import com.xiaojinzi.base.view.BaseAct
 import com.xiaojinzi.component.*
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno
 import com.xiaojinzi.component.anno.RouterAnno
+import com.xiaojinzi.component.anno.ServiceAutowiredAnno
 import com.xiaojinzi.component.impl.Call
 import com.xiaojinzi.component.impl.Callback
 import com.xiaojinzi.component.impl.Router
@@ -50,6 +53,15 @@ class Component2Act : BaseAct() {
 
     @AttrValueAutowiredAnno("test4")
     var test_4: ArrayList<UserWithParcelable>? = null
+
+    @AttrValueAutowiredAnno("test5")
+    var test_5: UserWithParcelable? = null
+
+    @AttrValueAutowiredAnno("test6")
+    var test_6: SparseArray<UserWithParcelable>? = null
+
+    @ServiceAutowiredAnno
+    var service1: Component1Service? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
