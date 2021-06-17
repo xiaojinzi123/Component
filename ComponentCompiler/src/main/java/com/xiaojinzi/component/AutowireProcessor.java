@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -56,6 +57,11 @@ import javax.lang.model.type.TypeMirror;
 })
 public class AutowireProcessor extends BaseHostProcessor {
 
+    @Nullable
+    private TypeElement kotlinJvmFieldTypeElement;
+    @Nullable
+    private Class kotlinJvmFieldClass;
+
     private TypeElement charsequenceTypeElement;
     private TypeMirror charsequenceTypeMirror;
     private TypeName charsequenceTypeName;
@@ -85,6 +91,12 @@ public class AutowireProcessor extends BaseHostProcessor {
 
         bundleTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_BUNDLE);
 
+        kotlinJvmFieldTypeElement = mElements.getTypeElement(ComponentConstants.KOTLIN_JVMFIELD);
+        try {
+            kotlinJvmFieldClass = Class.forName(ComponentConstants.KOTLIN_JVMFIELD);
+        } catch (ClassNotFoundException e) {
+            // ignore
+        }
         charsequenceTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_CHARSEQUENCE);
         charsequenceTypeMirror = charsequenceTypeElement.asType();
         charsequenceTypeName = ClassName.get(charsequenceTypeMirror);
@@ -194,7 +206,7 @@ public class AutowireProcessor extends BaseHostProcessor {
                 .addSuperinterface(ParameterizedTypeName.get(injectClassName, TypeName.get(mElements.getTypeElement(fullClassName).asType())))
                 .addMethod(injectAttrValueMethod1(targetClass))
                 .addMethod(injectAttrValueMethod2(targetClass, isKotlinFile, parameterFieldSet))
-                .addMethod(injectServiceMethod(targetClass, parameterFieldSet));
+                .addMethod(injectServiceMethod(isKotlinFile, targetClass, parameterFieldSet));
         try {
             JavaFile.builder(pkg, classBuilder.build()
             ).indent("    ").build().writeTo(mFiler);
@@ -300,7 +312,11 @@ public class AutowireProcessor extends BaseHostProcessor {
         return methodBuilder.build();
     }
 
-    private MethodSpec injectServiceMethod(TypeElement targetClass, Set<VariableElement> parameterFieldSet) {
+    private MethodSpec injectServiceMethod(
+            boolean isKotlinFile,
+            TypeElement targetClass,
+            Set<VariableElement> parameterFieldSet) {
+        String parameterOwnerName = "target";
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder("injectService")
                 .addJavadoc("Service注入\n")
@@ -312,11 +328,10 @@ public class AutowireProcessor extends BaseHostProcessor {
                 .addModifiers(Modifier.PUBLIC);
         // 循环没一个要注入的字段
         for (VariableElement variableElement : parameterFieldSet) {
-            // 生成一个不重复的参数名字
-            String parameterName = "target." + variableElement.getSimpleName();
             generateParameterCodeForInjectService(
-                    variableElement, methodBuilder,
-                    parameterName
+                    isKotlinFile,
+                    parameterOwnerName,
+                    variableElement, methodBuilder
             );
         }
         return methodBuilder.build();
@@ -441,7 +456,20 @@ public class AutowireProcessor extends BaseHostProcessor {
                     List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
                     if (typeArguments.size() == 1) { // 处理泛型个数是一个的
                         if (mTypes.isSubtype(typeArguments.get(0), parcelableTypeMirror)) { // 如果是 Parcelable 及其子类
-                            methodBuilder.addStatement("$N = $T.getSparseParcelableArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                            if (isKotlinFile) {
+                                methodBuilder.addStatement(
+                                        "$L.$L($T.$L($N,$S,$L.$L()))",
+                                        parameterOwnerName,
+                                        ComponentUtil.getGetSetMethodName(parameterName, false, false),
+                                        parameterSupportTypeMirror,
+                                        "getSparseParcelableArray",
+                                        bundleCallStr, keyName,
+                                        parameterOwnerName,
+                                        ComponentUtil.getGetSetMethodName(parameterName, true, false)
+                                );
+                            } else {
+                                methodBuilder.addStatement("$N = $T.getSparseParcelableArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
+                            }
                         }
                     }
                 } else { // 其他类型的情况,是实现序列化的对象,这种时候我们直接要从 bundle 中获取
@@ -460,7 +488,16 @@ public class AutowireProcessor extends BaseHostProcessor {
                         String tempName = "temp" + intCount.incrementAndGet();
                         methodBuilder.addStatement("$T $N = $T.getParcelable($N, $S)", variableTypeMirror, tempName, parameterSupportTypeMirror, bundleCallStr, keyName);
                         methodBuilder.beginControlFlow("if ($N != null)", tempName);
-                        methodBuilder.addStatement("$N = $N", parameterCallStr, tempName);
+                        if (isKotlinFile) {
+                            methodBuilder.addStatement(
+                                    "$L.$L($N)",
+                                    parameterOwnerName,
+                                    ComponentUtil.getGetSetMethodName(parameterName, false, false),
+                                    tempName
+                            );
+                        } else {
+                            methodBuilder.addStatement("$N = $N", parameterCallStr, tempName);
+                        }
                         if (isSubParcelableTypeAndSubSerializableType) {
                             methodBuilder.addStatement("$N = true", isHaveValueName);
                         }
@@ -473,7 +510,16 @@ public class AutowireProcessor extends BaseHostProcessor {
                         String tempName = "temp" + intCount.incrementAndGet();
                         methodBuilder.addStatement("$T $N = $T.getSerializable($N, $S)", variableTypeMirror, tempName, parameterSupportTypeMirror, bundleCallStr, keyName);
                         methodBuilder.beginControlFlow("if ($N != null)", tempName);
-                        methodBuilder.addStatement("$N = $N", parameterCallStr, tempName);
+                        if (isKotlinFile) {
+                            methodBuilder.addStatement(
+                                    "$L.$L($N)",
+                                    parameterOwnerName,
+                                    ComponentUtil.getGetSetMethodName(parameterName, false, false),
+                                    tempName
+                            );
+                        } else {
+                            methodBuilder.addStatement("$N = $N", parameterCallStr, tempName);
+                        }
                         methodBuilder.endControlFlow();
                         if (isSubParcelableTypeAndSubSerializableType) {
                             methodBuilder.endControlFlow();
@@ -545,10 +591,12 @@ public class AutowireProcessor extends BaseHostProcessor {
     }
 
     public void generateParameterCodeForInjectService(
+            boolean isKotlinFile,
+            String parameterOwnerName,
             VariableElement variableElement,
-            MethodSpec.Builder methodBuilder,
-            String parameterName) {
+            MethodSpec.Builder methodBuilder) {
 
+        String parameterName = variableElement.getSimpleName().toString();
         ServiceAutowiredAnno serviceAutowiredAnno = variableElement.getAnnotation(ServiceAutowiredAnno.class);
 
         TypeMirror variableTypeMirror = variableElement.asType();
@@ -556,7 +604,18 @@ public class AutowireProcessor extends BaseHostProcessor {
 
         if (serviceAutowiredAnno != null) {
             methodBuilder.addComment("may be null here");
-            methodBuilder.addStatement("$N = $T.get($T.class, $S)", parameterName, serviceTypeElement, parameterTypeName, serviceAutowiredAnno.name());
+            if (isKotlinFile) {
+                methodBuilder.addStatement(
+                        "$L.$L($T.get($T.class, $S))",
+                        parameterOwnerName,
+                        ComponentUtil.getGetSetMethodName(parameterName, false, false),
+                        serviceTypeElement,
+                        parameterTypeName,
+                        serviceAutowiredAnno.name()
+                );
+            } else {
+                methodBuilder.addStatement("$N.$N = $T.get($T.class, $S)", parameterOwnerName, parameterName, serviceTypeElement, parameterTypeName, serviceAutowiredAnno.name());
+            }
         }
 
     }

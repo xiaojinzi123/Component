@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.Config;
-import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
@@ -43,6 +42,7 @@ public class App extends Application {
         // 如果不是 rx 的版本, 请忽略
         RxErrorIgnoreUtil.ignoreError();
         Component.check();
+
     }
 
 }
