@@ -80,6 +80,8 @@ public class ComponentConstants {
 
     public static final String KOTLIN_METADATA = "kotlin.Metadata";
     public static final String KOTLIN_JVMFIELD = "kotlin.jvm.JvmField";
+    public static final String KOTLIN_CONTINUATION = "kotlin.coroutines.Continuation";
+    public static final String KOTLIN_ROUTEREXTENDSKT = "com.xiaojinzi.component.RouterExtendsKt";
 
     // RxJava 几种 Observable
 

@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -62,6 +63,11 @@ import javax.lang.model.type.TypeMirror;
 @SupportedAnnotationTypes({ComponentUtil.ROUTERAPIANNO_CLASS_NAME})
 public class RouterApiProcessor extends BaseProcessor {
 
+    // 协程中的 Continuation 对象
+    @Nullable
+    private TypeElement continuationTypeElement;
+    private TypeMirror continuationTypeMirror;
+    private TypeMirror continuationErasureTypeMirror;
     private TypeElement charsequenceTypeElement;
     private TypeMirror charsequenceTypeMirror;
     private TypeName charsequenceTypeName;
@@ -103,6 +109,13 @@ public class RouterApiProcessor extends BaseProcessor {
         singleMirror = singleTypeElement == null ? null : singleTypeElement.asType();
         singleErasureMirror = singleMirror == null ? null : processingEnv.getTypeUtils().erasure(singleMirror);
 
+        continuationTypeElement = mElements.getTypeElement(ComponentConstants.KOTLIN_CONTINUATION);
+        if (continuationTypeElement != null) {
+            continuationTypeMirror = continuationTypeElement.asType();
+        }
+        if (continuationTypeMirror != null) {
+            continuationErasureTypeMirror = processingEnv.getTypeUtils().erasure(continuationTypeMirror);
+        }
         charsequenceTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_CHARSEQUENCE);
         charsequenceTypeMirror = charsequenceTypeElement.asType();
         charsequenceTypeName = TypeName.get(charsequenceTypeMirror);
@@ -238,6 +251,7 @@ public class RouterApiProcessor extends BaseProcessor {
 
         boolean isReturnNavigationDisposable = false, isReturnCall = false;
         boolean isReturnObservable = false, isReturnCompletable = false, isReturnSingle = false;
+        boolean isReturnCoroutines = false;
 
         // 返回的返回对象
         TypeMirror returnType = executableElement.getReturnType();
@@ -256,6 +270,7 @@ public class RouterApiProcessor extends BaseProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeName.get(returnType));
 
+        VariableElement continuationParameter = null;
         VariableElement contextParameter = null;
         VariableElement fragmentParameter = null;
         VariableElement callBackParameter = null;
@@ -276,7 +291,10 @@ public class RouterApiProcessor extends BaseProcessor {
         for (VariableElement parameter : parameters) {
             // 参数的类型
             TypeMirror parameterTypeMirror = parameter.asType();
-            if (mTypes.isSubtype(parameterTypeMirror, contextTypeMirror)) { // 如果是一个 Context
+            if (mTypes.isSubtype(processingEnv.getTypeUtils().erasure(parameterTypeMirror), continuationErasureTypeMirror)) { // 如果是一个 continuation
+                continuationParameter = parameter;
+                isReturnCoroutines = true;
+            } else if (mTypes.isSubtype(parameterTypeMirror, contextTypeMirror)) { // 如果是一个 Context
                 contextParameter = parameter;
             } else if (mTypes.isSubtype(parameterTypeMirror, fragmentTypeMirror)) { // 如果是一个 Fragment
                 fragmentParameter = parameter;
@@ -307,12 +325,11 @@ public class RouterApiProcessor extends BaseProcessor {
                 // 不填写的话就是 putAll 否则就是 putBundle
                 if (parameterParameterAnno == null) {
                     parameterStatement.append("\n.putAll($N)");
-                    parameterArgs.add(parameter.getSimpleName().toString());
                 } else {
                     parameterStatement.append("\n.putBundle($S,$N)");
                     parameterArgs.add(parameterParameterAnno.value());
-                    parameterArgs.add(parameter.getSimpleName().toString());
                 }
+                parameterArgs.add(parameter.getSimpleName().toString());
             } else { // 剩下的就都是参数的了
                 ParameterAnno parameterParameterAnno = parameter.getAnnotation(ParameterAnno.class);
                 if (parameterParameterAnno == null) {
@@ -465,26 +482,38 @@ public class RouterApiProcessor extends BaseProcessor {
             if (navigateAnnotation == null) {
                 if (biCallBackParameter != null) {
                     throw new ProcessException("the parameter " + biCallBackParameter.getSimpleName() +
-                            " of method " + methodPath + " is not allow when then returnType is " + ComponentConstants.RXJAVA_COMPLETABLE + " or " + ComponentConstants.RXJAVA_SINGLE);
+                            " of method " + methodPath + " is not allow here, do you forget add @NavigateAnno(forResult = true) or @NavigateAnno(forIntent = true) or @NavigateAnno(forResultCode = true) to method");
                 }
             } else {
                 if (navigateAnnotation.forResult()) {
-                    if (biCallBackParameter == null) {
-                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<ActivityResult>) to you method(" + methodPath + ")?");
+                    if (biCallBackParameter == null && continuationParameter == null) {
+                        throw new ProcessException(
+                                "do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<ActivityResult>) to you method(" + methodPath + ") or \n " +
+                                        "add suspend modifier  to you method(" + methodPath + ")\n" + "such as: suspend fun test(context: Context): ActivityResult"
+                        );
                     }
                 } else if (navigateAnnotation.forIntent()) {
-                    if (biCallBackParameter == null) {
-                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Intent>) to you method(" + methodPath + ")?");
+                    if (biCallBackParameter == null && continuationParameter == null) {
+                        throw new ProcessException(
+                                "do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Intent>) to you method(" + methodPath + ") or \n " +
+                                        "add suspend modifier  to you method(" + methodPath + ")\n" + "such as: suspend fun test(context: Context): Intent"
+                        );
                     }
                 } else if (navigateAnnotation.forResultCode()) {
-                    if (biCallBackParameter == null) {
-                        throw new ProcessException("do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Integer>) to you method(" + methodPath + ")?");
+                    if (biCallBackParameter == null && continuationParameter == null) {
+                        throw new ProcessException(
+                                "do you forget to add parameter(" + ComponentConstants.BICALLBACK_CLASS_NAME + "<Integer>) to you method(" + methodPath + ") or \n " +
+                                        "add suspend modifier  to you method(" + methodPath + ")\n" + "such as: suspend fun test(context: Context): Int"
+                        );
                     }
                 } else {
                     // 说明是想匹配 resultCode
                     if (navigateAnnotation.resultCodeMatch() != Integer.MIN_VALUE) {
-                        if (callBackParameter == null) {
-                            throw new ProcessException("do you forget to add parameter(" + ComponentConstants.CALLBACK_CLASS_NAME + ") to you method(" + methodPath + ")?");
+                        if (callBackParameter == null && continuationParameter == null) {
+                            throw new ProcessException(
+                                    "do you forget to add parameter(" + ComponentConstants.CALLBACK_CLASS_NAME + ") to you method(" + methodPath + ") or \n " +
+                                            "add suspend modifier  to you method(" + methodPath + ")\n" + "such as: suspend fun test(context: Context)"
+                            );
                         }
                     }
                 }
@@ -493,12 +522,6 @@ public class RouterApiProcessor extends BaseProcessor {
 
         StringBuffer routerStatement = new StringBuffer();
         List<Object> args = new ArrayList<>();
-
-        // 根据返回值最终的结尾
-
-        if (isReturnNavigationDisposable || isReturnCall || isReturnObservable) {
-            routerStatement.append("return ");
-        }
 
         // with 方法ok
         routerStatement.append("$T.with($N)");
@@ -654,6 +677,11 @@ public class RouterApiProcessor extends BaseProcessor {
         if (navigateAnnotation == null) {
             if (isReturnObservable) {
                 routerStatement.append("\n.call()");
+            } else if (isReturnCoroutines) {
+                routerStatement.insert(0, "$N.await(");
+                args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
+                routerStatement.append(", $N)");
+                args.add(continuationParameter.getSimpleName().toString());
             } else if (!isReturnCall) {
                 if (callBackParameter == null) {
                     routerStatement.append("\n.navigate()");
@@ -681,6 +709,44 @@ public class RouterApiProcessor extends BaseProcessor {
                     } else {
                         routerStatement.append("\n.resultCodeMatchCall($L)");
                         args.add(navigateAnnotation.resultCodeMatch());
+                    }
+                }
+            } else if (isReturnCoroutines) {
+                if (navigateAnnotation.forResult()) {
+                    routerStatement.insert(0, "$N.activityResultAwait(");
+                    args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
+                    routerStatement.append(", $N)");
+                    args.add(continuationParameter.getSimpleName().toString());
+                } else if (navigateAnnotation.forIntent()) {
+                    if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) { // 表示用户没写
+                        routerStatement.insert(0, "$N.intentAwait(");
+                        args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
+                        routerStatement.append(", $N)");
+                        args.add(continuationParameter.getSimpleName().toString());
+                    } else {
+                        routerStatement.insert(0, "$N.intentResultCodeMatchAwait(");
+                        args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
+                        routerStatement.append(", $L, $N)");
+                        args.add(navigateAnnotation.resultCodeMatch());
+                        args.add(continuationParameter.getSimpleName().toString());
+                    }
+                } else if (navigateAnnotation.forResultCode()) {
+                    routerStatement.insert(0, "$N.resultCodeAwait(");
+                    args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
+                    routerStatement.append(", $N)");
+                    args.add(continuationParameter.getSimpleName().toString());
+                } else {
+                    if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) {
+                        routerStatement.insert(0, "$N.await(");
+                        args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
+                        routerStatement.append(", $N)");
+                        args.add(continuationParameter.getSimpleName().toString());
+                    } else  {
+                        routerStatement.insert(0, "$N.resultCodeMatchAwait(");
+                        args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
+                        routerStatement.append(", $L, $N)");
+                        args.add(navigateAnnotation.resultCodeMatch());
+                        args.add(continuationParameter.getSimpleName().toString());
                     }
                 }
             } else {
@@ -714,6 +780,12 @@ public class RouterApiProcessor extends BaseProcessor {
                     }
                 }
             }
+        }
+
+
+        // 根据返回值最终的结尾
+        if (isReturnNavigationDisposable || isReturnCall || isReturnObservable || isReturnCoroutines) {
+            routerStatement.insert(0, "return ");
         }
 
         methodBuilder.addStatement(routerStatement.toString(), args.toArray());
