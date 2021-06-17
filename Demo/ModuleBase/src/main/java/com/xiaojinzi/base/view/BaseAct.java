@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.support.ParameterSupport;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -41,6 +42,7 @@ public class BaseAct extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        // Component.inject(this);
         Boolean isReturnAuto = isReturn();
         if (isReturnAuto) {
             h.sendEmptyMessageDelayed(0, 1000);

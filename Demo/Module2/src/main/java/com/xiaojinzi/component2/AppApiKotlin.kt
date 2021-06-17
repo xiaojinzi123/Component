@@ -7,7 +7,7 @@ import com.xiaojinzi.component.anno.router.*
 import com.xiaojinzi.component.support.Action
 import io.reactivex.Completable
 
-@RouterApiAnno
+// @RouterApiAnno
 @HostAnno(ModuleConfig.App.NAME)
 interface AppApiKotlin {
 
