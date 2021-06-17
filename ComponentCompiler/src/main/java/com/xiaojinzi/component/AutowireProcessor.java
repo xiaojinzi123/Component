@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -56,6 +57,11 @@ import javax.lang.model.type.TypeMirror;
 })
 public class AutowireProcessor extends BaseHostProcessor {
 
+    @Nullable
+    private TypeElement kotlinJvmFieldTypeElement;
+    @Nullable
+    private Class kotlinJvmFieldClass;
+
     private TypeElement charsequenceTypeElement;
     private TypeMirror charsequenceTypeMirror;
     private TypeName charsequenceTypeName;
@@ -85,6 +91,12 @@ public class AutowireProcessor extends BaseHostProcessor {
 
         bundleTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_BUNDLE);
 
+        kotlinJvmFieldTypeElement = mElements.getTypeElement(ComponentConstants.KOTLIN_JVMFIELD);
+        try {
+            kotlinJvmFieldClass = Class.forName(ComponentConstants.KOTLIN_JVMFIELD);
+        } catch (ClassNotFoundException e) {
+            // ignore
+        }
         charsequenceTypeElement = mElements.getTypeElement(ComponentConstants.JAVA_CHARSEQUENCE);
         charsequenceTypeMirror = charsequenceTypeElement.asType();
         charsequenceTypeName = ClassName.get(charsequenceTypeMirror);
@@ -585,7 +597,6 @@ public class AutowireProcessor extends BaseHostProcessor {
             MethodSpec.Builder methodBuilder) {
 
         String parameterName = variableElement.getSimpleName().toString();
-
         ServiceAutowiredAnno serviceAutowiredAnno = variableElement.getAnnotation(ServiceAutowiredAnno.class);
 
         TypeMirror variableTypeMirror = variableElement.asType();
@@ -602,7 +613,7 @@ public class AutowireProcessor extends BaseHostProcessor {
                         parameterTypeName,
                         serviceAutowiredAnno.name()
                 );
-            } else  {
+            } else {
                 methodBuilder.addStatement("$N.$N = $T.get($T.class, $S)", parameterOwnerName, parameterName, serviceTypeElement, parameterTypeName, serviceAutowiredAnno.name());
             }
         }
