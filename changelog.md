@@ -1,3 +1,10 @@
+#### [v1.9.0-Stable2](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0-Stable2)
+- 自动注入对 Kotlin 文件的支持完善
+- RouterApi 支持了 Kotlin 的 suspend 挂起方式
+
+#### [v1.9.0-Stable1](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0-Stable1)
+- 模块注册支持优先级
+
 #### [v1.9.0](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0)
 - befor 相关的方法和名称命名错误的全部更正为 before
 - Call 发起跳转的方法支持了更多的 Kotlin 扩展来方便调用
