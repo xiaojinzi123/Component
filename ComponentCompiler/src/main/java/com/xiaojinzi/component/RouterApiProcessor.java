@@ -713,38 +713,38 @@ public class RouterApiProcessor extends BaseProcessor {
                 }
             } else if (isReturnCoroutines) {
                 if (navigateAnnotation.forResult()) {
-                    routerStatement.insert(0, "$N.activityResultAwait(");
+                    routerStatement.insert(0, "$N.activityResultAwait(\n");
                     args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
-                    routerStatement.append(", $N)");
+                    routerStatement.append(",\n $N\n)");
                     args.add(continuationParameter.getSimpleName().toString());
                 } else if (navigateAnnotation.forIntent()) {
                     if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) { // 表示用户没写
-                        routerStatement.insert(0, "$N.intentAwait(");
+                        routerStatement.insert(0, "$N.intentAwait(\n");
                         args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
-                        routerStatement.append(", $N)");
+                        routerStatement.append(",\n $N\n)");
                         args.add(continuationParameter.getSimpleName().toString());
                     } else {
-                        routerStatement.insert(0, "$N.intentResultCodeMatchAwait(");
+                        routerStatement.insert(0, "$N.intentResultCodeMatchAwait(\n");
                         args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
-                        routerStatement.append(", $L, $N)");
+                        routerStatement.append(",\n $L,\n $N\n)");
                         args.add(navigateAnnotation.resultCodeMatch());
                         args.add(continuationParameter.getSimpleName().toString());
                     }
                 } else if (navigateAnnotation.forResultCode()) {
-                    routerStatement.insert(0, "$N.resultCodeAwait(");
+                    routerStatement.insert(0, "$N.resultCodeAwait(\n");
                     args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
-                    routerStatement.append(", $N)");
+                    routerStatement.append(",\n $N\n)");
                     args.add(continuationParameter.getSimpleName().toString());
                 } else {
                     if (navigateAnnotation.resultCodeMatch() == Integer.MIN_VALUE) {
-                        routerStatement.insert(0, "$N.await(");
+                        routerStatement.insert(0, "$N.await(\n");
                         args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
-                        routerStatement.append(", $N)");
+                        routerStatement.append(",\n $N\n)");
                         args.add(continuationParameter.getSimpleName().toString());
                     } else  {
-                        routerStatement.insert(0, "$N.resultCodeMatchAwait(");
+                        routerStatement.insert(0, "$N.resultCodeMatchAwait(\n");
                         args.add(0, ComponentConstants.KOTLIN_ROUTEREXTENDSKT);
-                        routerStatement.append(", $L, $N)");
+                        routerStatement.append(",\n $L,\n $N\n)");
                         args.add(navigateAnnotation.resultCodeMatch());
                         args.add(continuationParameter.getSimpleName().toString());
                     }
