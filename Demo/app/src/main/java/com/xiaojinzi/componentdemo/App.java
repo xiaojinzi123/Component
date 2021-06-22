@@ -22,7 +22,7 @@ public class App extends Application {
                         // 那么当两个相同的路由发生在指定的时间内后一个路由就会被拦截
                         .useRouteRepeatCheckInterceptor(true)
                         // router 初始化是否采用异步
-                        .initRouterAsync(false)
+                        .initRouterAsync(true)
                         // 1000 是默认的, 表示相同路由拦截的时间间隔
                         .routeRepeatCheckDuration(1000)
                         // 是否打印日志提醒你哪些路由使用了 Application 为 Context 进行跳转
