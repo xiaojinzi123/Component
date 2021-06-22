@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.xiaojinzi.component.anno.ModuleAppAnno;
@@ -180,11 +181,33 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addParameter(parameterSpec)
                 .addModifiers(Modifier.PUBLIC);
         methodSpecBuilder.addStatement("super.onCreate(application)");
-        methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", routerCenterTypeElement);
+
         methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerServiceTypeElement);
-        methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerInterceptorTypeElement);
-        methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerRouterDegradeTypeElement);
-        methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerFragmentTypeElement);
+
+        MethodSpec.Builder runnableMethodBuilder = MethodSpec
+                .methodBuilder("run")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC);
+
+        runnableMethodBuilder.addStatement("$T.getInstance().register(getHost())", routerCenterTypeElement);
+        runnableMethodBuilder.addStatement("$T.getInstance().register(getHost())", centerInterceptorTypeElement);
+        runnableMethodBuilder.addStatement("$T.getInstance().register(getHost())", centerRouterDegradeTypeElement);
+        runnableMethodBuilder.addStatement("$T.getInstance().register(getHost())", centerFragmentTypeElement);
+
+        TypeSpec innerTypeSpec = TypeSpec.anonymousClassBuilder("")
+                .addSuperinterface(ParameterizedTypeName.get(Runnable.class))
+                .addMethod(runnableMethodBuilder.build())
+                .build();
+
+        methodSpecBuilder.addStatement("$T $N = $L", Runnable.class, "r", innerTypeSpec);
+
+        methodSpecBuilder.beginControlFlow("if($N.getConfig().isInitRouteAsync())", ComponentConstants.COMPONENT_CLASS_NAME);
+        methodSpecBuilder.addStatement("$N.postActionToWorkThread(r)", ComponentConstants.UTILS_CLASS_NAME);
+        methodSpecBuilder.endControlFlow();
+        methodSpecBuilder.beginControlFlow("else");
+        methodSpecBuilder.addStatement("r.run()");
+        methodSpecBuilder.endControlFlow();
+
         return methodSpecBuilder.build();
     }
 
@@ -196,8 +219,8 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addModifiers(Modifier.PUBLIC);
 
         methodSpecBuilder.addStatement("super.onDestroy()");
-        methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", routerCenterTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerServiceTypeElement);
+        methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", routerCenterTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerInterceptorTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerRouterDegradeTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerFragmentTypeElement);

@@ -1,6 +1,5 @@
 package com.xiaojinzi.component.support;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -15,11 +14,10 @@ import android.support.annotation.UiThread;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.error.RouterRuntimeException;
-import com.xiaojinzi.component.error.RunTimeTimeoutException;
 
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 一个工具类
@@ -35,6 +33,8 @@ public class Utils {
     private static final String STR_CAN_NOT_BE_NULL = "' can't be null";
     private static final String MAIN_THREAD_ERROR_MSG = "Component mainThreadCall method timeout, A deadlock was happened. see: https://github.com/xiaojinzi123/Component/issues/79";
     private static final long MAIN_THREAD_TIME_OUT = 3000;
+    // 单线程的线程池
+    private static final ExecutorService workPool = Executors.newSingleThreadExecutor();
 
     private Utils() {
     }
@@ -54,13 +54,7 @@ public class Utils {
 
     @AnyThread
     public static void postActionToWorkThread(@NonNull final Runnable r) {
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                r.run();
-            }
-        }.start();
+        workPool.submit(r);
     }
 
     /**

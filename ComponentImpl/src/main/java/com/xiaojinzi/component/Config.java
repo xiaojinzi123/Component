@@ -19,6 +19,7 @@ public class Config {
     @NonNull
     private String defaultScheme;
 
+    private boolean isInitRouteAsync;
     private boolean isOptimizeInit;
     private boolean isAutoRegisterModule;
     private boolean isTipWhenUseApplication;
@@ -29,6 +30,7 @@ public class Config {
 
     private Config(@NonNull Builder builder) {
         this.application = builder.application;
+        this.isInitRouteAsync = builder.isInitRouteAsync;
         this.isOptimizeInit = builder.isOptimizeInit;
         this.isAutoRegisterModule = builder.isAutoRegisterModule;
         this.isTipWhenUseApplication = builder.isTipWhenUseApplication;
@@ -47,6 +49,10 @@ public class Config {
     @NonNull
     public String getDefaultScheme() {
         return defaultScheme;
+    }
+
+    public boolean isInitRouteAsync() {
+        return isInitRouteAsync;
     }
 
     public boolean isOptimizeInit() {
@@ -87,6 +93,7 @@ public class Config {
 
         private Application application;
         private String defaultScheme = "router";
+        private boolean isInitRouteAsync = false;
         private boolean isOptimizeInit = false;
         private boolean isAutoRegisterModule = false;
         private boolean isTipWhenUseApplication = true;
@@ -106,6 +113,11 @@ public class Config {
         public Builder defaultScheme(String defaultScheme) {
             Utils.checkStringNullPointer(defaultScheme, "defaultScheme");
             this.defaultScheme = defaultScheme;
+            return this;
+        }
+
+        public Builder initRouteAsync(boolean isInitRouteAsync) {
+            this.isInitRouteAsync = isInitRouteAsync;
             return this;
         }
 
