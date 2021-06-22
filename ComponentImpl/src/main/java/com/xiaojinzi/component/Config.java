@@ -19,7 +19,7 @@ public class Config {
     @NonNull
     private String defaultScheme;
 
-    private boolean isInitRouteAsync;
+    private boolean isInitRouterAsync;
     private boolean isOptimizeInit;
     private boolean isAutoRegisterModule;
     private boolean isTipWhenUseApplication;
@@ -30,7 +30,7 @@ public class Config {
 
     private Config(@NonNull Builder builder) {
         this.application = builder.application;
-        this.isInitRouteAsync = builder.isInitRouteAsync;
+        this.isInitRouterAsync = builder.isInitRouterAsync;
         this.isOptimizeInit = builder.isOptimizeInit;
         this.isAutoRegisterModule = builder.isAutoRegisterModule;
         this.isTipWhenUseApplication = builder.isTipWhenUseApplication;
@@ -51,8 +51,8 @@ public class Config {
         return defaultScheme;
     }
 
-    public boolean isInitRouteAsync() {
-        return isInitRouteAsync;
+    public boolean isInitRouterAsync() {
+        return isInitRouterAsync;
     }
 
     public boolean isOptimizeInit() {
@@ -93,7 +93,7 @@ public class Config {
 
         private Application application;
         private String defaultScheme = "router";
-        private boolean isInitRouteAsync = false;
+        private boolean isInitRouterAsync = false;
         private boolean isOptimizeInit = false;
         private boolean isAutoRegisterModule = false;
         private boolean isTipWhenUseApplication = true;
@@ -116,8 +116,8 @@ public class Config {
             return this;
         }
 
-        public Builder initRouteAsync(boolean isInitRouteAsync) {
-            this.isInitRouteAsync = isInitRouteAsync;
+        public Builder initRouterAsync(boolean isInitRouterAsync) {
+            this.isInitRouterAsync = isInitRouterAsync;
             return this;
         }
 
