@@ -17,6 +17,8 @@ public class ComponentConstants {
 
     // System interface
 
+    public static final String COMPONENT_CLASS_NAME = "com.xiaojinzi.component.Component";
+    public static final String UTILS_CLASS_NAME = "com.xiaojinzi.component.support.Utils";
     public static final String COMPONENT_GENERATED_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.support.ComponentGeneratedAnno";
     public static final String APPLICATION_LIFECYCLE_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.application.IApplicationLifecycle";
     public static final String INTERCEPTOR_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.impl.RouterInterceptor";
