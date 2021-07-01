@@ -9,9 +9,10 @@ import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.NavigateAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RequestCodeAnno;
+import com.xiaojinzi.component.anno.router.RouterApiAnno;
 import com.xiaojinzi.component.impl.BiCallback;
 
-// @RouterApiAnno()
+@RouterApiAnno()
 @HostAnno(ModuleConfig.Module1.NAME)
 public interface Module1Api {
 

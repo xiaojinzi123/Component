@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.anno.ModuleAppAnno;
 import com.xiaojinzi.component.application.IApplicationLifecycle;
+import com.xiaojinzi.component.support.LogUtil;
 
 @ModuleAppAnno()
 public class Component1Application implements IApplicationLifecycle {
@@ -21,7 +22,13 @@ public class Component1Application implements IApplicationLifecycle {
     @Override
     public void onCreate(@NonNull final Application app) {
         mApp = app;
+        /*LogUtil.loge("模块1休眠一下");
         // 你可以做一些当前业务模块的一些初始化
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // ignore
+        }*/
     }
 
     @Override
