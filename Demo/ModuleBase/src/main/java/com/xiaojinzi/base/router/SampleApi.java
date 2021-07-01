@@ -29,6 +29,7 @@ import com.xiaojinzi.component.anno.router.NavigateAnno;
 import com.xiaojinzi.component.anno.router.OptionsAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RequestCodeAnno;
+import com.xiaojinzi.component.anno.router.RouterApiAnno;
 import com.xiaojinzi.component.anno.router.UseInteceptorAnno;
 import com.xiaojinzi.component.bean.ActivityResult;
 import com.xiaojinzi.component.impl.BiCallback;
@@ -47,7 +48,7 @@ import io.reactivex.Single;
 /**
  * App 模块的路由跳转接口
  */
-// @RouterApiAnno()
+@RouterApiAnno()
 @HostAnno(ModuleConfig.Module1.NAME)
 public interface SampleApi {
 

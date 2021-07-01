@@ -88,7 +88,7 @@ public class CustomerRouterImpl {
         );
     }
 
-    @ServiceAnno(value = AnnoMethodService.class, name = "service1")
+    @ServiceAnno(value = AnnoMethodService.class, name = "service1", autoInit = true)
     public static AnnoMethodService getTestService1(@NonNull Application application) {
         return (AnnoMethodService) Proxy.newProxyInstance(
                 AnnoMethodService.class.getClassLoader(),

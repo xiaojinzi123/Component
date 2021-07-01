@@ -1,3 +1,6 @@
+#### [v1.9.1(待发版)](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.1)
+- 修复 @ServiceAnno 的 autoInit 属性不支持填写了 name 的类
+
 #### [v1.9.0-Stable2](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.0-Stable2)
 - 自动注入对 Kotlin 文件的支持完善
 - RouterApi 支持了 Kotlin 的 suspend 挂起方式

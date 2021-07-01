@@ -123,7 +123,7 @@ public class MainAct extends AppCompatActivity {
                 .afterStartAction(() -> {
                     overridePendingTransition(
                             android.R.anim.fade_in,
-                            android.R.anim.fade_out
+                            0
                     );
                 })
                 .forward();
