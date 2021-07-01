@@ -260,19 +260,35 @@ public class ServiceProcessor extends BaseHostProcessor {
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 boolean isUseOne = anno.name().length == 0;
                 for (int i = 0; i < interServiceClassNames.size(); i++) {
+                    String name = isUseOne ? "" : anno.name()[i];
+                    boolean isNameEmpty = (name == null || "".equals(name));
                     String interServiceClassName = interServiceClassNames.get(i);
                     ClassName implClassName = ClassName.get(mElements.getTypeElement(interServiceClassName));
                     if (anno.autoInit()) {
+                        if (isNameEmpty) {
+                            methodSpecBuilder.addStatement(
+                                    "$T.registerAutoInit($T.class)",
+                                    classNameServiceContainer, implClassName
+                            );
+                        } else {
+                            methodSpecBuilder.addStatement(
+                                    "$T.registerAutoInit($T.class, $S)",
+                                    classNameServiceContainer, implClassName, name
+                            );
+                        }
+                    }
+                    if (isNameEmpty) {
                         methodSpecBuilder.addStatement(
-                                "$T.registerAutoInit($T.class)",
-                                classNameServiceContainer, implClassName
+                                "$T.register($T.class, $N)",
+                                classNameServiceContainer, implClassName, implName
+                        );
+                    } else {
+                        methodSpecBuilder.addStatement(
+                                "$T.register($T.class, $S, $N)",
+                                classNameServiceContainer, implClassName, name, implName
                         );
                     }
-                    String name = isUseOne ? "" : anno.name()[i];
-                    methodSpecBuilder.addStatement(
-                            "$T.register($T.class, $S, $N)",
-                            classNameServiceContainer, implClassName, name, implName
-                    );
+
                 }
             }
         });
@@ -299,8 +315,9 @@ public class ServiceProcessor extends BaseHostProcessor {
                 List<String> interServiceClassNames = getInterServiceClassNames(anno);
                 boolean isUseOne = anno.name().length == 0;
                 for (int i = 0; i < interServiceClassNames.size(); i++) {
-                    String interServiceClassNameStr = interServiceClassNames.get(i);
                     String name = isUseOne ? "" : anno.name()[i];
+                    boolean isNameEmpty = (name == null || "".equals(name));
+                    String interServiceClassNameStr = interServiceClassNames.get(i);
                     ClassName interServiceClassName = ClassName.get(mElements.getTypeElement(interServiceClassNameStr));
                     if (anno.autoInit()) {
                         methodSpecBuilder.addStatement(
@@ -308,7 +325,18 @@ public class ServiceProcessor extends BaseHostProcessor {
                                 classNameServiceContainer, interServiceClassName
                         );
                     }
-                    methodSpecBuilder.addStatement("$T.unregister($T.class, $S)", classNameServiceContainer, interServiceClassName, name);
+                    if (isNameEmpty) {
+                        methodSpecBuilder.addStatement(
+                                "$T.unregister($T.class)",
+                                classNameServiceContainer, interServiceClassName
+                        );
+                    } else {
+                        methodSpecBuilder.addStatement(
+                                "$T.unregister($T.class, $S)",
+                                classNameServiceContainer, interServiceClassName, name
+                        );
+                    }
+
                 }
             }
         });
