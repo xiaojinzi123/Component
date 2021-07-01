@@ -6,10 +6,13 @@
         <meta-data
             android:name="HOST_help"
             android:value="www.xiaojinzi.help" />
+
         <activity android:name="com.xiaojinzi.component.help.view.WebAct" />
-        <activity android:name=".view.ShouldNotAppearAct"/>
+        <activity android:name=".view.ShouldNotAppearAct" />
         <activity android:name=".view.CancelForTestAct" />
-        <activity android:name="com.xiaojinzi.component.help.view.TestRouterWebAct" />
+        <activity
+            android:name="com.xiaojinzi.component.help.view.TestRouterWebAct"
+            android:theme="@style/AppTheme.TestRouter" />
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

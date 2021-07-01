@@ -54,14 +54,21 @@ public class ServiceManager {
     /**
      * 需要自动初始化的 Service 的 class
      */
-    private static final Set<Class> autoInitSet = new HashSet<>();
+    private static final HashMap<Class, String> autoInitMap = new HashMap<Class, String>();
 
     /**
      * 注册自动注册的 Service Class
      */
     public static <T> void registerAutoInit(@NonNull Class<T> tClass) {
+        registerAutoInit(tClass, null);
+    }
+
+    /**
+     * 注册自动注册的 Service Class
+     */
+    public static <T> void registerAutoInit(@NonNull Class<T> tClass, @Nullable String name) {
         Utils.checkNullPointer(tClass, "tClass");
-        autoInitSet.add(tClass);
+        autoInitMap.put(tClass, name);
     }
 
     /**
@@ -69,7 +76,7 @@ public class ServiceManager {
      */
     public static <T> void unregisterAutoInit(@NonNull Class<T> tClass) {
         Utils.checkNullPointer(tClass, "tClass");
-        autoInitSet.remove(tClass);
+        autoInitMap.remove(tClass);
     }
 
     /**
@@ -78,9 +85,14 @@ public class ServiceManager {
     @WorkerThread
     @NotAppUseAnno
     public static void autoInitService() {
-        for (Class targetClass : autoInitSet) {
-            // 初始化实现类
-            ServiceManager.get(targetClass);
+        for (Map.Entry<Class, String> entry : autoInitMap.entrySet()) {
+            if (entry.getValue() == null) {
+                // 初始化实现类
+                ServiceManager.get(entry.getKey());
+            } else  {
+                ServiceManager.get(entry.getKey(), entry.getValue());
+            }
+
         }
     }
 
@@ -197,7 +209,6 @@ public class ServiceManager {
      *
      * @param tClass   目标 Service class
      * @param target   目标对象
-     * @param <target> 目标对象
      * @return 返回一个增强的目标对象的装饰者
      */
     @NotAppUseAnno
