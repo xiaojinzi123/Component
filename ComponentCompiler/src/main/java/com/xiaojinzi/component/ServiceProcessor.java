@@ -74,7 +74,7 @@ public class ServiceProcessor extends BaseHostProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        if (componentHost == null || componentHost.isEmpty()) {
+        if (componentModuleName == null || componentModuleName.isEmpty()) {
             return false;
         }
         if (CollectionUtils.isNotEmpty(set)) {
@@ -122,7 +122,7 @@ public class ServiceProcessor extends BaseHostProcessor {
     }
 
     private void createImpl() {
-        String claName = ComponentUtil.genHostServiceClassName(componentHost);
+        String claName = ComponentUtil.genHostServiceClassName(componentModuleName);
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf('.'));
         //simpleName
@@ -350,7 +350,7 @@ public class ServiceProcessor extends BaseHostProcessor {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
 
-        openUriMethodSpecBuilder.addStatement("return $S", componentHost);
+        openUriMethodSpecBuilder.addStatement("return $S", componentModuleName);
         return openUriMethodSpecBuilder.build();
     }
 

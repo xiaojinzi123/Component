@@ -9,6 +9,12 @@ import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.application.IComponentCenterApplication;
 import com.xiaojinzi.component.application.IComponentHostApplication;
+import com.xiaojinzi.component.cache.ClassCache;
+import com.xiaojinzi.component.impl.RouterCenter;
+import com.xiaojinzi.component.impl.RouterDegradeCenter;
+import com.xiaojinzi.component.impl.fragment.FragmentCenter;
+import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
+import com.xiaojinzi.component.impl.service.ServiceCenter;
 import com.xiaojinzi.component.impl.service.ServiceManager;
 import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.LogUtil;
@@ -57,14 +63,24 @@ public class ModuleManager implements IComponentCenterApplication {
     private static Map<String, IComponentHostApplication> moduleApplicationMap = new HashMap<>();
 
     @Override
-    public void register(@NonNull IComponentHostApplication moduleApp) {
+    public void register(@NonNull final IComponentHostApplication moduleApp) {
         Utils.checkNullPointer(moduleApp);
         if (moduleApplicationMap.containsKey(moduleApp.getHost())) {
             LogUtil.loge("The module \"" + moduleApp.getHost() + "\" is already registered");
         } else {
             moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
             moduleApp.onCreate(Component.getApplication());
-            notifyModuleChanged();
+            ServiceCenter.getInstance().register(moduleApp.getHost());
+            Utils.postActionToWorkThread(new Runnable() {
+                @Override
+                public void run() {
+                    RouterCenter.getInstance().register(moduleApp.getHost());
+                    InterceptorCenter.getInstance().register(moduleApp.getHost());
+                    RouterDegradeCenter.getInstance().register(moduleApp.getHost());
+                    FragmentCenter.getInstance().register(moduleApp.getHost());
+                    notifyModuleChanged();
+                }
+            });
         }
     }
 
@@ -128,11 +144,23 @@ public class ModuleManager implements IComponentCenterApplication {
     }
 
     @Override
-    public void unregister(@NonNull IComponentHostApplication moduleApp) {
+    public void unregister(@NonNull final IComponentHostApplication moduleApp) {
         Utils.checkNullPointer(moduleApp);
         moduleApplicationMap.remove(moduleApp.getHost());
         moduleApp.onDestroy();
-        notifyModuleChanged();
+        ServiceCenter.getInstance().unregister(moduleApp.getHost());
+        Utils.postActionToWorkThread(new Runnable() {
+            @Override
+            public void run() {
+                RouterCenter.getInstance().unregister(moduleApp.getHost());
+                InterceptorCenter.getInstance().unregister(moduleApp.getHost());
+                RouterDegradeCenter.getInstance().unregister(moduleApp.getHost());
+                FragmentCenter.getInstance().unregister(moduleApp.getHost());
+                // 清空缓存
+                ClassCache.clear();
+                notifyModuleChanged();
+            }
+        });
     }
 
     @Override
@@ -207,6 +235,8 @@ public class ModuleManager implements IComponentCenterApplication {
         for (IComponentHostApplication hostApplication : moduleApplicationMap.values()) {
             hostApplication.onModuleChanged(Component.getApplication());
         }
+        // 内部有 debug 判断
+        Component.check();
         // 触发自动初始化
         Utils.postActionToWorkThread(new Runnable() {
             @Override
@@ -214,16 +244,6 @@ public class ModuleManager implements IComponentCenterApplication {
                 ServiceManager.autoInitService();
             }
         });
-    }
-
-    /**
-     * 请使用 {@link Component#check()}
-     *
-     * @deprecated 未来版本会删除
-     */
-    @Deprecated
-    public void check() {
-        Component.check();
     }
 
 }

@@ -18,7 +18,7 @@ android {
                 // 配置业务模块的模块名称
                 // arguments = ["HOST": "app"]
                 arguments = [
-                        "HOST"           : "app",
+                        "ModuleName"     : "app",
                         "Priority"       : "100",
                         "RouterDocFolder": project.property("component_router_doc_folder"),
                         "RouterDocEnable": String.valueOf(project.property("component_router_doc_enable"))

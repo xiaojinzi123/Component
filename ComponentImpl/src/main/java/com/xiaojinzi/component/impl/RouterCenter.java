@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
 
@@ -83,7 +84,12 @@ public class RouterCenter implements IComponentCenterRouter {
     private static Map<String, IComponentHostRouter> hostRouterMap = new HashMap<>();
 
     /**
-     * 保存映射关系的map集合,是一个总路由表
+     * 保存映射关系的正则匹配的 map 集合
+     */
+    protected final Map<String, RouterBean> routerRegExMap = new HashMap<>();
+
+    /**
+     * 保存映射关系的map集合
      */
     protected final Map<String, RouterBean> routerMap = new HashMap<>();
 
@@ -94,7 +100,7 @@ public class RouterCenter implements IComponentCenterRouter {
 
     @Override
     public boolean isSameTarget(@NonNull Uri uri1, @NonNull Uri uri2) {
-        return getTargetRouterKey(uri1).equals(getTargetRouterKey(uri2));
+        return getTarget(uri1) == getTarget(uri2);
     }
 
     @Override
@@ -323,20 +329,33 @@ public class RouterCenter implements IComponentCenterRouter {
 
     @Nullable
     private RouterBean getTarget(@NonNull Uri uri) {
-        return routerMap.get(getTargetRouterKey(uri));
+        String targetKey = getTargetRouterKey(uri);
+        if (targetKey == null) {
+            return null;
+        }
+        for (Map.Entry<String, RouterBean> entry : routerRegExMap.entrySet()) {
+            if (Pattern.matches(entry.getKey(), targetKey)) {
+                return entry.getValue();
+            }
+        }
+        return routerMap.get(targetKey);
     }
 
-    @NonNull
+    /**
+     * scheme + "://" + host + path
+     */
+    @Nullable
     private String getTargetRouterKey(@NonNull Uri uri) {
         // "/component1/test" 不含host
         String targetPath = uri.getPath();
-        if (targetPath == null || targetPath.isEmpty()) {
-            return null;
+        if (targetPath != null && targetPath.length() > 0) {
+            if (targetPath.charAt(0) != '/') {
+                targetPath = SEPARATOR + targetPath;
+            }
+            return uri.getScheme() + "://" + uri.getHost() + targetPath;
+        } else {
+            return uri.getScheme() + "://" + uri.getHost();
         }
-        if (targetPath.charAt(0) != '/') {
-            targetPath = SEPARATOR + targetPath;
-        }
-        return uri.getHost() + targetPath;
     }
 
     /**
@@ -363,6 +382,7 @@ public class RouterCenter implements IComponentCenterRouter {
         Utils.checkNullPointer(router);
         if (!hostRouterMap.containsKey(router.getHost())) {
             hostRouterMap.put(router.getHost(), router);
+            routerRegExMap.putAll(router.getRegExRouterMap());
             routerMap.putAll(router.getRouterMap());
         }
     }
@@ -426,18 +446,26 @@ public class RouterCenter implements IComponentCenterRouter {
      * 路由表重复的检查工作
      */
     public void check() {
-        Set<String> set = new HashSet<>();
+        Set<String> routerSet = new HashSet<>();
+        Set<String> routerRegExSet = new HashSet<>();
         for (Map.Entry<String, IComponentHostRouter> entry : hostRouterMap.entrySet()) {
             IComponentHostRouter childRouter = entry.getValue();
             if (childRouter == null) {
                 continue;
             }
+            Map<String, RouterBean> childRouterRegexMap = childRouter.getRegExRouterMap();
+            for (String key : childRouterRegexMap.keySet()) {
+                if (routerRegExSet.contains(key)) {
+                    throw new IllegalStateException("the target regex is exist：" + key);
+                }
+                routerSet.add(key);
+            }
             Map<String, RouterBean> childRouterMap = childRouter.getRouterMap();
             for (String key : childRouterMap.keySet()) {
-                if (set.contains(key)) {
+                if (routerSet.contains(key)) {
                     throw new IllegalStateException("the target uri is exist：" + key);
                 }
-                set.add(key);
+                routerSet.add(key);
             }
         }
     }

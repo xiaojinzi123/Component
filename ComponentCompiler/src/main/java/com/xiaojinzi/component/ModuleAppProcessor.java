@@ -104,8 +104,8 @@ public class ModuleAppProcessor extends BaseHostProcessor {
     private void createImpl(boolean isDefault) {
 
         String claName = isDefault ?
-                ComponentUtil.genDefaultHostModuleApplicationClassName(componentHost) :
-                ComponentUtil.genHostModuleApplicationClassName(componentHost);
+                ComponentUtil.genDefaultHostModuleApplicationClassName(componentModuleName) :
+                ComponentUtil.genHostModuleApplicationClassName(componentModuleName);
 
         String classJavaDoc = null;
         if (isDefault) {
@@ -182,7 +182,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addModifiers(Modifier.PUBLIC);
         methodSpecBuilder.addStatement("super.onCreate(application)");
 
-        methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerServiceTypeElement);
+        /*methodSpecBuilder.addStatement("$T.getInstance().register(getHost())", centerServiceTypeElement);
 
         MethodSpec.Builder runnableMethodBuilder = MethodSpec
                 .methodBuilder("run")
@@ -206,7 +206,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         methodSpecBuilder.endControlFlow();
         methodSpecBuilder.beginControlFlow("else");
         methodSpecBuilder.addStatement("r.run()");
-        methodSpecBuilder.endControlFlow();
+        methodSpecBuilder.endControlFlow();*/
 
         return methodSpecBuilder.build();
     }
@@ -219,13 +219,13 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addModifiers(Modifier.PUBLIC);
 
         methodSpecBuilder.addStatement("super.onDestroy()");
-        methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerServiceTypeElement);
+        /*methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerServiceTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", routerCenterTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerInterceptorTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerRouterDegradeTypeElement);
         methodSpecBuilder.addStatement("$T.getInstance().unregister(getHost())", centerFragmentTypeElement);
         methodSpecBuilder.addComment("清空缓存");
-        methodSpecBuilder.addStatement("$T.clear()", classCacheTypeElement);
+        methodSpecBuilder.addStatement("$T.clear()", classCacheTypeElement);*/
         return methodSpecBuilder.build();
     }
 
@@ -236,7 +236,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
 
-        openUriMethodSpecBuilder.addStatement("return $S", componentHost);
+        openUriMethodSpecBuilder.addStatement("return $S", componentModuleName);
         return openUriMethodSpecBuilder.build();
     }
 

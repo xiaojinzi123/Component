@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 
+import com.xiaojinzi.component.anno.support.NotAppUseAnno;
 import com.xiaojinzi.component.impl.RouterCenter;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.impl.fragment.FragmentCenter;
@@ -198,8 +199,9 @@ public class Component {
      * 1.路由表在不同的子路由表中是否有重复
      * 2.服务在不同模块中的声明是否也有重复的名称
      */
+    @NotAppUseAnno
     public static void check() {
-        if (isDebug()) {
+        if (isDebug() && getConfig().isErrorCheck()) {
             RouterCenter.getInstance().check();
             InterceptorCenter.getInstance().check();
             FragmentCenter.getInstance().check();

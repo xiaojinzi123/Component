@@ -49,6 +49,11 @@ public class AppModuleApplication implements IApplicationLifecycle, IModuleNotif
 
     @Override
     public void onCreate(@NonNull Application app) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // ignore
+        }
         Router.addRouterListener(listener);
     }
 

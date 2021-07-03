@@ -13,7 +13,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [
-                        "HOST"           : "www.xiaojinzi.help",
+                        "ModuleName"     : "www.xiaojinzi.help",
                         "RouterDocFolder": project.property("component_router_doc_folder"),
                         "RouterDocEnable": String.valueOf(project.property("component_router_doc_enable"))
                 ]
