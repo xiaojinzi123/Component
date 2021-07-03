@@ -108,6 +108,9 @@ public class RouterAnnoBean {
         return interceptorNames;
     }
 
+    /**
+     * host 和 path 之间一定有 /
+     */
     public String hostAndPath() {
         return host + path;
     }

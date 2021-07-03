@@ -136,8 +136,6 @@ public class ModuleAppProcessor extends BaseHostProcessor {
                 .addMethod(initHostMethod)
                 .addMethod(getPriorityMethod)
                 .addMethod(initMapMethod)
-                .addMethod(onCreateMethod)
-                .addMethod(onDestroyMethod)
                 .addJavadoc(classJavaDoc)
                 .build();
         try {

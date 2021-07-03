@@ -44,9 +44,6 @@ public class CustomerRouterImpl {
 
     /**
      * 拍照界面,需要拍照权限
-     *
-     * @param request
-     * @return
      */
     @RouterAnno(
             host = ModuleConfig.System.NAME,
@@ -54,7 +51,7 @@ public class CustomerRouterImpl {
             interceptorNames = InterceptorConfig.HELP_CAMERAPERMISION
     )
     @NonNull
-    public static Intent takePictureIntent(@NonNull RouterRequest request) {
+    public static Intent takePictureIntent1(@NonNull RouterRequest request) {
         Intent intent = new Intent();
         // 指定开启系统相机的Action
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);

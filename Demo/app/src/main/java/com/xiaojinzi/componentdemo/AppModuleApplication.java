@@ -35,7 +35,7 @@ public class AppModuleApplication implements IApplicationLifecycle, IModuleNotif
                 Log.e(TAG, "路由失败：errorMsg = " + Utils.getRealMessage(errorResult.getError()));
             } else {
                 Log.e(TAG, "路由失败：" + originalRequest.uri.toString()
-                        + ",errorMsg = " + Utils.getRealMessage(errorResult.getError())
+                        + " ,errorMsg = " + Utils.getRealMessage(errorResult.getError())
                         + "\nrequestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode)
                 );
             }

@@ -99,6 +99,8 @@ public class RouterProcessor extends BaseHostProcessor {
         return false;
     }
 
+    private final String checkScheme = "__checkScheme__";
+    private final Set<String> routerCheckMap = new HashSet<>();
     private final Set<RouterAnnoBean> routerMap = new HashSet<>();
 
     /**
@@ -113,6 +115,19 @@ public class RouterProcessor extends BaseHostProcessor {
                 continue;
             }
             final RouterAnnoBean routerBean = toRouterAnnoBean(element, router);
+            String scheme = routerBean.getScheme();
+            if (scheme == null || "".equals(scheme)) {
+                scheme = checkScheme;
+            }
+            String checkKey = scheme + "://" + routerBean.hostAndPath();
+            if (routerCheckMap.contains(checkKey)) {
+                if (checkScheme.equals(scheme)) {
+                    throw new ProcessException("the uri '" + routerBean.hostAndPath() + "' of " + element + " is already exist");
+                } else {
+                    throw new ProcessException("the uri '" + checkKey + "' of " + element + " is already exist");
+                }
+            }
+            routerCheckMap.add(checkKey);
             // 如果重复就抛出异常, 加上 scheme 之后, 这个逻辑不成立了, 可能相同的 hostAndPath, 但是 scheme 不同
             /*if (routerMap.containsKey(routerBean.hostAndPath())) {
                 throw new ProcessException("the url value '" + routerBean.hostAndPath() + "' of " + element + " is alreay exist");
