@@ -22,7 +22,7 @@ import com.xiaojinzi.component1.R;
 public class Component1TestAct extends BaseAct {
 
     @RouterAnno(
-            path = ModuleConfig.Module1.TEST_AUTORETURN,
+            path= ModuleConfig.Module1.TEST_AUTORETURN,
             desc = "业务组件1的测试界面"
     )
     public static Intent start1(RouterRequest request) {

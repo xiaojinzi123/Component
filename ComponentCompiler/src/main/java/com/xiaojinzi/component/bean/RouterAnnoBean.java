@@ -12,6 +12,8 @@ import javax.lang.model.element.Element;
  */
 public class RouterAnnoBean {
 
+    private String regex;
+    private String scheme;
     private String host;
     private String path;
     private String desc;
@@ -25,6 +27,22 @@ public class RouterAnnoBean {
     private List<String> interceptorNames = new ArrayList<>(1);
     // 可是是一个Activity 类或者是一个静态方法
     private Element rawType;
+
+    public String getRegex() {
+        return regex;
+    }
+
+    public void setRegex(String regex) {
+        this.regex = regex;
+    }
+
+    public String getScheme() {
+        return scheme;
+    }
+
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
 
     public String getHost() {
         return host;
@@ -90,6 +108,9 @@ public class RouterAnnoBean {
         return interceptorNames;
     }
 
+    /**
+     * host 和 path 之间一定有 /
+     */
     public String hostAndPath() {
         return host + path;
     }

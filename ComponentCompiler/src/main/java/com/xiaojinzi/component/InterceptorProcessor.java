@@ -126,7 +126,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
     }
 
     private void createImpl() {
-        String claName = com.xiaojinzi.component.ComponentUtil.genHostInterceptorClassName(componentHost);
+        String claName = com.xiaojinzi.component.ComponentUtil.genHostInterceptorClassName(componentModuleName);
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf('.'));
         //simpleName
@@ -242,7 +242,7 @@ public class InterceptorProcessor extends BaseHostProcessor {
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
-        openUriMethodSpecBuilder.addStatement("return $S", componentHost);
+        openUriMethodSpecBuilder.addStatement("return $S", componentModuleName);
         return openUriMethodSpecBuilder.build();
     }
 

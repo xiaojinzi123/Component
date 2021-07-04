@@ -7,6 +7,8 @@ import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.bean.RouterBean;
 import com.xiaojinzi.component.router.IComponentHostRouter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +24,12 @@ import java.util.Map;
 abstract class ModuleRouterImpl implements IComponentHostRouter {
 
     /**
-     * component/test
+     * 正则匹配的集合
+     */
+    protected final Map<String, RouterBean> regExRouterBeanMap = new HashMap<>();
+
+    /**
+     * router://component/test
      * 保存映射关系的map集合
      */
     protected final Map<String, RouterBean> routerBeanMap = new HashMap<>();
@@ -40,10 +47,20 @@ abstract class ModuleRouterImpl implements IComponentHostRouter {
         hasInitMap = true;
     }
 
+    @NonNull
+    @Override
+    public Map<String, RouterBean> getRegExRouterMap() {
+        if (!hasInitMap) {
+            initMap();
+        }
+        if (regExRouterBeanMap.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        return new HashMap<>(regExRouterBeanMap);
+    }
+
     /**
      * 获取路由表
-     *
-     * @return
      */
     @NonNull
     public Map<String, RouterBean> getRouterMap() {

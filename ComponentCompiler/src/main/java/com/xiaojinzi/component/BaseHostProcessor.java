@@ -13,16 +13,19 @@ import javax.annotation.processing.ProcessingEnvironment;
 public abstract class BaseHostProcessor extends BaseProcessor {
 
     // 在每一个 module 中配置的 HOST 的信息
-    protected String componentHost = null;
+    protected String componentModuleName = null;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         Map<String, String> options = processingEnv.getOptions();
         if (options != null) {
-            componentHost = options.get("HOST");
+            componentModuleName = options.get("ModuleName");
+            if (componentModuleName == null || componentModuleName.isEmpty()) {
+                componentModuleName = options.get("HOST");
+            }
         }
-        if (componentHost == null || componentHost.isEmpty()) {
+        if (componentModuleName == null || componentModuleName.isEmpty()) {
             throw NULLHOSTEXCEPTION;
         }
         /*boolean isMatch = componentHost.matches(ComponentConstants.HOST_REGEX);

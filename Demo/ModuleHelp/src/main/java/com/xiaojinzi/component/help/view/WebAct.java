@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.help.view;
 
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,9 +11,10 @@ import android.webkit.WebViewClient;
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.help.R;
+import com.xiaojinzi.component.support.ParameterSupport;
 
 @RouterAnno(
-        path = ModuleConfig.Help.WEB,
+        regex = "^(http|https)(.*)",
         desc = "项目的网页展示界面"
 )
 public class WebAct extends AppCompatActivity {
@@ -28,11 +30,11 @@ public class WebAct extends AppCompatActivity {
         wv.getSettings().setJavaScriptEnabled(true);
         wv.setWebViewClient(new WebViewClient(){
         });
-        String url = getIntent().getStringExtra("data");
-        if (TextUtils.isEmpty(url)) {
+        Uri uri = ParameterSupport.getUri(getIntent());
+        if (uri == null) {
             wv.loadUrl("file:///android_asset/404.html");
         }else {
-            wv.loadUrl(url);
+            wv.loadUrl(uri.toString());
         }
     }
 
