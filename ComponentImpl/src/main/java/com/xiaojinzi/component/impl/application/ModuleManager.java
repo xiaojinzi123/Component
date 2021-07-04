@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.impl.application;
 
+import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -63,6 +64,7 @@ public class ModuleManager implements IComponentCenterApplication {
     private static Map<String, IComponentHostApplication> moduleApplicationMap = new HashMap<>();
 
     @Override
+    @UiThread
     public void register(@NonNull final IComponentHostApplication moduleApp) {
         Utils.checkNullPointer(moduleApp);
         if (moduleApplicationMap.containsKey(moduleApp.getHost())) {
@@ -144,6 +146,7 @@ public class ModuleManager implements IComponentCenterApplication {
     }
 
     @Override
+    @UiThread
     public void unregister(@NonNull final IComponentHostApplication moduleApp) {
         Utils.checkNullPointer(moduleApp);
         moduleApplicationMap.remove(moduleApp.getHost());
@@ -213,13 +216,15 @@ public class ModuleManager implements IComponentCenterApplication {
         return result;
     }
 
-    @UiThread
+    @AnyThread
     private void notifyModuleChanged() {
+        // 当前的值
         final int compareValue = Utils.COUNTER.incrementAndGet();
         Utils.postDelayActionToMainThread(new Runnable() {
             @Override
             public void run() {
                 // 说明没有改变过
+                System.out.println("模块发生变化啦 compareValue = " + compareValue);
                 if (compareValue == Utils.COUNTER.get()) {
                     // LogUtil.loge("通知 " + compareValue);
                     doNotifyModuleChanged();
