@@ -23,13 +23,15 @@ public class App extends Application {
                         // 那么当两个相同的路由发生在指定的时间内后一个路由就会被拦截
                         .useRouteRepeatCheckInterceptor(true)
                         // router 初始化是否采用异步
-                        .initRouterAsync(false)
+                        .initRouterAsync(true)
+                        // 是否进行错误检查
+                        .errorCheck(true)
                         // 1000 是默认的, 表示相同路由拦截的时间间隔
                         .routeRepeatCheckDuration(1000)
                         // 是否打印日志提醒你哪些路由使用了 Application 为 Context 进行跳转
                         .tipWhenUseApplication(true)
                         // 通知模块变化的延迟时间间隔
-                        .notifyModuleChangedDelayTime(200)
+                        .notifyModuleChangedDelayTime(0)
                         // 开启启动优化, 必须配套使用 Gradle 插件
                         .optimizeInit(true)
                         // 自动加载所有模块, 依赖上面的 optimizeInit(true)
@@ -44,7 +46,6 @@ public class App extends Application {
         // 如果你依赖了 rx 版本, 请加上这句配置. 忽略一些不想处理的错误
         // 如果不是 rx 的版本, 请忽略
         RxErrorIgnoreUtil.ignoreError();
-        Component.check();
 
     }
 

@@ -19,6 +19,7 @@ public class Config {
     @NonNull
     private String defaultScheme;
 
+    private boolean isErrorCheck;
     private boolean isInitRouterAsync;
     private boolean isOptimizeInit;
     private boolean isAutoRegisterModule;
@@ -30,6 +31,7 @@ public class Config {
 
     private Config(@NonNull Builder builder) {
         this.application = builder.application;
+        this.isErrorCheck = builder.isErrorCheck;
         this.isInitRouterAsync = builder.isInitRouterAsync;
         this.isOptimizeInit = builder.isOptimizeInit;
         this.isAutoRegisterModule = builder.isAutoRegisterModule;
@@ -49,6 +51,10 @@ public class Config {
     @NonNull
     public String getDefaultScheme() {
         return defaultScheme;
+    }
+
+    public boolean isErrorCheck() {
+        return isErrorCheck;
     }
 
     public boolean isInitRouterAsync() {
@@ -93,6 +99,8 @@ public class Config {
 
         private Application application;
         private String defaultScheme = "router";
+        // 是否进行检查, 默认是打开的, 仅在 debug 的时候有效
+        private boolean isErrorCheck = true;
         private boolean isInitRouterAsync = false;
         private boolean isOptimizeInit = false;
         private boolean isAutoRegisterModule = false;
@@ -100,7 +108,7 @@ public class Config {
         private boolean isUseRouteRepeatCheckInterceptor = true;
         private long routeRepeatCheckDuration = 1000;
         private ObjectToJsonConverter objectToJsonConverter;
-        private long notifyModuleChangedDelayTime = 800L;
+        private long notifyModuleChangedDelayTime = 0L;
 
         /*标记是否已经使用*/
         private boolean isUsed = false;
@@ -118,6 +126,11 @@ public class Config {
 
         public Builder initRouterAsync(boolean isInitRouterAsync) {
             this.isInitRouterAsync = isInitRouterAsync;
+            return this;
+        }
+
+        public Builder errorCheck(boolean isCheck) {
+            this.isErrorCheck = isCheck;
             return this;
         }
 

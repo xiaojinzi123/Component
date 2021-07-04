@@ -92,7 +92,7 @@ public class RouterDegradeProcessor extends BaseHostProcessor {
     }
 
     private void createImpl() {
-        String claName = ComponentUtil.genHostRouterDegradeClassName(componentHost);
+        String claName = ComponentUtil.genHostRouterDegradeClassName(componentModuleName);
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf('.'));
         //simpleName
@@ -106,7 +106,7 @@ public class RouterDegradeProcessor extends BaseHostProcessor {
                 .addAnnotation(mClassNameComponentGeneratedAnno)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
-                .addJavadoc(componentHost + "路由降级的模块\n")
+                .addJavadoc(componentModuleName + "路由降级的模块\n")
                 .superclass(superClass)
                 .addMethod(initHostMethod)
                 .addMethod(initListMethod)
@@ -128,7 +128,7 @@ public class RouterDegradeProcessor extends BaseHostProcessor {
                 .returns(returnType)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
-        openUriMethodSpecBuilder.addStatement("return $S", componentHost);
+        openUriMethodSpecBuilder.addStatement("return $S", componentModuleName);
         return openUriMethodSpecBuilder.build();
 
     }

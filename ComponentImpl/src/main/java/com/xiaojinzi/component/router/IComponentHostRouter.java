@@ -16,7 +16,13 @@ import java.util.Map;
 public interface IComponentHostRouter extends IHost {
 
     /**
-     * 获取路由表,用于检查
+     * 获取正则匹配的路由表
+     */
+    @NonNull
+    Map<String, RouterBean> getRegExRouterMap();
+
+    /**
+     * 获取路由表
      */
     @NonNull
     Map<String, RouterBean> getRouterMap();

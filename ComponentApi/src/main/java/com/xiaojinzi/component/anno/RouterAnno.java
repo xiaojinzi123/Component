@@ -26,6 +26,17 @@ import java.lang.annotation.Target;
 public @interface RouterAnno {
 
     /**
+     * 这个这个值设置了
+     * host 和 path 就不会起作用了
+     */
+    String regex() default "";
+
+    /**
+     * 定义 scheme, 如果不写, 就是默认的
+     */
+    String scheme() default "";
+
+    /**
      * 定义host
      */
     String host() default "";

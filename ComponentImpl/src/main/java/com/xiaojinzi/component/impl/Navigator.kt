@@ -1138,8 +1138,7 @@ open class Navigator : RouterRequest.Builder, Call {
             }
             val currentUri = chain.request().uri
             val isSameTarget = if (mBeforePageInterceptorUri != null) {
-                RouterCenter
-                        .getInstance()
+                RouterCenter.getInstance()
                         .isSameTarget(mBeforePageInterceptorUri, currentUri)
             } else {
                 false

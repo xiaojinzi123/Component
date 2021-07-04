@@ -33,6 +33,7 @@ public class Utils {
     private static final String STR_CAN_NOT_BE_NULL = "' can't be null";
     private static final String MAIN_THREAD_ERROR_MSG = "Component mainThreadCall method timeout, A deadlock was happened. see: https://github.com/xiaojinzi123/Component/issues/79";
     private static final long MAIN_THREAD_TIME_OUT = 3000;
+
     // 单线程的线程池
     private static final ExecutorService workPool = Executors.newSingleThreadExecutor();
 

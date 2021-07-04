@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.impl.interceptor;
 
+import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -166,9 +167,8 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     }
 
     @Nullable
-    @UiThread
+    @AnyThread
     public IComponentHostInterceptor findModuleInterceptor(String host) {
-        Utils.checkMainThread();
         try {
             if (Component.getConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleInterceptorAsmImpl(

@@ -19,11 +19,13 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
@@ -97,7 +99,9 @@ public class RouterProcessor extends BaseHostProcessor {
         return false;
     }
 
-    private final Map<String, RouterAnnoBean> routerMap = new HashMap<>();
+    private final String checkScheme = "__checkScheme__";
+    private final Set<String> routerCheckMap = new HashSet<>();
+    private final Set<RouterAnnoBean> routerMap = new HashSet<>();
 
     /**
      * 解析注解
@@ -111,11 +115,24 @@ public class RouterProcessor extends BaseHostProcessor {
                 continue;
             }
             final RouterAnnoBean routerBean = toRouterAnnoBean(element, router);
-            // 如果重复就抛出异常
-            if (routerMap.containsKey(routerBean.hostAndPath())) {
-                throw new ProcessException("the url value '" + routerBean.hostAndPath() + "' of " + element + " is alreay exist");
+            String scheme = routerBean.getScheme();
+            if (scheme == null || "".equals(scheme)) {
+                scheme = checkScheme;
             }
-            routerMap.put(routerBean.hostAndPath(), routerBean);
+            String checkKey = scheme + "://" + routerBean.hostAndPath();
+            if (routerCheckMap.contains(checkKey)) {
+                if (checkScheme.equals(scheme)) {
+                    throw new ProcessException("the uri '" + routerBean.hostAndPath() + "' of " + element + " is already exist");
+                } else {
+                    throw new ProcessException("the uri '" + checkKey + "' of " + element + " is already exist");
+                }
+            }
+            routerCheckMap.add(checkKey);
+            // 如果重复就抛出异常, 加上 scheme 之后, 这个逻辑不成立了, 可能相同的 hostAndPath, 但是 scheme 不同
+            /*if (routerMap.containsKey(routerBean.hostAndPath())) {
+                throw new ProcessException("the url value '" + routerBean.hostAndPath() + "' of " + element + " is alreay exist");
+            }*/
+            routerMap.add(routerBean);
         }
     }
 
@@ -127,6 +144,9 @@ public class RouterProcessor extends BaseHostProcessor {
         }
 
         final RouterAnnoBean routerBean = new RouterAnnoBean();
+        routerBean.setRegex(routerAnno.regex());
+        routerBean.setScheme(routerAnno.scheme());
+
         String host = routerAnno.host();
         String path = routerAnno.path();
 
@@ -144,7 +164,7 @@ public class RouterProcessor extends BaseHostProcessor {
         }
         // 如果用户 host 没填
         if (host == null || host.isEmpty()) {
-            host = componentHost;
+            host = componentModuleName;
         }
         // 如果 path 没有 / 开头,会自动加一个
         if (path != null && path.length() > 0 && path.charAt(0) != '/') {
@@ -176,9 +196,9 @@ public class RouterProcessor extends BaseHostProcessor {
     }
 
     private void adjustInterceptorPriorities() {
-        routerMap.forEach(new BiConsumer<String, RouterAnnoBean>() {
+        routerMap.forEach(new Consumer<RouterAnnoBean>() {
             @Override
-            public void accept(String s, RouterAnnoBean value) {
+            public void accept(RouterAnnoBean value) {
 
                 int totalSize = 0;
 
@@ -238,7 +258,7 @@ public class RouterProcessor extends BaseHostProcessor {
      * 生成路由
      */
     private void createRouterImpl() {
-        final String claName = ComponentUtil.genHostRouterClassName(componentHost);
+        final String claName = ComponentUtil.genHostRouterClassName(componentModuleName);
         //pkg
         final String pkg = claName.substring(0, claName.lastIndexOf('.'));
         //simpleName
@@ -255,7 +275,7 @@ public class RouterProcessor extends BaseHostProcessor {
                 .superclass(superClass)
                 .addMethod(initHostMethod)
                 .addMethod(initMapMethod)
-                .addJavadoc(componentHost + "业务模块的路由表\n")
+                .addJavadoc(componentModuleName + "业务模块的路由表\n")
                 .build();
         try {
             JavaFile.builder(pkg, typeSpec)
@@ -280,8 +300,7 @@ public class RouterProcessor extends BaseHostProcessor {
 
         int size = routerMap.size();
         List<RouterDocBean> result = new ArrayList<>(size);
-        for (Map.Entry<String, RouterAnnoBean> entry : routerMap.entrySet()) {
-            RouterAnnoBean routerAnnoBean = entry.getValue();
+        for (RouterAnnoBean routerAnnoBean : routerMap) {
             RouterDocBean item = new RouterDocBean();
             item.setHost(routerAnnoBean.getHost());
             item.setPath(routerAnnoBean.getPath());
@@ -307,7 +326,7 @@ public class RouterProcessor extends BaseHostProcessor {
         if (!routerDocJsonFolder.exists()) {
             routerDocJsonFolder.mkdirs();
         }
-        File file = new File(routerDocJsonFolder, componentHost + ".json");
+        File file = new File(routerDocJsonFolder, componentModuleName + ".json");
         if (file.exists()) {
             file.delete();
         }
@@ -324,9 +343,11 @@ public class RouterProcessor extends BaseHostProcessor {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
         initMapMethodSpecBuilder.addStatement("super.initMap()");
-        routerMap.forEach(new BiConsumer<String, RouterAnnoBean>() {
+        initMapMethodSpecBuilder.addComment("默认的 scheme");
+        initMapMethodSpecBuilder.addStatement("String defaultScheme = com.xiaojinzi.component.Component.getConfig().getDefaultScheme()");
+        routerMap.forEach(new Consumer<RouterAnnoBean>() {
             @Override
-            public void accept(String key, RouterAnnoBean routerBean) {
+            public void accept(RouterAnnoBean routerBean) {
                 // 生成变量的名字,每一个变量代表每一个目标界面的配置对象
                 String routerBeanName = "routerBean" + atomicInteger.incrementAndGet();
                 // 生成 Activity 的调用代码
@@ -366,8 +387,23 @@ public class RouterProcessor extends BaseHostProcessor {
                         );
                     }
                 }
-                // 存进 map 集合的代码
-                initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
+                String regexStr = routerBean.getRegex();
+                // 如果不是正则匹配
+                if (regexStr == null || "".equals(regexStr)) {
+                    String scheme = routerBean.getScheme();
+                    // 存进 map 集合的代码
+                    if (scheme == null || "".equals(scheme)) {
+                        initMapMethodSpecBuilder.addStatement(
+                                "routerBeanMap.put(defaultScheme + $S,$N)",
+                                "://" + routerBean.hostAndPath(), routerBeanName
+                        );
+                    } else  {
+                        String key = scheme + "://" + routerBean.hostAndPath();
+                        initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
+                    }
+                } else {
+                    initMapMethodSpecBuilder.addStatement("regExRouterBeanMap.put($S,$N)", regexStr, routerBeanName);
+                }
                 initMapMethodSpecBuilder.addCode("\n");
             }
         });
@@ -383,7 +419,7 @@ public class RouterProcessor extends BaseHostProcessor {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC);
 
-        openUriMethodSpecBuilder.addStatement("return $S", componentHost);
+        openUriMethodSpecBuilder.addStatement("return $S", componentModuleName);
         return openUriMethodSpecBuilder.build();
 
     }
@@ -411,7 +447,7 @@ public class RouterProcessor extends BaseHostProcessor {
         }
         // 如果用户 host 没填
         if (host == null || host.isEmpty()) {
-            host = componentHost;
+            host = componentModuleName;
         }
         // 如果 path 没有 / 开头,会自动加一个
         if (path != null && path.length() > 0 && path.charAt(0) != '/') {
