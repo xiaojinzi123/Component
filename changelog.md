@@ -1,4 +1,4 @@
-#### [v1.9.1(待发版)](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.1)
+#### [v1.9.1-beta1](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.1)
 - 修复 @ServiceAnno 的 autoInit 属性不支持填写了 name 的类
 - uri 中的 scheme 正式开始起作用, 升级之后, 兼容之前的版本, 只不过如果用之前版本发布的业务 module 需要更新版本并且重新发布
 - RouterAnno 支持正则表达式, 用来支持 http://xxx/xxx 之类的跳转会更加的方便
