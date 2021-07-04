@@ -64,7 +64,7 @@ public class AppModuleApplication implements IApplicationLifecycle, IModuleNotif
 
     @Override
     public void onModuleChanged(@NonNull Application app) {
-        LogUtil.loge("模块发生变化啦");
+        LogUtil.loge("'模块发生变化啦");
     }
 
 }

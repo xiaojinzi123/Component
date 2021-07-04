@@ -224,7 +224,6 @@ public class ModuleManager implements IComponentCenterApplication {
             @Override
             public void run() {
                 // 说明没有改变过
-                System.out.println("模块发生变化啦 compareValue = " + compareValue);
                 if (compareValue == Utils.COUNTER.get()) {
                     // LogUtil.loge("通知 " + compareValue);
                     doNotifyModuleChanged();
