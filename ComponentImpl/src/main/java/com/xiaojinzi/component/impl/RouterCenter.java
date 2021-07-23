@@ -264,8 +264,7 @@ public class RouterCenter implements IComponentCenterRouter {
     @Override
     public synchronized List<RouterInterceptor> listPageInterceptors(@NonNull Uri uri) {
         // 获取目标对象
-        final String targetUrl = getTargetUrl(uri);
-        final RouterBean routerBean = routerMap.get(targetUrl);
+        final RouterBean routerBean = getTarget(uri);
         if (routerBean == null) {
             return Collections.emptyList();
         }
@@ -313,23 +312,6 @@ public class RouterCenter implements IComponentCenterRouter {
     @Override
     public synchronized List<RouterInterceptor> listDegradeInterceptors(@NonNull Uri uri) throws Exception {
         return Collections.emptyList();
-    }
-
-    /**
-     * 获取url地址
-     */
-    @Nullable
-    private String getTargetUrl(@NonNull Uri uri) {
-        // "/component1/test" 不含host
-        String targetPath = uri.getPath();
-        if (targetPath == null || targetPath.isEmpty()) {
-            return null;
-        }
-        if (targetPath.charAt(0) != '/') {
-            targetPath = SEPARATOR + targetPath;
-        }
-        targetPath = uri.getHost() + targetPath;
-        return targetPath;
     }
 
     @Nullable
