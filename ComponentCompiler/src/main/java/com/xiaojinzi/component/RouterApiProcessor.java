@@ -58,7 +58,7 @@ import javax.lang.model.type.TypeMirror;
  * 支持基本版本和 Rx 版本
  */
 @AutoService(Processor.class)
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 // 针对指定注解起作用
 @SupportedAnnotationTypes({ComponentUtil.ROUTERAPIANNO_CLASS_NAME})
 public class RouterApiProcessor extends BaseProcessor {
@@ -536,7 +536,7 @@ public class RouterApiProcessor extends BaseProcessor {
             args.add(fragmentParameter.getSimpleName().toString());
         } else {
             args.add("");
-            // throw new ProcessException("do you forget to add a 'Context' or 'Activity' or 'android.support.v4.app.Fragment' parameter to method(" + methodPath + ") ?");
+            // throw new ProcessException("do you forget to add a 'Context' or 'Activity' or 'androidx.fragment.app.Fragment' parameter to method(" + methodPath + ") ?");
         }
 
         if (userInfo != null) {

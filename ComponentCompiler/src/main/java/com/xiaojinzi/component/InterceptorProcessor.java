@@ -44,7 +44,7 @@ import javax.tools.Diagnostic;
  */
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 // 支持全局拦截器和局部拦截器的处理
 @SupportedAnnotationTypes({ComponentUtil.GLOBAL_INTERCEPTOR_ANNO_CLASS_NAME, ComponentUtil.INTERCEPTOR_ANNO_CLASS_NAME})
 public class InterceptorProcessor extends BaseHostProcessor {

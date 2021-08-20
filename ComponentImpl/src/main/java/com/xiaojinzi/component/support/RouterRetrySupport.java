@@ -1,6 +1,7 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.anno.RetryAnno;
 import com.xiaojinzi.component.impl.RouterInterceptor;

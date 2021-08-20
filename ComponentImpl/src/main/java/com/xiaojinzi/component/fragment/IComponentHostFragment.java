@@ -1,7 +1,8 @@
 package com.xiaojinzi.component.fragment;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 
 import com.xiaojinzi.component.support.IBaseLifecycle;
 import com.xiaojinzi.component.support.IHost;

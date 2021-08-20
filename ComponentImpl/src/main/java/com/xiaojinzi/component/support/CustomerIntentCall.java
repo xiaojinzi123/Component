@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.support;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;

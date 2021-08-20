@@ -1,5 +1,16 @@
 signature 是签名文件, 文件的密码都是 123456, 或者 xiaojinzi
 
+java8 的支持修改点：
+- 注解驱动器上的 @SupportedSourceVersion 注解 RELEASE_7 更换为 RELEASE_8
+- ComponentCompiler 模块的 sourceCompatibility = "8" 和 targetCompatibility = "8" 修改
+- 各个模块添加如下代码：
+```
+compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+}
+```
+
 发布的时候分支合并操作流程
 develop -> master
 master -> master-java8

@@ -1,8 +1,8 @@
 package com.xiaojinzi.componentdemo.view;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentTransaction;
 import android.widget.FrameLayout;
 
 import com.xiaojinzi.base.ModuleConfig;

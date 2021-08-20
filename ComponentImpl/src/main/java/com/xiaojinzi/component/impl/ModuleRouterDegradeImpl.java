@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.impl;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.bean.RouterDegradeBean;
 import com.xiaojinzi.component.router.IComponentHostRouterDegrade;

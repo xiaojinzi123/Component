@@ -1,7 +1,7 @@
 package com.xiaojinzi.component2.view
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.xiaojinzi.component.anno.RouterAnno
 import com.xiaojinzi.component2.R
 

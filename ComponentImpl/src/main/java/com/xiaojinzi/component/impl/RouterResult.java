@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.impl;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.support.Utils;
 

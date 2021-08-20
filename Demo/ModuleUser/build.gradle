@@ -29,6 +29,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
 }
 
 dependencies {
@@ -36,7 +41,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':Demo:ModuleBase')
     if (rootProject.ext.isDependMavenOnline) {
-        annotationProcessor libs.component_compiler
+        annotationProcessor androidxLibs.component_compiler
     } else {
         annotationProcessor project(':ComponentCompiler')
     }

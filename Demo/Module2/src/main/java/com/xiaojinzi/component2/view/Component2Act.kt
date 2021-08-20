@@ -1,6 +1,7 @@
 package com.xiaojinzi.component2.view
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Parcelable
 import android.util.SparseArray
 import com.xiaojinzi.base.ModuleConfig

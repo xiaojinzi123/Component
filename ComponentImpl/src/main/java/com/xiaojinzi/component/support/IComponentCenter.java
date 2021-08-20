@@ -1,7 +1,7 @@
 package com.xiaojinzi.component.support;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 
 /**
  * 模块管理中心注册的类

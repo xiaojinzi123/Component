@@ -1,8 +1,8 @@
 package com.xiaojinzi.component.impl.application;
 
 import android.app.Application;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.application.IApplicationLifecycle;
@@ -73,5 +73,5 @@ abstract class ModuleApplicationImpl implements IComponentHostApplication {
             }
         }
     }
-    
+
 }

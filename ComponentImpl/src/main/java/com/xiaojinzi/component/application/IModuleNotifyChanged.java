@@ -1,8 +1,9 @@
 package com.xiaojinzi.component.application;
 
 import android.app.Application;
-import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 
 @UiThread
 public interface IModuleNotifyChanged {

@@ -2,8 +2,9 @@ package com.xiaojinzi.component.support;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.xiaojinzi.component.ComponentActivityStack;
 import com.xiaojinzi.component.impl.ProxyIntentBuilder;

@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.router;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.bean.RouterBean;
 import com.xiaojinzi.component.support.IHost;

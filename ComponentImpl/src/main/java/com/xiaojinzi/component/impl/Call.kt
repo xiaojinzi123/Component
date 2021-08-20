@@ -2,8 +2,8 @@ package com.xiaojinzi.component.impl
 
 import android.app.Activity
 import android.content.Intent
-import android.support.annotation.AnyThread
-import android.support.annotation.CheckResult
+import androidx.annotation.AnyThread
+import androidx.annotation.CheckResult
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno
 import com.xiaojinzi.component.bean.ActivityResult
 import com.xiaojinzi.component.support.NavigationDisposable

@@ -2,7 +2,8 @@ package com.xiaojinzi.component1.service;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import android.widget.Toast;
 
 import com.xiaojinzi.base.service.inter.component1.Component1Service;

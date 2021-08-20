@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.impl.service;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.error.RxJavaException;
 import com.xiaojinzi.component.error.ServiceInvokeException;

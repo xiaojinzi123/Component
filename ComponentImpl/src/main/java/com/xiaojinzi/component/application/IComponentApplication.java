@@ -1,6 +1,6 @@
 package com.xiaojinzi.component.application;
 
-import android.support.annotation.UiThread;
+import androidx.annotation.UiThread;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 

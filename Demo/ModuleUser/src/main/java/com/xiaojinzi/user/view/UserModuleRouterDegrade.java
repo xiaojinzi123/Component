@@ -1,7 +1,8 @@
 package com.xiaojinzi.user.view;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.anno.RouterDegradeAnno;

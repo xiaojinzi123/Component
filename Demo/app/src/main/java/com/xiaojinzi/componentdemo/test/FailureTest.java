@@ -1,7 +1,7 @@
 package com.xiaojinzi.componentdemo.test;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.base.bean.User;

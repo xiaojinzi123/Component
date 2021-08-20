@@ -26,6 +26,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
 }
 
 dependencies {
@@ -34,16 +39,16 @@ dependencies {
 
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    api libs.appcompat_v7
-    api libs.constraintLayout
+    api androidxLibs.appcompat
+    api androidxLibs.constraintLayout
     api libs.rxjava
     api libs.rxandroid
     api libs.gson
 
     if (rootProject.ext.isDependMavenOnline) {
-        api libs.component_impl_ktx
-        api libs.component_impl_rx
-        annotationProcessor libs.component_compiler
+        api androidxLibs.component_impl_ktx
+        api androidxLibs.component_impl_rx
+        annotationProcessor androidxLibs.component_compiler
     } else {
         api project(':ComponentKtImpl')
         api project(':ComponentRxImpl')
