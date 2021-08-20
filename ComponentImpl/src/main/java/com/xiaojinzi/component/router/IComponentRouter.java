@@ -1,7 +1,9 @@
 package com.xiaojinzi.component.router;
 
+import android.content.Intent;
 import android.net.Uri;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.xiaojinzi.component.impl.RouterInterceptor;
@@ -24,8 +26,9 @@ public interface IComponentRouter {
      *
      * @throws android.content.ActivityNotFoundException
      */
+    @Nullable
     @UiThread
-    void openUri(@NonNull RouterRequest routerRequest) throws Exception;
+    Intent openUri(@NonNull RouterRequest routerRequest) throws Exception;
 
     /**
      * Note: 不对外公开使用！

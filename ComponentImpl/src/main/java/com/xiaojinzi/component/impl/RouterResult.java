@@ -1,6 +1,9 @@
 package com.xiaojinzi.component.impl;
 
+import android.content.Intent;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.support.Utils;
 
@@ -26,14 +29,29 @@ public class RouterResult {
     private final RouterRequest mFinalRequest;
 
     /**
+     * 如果是跳转为了目标的 Intent
+     */
+    @Nullable
+    private final Intent mTargetIntent;
+
+    /**
      * @param originalRequest 最原始的请求
      * @param finalRequest    可能修改过的请求,也可能是和原始请求一样
      */
     public RouterResult(@NonNull RouterRequest originalRequest, @NonNull RouterRequest finalRequest) {
+        this(originalRequest, finalRequest, null);
+    }
+
+    /**
+     * @param originalRequest 最原始的请求
+     * @param finalRequest    可能修改过的请求,也可能是和原始请求一样
+     */
+    public RouterResult(@NonNull RouterRequest originalRequest, @NonNull RouterRequest finalRequest, @Nullable Intent targetIntent) {
         Utils.checkNullPointer(originalRequest);
         Utils.checkNullPointer(finalRequest);
         this.mOriginalRequest = originalRequest;
         this.mFinalRequest = finalRequest;
+        this.mTargetIntent = targetIntent;
     }
 
     /**
@@ -52,6 +70,11 @@ public class RouterResult {
     @NonNull
     public RouterRequest getFinalRequest() {
         return mFinalRequest;
+    }
+
+    @Nullable
+    public Intent getTargetIntent() {
+        return mTargetIntent;
     }
 
 }

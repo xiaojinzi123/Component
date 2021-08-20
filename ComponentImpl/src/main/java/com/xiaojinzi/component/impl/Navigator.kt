@@ -152,7 +152,8 @@ open class Navigator : RouterRequest.Builder, Call {
         val reqBundle = bundle.getBundle(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_BUNDLE)
         val reqOptions = bundle.getBundle(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_OPTIONS)
         val reqFlags = bundle.getIntegerArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_FLAGS)
-        val reqCategories = bundle.getStringArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_CATEGORIES)
+        val reqCategories =
+            bundle.getStringArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_CATEGORIES)
         super.url(reqUrl!!)
         super.putAll(reqBundle!!)
         super.options(reqOptions)
@@ -386,7 +387,10 @@ open class Navigator : RouterRequest.Builder, Call {
         return this
     }
 
-    override fun putSparseParcelableArray(key: String, value: SparseArray<out Parcelable>?): Navigator {
+    override fun putSparseParcelableArray(
+        key: String,
+        value: SparseArray<out Parcelable>?
+    ): Navigator {
         super.putSparseParcelableArray(key, value)
         return this
     }
@@ -438,8 +442,10 @@ open class Navigator : RouterRequest.Builder, Call {
         // 现在可以检测 requestCode 是否重复
         val isExist = Help.isExist(routerRequest)
         if (isExist) { // 如果存在直接返回错误给 callback
-            throw NavigationFailException("request&result code is " +
-                    routerRequest.requestCode + " is exist!")
+            throw NavigationFailException(
+                "request&result code is " +
+                        routerRequest.requestCode + " is exist!"
+            )
         }
         return routerRequest
     }
@@ -466,28 +472,28 @@ open class Navigator : RouterRequest.Builder, Call {
     private fun onCheckForResult() {
         if (context == null && fragment == null) {
             throw NavigationFailException(
-                    NullPointerException(
-                            "Context or Fragment is necessary if you want get ActivityResult"
-                    )
+                NullPointerException(
+                    "Context or Fragment is necessary if you want get ActivityResult"
+                )
             )
         }
         // 如果是使用 Context 的,那么就必须是 FragmentActivity,需要操作 Fragment
         // 这里的 context != null 判断条件不能去掉,不然使用 Fragment 跳转的就过不去了
         if (context != null && Utils.getActivityFromContext(context) !is FragmentActivity) {
             throw NavigationFailException(
-                    IllegalArgumentException(
-                            "context must be FragmentActivity or fragment must not be null " +
-                                    "when you want get ActivityResult from target Activity"
-                    )
+                IllegalArgumentException(
+                    "context must be FragmentActivity or fragment must not be null " +
+                            "when you want get ActivityResult from target Activity"
+                )
             )
         }
         if (requestCode == null) {
             throw NavigationFailException(
-                    NullPointerException(
-                            "requestCode must not be null when you want get ActivityResult from target Activity, " +
-                                    "if you use code, do you forget call requestCodeRandom() or requestCode(Integer). " +
-                                    "if you use routerApi, do you forget mark method or parameter with @RequestCodeAnno() Annotation"
-                    )
+                NullPointerException(
+                    "requestCode must not be null when you want get ActivityResult from target Activity, " +
+                            "if you use code, do you forget call requestCodeRandom() or requestCode(Integer). " +
+                            "if you use routerApi, do you forget mark method or parameter with @RequestCodeAnno() Annotation"
+                )
             )
         }
     }
@@ -519,6 +525,18 @@ open class Navigator : RouterRequest.Builder, Call {
         })
     }
 
+    @AnyThread
+    @SuppressLint("CheckResult")
+    override fun forwardForTargetIntent(callback: BiCallback<Intent>) {
+        navigateForTargetIntent(callback)
+    }
+
+    @AnyThread
+    @CheckResult
+    override fun navigateForTargetIntent(callback: BiCallback<Intent>): NavigationDisposable {
+        return realNavigateForTargetIntent(callback)
+    }
+
     /**
      * 为了拿到 [ActivityResult.resultCode]
      *
@@ -527,7 +545,8 @@ open class Navigator : RouterRequest.Builder, Call {
     @AnyThread
     @SuppressLint("CheckResult")
     override fun forwardForResultCodeMatch(
-            @UiThread callback: Callback, expectedResultCode: Int) {
+        @UiThread callback: Callback, expectedResultCode: Int
+    ) {
         navigateForResultCodeMatch(callback, expectedResultCode)
     }
 
@@ -539,13 +558,19 @@ open class Navigator : RouterRequest.Builder, Call {
     @AnyThread
     @CheckResult
     override fun navigateForResultCodeMatch(
-            @UiThread callback: Callback, expectedResultCode: Int): NavigationDisposable {
+        @UiThread callback: Callback, expectedResultCode: Int
+    ): NavigationDisposable {
         return navigateForResult(object : BiCallback<ActivityResult> {
             override fun onSuccess(result: RouterResult, activityResult: ActivityResult) {
                 if (expectedResultCode == activityResult.resultCode) {
                     callback.onSuccess(result)
                 } else {
-                    callback.onError(RouterErrorResult(result.originalRequest, ActivityResultException("the resultCode is not matching $expectedResultCode")))
+                    callback.onError(
+                        RouterErrorResult(
+                            result.originalRequest,
+                            ActivityResultException("the resultCode is not matching $expectedResultCode")
+                        )
+                    )
                 }
             }
 
@@ -567,8 +592,8 @@ open class Navigator : RouterRequest.Builder, Call {
     @AnyThread
     @SuppressLint("CheckResult")
     override fun forwardForIntentAndResultCodeMatch(
-            @UiThread callback: BiCallback<Intent>,
-            expectedResultCode: Int
+        @UiThread callback: BiCallback<Intent>,
+        expectedResultCode: Int
     ) {
         navigateForIntentAndResultCodeMatch(callback, expectedResultCode)
     }
@@ -581,8 +606,8 @@ open class Navigator : RouterRequest.Builder, Call {
     @AnyThread
     @CheckResult
     override fun navigateForIntentAndResultCodeMatch(
-            @UiThread callback: BiCallback<Intent>,
-            expectedResultCode: Int
+        @UiThread callback: BiCallback<Intent>,
+        expectedResultCode: Int
     ): NavigationDisposable {
         return navigateForResult(object : BiCallback.Map<ActivityResult, Intent>(callback) {
             @Throws(Exception::class)
@@ -638,7 +663,7 @@ open class Navigator : RouterRequest.Builder, Call {
     @AnyThread
     @CheckResult
     override fun navigateForResult(
-            @UiThread callback: BiCallback<ActivityResult>
+        @UiThread callback: BiCallback<ActivityResult>
     ): NavigationDisposable {
         Utils.checkNullPointer(callback, "callback")
         return realNavigateForResult(callback)
@@ -764,6 +789,23 @@ open class Navigator : RouterRequest.Builder, Call {
         return proxyDisposable
     }
 
+    @AnyThread
+    @CheckResult
+    private fun realNavigateForTargetIntent(callback: BiCallback<Intent>): NavigationDisposable {
+        Utils.checkNullPointer(callback, "callback")
+        val proxyDisposable = ProxyNavigationDisposableImpl()
+        // 主线程执行
+        Utils.postActionToMainThread(Runnable { // 这里这个情况属于没开始就被取消了
+            if (proxyDisposable.isCanceled) {
+                RouterUtil.cancelCallback(null, callback)
+                return@Runnable
+            }
+            val realDisposable = doNavigateForTargetIntent(callback)
+            proxyDisposable.setProxy(realDisposable)
+        })
+        return proxyDisposable
+    }
+
     /**
      * 必须在主线程中调用,就这里可能会出现一种特殊的情况：
      * 用户收到的回调可能是 error,但是全局的监听可能是 cancel,其实这个问题也能解决,
@@ -791,12 +833,16 @@ open class Navigator : RouterRequest.Builder, Call {
                 (Utils.getActivityFromContext(context) as FragmentActivity?)!!.supportFragmentManager
             }
             // 寻找是否添加过 Fragment
-            var findRxFragment = fm.findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG) as RouterFragment?
+            var findRxFragment =
+                fm.findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG) as RouterFragment?
             if (findRxFragment == null) {
                 findRxFragment = RouterFragment()
                 fm.beginTransaction()
-                        .add(findRxFragment, ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG) // 这里必须使用 now 的形式, 否则连续的话立马就会new出来. 因为判断进来了
-                        .commitNowAllowingStateLoss()
+                    .add(
+                        findRxFragment,
+                        ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG
+                    ) // 这里必须使用 now 的形式, 否则连续的话立马就会new出来. 因为判断进来了
+                    .commitNowAllowingStateLoss()
             }
             val rxFragment: RouterFragment = findRxFragment
             // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
@@ -808,7 +854,7 @@ open class Navigator : RouterRequest.Builder, Call {
                     super.onSuccess(routerResult)
                     // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
                     rxFragment.setActivityResultConsumer(
-                            routerResult.originalRequest
+                        routerResult.originalRequest
                     ) { result ->
                         Help.removeRequestCode(routerResult.originalRequest)
                         biCallbackWrap.onSuccess(routerResult, result)
@@ -845,8 +891,66 @@ open class Navigator : RouterRequest.Builder, Call {
                 // 因为上面路由发起了才能有 RouterRequest 对象, 然后这里检查到 requestCode 重复了
                 // 回调给用户的是 requestCode 重复的错误, 但是上面发起的路由还是得取消的. 不然就跳过去了
                 RouterUtil.errorCallback(
-                        null, biCallbackWrap,
-                        RouterErrorResult(finalNavigationDisposable.originalRequest(), e)
+                    null, biCallbackWrap,
+                    RouterErrorResult(finalNavigationDisposable.originalRequest(), e)
+                )
+                // 取消上面执行的路由
+                finalNavigationDisposable.cancel()
+            }
+            finalNavigationDisposable = null
+            Router.emptyNavigationDisposable
+        }
+    }
+
+    @UiThread
+    @CheckResult
+    private fun doNavigateForTargetIntent(biCallback: BiCallback<Intent>): NavigationDisposable {
+        // 直接 gg
+        Utils.checkNullPointer(biCallback, "biCallback")
+        // 标记此次是需要框架帮助获取目标 Intent 的
+        isForTargetIntent = true
+        // 做一个包裹实现至多只能调用一次内部的其中一个方法
+        val biCallbackWrap: BiCallback<Intent> = BiCallbackWrap(biCallback)
+        // disposable 对象
+        var finalNavigationDisposable: NavigationDisposable? = null
+        return try {
+            // 导航方法执行完毕之后,内部的数据就会清空,所以之前必须缓存
+            // 导航拿到 NavigationDisposable 对象
+            // 可能是一个 空实现
+            finalNavigationDisposable = navigate(object : CallbackAdapter() {
+                @UiThread
+                override fun onSuccess(routerResult: RouterResult) {
+                    super.onSuccess(routerResult)
+                    val targetIntent = routerResult.targetIntent
+                    if (targetIntent == null) {
+                        biCallbackWrap.onError(RouterErrorResult(routerResult.originalRequest, NavigationFailException("targetIntent is null")))
+                    } else {
+                        biCallbackWrap.onSuccess(routerResult, targetIntent)
+                    }
+                }
+
+                @UiThread
+                override fun onError(errorResult: RouterErrorResult) {
+                    super.onError(errorResult)
+                    // 这里为啥没有调用
+                    biCallbackWrap.onError(errorResult)
+                }
+
+                @UiThread
+                override fun onCancel(originalRequest: RouterRequest) {
+                    super.onCancel(originalRequest)
+                    biCallbackWrap.onCancel(originalRequest)
+                }
+            })
+            finalNavigationDisposable
+        } catch (e: Exception) {
+            // 没发起就不行了
+            if (finalNavigationDisposable == null) {
+                RouterUtil.errorCallback(null, biCallbackWrap, RouterErrorResult(e))
+            } else {
+                RouterUtil.errorCallback(
+                    null, biCallbackWrap,
+                    RouterErrorResult(finalNavigationDisposable.originalRequest(), e)
                 )
                 // 取消上面执行的路由
                 finalNavigationDisposable.cancel()
@@ -864,9 +968,11 @@ open class Navigator : RouterRequest.Builder, Call {
      * @param routerInterceptorCallback 回调对象
      */
     @UiThread
-    private fun realNavigate(originalRequest: RouterRequest,
-                             customInterceptors: List<Any>?,
-                             routerInterceptorCallback: RouterInterceptor.Callback) {
+    private fun realNavigate(
+        originalRequest: RouterRequest,
+        customInterceptors: List<Any>?,
+        routerInterceptorCallback: RouterInterceptor.Callback
+    ) {
 
         // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
         val allInterceptors: MutableList<RouterInterceptor> = ArrayList<RouterInterceptor>(10)
@@ -884,19 +990,19 @@ open class Navigator : RouterRequest.Builder, Call {
         }
         // 添加共有拦截器
         allInterceptors.addAll(
-                InterceptorCenter.getInstance().globalInterceptorList
+            InterceptorCenter.getInstance().globalInterceptorList
         )
         // 添加用户自定义的拦截器
         allInterceptors.addAll(
-                getCustomInterceptors(originalRequest, customInterceptors)
+            getCustomInterceptors(originalRequest, customInterceptors)
         )
         // 负责加载目标 Intent 的页面拦截器的拦截器. 此拦截器后不可再添加其他拦截器
         allInterceptors.add(PageInterceptor(originalRequest, allInterceptors))
 
         // 创建执行器
         val chain: RouterInterceptor.Chain = InterceptorChain(
-                allInterceptors, 0,
-                originalRequest, routerInterceptorCallback
+            allInterceptors, 0,
+            originalRequest, routerInterceptorCallback
         )
         // 执行
         chain.proceed(originalRequest)
@@ -908,14 +1014,15 @@ open class Navigator : RouterRequest.Builder, Call {
      * 内部的错误成功额方法可以调用 N 次
      */
     private class InterceptorCallback(
-            /**
-             * 最原始的请求,用户构建的,不会更改的
-             */
-            private val mOriginalRequest: RouterRequest,
-            /**
-             * 用户的回调
-             */
-            private val mCallback: Callback?) : NavigationDisposable, RouterInterceptor.Callback {
+        /**
+         * 最原始的请求,用户构建的,不会更改的
+         */
+        private val mOriginalRequest: RouterRequest,
+        /**
+         * 用户的回调
+         */
+        private val mCallback: Callback?
+    ) : NavigationDisposable, RouterInterceptor.Callback {
         /**
          * 标记是否完成,出错或者成功都算是完成了,不能再继续调用了
          */
@@ -993,15 +1100,15 @@ open class Navigator : RouterRequest.Builder, Call {
      * @param mCallback     这个是拦截器的回调,这个用户不能自定义,一直都是一个对象
      */
     open class InterceptorChain(
-            private val mInterceptors: List<RouterInterceptor?>,
-            private val mIndex: Int,
-            /**
-             * 每一个拦截器执行器 [RouterInterceptor.Chain]
-             * 都会有上一个拦截器给的 request 对象或者初始化的一个 request,用于在下一个拦截器
-             * 中获取到 request 对象,并且支持拦截器自定义修改 request 对象或者直接创建一个新的传给下一个拦截器执行器
-             */
-            private val mRequest: RouterRequest,
-            private val mCallback: RouterInterceptor.Callback
+        private val mInterceptors: List<RouterInterceptor?>,
+        private val mIndex: Int,
+        /**
+         * 每一个拦截器执行器 [RouterInterceptor.Chain]
+         * 都会有上一个拦截器给的 request 对象或者初始化的一个 request,用于在下一个拦截器
+         * 中获取到 request 对象,并且支持拦截器自定义修改 request 对象或者直接创建一个新的传给下一个拦截器执行器
+         */
+        private val mRequest: RouterRequest,
+        private val mCallback: RouterInterceptor.Callback
     ) : RouterInterceptor.Chain {
 
         /**
@@ -1057,20 +1164,30 @@ open class Navigator : RouterRequest.Builder, Call {
                     ++calls
                     when {
                         isCompletedProcess() -> {
-                            callback().onError(NavigationFailException(IndexOutOfBoundsException(
-                                    "size = " + mInterceptors.size + ",index = " + mIndex)))
+                            callback().onError(
+                                NavigationFailException(
+                                    IndexOutOfBoundsException(
+                                        "size = " + mInterceptors.size + ",index = " + mIndex
+                                    )
+                                )
+                            )
                         }
                         calls > 1 -> { // 调用了两次
-                            callback().onError(NavigationFailException(
+                            callback().onError(
+                                NavigationFailException(
                                     "interceptor " + mInterceptors[mIndex - 1]
-                                            + " must call proceed() exactly once"))
+                                            + " must call proceed() exactly once"
+                                )
+                            )
                         }
                         else -> {
                             // current Interceptor
                             val interceptor = mInterceptors[mIndex]
                             // 当拦截器最后一个的时候,就不是这个类了,是 DoActivityStartInterceptor 了
-                            val next = InterceptorChain(mInterceptors, mIndex + 1,
-                                    request, callback)
+                            val next = InterceptorChain(
+                                mInterceptors, mIndex + 1,
+                                request, callback
+                            )
                             // 提前同步 Query 到 Bundle
                             next.request().syncUriToBundle()
                             // 用户自定义的部分,必须在主线程
@@ -1092,8 +1209,8 @@ open class Navigator : RouterRequest.Builder, Call {
      */
     @UiThread
     private class PageInterceptor(
-            private val mOriginalRequest: RouterRequest,
-            private val mAllInterceptors: MutableList<RouterInterceptor>
+        private val mOriginalRequest: RouterRequest,
+        private val mAllInterceptors: MutableList<RouterInterceptor>
     ) : RouterInterceptor {
         @Throws(Exception::class)
         override fun intercept(chain: RouterInterceptor.Chain) {
@@ -1102,13 +1219,13 @@ open class Navigator : RouterRequest.Builder, Call {
             // 导致最终跳转的界面和你拿到的页面拦截器不匹配,所以这里一定是拿上一个拦截器传给你的 request 对象
             val targetPageInterceptors = RouterCenter.getInstance().listPageInterceptors(currentUri)
             mAllInterceptors.add(
-                    PageInterceptorUriCheckInterceptor(
-                            mOriginalRequest,
-                            mAllInterceptors,
-                            currentUri,
-                            targetPageInterceptors,
-                            0
-                    )
+                PageInterceptorUriCheckInterceptor(
+                    mOriginalRequest,
+                    mAllInterceptors,
+                    currentUri,
+                    targetPageInterceptors,
+                    0
+                )
             )
             // 执行下一个拦截器,正好是上面代码添加的拦截器
             chain.proceed(chain.request())
@@ -1122,24 +1239,29 @@ open class Navigator : RouterRequest.Builder, Call {
      * 就可以加载 [DoActivityStartInterceptor] 执行跳转了.
      */
     @UiThread
-    private class PageInterceptorUriCheckInterceptor(private val mOriginalRequest: RouterRequest,
-                                                     private val mAllInterceptors: MutableList<RouterInterceptor>,
-                                                     /**
-                                                      * 进入页面拦截器之前的 [Uri]
-                                                      */
-                                                     private val mBeforePageInterceptorUri: Uri?,
-                                                     private val mPageInterceptors: List<RouterInterceptor>?,
-                                                     private var mPageIndex: Int) : RouterInterceptor {
+    private class PageInterceptorUriCheckInterceptor(
+        private val mOriginalRequest: RouterRequest,
+        private val mAllInterceptors: MutableList<RouterInterceptor>,
+        /**
+         * 进入页面拦截器之前的 [Uri]
+         */
+        private val mBeforePageInterceptorUri: Uri?,
+        private val mPageInterceptors: List<RouterInterceptor>?,
+        private var mPageIndex: Int
+    ) : RouterInterceptor {
         @Throws(Exception::class)
         override fun intercept(chain: RouterInterceptor.Chain) {
             if (mPageIndex < 0) {
-                throw NavigationFailException(IndexOutOfBoundsException(
-                        "size = " + mPageInterceptors!!.size + ",index = " + mPageIndex))
+                throw NavigationFailException(
+                    IndexOutOfBoundsException(
+                        "size = " + mPageInterceptors!!.size + ",index = " + mPageIndex
+                    )
+                )
             }
             val currentUri = chain.request().uri
             val isSameTarget = if (mBeforePageInterceptorUri != null) {
                 RouterCenter.getInstance()
-                        .isSameTarget(mBeforePageInterceptorUri, currentUri)
+                    .isSameTarget(mBeforePageInterceptorUri, currentUri)
             } else {
                 false
             }
@@ -1154,10 +1276,10 @@ open class Navigator : RouterRequest.Builder, Call {
                 } else {
                     mAllInterceptors.add(mPageInterceptors[mPageIndex])
                     mAllInterceptors.add(
-                            PageInterceptorUriCheckInterceptor(
-                                    mOriginalRequest, mAllInterceptors, mBeforePageInterceptorUri,
-                                    mPageInterceptors, ++mPageIndex
-                            )
+                        PageInterceptorUriCheckInterceptor(
+                            mOriginalRequest, mAllInterceptors, mBeforePageInterceptorUri,
+                            mPageInterceptors, ++mPageIndex
+                        )
                     )
                 }
             } else {
@@ -1175,7 +1297,8 @@ open class Navigator : RouterRequest.Builder, Call {
      * 如果失败了进行降级处理
      */
     @UiThread
-    private class DoActivityStartInterceptor(private val mOriginalRequest: RouterRequest) : RouterInterceptor {
+    private class DoActivityStartInterceptor(private val mOriginalRequest: RouterRequest) :
+        RouterInterceptor {
         /**
          * @param chain 拦截器执行连接器
          * @throws Exception
@@ -1187,31 +1310,34 @@ open class Navigator : RouterRequest.Builder, Call {
             val finalRequest = chain.request()
             // 执行真正路由跳转回出现的异常
             var routeException: Exception? = null
-            try {
+            val targetIntent: Intent? = try {
                 // 真正执行跳转的逻辑, 失败的话, 备用计划就会启动
                 RouterCenter.getInstance().openUri(finalRequest)
             } catch (e: Exception) { // 错误的话继续下一个拦截器
                 routeException = e
                 // 继续下一个拦截器
                 chain.proceed(finalRequest)
+                null
             }
             // 如果正常跳转成功需要执行下面的代码
             if (routeException == null) {
                 // 成功的回调
-                chain.callback().onSuccess(RouterResult(mOriginalRequest, finalRequest))
+                chain.callback()
+                    .onSuccess(RouterResult(mOriginalRequest, finalRequest, targetIntent))
             } else {
                 try {
                     // 获取路由的降级处理类
                     val routerDegrade = getRouterDegrade(finalRequest)
-                            ?: // 抛出异常走 try catch 的逻辑
-                            throw NavigationFailException("degrade route fail, it's url is " + mOriginalRequest.uri.toString())
+                        ?: // 抛出异常走 try catch 的逻辑
+                        throw NavigationFailException("degrade route fail, it's url is " + mOriginalRequest.uri.toString())
                     // 降级跳转
-                    RouterCenter.getInstance().routerDegrade(
-                            finalRequest,
-                            routerDegrade.onDegrade(finalRequest)
+                    val targetIntent: Intent? = RouterCenter.getInstance().routerDegrade(
+                        finalRequest,
+                        routerDegrade.onDegrade(finalRequest)
                     )
                     // 成功的回调
-                    chain.callback().onSuccess(RouterResult(mOriginalRequest, finalRequest))
+                    chain.callback()
+                        .onSuccess(RouterResult(mOriginalRequest, finalRequest, targetIntent))
                 } catch (ignore: Exception) {
                     // 如果版本足够就添加到异常堆中, 否则忽略降级路由的错误
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -1230,7 +1356,7 @@ open class Navigator : RouterRequest.Builder, Call {
         private fun getRouterDegrade(finalRequest: RouterRequest): RouterDegrade? {
             // 获取所有降级类
             val routerDegradeList = RouterDegradeCenter.getInstance()
-                    .globalRouterDegradeList
+                .globalRouterDegradeList
             var result: RouterDegrade? = null
             for (i in routerDegradeList.indices) {
                 val routerDegrade = routerDegradeList[i]
@@ -1271,7 +1397,12 @@ open class Navigator : RouterRequest.Builder, Call {
             val requestBuilder = request.toBuilder()
             var generateRequestCode = r.nextInt(256) + 1
             // 如果生成的这个 requestCode 存在,就重新生成
-            while (isExist(Utils.getActivityFromContext(requestBuilder.context), requestBuilder.fragment, generateRequestCode)) {
+            while (isExist(
+                    Utils.getActivityFromContext(requestBuilder.context),
+                    requestBuilder.fragment,
+                    generateRequestCode
+                )
+            ) {
                 generateRequestCode = r.nextInt(256) + 1
             }
             return requestBuilder.requestCode(generateRequestCode).build()
@@ -1299,8 +1430,10 @@ open class Navigator : RouterRequest.Builder, Call {
          * 这两个分别会被预埋一个 [RouterFragment].
          * 所以他们共享一个[RouterFragment] 接受 [ActivityResult] 的
          */
-        fun isExist(act: Activity?, fragment: Fragment?,
-                    requestCode: Int): Boolean {
+        fun isExist(
+            act: Activity?, fragment: Fragment?,
+            requestCode: Int
+        ): Boolean {
             if (act != null) {
                 return mRequestCodeSet.contains(act.javaClass.name + requestCode)
             } else if (fragment != null) {
@@ -1364,8 +1497,8 @@ open class Navigator : RouterRequest.Builder, Call {
         @Suppress("UNCHECKED_CAST")
         @Throws(InterceptorNotFoundException::class)
         private fun getCustomInterceptors(
-                originalRequest: RouterRequest,
-                customInterceptors: List<Any>?
+            originalRequest: RouterRequest,
+            customInterceptors: List<Any>?
         ): List<RouterInterceptor> {
             if (customInterceptors.isNullOrEmpty()) {
                 return emptyList()
@@ -1375,7 +1508,8 @@ open class Navigator : RouterRequest.Builder, Call {
                 if (customInterceptor is RouterInterceptor) {
                     result.add(customInterceptor)
                 } else if (customInterceptor is Class<*>) {
-                    val interceptor = RouterInterceptorCache.getInterceptorByClass((customInterceptor as Class<out RouterInterceptor>))
+                    val interceptor =
+                        RouterInterceptorCache.getInterceptorByClass((customInterceptor as Class<out RouterInterceptor>))
                     if (interceptor == null) {
                         throw InterceptorNotFoundException("can't find the interceptor and it's className is " + customInterceptor as Class<*> + ",target url is " + originalRequest.uri.toString())
                     } else {

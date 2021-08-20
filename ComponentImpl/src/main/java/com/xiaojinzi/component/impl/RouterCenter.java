@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import androidx.annotation.MainThread;
@@ -109,22 +110,24 @@ public class RouterCenter implements IComponentCenterRouter {
     }
 
     @Override
+    @Nullable
     @UiThread
-    public void openUri(@NonNull final RouterRequest routerRequest) throws Exception {
-        doOpenUri(routerRequest);
+    public Intent openUri(@NonNull final RouterRequest routerRequest) throws Exception {
+        return doOpenUri(routerRequest);
     }
 
     /**
      * @param request             路由请求对象
      * @param routerDegradeIntent 一个降级的 Intent
      */
+    @Nullable
     @UiThread
-    public void routerDegrade(@NonNull RouterRequest request, @NonNull Intent routerDegradeIntent) throws Exception {
+    public Intent routerDegrade(@NonNull RouterRequest request, @NonNull Intent routerDegradeIntent) throws Exception {
         String uriString = request.uri.toString();
         if (routerDegradeIntent == null) {
             throw new TargetActivityNotFoundException(uriString);
         }
-        doStartIntent(request, routerDegradeIntent);
+        return doStartIntent(request, routerDegradeIntent);
     }
 
     /**
@@ -132,8 +135,9 @@ public class RouterCenter implements IComponentCenterRouter {
      *
      * @param request 路由请求对象
      */
+    @Nullable
     @UiThread
-    private void doOpenUri(@NonNull final RouterRequest request) throws Exception {
+    private Intent doOpenUri(@NonNull final RouterRequest request) throws Exception {
         if (!Utils.isMainThread()) {
             throw new NavigationFailException("Router must run on main thread");
         }
@@ -167,7 +171,7 @@ public class RouterCenter implements IComponentCenterRouter {
         if (intent == null) {
             throw new TargetActivityNotFoundException(uriString);
         }
-        doStartIntent(request, intent);
+        return doStartIntent(request, intent);
     }
 
     /**
@@ -175,10 +179,12 @@ public class RouterCenter implements IComponentCenterRouter {
      *
      * @param request 请求对象
      * @param intent  Intent
+     * @return 如果是为了返回 Inten 来的
      */
+    @Nullable
     @UiThread
-    private void doStartIntent(@NonNull RouterRequest request,
-                               Intent intent) throws Exception {
+    private Intent doStartIntent(@NonNull RouterRequest request,
+                                 Intent intent) throws Exception {
         // 前置工作
 
         intent.putExtras(request.bundle);
@@ -206,6 +212,10 @@ public class RouterCenter implements IComponentCenterRouter {
         }
 
         // ------------------------------- 启动界面核心代码 ------------------------------- START
+
+        if (request.isForTargetIntent) {
+            return intent;
+        }
 
         // 如果是普通的启动界面
         if (request.isForResult) { // 如果是 startActivity
@@ -257,6 +267,8 @@ public class RouterCenter implements IComponentCenterRouter {
         if (request.afterStartAction != null) {
             request.afterStartAction.run();
         }
+
+        return null;
 
     }
 

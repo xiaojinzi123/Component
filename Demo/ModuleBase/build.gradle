@@ -39,16 +39,18 @@ dependencies {
 
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    api androidxLibs.appcompat
-    api androidxLibs.constraintLayout
+    api libs.kt_coroutines_core
+
+    api libs.appcompat
+    api libs.constraintLayout
     api libs.rxjava
     api libs.rxandroid
     api libs.gson
 
     if (rootProject.ext.isDependMavenOnline) {
-        api androidxLibs.component_impl_ktx
-        api androidxLibs.component_impl_rx
-        annotationProcessor androidxLibs.component_compiler
+        api libs.component_impl_ktx
+        api libs.component_impl_rx
+        annotationProcessor libs.component_compiler
     } else {
         api project(':ComponentKtImpl')
         api project(':ComponentRxImpl')

@@ -19,7 +19,7 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:4.4'
     implementation 'com.google.code.gson:gson:2.8.7'
     if (rootProject.ext.isDependMavenOnline) {
-        implementation androidxLibs.component_annotation
+        implementation libs.component_annotation
     } else {
         implementation project(':ComponentApi')
     }

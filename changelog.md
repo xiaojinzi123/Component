@@ -1,3 +1,8 @@
+#### [v2.0.0-beta1](https://github.com/xiaojinzi123/Component/releases/tag/v2.0.0-beta1)
+- 支持路由回调中获取目标 Intent. 便于自定义结合最近官方新的 startActivityResult 的方式. 也让 Component 更加的包容和支持面广
+- ktx 支持了路由目标 Intent 的获取. forwardForTargetIntent 在 Kotlin 中使用. targetIntentAwait 在协程中使用
+- 2.0 开始, 不再支持 support 和 java7 的支持. 发布的版本都是 androidx + java8 为基础的
+
 #### [v1.9.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.2)
 - 统一 Kotlin 相关的版本
 - 修复 v1.9.1-beta1 版本支持 scheme 改出来页面拦截器失效的问题

@@ -101,6 +101,19 @@ fun Call.forwardForIntentAndResultCodeMatch(
     }, expectedResultCode = expectedResultCode)
 }
 
+fun Call.forwardForTargetIntent(
+    routerResultCallback: (result: RouterResult) -> Unit = {},
+    targetIntentCallback: (t: Intent) -> Unit,
+) {
+    this.forwardForTargetIntent(object : BiCallbackAdapter<Intent>() {
+        override fun onSuccess(result: RouterResult, t: Intent) {
+            super.onSuccess(result, t)
+            routerResultCallback.invoke(result)
+            targetIntentCallback.invoke(t)
+        }
+    })
+}
+
 /**
  * 完成一个跳转的挂起函数
  */
@@ -150,6 +163,42 @@ suspend fun Call.activityResultAwait(): ActivityResult {
                 super.onSuccess(result, activityResult)
                 if (!cot.isCompleted) {
                     cot.resume(activityResult) {}
+                }
+            }
+
+            override fun onError(errorResult: RouterErrorResult) {
+                super.onError(errorResult)
+                if (!cot.isCompleted) {
+                    cot.resumeWithException(errorResult.error)
+                }
+            }
+
+            override fun onCancel(originalRequest: RouterRequest) {
+                super.onCancel(originalRequest)
+                if (!cot.isCompleted) {
+                    cot.cancel()
+                }
+            }
+        })
+        cot.invokeOnCancellation {
+            navigationDisposable.cancel()
+        }
+    }
+}
+
+/**
+ * 获取目标 [Intent] 的一个挂起函数
+ */
+suspend fun Call.targetIntentAwait(): Intent {
+    return suspendCancellableCoroutine { cot ->
+        if (cot.isCompleted) {
+            return@suspendCancellableCoroutine
+        }
+        val navigationDisposable: NavigationDisposable = navigateForTargetIntent(object : BiCallbackAdapter<Intent>() {
+            override fun onSuccess(result: RouterResult, targetIntent: Intent) {
+                super.onSuccess(result, targetIntent)
+                if (!cot.isCompleted) {
+                    cot.resume(targetIntent) {}
                 }
             }
 

@@ -29,10 +29,10 @@ android {
 }
 
 dependencies {
-    compileOnly androidxLibs.appcompat
+    compileOnly libs.appcompat
     compileOnly libs.rxjava
     if (rootProject.ext.isDependMavenOnline) {
-        api androidxLibs.component_impl
+        api libs.component_impl
     }else {
         api project(':ComponentImpl')
     }

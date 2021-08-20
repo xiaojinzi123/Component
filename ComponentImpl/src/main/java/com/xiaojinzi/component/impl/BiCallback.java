@@ -11,6 +11,7 @@ import com.xiaojinzi.component.support.OnRouterError;
 import com.xiaojinzi.component.support.Utils;
 
 /**
+ * {@link Callback} 在这个基础上, 表示可以携带一个参数的回调
  * 当整个流程完成的时候,回调这个接口
  * <p>
  * 详细的请查看 {@link Callback}

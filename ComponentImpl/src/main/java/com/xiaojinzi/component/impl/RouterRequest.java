@@ -75,6 +75,11 @@ public class RouterRequest {
     public final boolean isForResult;
 
     /**
+     * 是否是为了目标 Intent 来的
+     */
+    public final boolean isForTargetIntent;
+
+    /**
      * 跳转的时候 options 参数
      */
     @Nullable
@@ -154,6 +159,7 @@ public class RouterRequest {
         fragment = builder.fragment;
         requestCode = builder.requestCode;
         isForResult = builder.isForResult;
+        isForTargetIntent = builder.isForTargetIntent;
         options = builder.options;
         // 这两个集合是不可以更改的
         intentCategories = Collections.unmodifiableList(builder.intentCategories);
@@ -304,6 +310,7 @@ public class RouterRequest {
         builder.bundle.putAll(bundle);
         builder.requestCode = requestCode;
         builder.isForResult = isForResult;
+        builder.isForTargetIntent = isForTargetIntent;
         builder.options = options;
         // 这里需要新创建一个是因为不可修改的集合不可以给别人
         builder.intentCategories = new ArrayList<>(intentCategories);
@@ -357,6 +364,11 @@ public class RouterRequest {
          * 是否是跳转拿 {@link ActivityResult} 的
          */
         protected boolean isForResult;
+
+        /**
+         * 是否是为了目标 Intent
+         */
+        protected boolean isForTargetIntent;
 
         @Nullable
         protected Consumer<Intent> intentConsumer;

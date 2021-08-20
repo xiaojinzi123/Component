@@ -92,8 +92,8 @@ interface Call {
      */
     @AnyThread
     fun forwardForIntentAndResultCodeMatch(
-            callback: BiCallback<Intent>,
-            expectedResultCode: Int = Activity.RESULT_OK
+        callback: BiCallback<Intent>,
+        expectedResultCode: Int = Activity.RESULT_OK
     )
 
     /**
@@ -106,8 +106,8 @@ interface Call {
     @AnyThread
     @CheckResult
     fun navigateForIntentAndResultCodeMatch(
-            callback: BiCallback<Intent>,
-            expectedResultCode: Int = Activity.RESULT_OK
+        callback: BiCallback<Intent>,
+        expectedResultCode: Int = Activity.RESULT_OK
     ): NavigationDisposable
 
     /**
@@ -118,8 +118,8 @@ interface Call {
      */
     @AnyThread
     fun forwardForResultCodeMatch(
-            callback: Callback,
-            expectedResultCode: Int = Activity.RESULT_OK
+        callback: Callback,
+        expectedResultCode: Int = Activity.RESULT_OK
     )
 
     /**
@@ -132,8 +132,8 @@ interface Call {
     @AnyThread
     @CheckResult
     fun navigateForResultCodeMatch(
-            callback: Callback,
-            expectedResultCode: Int = Activity.RESULT_OK
+        callback: Callback,
+        expectedResultCode: Int = Activity.RESULT_OK
     ): NavigationDisposable
 
     /**
@@ -153,4 +153,20 @@ interface Call {
     @AnyThread
     @CheckResult
     fun navigateForResultCode(callback: BiCallback<Int>): NavigationDisposable
+
+    /**
+     * 跳转, 获取目标的 Intent 的. 不会真正的发起跳转
+     * @return 可用于取消本次路由
+     */
+    @AnyThread
+    fun forwardForTargetIntent(callback: BiCallback<Intent>)
+
+    /**
+     * 跳转, 获取目标的 Intent 的. 不会真正的发起跳转
+     * @return 可用于取消本次路由
+     */
+    @AnyThread
+    @CheckResult
+    fun navigateForTargetIntent(callback: BiCallback<Intent>): NavigationDisposable
+
 }

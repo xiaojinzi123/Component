@@ -5,26 +5,30 @@ ext.versions = [
         android_target_sdk                  : 30,
         version_code                        : 1000,
         version_name                        : "1.0",
-        support_lib                         : "28.0.0",
         // 第三方控件的版本号
+        appcompat                           : "1.3.0",
         constraintLayout                    : '2.0.4',
         rxjava                              : '2.2.21',
         rxandroid                           : "2.1.1",
-        component_version                   : "1.9.2",
-        component_plugin_upload_version     : "1.9.2"
+        component_version                   : "2.0.0-beta1",
+        component_plugin_upload_version     : "2.0.0-beta1",
 ]
 
 ext.libs = [
         kt_coroutines_core  : "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3",
         // Google 提供的
-        support_v4          : "com.android.support:support-v4:$versions.support_lib",
-        appcompat_v7        : "com.android.support:appcompat-v7:${versions.support_lib}",
-        recyclerview        : "com.android.support:recyclerview-v7:${versions.support_lib}",
-        cardview            : "com.android.support:cardview-v7:${versions.support_lib}",
-        constraintLayout    : "com.android.support.constraint:constraint-layout:${versions.constraintLayout}",
-        design              : "com.android.support:design:${versions.support_lib}",
         commons_codec       : "commons-codec:commons-codec:1.11",
         rxjava              : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
         rxandroid           : "io.reactivex.rxjava2:rxandroid:$versions.rxandroid",
         gson                : "com.google.code.gson:gson:2.8.6",
+
+        appcompat           : "androidx.appcompat:appcompat:${versions.appcompat}",
+        constraintLayout    : "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}",
+
+        component_annotation: "com.github.xiaojinzi123.Component:component-annotation:${versions.component_version}-androidx-java8",
+        component_compiler  : "com.github.xiaojinzi123.Component:component-compiler:${versions.component_version}-androidx-java8",
+        component_impl      : "com.github.xiaojinzi123.Component:component-impl:${versions.component_version}-androidx-java8",
+        component_impl_rx   : "com.github.xiaojinzi123.Component:component-impl-rx:${versions.component_version}-androidx-java8",
+        component_impl_ktx   : "com.github.xiaojinzi123.Component:component-impl-ktx:${versions.component_version}-androidx-java8"
+
 ]
