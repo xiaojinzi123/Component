@@ -70,6 +70,6 @@ dependencies {
     // 内存检测的
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
 
-    implementation "org.java-websocket:Java-WebSocket:1.5.1"
+    implementation "org.java-websocket:Java-WebSocket:1.5.2"
 
 }

@@ -853,7 +853,7 @@ open class Navigator : RouterRequest.Builder, Call {
                 override fun onSuccess(routerResult: RouterResult) {
                     super.onSuccess(routerResult)
                     // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
-                    rxFragment.setActivityResultConsumer(
+                    rxFragment.addActivityResultConsumer(
                         routerResult.originalRequest
                     ) { result ->
                         Help.removeRequestCode(routerResult.originalRequest)

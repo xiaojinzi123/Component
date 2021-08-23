@@ -74,7 +74,7 @@ public final class RouterFragment extends Fragment {
 
     }
 
-    public void setActivityResultConsumer(@NonNull RouterRequest request,
+    public void addActivityResultConsumer(@NonNull RouterRequest request,
                                           @NonNull Consumer1<ActivityResult> consumer) {
         // 检测是否重复的在这个方法调用之前被检查掉了
         singleEmitterMap.put(request, consumer);
