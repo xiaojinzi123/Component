@@ -1,5 +1,9 @@
 package com.xiaojinzi.component.anno;
 
+import com.xiaojinzi.component.anno.support.NotNull;
+import com.xiaojinzi.component.anno.support.Nullable;
+import com.xiaojinzi.component.support.AttrAutoWireMode;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -18,6 +22,12 @@ public @interface AttrValueAutowiredAnno {
      * 需要注入的 Key
      * key 可以是多个
      */
+    @NotNull
     String[] value();
+
+    /**
+     * 注入的模式
+     */
+    AttrAutoWireMode mode() default AttrAutoWireMode.Unspecified;
 
 }

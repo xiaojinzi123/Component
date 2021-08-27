@@ -1,26 +1,24 @@
 package com.xiaojinzi.componentdemo.view
 
-import com.xiaojinzi.component.anno.RouterAnno
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.xiaojinzi.componentdemo.R
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
-import com.xiaojinzi.component.impl.Router
-import com.xiaojinzi.component.impl.application.ModuleManager
+import android.os.Build
+import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import com.xiaojinzi.base.ModuleConfig
 import com.xiaojinzi.base.router.AppApi
-import android.widget.Toast
-import android.app.NotificationManager
-import androidx.core.app.NotificationCompat
-import android.app.PendingIntent
-import android.app.NotificationChannel
-import android.os.Build
-import android.view.View
+import com.xiaojinzi.component.Component
+import com.xiaojinzi.component.anno.AttrValueAutowiredAnno
+import com.xiaojinzi.component.anno.RouterAnno
 import com.xiaojinzi.component.forwardForTargetIntent
-import com.xiaojinzi.component.targetIntentAwait
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.lang.Exception
+import com.xiaojinzi.component.impl.Router
+import com.xiaojinzi.component.impl.application.ModuleManager
+import com.xiaojinzi.componentdemo.R
 
 /**
  * 启动界面
@@ -28,9 +26,17 @@ import java.lang.Exception
 @RouterAnno(path = "main")
 class MainAct : AppCompatActivity() {
 
+    @AttrValueAutowiredAnno("name")
+    lateinit var nameTestTest: String
+
+    @AttrValueAutowiredAnno("name1")
+    var nameTestTest1: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_act)
+        intent.putExtra("name", "testName")
+        Component.inject(this)
         supportActionBar!!.title = "组件化方案:(路由、服务、生命周期)"
         createNotificationChannel()
         startProxyRouter(intent.extras)

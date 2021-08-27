@@ -1,9 +1,11 @@
 package com.xiaojinzi.component;
 
 import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.xiaojinzi.component.support.AttrAutoWireMode;
 import com.xiaojinzi.component.support.ObjectToJsonConverter;
 import com.xiaojinzi.component.support.Utils;
 
@@ -27,6 +29,7 @@ public class Config {
     private final long routeRepeatCheckDuration;
     private final ObjectToJsonConverter objectToJsonConverter;
     private final long notifyModuleChangedDelayTime;
+    private AttrAutoWireMode attrAutoWireMode;
 
     private Config(@NonNull Builder builder) {
         this.application = builder.application;
@@ -40,6 +43,7 @@ public class Config {
         this.routeRepeatCheckDuration = builder.routeRepeatCheckDuration;
         this.objectToJsonConverter = builder.objectToJsonConverter;
         this.notifyModuleChangedDelayTime = builder.notifyModuleChangedDelayTime;
+        this.attrAutoWireMode = builder.attrAutoWireMode;
     }
 
     @NonNull
@@ -90,6 +94,11 @@ public class Config {
     }
 
     @NonNull
+    public AttrAutoWireMode getAttrAutoWireMode() {
+        return attrAutoWireMode;
+    }
+
+    @NonNull
     public static Builder with(@NonNull Application application) {
         return new Builder(application);
     }
@@ -109,6 +118,7 @@ public class Config {
         private long routeRepeatCheckDuration = 1000;
         private ObjectToJsonConverter objectToJsonConverter;
         private long notifyModuleChangedDelayTime = 0L;
+        private AttrAutoWireMode attrAutoWireMode = AttrAutoWireMode.Default;
 
         /*标记是否已经使用*/
         private boolean isUsed = false;
@@ -177,18 +187,26 @@ public class Config {
             return this;
         }
 
+        public Builder attrAutoWireMode(AttrAutoWireMode attrAutoWireMode) {
+            this.attrAutoWireMode = attrAutoWireMode;
+            return this;
+        }
+
         @NonNull
         public Config build() {
             // 参数检查
             Utils.checkNullPointer(this.application, "application");
             Utils.checkNullPointer(this.defaultScheme, "application");
+            if (isUsed) {
+                throw new UnsupportedOperationException("this builder only can build once!");
+            }
             if (this.isAutoRegisterModule) {
                 if (!this.isOptimizeInit) {
                     throw new UnsupportedOperationException("you must call optimizeInit(true) method");
                 }
             }
-            if (isUsed) {
-                throw new UnsupportedOperationException("this builder only can build once!");
+            if (attrAutoWireMode == AttrAutoWireMode.Unspecified) {
+                throw new UnsupportedOperationException("you can't set Unspecified of AttrAutoWireMode");
             }
             isUsed = true;
             // 提前创建对象

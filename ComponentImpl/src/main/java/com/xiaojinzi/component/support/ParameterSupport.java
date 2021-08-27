@@ -223,6 +223,7 @@ public class ParameterSupport {
         return getQueryInt(intent.getExtras(), key, defaultValue);
     }
 
+    @Nullable
     public static Integer getQueryInt(@Nullable Bundle bundle, @NonNull String key) {
         return getQueryInt(bundle, key, null);
     }

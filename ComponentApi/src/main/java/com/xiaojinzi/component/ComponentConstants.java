@@ -17,6 +17,8 @@ public class ComponentConstants {
 
     // System interface
 
+    public static final String COMPONENT_CONFIG_CLASS_NAME = "com.xiaojinzi.component.Config";
+    public static final String ATTRAUTOWIREMODE_CLASS_NAME = "com.xiaojinzi.component.support.AttrAutoWireMode";
     public static final String COMPONENT_CLASS_NAME = "com.xiaojinzi.component.Component";
     public static final String UTILS_CLASS_NAME = "com.xiaojinzi.component.support.Utils";
     public static final String COMPONENT_GENERATED_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.support.ComponentGeneratedAnno";

@@ -12,6 +12,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.xiaojinzi.component.anno.AttrValueAutowiredAnno;
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno;
 import com.xiaojinzi.component.bean.ActivityAttrDocBean;
+import com.xiaojinzi.component.support.AttrAutoWireMode;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -19,7 +20,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,7 +36,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -343,6 +342,9 @@ public class AutowireProcessor extends BaseHostProcessor {
                                                String parameterOwnerName, String parameterName,
                                                String bundleCallStr) {
 
+        if (parameterName.startsWith("nameTestTest")) {
+            System.out.println("variableElement = " + variableElement.getModifiers().toString());
+        }
         AttrValueAutowiredAnno attrValueAutowiredAnno = variableElement.getAnnotation(AttrValueAutowiredAnno.class);
 
         TypeMirror variableTypeMirror = variableElement.asType();
@@ -351,21 +353,24 @@ public class AutowireProcessor extends BaseHostProcessor {
         if (attrValueAutowiredAnno != null) {
             // 传值的 key 数组
             String[] keyNames = attrValueAutowiredAnno.value();
-            if (keyNames.length == 1) {
-                generateOneGetValueCode(isKotlinFile,
+            // 注入的模式
+            AttrAutoWireMode attrAutoWireMode = attrValueAutowiredAnno.mode();
+            int keyNameLength = keyNames.length;
+            if (keyNameLength == 1) {
+                generateOneGetValueCode(attrAutoWireMode, isKotlinFile, true,
                         variableElement, methodBuilder,
                         parameterOwnerName, parameterName, bundleCallStr,
                         variableTypeMirror,
                         parameterClassName, keyNames[0]);
             } else {
-                for (int i = 0; i < keyNames.length; i++) {
+                for (int i = 0; i < keyNameLength; i++) {
                     String keyName = keyNames[i];
                     if (i == 0) {
                         methodBuilder.beginControlFlow("if($T.containsKey($N, $S))", parameterSupportTypeMirror, bundleCallStr, keyName);
                     } else {
                         methodBuilder.beginControlFlow("else if($T.containsKey($N, $S))", parameterSupportTypeMirror, bundleCallStr, keyName);
                     }
-                    generateOneGetValueCode(isKotlinFile,
+                    generateOneGetValueCode(attrAutoWireMode, isKotlinFile, i == (keyNameLength - 1),
                             variableElement, methodBuilder,
                             parameterOwnerName, parameterName, bundleCallStr,
                             variableTypeMirror,
@@ -378,7 +383,8 @@ public class AutowireProcessor extends BaseHostProcessor {
 
     }
 
-    private void generateOneGetValueCode(boolean isKotlinFile,
+    private void generateOneGetValueCode(AttrAutoWireMode attrAutoWireMode,
+                                         boolean isKotlinFile, boolean isLastKeyName,
                                          VariableElement variableElement,
                                          MethodSpec.Builder methodBuilder,
                                          String parameterOwnerName, String parameterName, String bundleCallStr,
@@ -437,6 +443,24 @@ public class AutowireProcessor extends BaseHostProcessor {
                             tempArrayListMethodName = "getIntegerArrayList";
                         }
                         if (tempArrayListMethodName != null) {
+                            String targetAttrAutoWireName = buildGetDefaultAttrAutoWireValue(attrAutoWireMode, methodBuilder);
+                            methodBuilder.beginControlFlow(
+                                    "if ($N == $N.Override)",
+                                    targetAttrAutoWireName,
+                                    ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME
+                            );
+                            if (isKotlinFile) {
+                                methodBuilder.addStatement(
+                                        "$L.$L($T.$L($N,$S))",
+                                        parameterOwnerName,
+                                        ComponentUtil.getGetSetMethodName(parameterName, false, false),
+                                        parameterSupportTypeMirror, tempArrayListMethodName,
+                                        bundleCallStr, keyName
+                                );
+                            } else {
+                                methodBuilder.addStatement("$N = $T.$L($N,$S)", parameterCallStr, parameterSupportTypeMirror, tempArrayListMethodName, bundleCallStr, keyName);
+                            }
+                            methodBuilder.nextControlFlow("else");
                             if (isKotlinFile) {
                                 methodBuilder.addStatement(
                                         "$L.$L($T.$L($N,$S,$L.$L()))",
@@ -450,12 +474,33 @@ public class AutowireProcessor extends BaseHostProcessor {
                             } else {
                                 methodBuilder.addStatement("$N = $T.$L($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, tempArrayListMethodName, bundleCallStr, keyName, parameterCallStr);
                             }
+                            methodBuilder.endControlFlow();
                         }
                     }
-                } else if (mClassNameSparseArray.equals(className)) { // 如果是 SparseArray
+                } // 占位
+                else if (mClassNameSparseArray.equals(className)) { // 如果是 SparseArray
                     List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
                     if (typeArguments.size() == 1) { // 处理泛型个数是一个的
                         if (mTypes.isSubtype(typeArguments.get(0), parcelableTypeMirror)) { // 如果是 Parcelable 及其子类
+                            String targetAttrAutoWireName = buildGetDefaultAttrAutoWireValue(attrAutoWireMode, methodBuilder);
+                            methodBuilder.beginControlFlow(
+                                    "if ($N == $N.Override)",
+                                    targetAttrAutoWireName,
+                                    ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME
+                            );
+                            if (isKotlinFile) {
+                                methodBuilder.addStatement(
+                                        "$L.$L($T.$L($N,$S))",
+                                        parameterOwnerName,
+                                        ComponentUtil.getGetSetMethodName(parameterName, false, false),
+                                        parameterSupportTypeMirror,
+                                        "getSparseParcelableArray",
+                                        bundleCallStr, keyName
+                                );
+                            } else {
+                                methodBuilder.addStatement("$N = $T.getSparseParcelableArray($N,$S)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName);
+                            }
+                            methodBuilder.nextControlFlow("else");
                             if (isKotlinFile) {
                                 methodBuilder.addStatement(
                                         "$L.$L($T.$L($N,$S,$L.$L()))",
@@ -470,19 +515,18 @@ public class AutowireProcessor extends BaseHostProcessor {
                             } else {
                                 methodBuilder.addStatement("$N = $T.getSparseParcelableArray($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, bundleCallStr, keyName, parameterCallStr);
                             }
+                            methodBuilder.endControlFlow();
                         }
                     }
-                } else { // 其他类型的情况,是实现序列化的对象,这种时候我们直接要从 bundle 中获取
+                } // 占位
+                else { // 其他类型的情况,是实现序列化的对象,这种时候我们直接要从 bundle 中获取
 
                     boolean isSubParcelableType = mTypes.isSubtype(variableTypeMirror, parcelableTypeMirror);
                     boolean isSubSerializableType = mTypes.isSubtype(variableTypeMirror, serializableTypeMirror);
                     boolean isSubParcelableTypeAndSubSerializableType = isSubParcelableType && isSubSerializableType;
 
                     String isHaveValueName = "isHaveValue" + intCount.incrementAndGet();
-
-                    if (isSubParcelableTypeAndSubSerializableType) {
-                        methodBuilder.addStatement("boolean $N = false", isHaveValueName);
-                    }
+                    methodBuilder.addStatement("boolean $N = false", isHaveValueName);
                     // 优先获取 parcelable
                     if (isSubParcelableType) {
                         String tempName = "temp" + intCount.incrementAndGet();
@@ -498,15 +542,11 @@ public class AutowireProcessor extends BaseHostProcessor {
                         } else {
                             methodBuilder.addStatement("$N = $N", parameterCallStr, tempName);
                         }
-                        if (isSubParcelableTypeAndSubSerializableType) {
-                            methodBuilder.addStatement("$N = true", isHaveValueName);
-                        }
+                        methodBuilder.addStatement("$N = true", isHaveValueName);
                         methodBuilder.endControlFlow();
                     }
                     if (isSubSerializableType) {
-                        if (isSubParcelableTypeAndSubSerializableType) {
-                            methodBuilder.beginControlFlow("if (!$N)", isHaveValueName);
-                        }
+                        methodBuilder.beginControlFlow("if (!$N)", isHaveValueName);
                         String tempName = "temp" + intCount.incrementAndGet();
                         methodBuilder.addStatement("$T $N = $T.getSerializable($N, $S)", variableTypeMirror, tempName, parameterSupportTypeMirror, bundleCallStr, keyName);
                         methodBuilder.beginControlFlow("if ($N != null)", tempName);
@@ -520,14 +560,37 @@ public class AutowireProcessor extends BaseHostProcessor {
                         } else {
                             methodBuilder.addStatement("$N = $N", parameterCallStr, tempName);
                         }
+                        methodBuilder.addStatement("$N = true", isHaveValueName);
                         methodBuilder.endControlFlow();
-                        if (isSubParcelableTypeAndSubSerializableType) {
-                            methodBuilder.endControlFlow();
-                        }
+                        methodBuilder.endControlFlow();
                     }
+
+                    if (isLastKeyName) {
+                        String targetAttrAutoWireName = buildGetDefaultAttrAutoWireValue(attrAutoWireMode, methodBuilder);
+                        methodBuilder.beginControlFlow(
+                                "if ($N == $N.Override)",
+                                targetAttrAutoWireName,
+                                ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME
+                        );
+                        methodBuilder.beginControlFlow("if (!$N)", isHaveValueName);
+                        if (isKotlinFile) {
+                            methodBuilder.addStatement(
+                                    "$L.$L(null)",
+                                    parameterOwnerName,
+                                    ComponentUtil.getGetSetMethodName(parameterName, false, false)
+                            );
+                        } else {
+                            methodBuilder.addStatement("$N = null", parameterCallStr);
+                        }
+                        methodBuilder.endControlFlow();
+                        methodBuilder.endControlFlow();
+                    }
+
                 }
             }
-        } else if (variableTypeMirror instanceof ArrayType) { // 如果是数组
+        }
+        // 占位
+        else if (variableTypeMirror instanceof ArrayType) { // 如果是数组
             ArrayType parameterArrayType = (ArrayType) variableTypeMirror;
             TypeName parameterComponentTypeName = ClassName.get(parameterArrayType.getComponentType());
             String tempArrayMethodName = null;
@@ -559,9 +622,27 @@ public class AutowireProcessor extends BaseHostProcessor {
             } else {
                 throw new ProcessException("can't to resolve unknow type parameter(" + variableElement.getEnclosingElement().getSimpleName() + "#" + variableElement.getSimpleName().toString() + ")");
             }
+            String targetAttrAutoWireName = buildGetDefaultAttrAutoWireValue(attrAutoWireMode, methodBuilder);
+            methodBuilder.beginControlFlow(
+                    "if ($N == $N.Override)",
+                    targetAttrAutoWireName,
+                    ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME
+            );
             if (isKotlinFile) {
                 methodBuilder.addStatement(
-                        "$L.$L($T.$L($N,$S,$L.$L()))",
+                        "$L.$L($T.$L($N, $S))",
+                        parameterOwnerName,
+                        ComponentUtil.getGetSetMethodName(parameterName, false, false),
+                        parameterSupportTypeMirror, tempArrayMethodName,
+                        bundleCallStr, keyName
+                );
+            } else {
+                methodBuilder.addStatement("$N = $T.$L($N, $S)", parameterCallStr, parameterSupportTypeMirror, tempArrayMethodName, bundleCallStr, keyName);
+            }
+            methodBuilder.nextControlFlow("else");
+            if (isKotlinFile) {
+                methodBuilder.addStatement(
+                        "$L.$L($T.$L($N, $S, $L.$L()))",
                         parameterOwnerName,
                         ComponentUtil.getGetSetMethodName(parameterName, false, false),
                         parameterSupportTypeMirror, tempArrayMethodName,
@@ -570,13 +651,33 @@ public class AutowireProcessor extends BaseHostProcessor {
                         ComponentUtil.getGetSetMethodName(parameterName, true, false)
                 );
             } else {
-                methodBuilder.addStatement("$N = $T.$L($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, tempArrayMethodName, bundleCallStr, keyName, parameterCallStr);
+                methodBuilder.addStatement("$N = $T.$L($N, $S, $L)", parameterCallStr, parameterSupportTypeMirror, tempArrayMethodName, bundleCallStr, keyName, parameterCallStr);
             }
+            methodBuilder.endControlFlow();
         }
+
         if (tempMethodName != null) {
+            String targetAttrAutoWireName = buildGetDefaultAttrAutoWireValue(attrAutoWireMode, methodBuilder);
+            methodBuilder.beginControlFlow(
+                    "if ($N == $N.Override)",
+                    targetAttrAutoWireName,
+                    ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME
+            );
             if (isKotlinFile) {
                 methodBuilder.addStatement(
-                        "$L.$L($T.$L($N,$S,$L.$L()))",
+                        "$L.$L($T.$L($N, $S))",
+                        parameterOwnerName,
+                        ComponentUtil.getGetSetMethodName(parameterName, false, isBoolean),
+                        parameterSupportTypeMirror, tempMethodName,
+                        bundleCallStr, keyName
+                );
+            } else {
+                methodBuilder.addStatement("$N = $T.$L($N, $S)", parameterCallStr, parameterSupportTypeMirror, tempMethodName, bundleCallStr, keyName);
+            }
+            methodBuilder.nextControlFlow("else");
+            if (isKotlinFile) {
+                methodBuilder.addStatement(
+                        "$L.$L($T.$L($N, $S, $L.$L()))",
                         parameterOwnerName,
                         ComponentUtil.getGetSetMethodName(parameterName, false, isBoolean),
                         parameterSupportTypeMirror, tempMethodName,
@@ -584,10 +685,13 @@ public class AutowireProcessor extends BaseHostProcessor {
                         parameterOwnerName,
                         ComponentUtil.getGetSetMethodName(parameterName, true, isBoolean)
                 );
+
             } else {
-                methodBuilder.addStatement("$N = $T.$L($N,$S,$L)", parameterCallStr, parameterSupportTypeMirror, tempMethodName, bundleCallStr, keyName, parameterCallStr);
+                methodBuilder.addStatement("$N = $T.$L($N,$S, $L)", parameterCallStr, parameterSupportTypeMirror, tempMethodName, bundleCallStr, keyName, parameterCallStr);
             }
+            methodBuilder.endControlFlow();
         }
+
     }
 
     public void generateParameterCodeForInjectService(
@@ -618,6 +722,16 @@ public class AutowireProcessor extends BaseHostProcessor {
             }
         }
 
+    }
+
+    private String buildGetDefaultAttrAutoWireValue(AttrAutoWireMode attrAutoWireMode, MethodSpec.Builder methodBuilder) {
+        String targetAttrAutoWireValue = "targetAttrAutoWireValue" + intCount.incrementAndGet();
+        if (attrAutoWireMode == AttrAutoWireMode.Unspecified) {
+            methodBuilder.addStatement("$N $N = $N.getConfig().getAttrAutoWireMode()", ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME, targetAttrAutoWireValue, ComponentConstants.COMPONENT_CLASS_NAME);
+        } else {
+            methodBuilder.addStatement("$N $N = $N.$L", ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME, targetAttrAutoWireValue, ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME, attrAutoWireMode);
+        }
+        return targetAttrAutoWireValue;
     }
 
 

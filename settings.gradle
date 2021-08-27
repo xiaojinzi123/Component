@@ -1,9 +1,9 @@
-include ':ComponentKtImpl'
 include ':ComponentPlugin',
         ':ComponentApi',
         ':ComponentCompiler',
         ':ComponentImpl',
-        ':ComponentRxImpl'
+        ':ComponentRxImpl',
+        ':ComponentKtImpl'
 include ':Demo',
         ':Demo:app',
         ':Demo:Module1run',
