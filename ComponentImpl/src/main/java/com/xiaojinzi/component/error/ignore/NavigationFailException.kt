@@ -1,4 +1,6 @@
-package com.xiaojinzi.component.error.ignore;
+package com.xiaojinzi.component.error.ignore
+
+import java.lang.RuntimeException
 
 /**
  * 表示路由的过程中发生异常
@@ -7,21 +9,8 @@ package com.xiaojinzi.component.error.ignore;
  *
  * @author : xiaojinzi
  */
-public class NavigationFailException extends RuntimeException {
-
-    public NavigationFailException() {
-    }
-
-    public NavigationFailException(String message) {
-        super(message);
-    }
-
-    public NavigationFailException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NavigationFailException(Throwable cause) {
-        super(cause);
-    }
-
+class NavigationFailException : RuntimeException {
+    constructor(message: String? = null) : super(message) {}
+    constructor(message: String? = null, cause: Throwable? = null) : super(message, cause) {}
+    constructor(cause: Throwable? = null) : super(cause) {}
 }

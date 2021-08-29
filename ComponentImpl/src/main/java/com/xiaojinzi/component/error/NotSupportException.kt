@@ -1,20 +1,5 @@
-package com.xiaojinzi.component.error;
+package com.xiaojinzi.component.error
 
-public class NotSupportException extends RuntimeException {
+import java.lang.RuntimeException
 
-    public NotSupportException() {
-    }
-
-    public NotSupportException(String message) {
-        super(message);
-    }
-
-    public NotSupportException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NotSupportException(Throwable cause) {
-        super(cause);
-    }
-
-}
+class NotSupportException(message: String?) : RuntimeException(message)

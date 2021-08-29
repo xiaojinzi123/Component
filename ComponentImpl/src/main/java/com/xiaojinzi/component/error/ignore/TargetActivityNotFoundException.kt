@@ -1,4 +1,6 @@
-package com.xiaojinzi.component.error.ignore;
+package com.xiaojinzi.component.error.ignore
+
+import java.lang.RuntimeException
 
 /**
  * 表示目标界面没有找到
@@ -7,21 +9,4 @@ package com.xiaojinzi.component.error.ignore;
  *
  * @author : xiaojinzi
  */
-public class TargetActivityNotFoundException extends RuntimeException {
-
-    public TargetActivityNotFoundException() {
-    }
-
-    public TargetActivityNotFoundException(String message) {
-        super(message);
-    }
-
-    public TargetActivityNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public TargetActivityNotFoundException(Throwable cause) {
-        super(cause);
-    }
-
-}
+class TargetActivityNotFoundException(message: String? = null) : RuntimeException(message)

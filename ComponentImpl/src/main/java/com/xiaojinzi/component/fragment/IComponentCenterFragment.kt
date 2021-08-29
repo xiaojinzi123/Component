@@ -1,6 +1,6 @@
-package com.xiaojinzi.component.fragment;
+package com.xiaojinzi.component.fragment
 
-import com.xiaojinzi.component.support.IComponentCenter;
+import com.xiaojinzi.component.support.IComponentCenter
 
 /**
  * 模块的服务接口
@@ -8,5 +8,4 @@ import com.xiaojinzi.component.support.IComponentCenter;
  *
  * @author : xiaojinzi
  */
-public interface IComponentCenterFragment extends IComponentCenter<IComponentHostFragment> {
-}
+interface IComponentCenterFragment : IComponentCenter<IComponentHostFragment>

@@ -1,5 +1,8 @@
 package com.xiaojinzi.component.support;
 
+/**
+ * 属性注入的模式
+ */
 public enum AttrAutoWireMode {
     // 未指定. 这个值会采用其他层面配置的值
     Unspecified,

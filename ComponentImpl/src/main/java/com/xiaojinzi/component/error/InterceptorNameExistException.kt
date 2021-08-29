@@ -1,4 +1,6 @@
-package com.xiaojinzi.component.error;
+package com.xiaojinzi.component.error
+
+import java.lang.RuntimeException
 
 /**
  * 拦截器的名称已经存在的异常
@@ -6,21 +8,4 @@ package com.xiaojinzi.component.error;
  *
  * @author : xiaojinzi
  */
-public class InterceptorNameExistException extends RuntimeException {
-
-    public InterceptorNameExistException() {
-    }
-
-    public InterceptorNameExistException(String message) {
-        super(message);
-    }
-
-    public InterceptorNameExistException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InterceptorNameExistException(Throwable cause) {
-        super(cause);
-    }
-
-}
+class InterceptorNameExistException(message: String?) : RuntimeException(message)

@@ -1,4 +1,4 @@
-package com.xiaojinzi.component.error.ignore;
+package com.xiaojinzi.component.error.ignore
 
 /**
  * 表示 Activity result 异常
@@ -7,21 +7,4 @@ package com.xiaojinzi.component.error.ignore;
  *
  * @author : xiaojinzi
  */
-public class ActivityResultException extends RuntimeException {
-
-    public ActivityResultException() {
-    }
-
-    public ActivityResultException(String message) {
-        super(message);
-    }
-
-    public ActivityResultException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ActivityResultException(Throwable cause) {
-        super(cause);
-    }
-
-}
+class ActivityResultException(message: String?) : RuntimeException(message)

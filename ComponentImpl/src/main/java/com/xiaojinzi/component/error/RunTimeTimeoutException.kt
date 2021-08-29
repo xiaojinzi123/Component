@@ -1,20 +1,6 @@
-package com.xiaojinzi.component.error;
+package com.xiaojinzi.component.error
 
-public class RunTimeTimeoutException extends RuntimeException {
+import java.lang.RuntimeException
 
-    public RunTimeTimeoutException() {
-    }
-
-    public RunTimeTimeoutException(String message) {
-        super(message);
-    }
-
-    public RunTimeTimeoutException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public RunTimeTimeoutException(Throwable cause) {
-        super(cause);
-    }
-
+class RunTimeTimeoutException(message: String? = null) : RuntimeException(message) {
 }
