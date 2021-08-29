@@ -162,6 +162,18 @@ interface Call {
     fun forwardForTargetIntent(callback: BiCallback<Intent>)
 
     /**
+     * 警告：切勿用作通知或者小部件的 Intent 使用
+     * 此方法虽然在回调中返回了目标界面的真实 Intent, 但是是经过了整个路由的过程获取到的.
+     * 甚至目标 Intent 都可能因为参数的不同而不同.
+     * 所以通知或者小部件, 请使用如下方式, 如下方式不会发起路由. 只会返回一个代理的 Intent 供你使用.
+     * 当你通过代理 Intent 发起跳转之后, 会发起真实的路由过程
+     * ```
+     * val targetProxyIntent = Router
+     *       .newProxyIntentBuilder()
+     *       .putString("name", "testName")
+     *       // .....
+     *       .buildProxyIntent();
+     * ```
      * 跳转, 获取目标的 Intent 的. 不会真正的发起跳转
      * @return 可用于取消本次路由
      */

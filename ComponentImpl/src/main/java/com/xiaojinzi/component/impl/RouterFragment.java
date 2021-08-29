@@ -1,6 +1,7 @@
 package com.xiaojinzi.component.impl;
 
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -12,12 +13,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
  * 为了完成跳转拿 {@link ActivityResult} 的功能, 需要预埋一个 {@link Fragment}
  * 此 {@link Fragment} 是不可见的, 它的主要作用：
  * 1. 用作跳转的
  * 2. 用作接受 {@link Fragment#onActivityResult(int, int, Intent)} 的回调的值
- *
+ * <p>
  * 当发出多个路由的之后, 有可能多个 {@link RouterRequest} 对象中的 {@link RouterRequest#requestCode}
  * 是一致的, 那么就会造成 {@link ActivityResult} 回调的时候出现不对应的问题.
  * 这个问题在 {@link com.xiaojinzi.component.impl.Navigator.Help#isExist(RouterRequest)} 方法中
@@ -43,6 +43,16 @@ public final class RouterFragment extends Fragment {
         super.onDestroy();
     }
 
+    /**
+     * 此方法我觉得官方不应该废弃的. 因为新的方式其实在易用性上并不好.
+     * 不过官方废弃了那我也只能支持官方的方式：{@link Call#navigateForTargetIntent(BiCallback)}
+     * 或者 {@link Call#forwardForTargetIntent(BiCallback)} 都可以在回调中拿到目标界面的 Intent.
+     * 这时候, 路由框架是不会发起跳转的.
+     *
+     * @param requestCode 业务请求码
+     * @param resultCode  返回码
+     * @param data        返回的数据
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
