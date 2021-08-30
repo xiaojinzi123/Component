@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.github.xiaojinzi123'
@@ -12,8 +11,6 @@ android {
     defaultConfig {
         minSdkVersion versions.android_min_sdk
         targetSdkVersion versions.android_target_sdk
-        versionCode 1
-        versionName "1.0"
     }
 
     buildTypes {
