@@ -3,6 +3,7 @@
 buildscript {
 
     ext.kotlin_version = '1.5.30'
+    ext.kotlin_coroutines_version = '1.5.1'
     apply from: "dependencies.gradle"
 
     ext.component_group_id = "com.xiaojinzi"

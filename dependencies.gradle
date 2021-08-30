@@ -15,7 +15,7 @@ ext.versions = [
 ]
 
 ext.libs = [
-        kt_coroutines_core  : "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3",
+        kt_coroutines_core  : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${kotlin_coroutines_version}",
         // Google 提供的
         commons_codec       : "commons-codec:commons-codec:1.11",
         rxjava              : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
