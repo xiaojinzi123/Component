@@ -19,6 +19,10 @@ import com.xiaojinzi.component1.R;
         path = ModuleConfig.Module1.TEST,
         desc = "业务组件1的测试界面"
 )
+/*@RouterAnno(
+        path = ModuleConfig.Module1.TEST1,
+        desc = "业务组件1的测试界面"
+)*/
 public class Component1TestAct extends BaseAct {
 
     @RouterAnno(

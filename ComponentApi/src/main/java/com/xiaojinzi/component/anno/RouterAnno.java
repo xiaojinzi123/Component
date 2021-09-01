@@ -1,6 +1,8 @@
 package com.xiaojinzi.component.anno;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -21,8 +23,9 @@ import java.lang.annotation.Target;
  * Component.inject(this) 即可, 不过这样要配合注解使用:
  * {@link AttrValueAutowiredAnno} 和 {@link ServiceAutowiredAnno}
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)
+@Repeatable(RouterAnno.List.class) // 可以重复, Kotlin 不支持, Java 的代码生成受影响, 暂时不加
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface RouterAnno {
 
     /**
@@ -85,5 +88,12 @@ public @interface RouterAnno {
      * @return 描述
      */
     String desc() default "";
+
+    @Documented
+    @Retention(RetentionPolicy.CLASS)
+    @Target({ElementType.TYPE, ElementType.METHOD})
+    @interface List {
+        RouterAnno[] value();
+    }
 
 }

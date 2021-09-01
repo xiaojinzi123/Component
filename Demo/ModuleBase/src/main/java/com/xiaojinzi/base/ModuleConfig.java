@@ -54,6 +54,7 @@ public class ModuleConfig {
 
         public static final String NAME = "component1";
         public static final String TEST = "test";
+        public static final String TEST1 = "test1";
         public static final String TEST_AUTORETURN = "testAutoReturn";
         public static final String TEST_AUTORETURN1 = "testAutoReturn1";
         public static final String TEST_QUERY = "testQuery";
@@ -73,6 +74,7 @@ public class ModuleConfig {
 
         public static final String NAME = "component2";
         public static final String MAIN = "main";
+        public static final String MAIN1 = "main1";
 
     }
 

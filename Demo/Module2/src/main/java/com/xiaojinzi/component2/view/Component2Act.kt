@@ -25,6 +25,10 @@ import java.util.*
         path = ModuleConfig.Module2.MAIN,
         desc = "业务组件2的主界面"
 )
+/*@RouterAnno(
+        path = ModuleConfig.Module2.MAIN1,
+        desc = "业务组件2的主界面"
+)*/
 class Component2Act : BaseAct() {
 
     @AttrValueAutowiredAnno("data")

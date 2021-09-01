@@ -42,6 +42,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     dexOptions {
         javaMaxHeapSize "8g"
         //控制dex包内的方法数上限
