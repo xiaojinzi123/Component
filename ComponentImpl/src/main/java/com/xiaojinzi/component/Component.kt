@@ -90,12 +90,11 @@ object Component {
      * @return Application
      */
     @JvmStatic
-    @get:AnyThread
-    val application: Application
-        get() {
-            checkInit()
-            return mConfig!!.application
-        }
+    @AnyThread
+    fun getApplication(): Application {
+        checkInit()
+        return mConfig!!.application
+    }
 
     @JvmStatic
     private fun checkInit() {

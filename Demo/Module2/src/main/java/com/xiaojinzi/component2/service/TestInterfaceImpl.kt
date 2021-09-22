@@ -15,7 +15,7 @@ class TestInterfaceImpl : TestInterface {
 
     constructor() {
         Utils.postActionToMainThread {
-            Toast.makeText(Component.application, "TestInterface Service 自动初始化", Toast.LENGTH_SHORT).show()
+            Toast.makeText(Component.getApplication(), "TestInterface Service 自动初始化", Toast.LENGTH_SHORT).show()
         }
     }
 

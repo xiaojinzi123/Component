@@ -458,7 +458,7 @@ open class Navigator : RouterRequest.Builder, Call {
     private fun useDefaultContext() {
         // 如果 Context 和 Fragment 都是空的,使用默认的 Application
         if (context == null && fragment == null) {
-            context = Component.application
+            context = Component.getApplication()
             // 配套加上 New_Task 的标志, 当用户自己传的 Application 需要自己添加这个 flag
             // 起到更好的提示用户是使用 Application 跳的
             addIntentFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
