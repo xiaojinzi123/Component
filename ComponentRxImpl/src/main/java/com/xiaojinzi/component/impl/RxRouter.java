@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.UiThread;
+import android.util.SparseArray;
+
 import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
-import android.util.SparseArray;
 
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
 import com.xiaojinzi.component.bean.ActivityResult;
@@ -45,7 +46,7 @@ import io.reactivex.functions.Function;
  * @author : xiaojinzi
  */
 @CheckClassNameAnno
-public class RxRouter extends Router {
+public class RxRouter {
 
     @NonNull
     public static RxFragmentNavigator with(@NonNull String fragmentFlag) {
