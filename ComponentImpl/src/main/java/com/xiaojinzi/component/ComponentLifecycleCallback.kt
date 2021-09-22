@@ -1,70 +1,64 @@
-package com.xiaojinzi.component;
+package com.xiaojinzi.component
 
-import android.app.Activity;
-import android.app.Application;
-import android.os.Build;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-
-import com.xiaojinzi.component.impl.Router;
-import com.xiaojinzi.component.support.LogUtil;
+import android.app.Activity
+import com.xiaojinzi.component.ComponentActivityStack.pushActivity
+import com.xiaojinzi.component.ComponentActivityStack.removeActivity
+import android.app.Application.ActivityLifecycleCallbacks
+import com.xiaojinzi.component.impl.Router
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.xiaojinzi.component.ComponentActivityStack
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 
 /**
  * 注册的声明周期回调,用于取消一些调用,这些调用在界面销毁之后
  */
-class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbacks {
+internal class ComponentLifecycleCallback : ActivityLifecycleCallbacks {
 
-    private final FragmentManager.FragmentLifecycleCallbacks fragmentLifecycleCallbacks = new FragmentManager.FragmentLifecycleCallbacks() {
-        @Override
-        public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
-            super.onFragmentDestroyed(fm, f);
-            Router.cancel(f);
+    private val fragmentLifecycleCallbacks: FragmentManager.FragmentLifecycleCallbacks =
+        object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+                super.onFragmentDestroyed(fm, f)
+                Router.cancel(f)
+            }
         }
-    };
 
-    @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        ComponentActivityStack.INSTANCE.pushActivity(activity);
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        pushActivity(activity)
         // 目前不支持 Activity,所以写的时候Activity 必须继承 FragmentActivity
-        if (activity instanceof FragmentActivity) {
-            FragmentActivity fragmentActivity = (FragmentActivity) activity;
+        if (activity is FragmentActivity) {
             // 第二个参数是指挂载到这个 Activity 的各个 FragmentManager 都会被注册上
-            fragmentActivity.getSupportFragmentManager().registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);
+            activity.supportFragmentManager.registerFragmentLifecycleCallbacks(
+                fragmentLifecycleCallbacks,
+                true
+            )
         }
     }
 
-    @Override
-    public void onActivityStarted(Activity activity) {
+    override fun onActivityStarted(activity: Activity) {
         // ignore
     }
 
-    @Override
-    public void onActivityResumed(Activity activity) {
+    override fun onActivityResumed(activity: Activity) {
         // ignore
     }
 
-    @Override
-    public void onActivityPaused(Activity activity) {
+    override fun onActivityPaused(activity: Activity) {
         // ignore
     }
 
-    @Override
-    public void onActivityStopped(Activity activity) {
+    override fun onActivityStopped(activity: Activity) {
         // ignore
     }
 
-    @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
         // ignore
     }
 
-    @Override
-    public void onActivityDestroyed(Activity activity) {
-        ComponentActivityStack.INSTANCE.removeActivity(activity);
-        Router.cancel(activity);
+    override fun onActivityDestroyed(activity: Activity) {
+        removeActivity(activity)
+        Router.cancel(activity)
     }
 
 }
