@@ -19,11 +19,8 @@ object ComponentActivityStack {
      * 进入栈
      */
     @Synchronized
-    fun pushActivity(activity: Activity?) {
-        if (activity == null) {
-            return
-        }
-        if (activityStack!!.contains(activity)) {
+    fun pushActivity(activity: Activity) {
+        if (activityStack.contains(activity)) {
             return
         }
         activityStack.add(activity)
@@ -36,7 +33,7 @@ object ComponentActivityStack {
      */
     @Synchronized
     fun removeActivity(activity: Activity) {
-        activityStack!!.remove(activity)
+        activityStack.remove(activity)
     }
 
     /**
@@ -52,7 +49,7 @@ object ComponentActivityStack {
      */
     @Synchronized
     fun getTopActivity(): Activity? {
-        return if (isEmpty()) null else activityStack!![activityStack.size - 1]// 如果已经销毁, 就下一个
+        return if (isEmpty()) null else activityStack[activityStack.lastIndex]// 如果已经销毁, 就下一个
     }
 
     /**
@@ -95,7 +92,7 @@ object ComponentActivityStack {
      */
     @Synchronized
     fun getSecondTopActivity(): Activity? {
-        return if (isEmpty() || activityStack.size < 2) null else activityStack[activityStack.size - 2]
+        return if (isEmpty() || activityStack.size < 2) null else activityStack[activityStack.lastIndex - 1]
     }
 
     /**
