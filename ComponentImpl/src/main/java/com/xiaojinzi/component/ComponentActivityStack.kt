@@ -1,49 +1,32 @@
-package com.xiaojinzi.component;
+package com.xiaojinzi.component
 
-import android.app.Activity;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-
-import com.xiaojinzi.component.support.Utils;
-
-import java.util.Stack;
+import android.app.Activity
+import com.xiaojinzi.component.support.Utils
+import java.util.*
 
 /**
  * Component 的 Activity 栈
  *
  * @author xiaojinzi
  */
-public class ComponentActivityStack {
-
+object ComponentActivityStack {
     /**
      * the stack will be save all reference of Activity
      */
-    private Stack<Activity> activityStack = new Stack<>();
-
-    private ComponentActivityStack() {
-    }
-
-    private static class Holder {
-        private static ComponentActivityStack INSTANCE = new ComponentActivityStack();
-    }
-
-    @UiThread
-    public static ComponentActivityStack getInstance() {
-        return Holder.INSTANCE;
-    }
+    private val activityStack: Stack<Activity> = Stack()
 
     /**
      * 进入栈
      */
-    public synchronized void pushActivity(Activity activity) {
+    @Synchronized
+    fun pushActivity(activity: Activity?) {
         if (activity == null) {
-            return;
+            return
         }
-        if (activityStack.contains(activity)) {
-            return;
+        if (activityStack!!.contains(activity)) {
+            return
         }
-        activityStack.add(activity);
+        activityStack.add(activity)
     }
 
     /**
@@ -51,108 +34,99 @@ public class ComponentActivityStack {
      *
      * @author xiaojinzi
      */
-    public synchronized void removeActivity(Activity activity) {
-        activityStack.remove(activity);
+    @Synchronized
+    fun removeActivity(activity: Activity) {
+        activityStack!!.remove(activity)
     }
 
     /**
      * @return whether the the size of stack of Activity is zero or not
      */
-    public synchronized boolean isEmpty() {
-        if (activityStack == null || activityStack.size() == 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * @return the size of stack of Activity
-     */
-    public synchronized int getSize() {
-        if (activityStack == null) {
-            return 0;
-        }
-        return activityStack.size();
+    @Synchronized
+    fun isEmpty(): Boolean {
+        return activityStack.isEmpty()
     }
 
     /**
      * 返回顶层的 Activity
      */
-    @Nullable
-    public synchronized Activity getTopActivity() {
-        return isEmpty() ? null : activityStack.get(activityStack.size() - 1);
+    @Synchronized
+    fun getTopActivity(): Activity? {
+        return if (isEmpty()) null else activityStack!![activityStack.size - 1]// 如果已经销毁, 就下一个
     }
 
     /**
      * 返回顶层的活着的 Activity
      */
-    @Nullable
-    public synchronized Activity getTopAliveActivity() {
-        Activity result = null;
+    @Synchronized
+    fun getTopAliveActivity(): Activity? {
+        var result: Activity? = null
         if (!isEmpty()) {
-            int size = activityStack.size();
-            for (int i = size - 1; i >= 0; i--) {
-                Activity activity = activityStack.get(i);
+            val size = activityStack.size
+            for (i in size - 1 downTo 0) {
+                val activity = activityStack[i]
                 // 如果已经销毁, 就下一个
-                if(!Utils.isActivityDestoryed(activity)){
-                    result = activity;
-                    break;
+                if (!Utils.isActivityDestoryed(activity)) {
+                    result = activity
+                    break
                 }
             }
         }
-        return result;
+        return result
     }
 
     /**
      * 返回顶层的 Activity除了某一个
      */
-    @Nullable
-    public synchronized Activity getTopActivityExcept(@NonNull Class<? extends Activity> clazz) {
-        int size = activityStack.size();
-        for (int i = size - 1; i >= 0; i--) {
-            Activity itemActivity = activityStack.get(i);
-            if (itemActivity.getClass() != clazz) {
-                return itemActivity;
+    @Synchronized
+    fun getTopActivityExcept(clazz: Class<out Activity?>): Activity? {
+        val size = activityStack.size
+        for (i in size - 1 downTo 0) {
+            val itemActivity = activityStack[i]
+            if (itemActivity.javaClass != clazz) {
+                return itemActivity
             }
         }
-        return null;
+        return null
     }
 
     /**
      * 返回顶层的第二个 Activity
      */
-    @Nullable
-    public synchronized Activity getSecondTopActivity() {
-        return isEmpty() || activityStack.size() < 2 ? null : activityStack.get(activityStack.size() - 2);
+    @Synchronized
+    fun getSecondTopActivity(): Activity? {
+        return if (isEmpty() || activityStack.size < 2) null else activityStack[activityStack.size - 2]
     }
 
     /**
      * 返回底层的 Activity
      */
-    @Nullable
-    public synchronized Activity getBottomActivity() {
-        return isEmpty() || activityStack.size() < 1 ? null : activityStack.get(0);
+    @Synchronized
+    fun getBottomActivity(): Activity? {
+        return if (isEmpty() || activityStack.size < 1) null else activityStack[0]
     }
 
     /**
      * 是否存在某一个 Activity
      */
-    public synchronized boolean isExistActivity(@NonNull Class<? extends Activity> clazz) {
-        for (Activity activity : activityStack) {
-            if (activity.getClass() == clazz) {
-                return true;
+    @Synchronized
+    fun isExistActivity(clazz: Class<out Activity>): Boolean {
+        for (activity in activityStack) {
+            if (activity.javaClass == clazz) {
+                return true
             }
         }
-        return false;
+        return false
     }
 
-    public synchronized boolean isExistOtherActivityExcept(@NonNull Class<? extends Activity> clazz) {
-        for (Activity activity : activityStack) {
-            if (activity.getClass() != clazz) {
-                return true;
+    @Synchronized
+    fun isExistOtherActivityExcept(clazz: Class<out Activity>): Boolean {
+        for (activity in activityStack) {
+            if (activity.javaClass != clazz) {
+                return true
             }
         }
-        return false;
+        return false
     }
 
 }

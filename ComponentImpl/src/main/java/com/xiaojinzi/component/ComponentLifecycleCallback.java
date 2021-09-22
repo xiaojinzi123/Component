@@ -27,7 +27,7 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        ComponentActivityStack.getInstance().pushActivity(activity);
+        ComponentActivityStack.INSTANCE.pushActivity(activity);
         // 目前不支持 Activity,所以写的时候Activity 必须继承 FragmentActivity
         if (activity instanceof FragmentActivity) {
             FragmentActivity fragmentActivity = (FragmentActivity) activity;
@@ -63,7 +63,7 @@ class ComponentLifecycleCallback implements Application.ActivityLifecycleCallbac
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        ComponentActivityStack.getInstance().removeActivity(activity);
+        ComponentActivityStack.INSTANCE.removeActivity(activity);
         Router.cancel(activity);
     }
 

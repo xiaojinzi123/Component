@@ -33,7 +33,7 @@ public class ProxyIntentAct extends FragmentActivity {
         // 获取数据
         Bundle bundle = getIntent().getExtras();
         Activity launchActivity = ComponentActivityStack
-                .getInstance()
+                .INSTANCE
                 .getTopActivityExcept(getClass());
         final boolean isUseSelfActivity = launchActivity == null;
         if (launchActivity == null) {

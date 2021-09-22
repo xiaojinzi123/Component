@@ -276,7 +276,7 @@ public class RouterRequest {
         Activity result = getRawActivity();
         if (result == null) {
             // 如果不是为空返回的, 那么必定不是销毁的
-            result = ComponentActivityStack.getInstance().getTopAliveActivity();
+            result = ComponentActivityStack.INSTANCE.getTopAliveActivity();
         }
         return result;
     }
