@@ -16,7 +16,8 @@ public class App extends Application {
 
         // 初始化组件化相关
         Component.init(
-                BuildConfig.DEBUG, Config.with(this)
+                BuildConfig.DEBUG,
+                Config.with(this)
                         .build()
         );
 

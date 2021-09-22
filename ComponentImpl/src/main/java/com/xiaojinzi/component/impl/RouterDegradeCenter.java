@@ -146,7 +146,7 @@ public class RouterDegradeCenter implements IComponentCenterRouterDegrade {
     @Nullable
     public IComponentHostRouterDegrade findModuleRouterDegrade(String host) {
         try {
-            if (Component.getConfig().isOptimizeInit()) {
+            if (Component.requiredConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleRouterDegradeAsmImpl(
                         ComponentUtil.transformHostForClass(host)
                 );

@@ -344,7 +344,7 @@ public class RouterProcessor extends BaseHostProcessor {
                 .addModifiers(Modifier.PUBLIC);
         initMapMethodSpecBuilder.addStatement("super.initMap()");
         initMapMethodSpecBuilder.addComment("默认的 scheme");
-        initMapMethodSpecBuilder.addStatement("String defaultScheme = com.xiaojinzi.component.Component.getConfig().getDefaultScheme()");
+        initMapMethodSpecBuilder.addStatement("String defaultScheme = com.xiaojinzi.component.Component.requiredConfig().getDefaultScheme()");
         routerMap.forEach(new Consumer<RouterAnnoBean>() {
             @Override
             public void accept(RouterAnnoBean routerBean) {

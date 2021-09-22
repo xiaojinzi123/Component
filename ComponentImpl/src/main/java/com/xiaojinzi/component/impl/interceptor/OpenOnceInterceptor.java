@@ -8,7 +8,6 @@ import com.xiaojinzi.component.impl.RouterInterceptor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +46,7 @@ public class OpenOnceInterceptor implements RouterInterceptor {
         // 调试的情况下可能会失效,因为你断点打到这里慢慢的往下走那么可能时间已经过了一秒,就失去了限制的作用
         long currentTime = System.currentTimeMillis();
         // 如果之前有了并且时间少于一定的时间
-        if (map.containsKey(hostAndPath) && (currentTime - map.get(hostAndPath)) < Component.getConfig().getRouteRepeatCheckDuration()) {
+        if (map.containsKey(hostAndPath) && (currentTime - map.get(hostAndPath)) < Component.requiredConfig().getRouteRepeatCheckDuration()) {
             chain.callback().onError(new NavigationFailException("same request can't launch twice in a second, target uri is：" + uri.toString()));
         } else {
             map.put(hostAndPath, currentTime);
@@ -61,7 +60,7 @@ public class OpenOnceInterceptor implements RouterInterceptor {
         long currentTime = System.currentTimeMillis();
         List<String> keys = new ArrayList<>();
         for (String key : map.keySet()) {
-            if (currentTime - map.get(key) >= Component.getConfig().getRouteRepeatCheckDuration()) {
+            if (currentTime - map.get(key) >= Component.requiredConfig().getRouteRepeatCheckDuration()) {
                 keys.add(key);
             }
         }

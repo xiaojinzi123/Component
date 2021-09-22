@@ -46,7 +46,7 @@ public class OpenOnceInterceptorBackUp implements RouterInterceptor {
         // 如果匹配了
         if (currentHost.equals(preHost) &&
                 currentPath.equals(prePath) &&
-                (currentTime - preTargetTime) < Component.getConfig().getRouteRepeatCheckDuration()) {
+                (currentTime - preTargetTime) < Component.requiredConfig().getRouteRepeatCheckDuration()) {
             chain.callback().onError(new NavigationFailException("same request can't launch twice in a second, target uri is：" + uri.toString()));
         } else {
             preHost = currentHost;

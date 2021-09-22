@@ -81,7 +81,7 @@ public class FragmentCenter implements IComponentCenterFragment {
     @Nullable
     public IComponentHostFragment findModuleService(String host) {
         try {
-            if (Component.getConfig().isOptimizeInit()) {
+            if (Component.requiredConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleFragmentAsmImpl(
                         ComponentUtil.transformHostForClass(host)
                 );

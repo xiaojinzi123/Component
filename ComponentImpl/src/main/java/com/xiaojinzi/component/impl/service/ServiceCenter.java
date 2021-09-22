@@ -79,7 +79,7 @@ public class ServiceCenter implements IComponentCenterService {
     @Nullable
     public IComponentHostService findModuleService(@NonNull String host) {
         try {
-            if (Component.getConfig().isOptimizeInit()) {
+            if (Component.requiredConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleServiceAsmImpl(
                         ComponentUtil.transformHostForClass(host)
                 );

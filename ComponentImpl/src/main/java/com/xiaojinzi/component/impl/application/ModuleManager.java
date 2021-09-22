@@ -88,7 +88,7 @@ public class ModuleManager implements IComponentCenterApplication {
                 }
             };
             // 路由是否异步初始化
-            if (Component.getConfig().isInitRouterAsync()) {
+            if (Component.requiredConfig().isInitRouterAsync()) {
                 Utils.postActionToWorkThread(r);
             } else {
                 r.run();
@@ -117,7 +117,7 @@ public class ModuleManager implements IComponentCenterApplication {
      * 表示使用 Gradle 插件优化初始化
      */
     public void autoRegister() {
-        if (!Component.getConfig().isOptimizeInit()) {
+        if (!Component.requiredConfig().isOptimizeInit()) {
             LogUtil.logw("you can't use this method to register module. Because you not turn on 'optimizeInit' by calling method 'Config.Builder.optimizeInit(true)' when you init");
         }
         List<String> moduleNames = ASMUtil.getModuleNames();
@@ -197,7 +197,7 @@ public class ModuleManager implements IComponentCenterApplication {
     @Nullable
     public static IComponentHostApplication findModuleApplication(@NonNull String host) {
         IComponentHostApplication result = null;
-        if (Component.getConfig().isOptimizeInit()) {
+        if (Component.requiredConfig().isOptimizeInit()) {
             LogUtil.log("\"" + host + "\" will try to load by bytecode");
             result = ASMUtil.findModuleApplicationAsmImpl(
                     ComponentUtil.transformHostForClass(host)
@@ -241,7 +241,7 @@ public class ModuleManager implements IComponentCenterApplication {
                     // LogUtil.loge("放弃通知 " + compareValue);
                 }
             }
-        }, Component.getConfig().getNotifyModuleChangedDelayTime());
+        }, Component.requiredConfig().getNotifyModuleChangedDelayTime());
     }
 
     @UiThread

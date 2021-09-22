@@ -8,14 +8,11 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.xiaojinzi.component.Component;
@@ -200,7 +197,7 @@ public class RouterCenter implements IComponentCenterRouter {
         }
 
         if (request.context instanceof Application &&
-                Component.getConfig().isTipWhenUseApplication()) {
+                Component.requiredConfig().isTipWhenUseApplication()) {
             LogUtil.logw(
                     Router.TAG,
                     "you use 'Application' to launch Activity. this is not recommended. you should not use 'Application' as far as possible"
@@ -425,7 +422,7 @@ public class RouterCenter implements IComponentCenterRouter {
     @Nullable
     public IComponentHostRouter findUiRouter(String host) {
         try {
-            if (Component.getConfig().isOptimizeInit()) {
+            if (Component.requiredConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleRouterAsmImpl(
                         ComponentUtil.transformHostForClass(host)
                 );

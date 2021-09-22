@@ -170,7 +170,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
     @AnyThread
     public IComponentHostInterceptor findModuleInterceptor(String host) {
         try {
-            if (Component.getConfig().isOptimizeInit()) {
+            if (Component.requiredConfig().isOptimizeInit()) {
                 return ASMUtil.findModuleInterceptorAsmImpl(
                         ComponentUtil.transformHostForClass(host)
                 );

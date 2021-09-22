@@ -864,7 +864,7 @@ public class RouterRequest {
                 );
                 uriBuilder
                         .scheme(TextUtils.isEmpty(builder.scheme) ?
-                                Component.getConfig().getDefaultScheme() : builder.scheme)
+                                Component.requiredConfig().getDefaultScheme() : builder.scheme)
                         // host 一定不能为空
                         .encodedAuthority(authoritySB.toString())
                         .path(

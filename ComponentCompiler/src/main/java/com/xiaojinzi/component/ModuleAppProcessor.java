@@ -199,7 +199,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
 
         methodSpecBuilder.addStatement("$T $N = $L", Runnable.class, "r", innerTypeSpec);
 
-        methodSpecBuilder.beginControlFlow("if($N.getConfig().isInitRouterAsync())", ComponentConstants.COMPONENT_CLASS_NAME);
+        methodSpecBuilder.beginControlFlow("if($N.requiredConfig().isInitRouterAsync())", ComponentConstants.COMPONENT_CLASS_NAME);
         methodSpecBuilder.addStatement("$N.postActionToWorkThread(r)", ComponentConstants.UTILS_CLASS_NAME);
         methodSpecBuilder.endControlFlow();
         methodSpecBuilder.beginControlFlow("else");

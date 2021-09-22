@@ -727,7 +727,7 @@ public class AutowireProcessor extends BaseHostProcessor {
     private String buildGetDefaultAttrAutoWireValue(AttrAutoWireMode attrAutoWireMode, MethodSpec.Builder methodBuilder) {
         String targetAttrAutoWireValue = "targetAttrAutoWireValue" + intCount.incrementAndGet();
         if (attrAutoWireMode == AttrAutoWireMode.Unspecified) {
-            methodBuilder.addStatement("$N $N = $N.getConfig().getAttrAutoWireMode()", ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME, targetAttrAutoWireValue, ComponentConstants.COMPONENT_CLASS_NAME);
+            methodBuilder.addStatement("$N $N = $N.requiredConfig().getAttrAutoWireMode()", ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME, targetAttrAutoWireValue, ComponentConstants.COMPONENT_CLASS_NAME);
         } else {
             methodBuilder.addStatement("$N $N = $N.$L", ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME, targetAttrAutoWireValue, ComponentConstants.ATTRAUTOWIREMODE_CLASS_NAME, attrAutoWireMode);
         }

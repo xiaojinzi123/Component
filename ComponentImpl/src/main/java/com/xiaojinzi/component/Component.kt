@@ -1,22 +1,20 @@
-package com.xiaojinzi.component;
+package com.xiaojinzi.component
 
-import android.app.Application;
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.annotation.AnyThread;
-import androidx.annotation.MainThread;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-
-import com.xiaojinzi.component.anno.support.NotAppUseAnno;
-import com.xiaojinzi.component.impl.RouterCenter;
-import com.xiaojinzi.component.impl.application.ModuleManager;
-import com.xiaojinzi.component.impl.fragment.FragmentCenter;
-import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
-import com.xiaojinzi.component.support.Inject;
-import com.xiaojinzi.component.support.LogUtil;
-import com.xiaojinzi.component.support.Utils;
+import android.app.Application
+import androidx.annotation.UiThread
+import com.xiaojinzi.component.impl.application.ModuleManager
+import com.xiaojinzi.component.support.LogUtil
+import androidx.annotation.AnyThread
+import android.content.Intent
+import android.os.Bundle
+import com.xiaojinzi.component.anno.support.NotAppUseAnno
+import com.xiaojinzi.component.impl.RouterCenter
+import com.xiaojinzi.component.impl.interceptor.InterceptorCenter
+import com.xiaojinzi.component.impl.fragment.FragmentCenter
+import com.xiaojinzi.component.support.Inject
+import com.xiaojinzi.component.support.Utils
+import java.lang.Exception
+import java.lang.RuntimeException
 
 /**
  * 组件化类,需要被初始化
@@ -25,30 +23,33 @@ import com.xiaojinzi.component.support.Utils;
  *
  * @author : xiaojinzi
  */
-public class Component {
+object Component {
 
-    public static final String GITHUB_URL = "https://github.com/xiaojinzi123/Component";
-    public static final String DOC_URL = "https://github.com/xiaojinzi123/Component/wiki";
-    public static final String COMMON_ERROR_ISSUE = "https://github.com/xiaojinzi123/Component/issues/21";
-    public static final String ROUTER_UES_NOTE = "https://github.com/xiaojinzi123/Component/wiki/%E4%B8%BB%E9%A1%B5#%E7%89%B9%E5%88%AB%E6%B3%A8%E6%84%8F";
+    const val GITHUB_URL = "https://github.com/xiaojinzi123/Component"
+    const val DOC_URL = "https://github.com/xiaojinzi123/Component/wiki"
+    const val COMMON_ERROR_ISSUE = "https://github.com/xiaojinzi123/Component/issues/21"
+    const val ROUTER_UES_NOTE =
+        "https://github.com/xiaojinzi123/Component/wiki/%E4%B8%BB%E9%A1%B5#%E7%89%B9%E5%88%AB%E6%B3%A8%E6%84%8F"
 
     /**
      * 是否初始化过了
      */
-    private static boolean isInit = false;
+    private var isInit = false
 
+    /**
+     * 返回是否是 debug 状态
+     */
     /**
      * 是否是 debug 状态
      */
-    private static boolean isDebug = false;
+    @JvmStatic
+    var isDebug = false
+        private set
 
     /**
      * 配置对象
      */
-    private static Config mConfig = null;
-
-    private Component() {
-    }
+    private var mConfig: Config? = null
 
     /**
      * 初始化
@@ -56,70 +57,31 @@ public class Component {
      * @see Config 初始化的配置对象
      */
     @UiThread
-    public static void init(boolean isDebug, @NonNull Config config) {
+    @JvmStatic
+    fun init(isDebug: Boolean, config: Config) {
         // 做必要的检查
         if (isInit) {
-            throw new RuntimeException("you have init Component already!");
+            throw RuntimeException("you have init Component already!")
         }
-        Utils.checkMainThread();
-        Utils.checkNullPointer(config, "config");
-        Component.isDebug = isDebug;
-        mConfig = config;
+        Utils.checkMainThread()
+        Utils.checkNullPointer(config, "config")
+        Component.isDebug = isDebug
+        mConfig = config
         if (isDebug) {
-            printComponent();
+            printComponent()
         }
         // 注册
-        mConfig.getApplication().registerActivityLifecycleCallbacks(new ComponentLifecycleCallback());
-        if (mConfig.isOptimizeInit() && mConfig.isAutoRegisterModule()) {
-            ModuleManager.getInstance().autoRegister();
+        mConfig!!.application.registerActivityLifecycleCallbacks(ComponentLifecycleCallback())
+        if (mConfig!!.isOptimizeInit && mConfig!!.isAutoRegisterModule) {
+            ModuleManager.getInstance().autoRegister()
         }
-        isInit = true;
+        isInit = true
     }
 
-    /**
-     * 打印宣传内容和 logo
-     */
-    private static void printComponent() {
-        StringBuffer sb = new StringBuffer();
-        sb.append(" \n");
-
-        // 打印logo C
-
-        sb.append("\n");
-        sb.append("             *********\n");
-        sb.append("          ****        ****\n");
-        sb.append("       ****              ****\n");
-        sb.append("     ****\n");
-        sb.append("    ****\n");
-        sb.append("    ****\n");
-        sb.append("    ****\n");
-        sb.append("     ****\n");
-        sb.append("       ****              ****\n");
-        sb.append("          ****        ****\n");
-        sb.append("             *********\n");
-
-        sb.append("感谢您选择 Component 组件化框架. \n有任何问题欢迎提 issue 或者扫描 github 上的二维码进入群聊@群主\n")
-                .append("Github 地址：" + GITHUB_URL)
-                .append("\n文档地址：" + DOC_URL)
-                .append("\n错误排查指南：" + COMMON_ERROR_ISSUE)
-                .append("\n ");
-
-        LogUtil.logw(sb.toString());
-    }
-
-    @NonNull
-    @AnyThread
-    public static Config getConfig() {
-        checkInit();
-        return mConfig;
-    }
-
-    /**
-     * 返回是否是 debug 状态
-     */
-    @AnyThread
-    public static boolean isDebug() {
-        return Component.isDebug;
+    @JvmStatic
+    fun requiredConfig(): Config {
+        checkInit()
+        return mConfig!!
     }
 
     /**
@@ -127,37 +89,43 @@ public class Component {
      *
      * @return Application
      */
-    @NonNull
-    @AnyThread
-    public static Application getApplication() {
-        checkInit();
-        return mConfig.getApplication();
-    }
+    @JvmStatic
+    @get:AnyThread
+    val application: Application
+        get() {
+            checkInit()
+            return mConfig!!.application
+        }
 
-    private static void checkInit() {
+    @JvmStatic
+    private fun checkInit() {
         if (mConfig == null) {
-            throw new RuntimeException("you must init Component first!");
+            throw RuntimeException("you must init Component first!")
         }
     }
 
     @UiThread
-    public static void inject(@NonNull Object target) {
-        inject(target, null, true, true);
+    @JvmStatic
+    fun inject(target: Any) {
+        inject(target = target, bundle = null, isAutoWireAttrValue = true, isAutoWireService = true)
     }
 
     @UiThread
-    public static void injectAttrValueFromIntent(@NonNull Object target, @Nullable Intent intent) {
-        injectAttrValueFromBundle(target, intent == null ? null : intent.getExtras());
+    @JvmStatic
+    fun injectAttrValueFromIntent(target: Any, intent: Intent?) {
+        injectAttrValueFromBundle(target = target, bundle = intent?.extras)
     }
 
     @UiThread
-    public static void injectAttrValueFromBundle(@NonNull Object target, @Nullable Bundle bundle) {
-        inject(target, bundle, true, false);
+    @JvmStatic
+    fun injectAttrValueFromBundle(target: Any, bundle: Bundle?) {
+        inject(target, bundle, isAutoWireAttrValue = true)
     }
 
     @UiThread
-    public static void injectService(@NonNull Object target) {
-        inject(target, null, false, true);
+    @JvmStatic
+    fun injectService(target: Any) {
+        inject(target = target, bundle = null, isAutoWireService = true)
     }
 
     /**
@@ -169,28 +137,33 @@ public class Component {
      * @param isAutoWireService   是否注入 Service
      */
     @UiThread
-    private static void inject(@NonNull Object target, @Nullable Bundle bundle,
-                               boolean isAutoWireAttrValue,
-                               boolean isAutoWireService) {
-        Utils.checkMainThread();
-        Utils.checkNullPointer(target, "target");
-        String injectClassName = target.getClass().getName() + ComponentConstants.INJECT_SUFFIX;
+    @JvmStatic
+    @Suppress("UNCHECKED_CAST")
+    private fun inject(
+        target: Any,
+        bundle: Bundle?,
+        isAutoWireAttrValue: Boolean = false,
+        isAutoWireService: Boolean = false,
+    ) {
+        Utils.checkMainThread()
+        Utils.checkNullPointer(target, "target")
+        val injectClassName = target.javaClass.name + ComponentConstants.INJECT_SUFFIX
         try {
-            Class<?> targetInjectClass = Class.forName(injectClassName);
-            Inject inject = (Inject) targetInjectClass.newInstance();
+            val targetInjectClass = Class.forName(injectClassName)
+            val inject = targetInjectClass.newInstance() as Inject<Any>
             if (isAutoWireService) {
-                inject.injectService(target);
+                inject.injectService(target)
             }
             if (isAutoWireAttrValue) {
                 if (bundle == null) {
-                    inject.injectAttrValue(target);
+                    inject.injectAttrValue(target)
                 } else {
-                    Utils.checkNullPointer(bundle, "bundle");
-                    inject.injectAttrValue(target, bundle);
+                    Utils.checkNullPointer(bundle, "bundle")
+                    inject.injectAttrValue(target, bundle)
                 }
             }
-        } catch (Exception ignore) {
-            LogUtil.log("class '" + target.getClass().getName() + "' inject fail");
+        } catch (ignore: Exception) {
+            LogUtil.log("class '" + target.javaClass.name + "' inject fail")
         }
     }
 
@@ -199,13 +172,42 @@ public class Component {
      * 1.路由表在不同的子路由表中是否有重复
      * 2.服务在不同模块中的声明是否也有重复的名称
      */
+    @JvmStatic
     @NotAppUseAnno
-    public static void check() {
-        if (isDebug() && getConfig().isErrorCheck()) {
-            RouterCenter.getInstance().check();
-            InterceptorCenter.getInstance().check();
-            FragmentCenter.getInstance().check();
+    fun check() {
+        if (isDebug && requiredConfig().isErrorCheck) {
+            RouterCenter.getInstance().check()
+            InterceptorCenter.getInstance().check()
+            FragmentCenter.getInstance().check()
         }
+    }
+
+    /**
+     * 打印宣传内容和 logo
+     */
+    @JvmStatic
+    private fun printComponent() {
+        val sb = StringBuffer()
+        sb.append(" \n")
+
+        // 打印logo C
+        sb.append("\n")
+        sb.append("             *********\n")
+        sb.append("          ****        ****\n")
+        sb.append("       ****              ****\n")
+        sb.append("     ****\n")
+        sb.append("    ****\n")
+        sb.append("    ****\n")
+        sb.append("    ****\n")
+        sb.append("     ****\n")
+        sb.append("       ****              ****\n")
+        sb.append("          ****        ****\n")
+        sb.append("             *********\n")
+        sb.append("感谢您选择 Component 组件化框架. \n有任何问题欢迎提 issue 或者扫描 github 上的二维码进入群聊@群主\n")
+        sb.append("Github 地址：$GITHUB_URL \n")
+        sb.append("文档地址：$DOC_URL \n")
+        sb.append("错误排查指南：$COMMON_ERROR_ISSUE \n")
+        LogUtil.logw(sb.toString())
     }
 
 }
