@@ -1,6 +1,5 @@
 package com.xiaojinzi.component.impl;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 

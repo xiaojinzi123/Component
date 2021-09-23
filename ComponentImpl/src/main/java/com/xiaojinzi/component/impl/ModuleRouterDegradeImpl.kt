@@ -1,38 +1,33 @@
-package com.xiaojinzi.component.impl;
+package com.xiaojinzi.component.impl
 
-import androidx.annotation.CallSuper;
-import androidx.annotation.NonNull;
+import com.xiaojinzi.component.router.IComponentHostRouterDegrade
+import com.xiaojinzi.component.bean.RouterDegradeBean
+import androidx.annotation.CallSuper
+import java.util.ArrayList
 
-import com.xiaojinzi.component.bean.RouterDegradeBean;
-import com.xiaojinzi.component.router.IComponentHostRouterDegrade;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class ModuleRouterDegradeImpl implements IComponentHostRouterDegrade {
+abstract class ModuleRouterDegradeImpl : IComponentHostRouterDegrade {
 
     /**
      * 降级处理的类
      */
-    protected final List<RouterDegradeBean> routerDegradeBeanList = new ArrayList<>();
+    @JvmField
+    protected val routerDegradeBeanList: List<RouterDegradeBean> = ArrayList()
 
     /**
      * 是否初始化了map,懒加载
      */
-    protected boolean hasInitList = false;
+    private var hasInitList = false
 
     @CallSuper
-    protected void initList() {
-        hasInitList = true;
+    protected open fun initList() {
+        hasInitList = true
     }
 
-    @NonNull
-    @Override
-    public List<RouterDegradeBean> listRouterDegrade() {
+    override fun listRouterDegrade(): List<RouterDegradeBean> {
         if (!hasInitList) {
-            initList();
+            initList()
         }
-        return new ArrayList<>(routerDegradeBeanList);
+        return ArrayList(routerDegradeBeanList)
     }
 
 }
