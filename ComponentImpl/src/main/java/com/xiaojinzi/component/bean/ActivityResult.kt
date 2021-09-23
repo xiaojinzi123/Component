@@ -1,46 +1,38 @@
-package com.xiaojinzi.component.bean;
+package com.xiaojinzi.component.bean
 
-import android.content.Intent;
-import androidx.annotation.Nullable;
-
-import com.xiaojinzi.component.error.ignore.ActivityResultException;
+import android.content.Intent
+import com.xiaojinzi.component.error.ignore.ActivityResultException
 
 /**
- * activity result 的返回对象,{@link android.app.Activity#onActivityResult(int, int, Intent)}
+ * activity result 的返回对象,[android.app.Activity.onActivityResult]
  * time   : 2018/12/04
  *
  * @author : xiaojinzi
  */
-public class ActivityResult {
+data class
+ActivityResult(
+        val requestCode: Int,
+        val resultCode: Int,
+        val data: Intent?
+) {
 
-    public final int requestCode;
-
-    public final int resultCode;
-
-    @Nullable
-    public final Intent data;
-
-    public ActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        this.requestCode = requestCode;
-        this.resultCode = resultCode;
-        this.data = data;
-    }
-
-    public Intent intentCheckAndGet() throws ActivityResultException {
+    @Throws(ActivityResultException::class)
+    fun intentCheckAndGet(): Intent {
         if (data == null) {
-            throw new ActivityResultException("the intent result data is null");
+            throw ActivityResultException("the intent result data is null")
         }
-        return data;
+        return data
     }
 
-    public Intent intentWithResultCodeCheckAndGet(int expectedResultCode) {
+    @Throws(ActivityResultException::class)
+    fun intentWithResultCodeCheckAndGet(expectedResultCode: Int): Intent {
         if (data == null) {
-            throw new ActivityResultException("the intent result data is null");
+            throw ActivityResultException("the intent result data is null")
         }
         if (expectedResultCode != resultCode) {
-            throw new ActivityResultException("the resultCode is not matching " + expectedResultCode);
+            throw ActivityResultException("the resultCode is not matching $expectedResultCode")
         }
-        return data;
+        return data
     }
 
 }

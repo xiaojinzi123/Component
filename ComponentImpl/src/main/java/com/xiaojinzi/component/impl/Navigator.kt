@@ -988,7 +988,7 @@ open class Navigator : RouterRequest.Builder, Call {
 
         // 添加路由检查拦截器
         if (useRouteRepeatCheck) {
-            allInterceptors.add(OpenOnceInterceptor.getInstance())
+            allInterceptors.add(OpenOnceInterceptor)
         }
         // 添加共有拦截器
         allInterceptors.addAll(

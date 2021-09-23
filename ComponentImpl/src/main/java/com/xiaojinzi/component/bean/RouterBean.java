@@ -1,6 +1,5 @@
 package com.xiaojinzi.component.bean;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.xiaojinzi.component.anno.RouterAnno;

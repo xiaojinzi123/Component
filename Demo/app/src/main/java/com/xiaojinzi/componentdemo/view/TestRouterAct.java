@@ -515,7 +515,7 @@ public class TestRouterAct extends BaseAct {
                 .requestCode(123)
                 .activityResultCall()
                 .subscribe(
-                        activityResult -> addInfo("您从打电话界面回来啦,resultCode = " + activityResult.resultCode + ",resultCode = " + activityResult.resultCode),
+                        activityResult -> addInfo("您从打电话界面回来啦,resultCode = " + activityResult.getResultCode() + ",resultCode = " + activityResult.getResultCode()),
                         throwable -> addInfo("跳转到打电话界面失败啦：" + throwable.getMessage())
                 );
 
@@ -530,7 +530,7 @@ public class TestRouterAct extends BaseAct {
                 .requestCode(123)
                 .activityResultCall()
                 .subscribe(
-                        activityResult -> addInfo("您从App详情回来啦,resultCode = " + activityResult.resultCode + ",resultCode = " + activityResult.resultCode),
+                        activityResult -> addInfo("您从App详情回来啦,resultCode = " + activityResult.getResultCode() + ",resultCode = " + activityResult.getResultCode()),
                         throwable -> addInfo("跳转到App详情失败啦：" + throwable.getMessage())
                 );
 

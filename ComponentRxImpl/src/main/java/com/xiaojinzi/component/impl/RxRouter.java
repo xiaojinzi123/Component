@@ -480,7 +480,7 @@ public class RxRouter {
                     .map(new Function<ActivityResult, Integer>() {
                         @Override
                         public Integer apply(ActivityResult activityResult) throws Exception {
-                            return activityResult.resultCode;
+                            return activityResult.getResultCode();
                         }
                     });
         }
@@ -501,7 +501,7 @@ public class RxRouter {
                     .doOnSuccess(new Consumer<ActivityResult>() {
                         @Override
                         public void accept(ActivityResult activityResult) throws Exception {
-                            if (activityResult.resultCode != expectedResultCode) {
+                            if (activityResult.getResultCode() != expectedResultCode) {
                                 throw new ActivityResultException("the resultCode is not matching " + expectedResultCode);
                             }
                         }

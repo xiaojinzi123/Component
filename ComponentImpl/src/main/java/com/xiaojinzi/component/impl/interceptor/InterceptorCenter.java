@@ -152,9 +152,9 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
         Collections.sort(totalList, new Comparator<InterceptorBean>() {
             @Override
             public int compare(InterceptorBean o1, InterceptorBean o2) {
-                if (o1.priority == o2.priority) {
+                if (o1.getPriority() == o2.getPriority()) {
                     return 0;
-                } else if (o1.priority > o2.priority) {
+                } else if (o1.getPriority() > o2.getPriority()) {
                     return -1;
                 } else {
                     return 1;
@@ -162,7 +162,7 @@ public class InterceptorCenter implements IComponentCenterInterceptor {
             }
         });
         for (InterceptorBean interceptorBean : totalList) {
-            mGlobalInterceptorList.add(interceptorBean.interceptor);
+            mGlobalInterceptorList.add(interceptorBean.getInterceptor());
         }
     }
 
