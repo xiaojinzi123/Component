@@ -1,56 +1,40 @@
-package com.xiaojinzi.component.impl;
+package com.xiaojinzi.component.impl
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-
-import androidx.annotation.NonNull;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
-import androidx.fragment.app.FragmentManager;
-
-import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.ComponentConstants;
-import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.anno.support.NotAppUseAnno;
-import com.xiaojinzi.component.bean.PageInterceptorBean;
-import com.xiaojinzi.component.bean.RouterBean;
-import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException;
-import com.xiaojinzi.component.error.ignore.NavigationFailException;
-import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException;
-import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
-import com.xiaojinzi.component.router.IComponentCenterRouter;
-import com.xiaojinzi.component.router.IComponentHostRouter;
-import com.xiaojinzi.component.support.ASMUtil;
-import com.xiaojinzi.component.support.LogUtil;
-import com.xiaojinzi.component.support.RouterInterceptorCache;
-import com.xiaojinzi.component.support.Utils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
+import android.app.Activity
+import android.app.Application
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.annotation.UiThread
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import com.xiaojinzi.component.Component
+import com.xiaojinzi.component.Component.requiredConfig
+import com.xiaojinzi.component.ComponentConstants
+import com.xiaojinzi.component.ComponentUtil
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno
+import com.xiaojinzi.component.anno.support.NotAppUseAnno
+import com.xiaojinzi.component.bean.RouterBean
+import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException
+import com.xiaojinzi.component.error.ignore.NavigationFailException
+import com.xiaojinzi.component.error.ignore.TargetActivityNotFoundException
+import com.xiaojinzi.component.impl.interceptor.InterceptorCenter
+import com.xiaojinzi.component.router.IComponentCenterRouter
+import com.xiaojinzi.component.router.IComponentHostRouter
+import com.xiaojinzi.component.support.ASMUtil
+import com.xiaojinzi.component.support.LogUtil
+import com.xiaojinzi.component.support.RouterInterceptorCache
+import com.xiaojinzi.component.support.Utils
+import java.util.*
+import java.util.regex.Pattern
 
 /**
  * 请注意:
  * 请勿在项目中使用此类, 此类的 Api 不供项目使用, 仅供框架内部使用.
  * 即使你在项目中能引用到此类并且调用到 Api, 也不是你想要的效果. 所以请不要使用.
- * 尤其是方法 {@link #isMatchUri(Uri)}
- * <p>
+ * 尤其是方法 [.isMatchUri]
+ *
+ *
  * 中央路由,挂载着多个子路由表,这里有总路由表
  * 实际的跳转也是这里实现的,当有模块的注册和反注册发生的时候
  * 总路由表会有响应的变化
@@ -60,71 +44,50 @@ import static com.xiaojinzi.component.ComponentConstants.SEPARATOR;
  */
 @NotAppUseAnno
 @CheckClassNameAnno
-public class RouterCenter implements IComponentCenterRouter {
-
-    /**
-     * 单例对象
-     */
-    private static volatile RouterCenter instance;
-
-    private RouterCenter() {
-    }
-
-    public static RouterCenter getInstance() {
-        if (instance == null) {
-            synchronized (RouterCenter.class) {
-                if (instance == null) {
-                    instance = new RouterCenter();
-                }
-            }
-        }
-        return instance;
-    }
+object RouterCenter : IComponentCenterRouter {
 
     /**
      * 子路由表对象
      */
-    private static Map<String, IComponentHostRouter> hostRouterMap = new HashMap<>();
+    private val hostRouterMap: MutableMap<String, IComponentHostRouter> = HashMap()
 
     /**
      * 保存映射关系的正则匹配的 map 集合
      */
-    protected final Map<String, RouterBean> routerRegExMap = new HashMap<>();
+    private val routerRegExMap: MutableMap<String, RouterBean> = HashMap()
 
     /**
      * 保存映射关系的map集合
      */
-    protected final Map<String, RouterBean> routerMap = new HashMap<>();
+    private val routerMap: MutableMap<String, RouterBean> = HashMap()
 
-    @Override
-    public synchronized boolean isMatchUri(@NonNull Uri uri) {
-        return getTarget(uri) != null;
+    @Synchronized
+    override fun isMatchUri(uri: Uri): Boolean {
+        return getTarget(uri) != null
     }
 
-    @Override
-    public boolean isSameTarget(@NonNull Uri uri1, @NonNull Uri uri2) {
-        return getTarget(uri1) == getTarget(uri2);
+    override fun isSameTarget(uri1: Uri, uri2: Uri): Boolean {
+        return getTarget(uri1) === getTarget(uri2)
     }
 
-    @Override
-    @Nullable
     @UiThread
-    public Intent openUri(@NonNull final RouterRequest routerRequest) throws Exception {
-        return doOpenUri(routerRequest);
+    @Throws(Exception::class)
+    override fun openUri(routerRequest: RouterRequest): Intent? {
+        return doOpenUri(routerRequest)
     }
 
     /**
      * @param request             路由请求对象
      * @param routerDegradeIntent 一个降级的 Intent
      */
-    @Nullable
     @UiThread
-    public Intent routerDegrade(@NonNull RouterRequest request, @Nullable Intent routerDegradeIntent) throws Exception {
-        String uriString = request.uri.toString();
+    @Throws(Exception::class)
+    fun routerDegrade(request: RouterRequest, routerDegradeIntent: Intent?): Intent? {
+        val uriString = request.uri.toString()
         if (routerDegradeIntent == null) {
-            throw new TargetActivityNotFoundException(uriString);
+            throw TargetActivityNotFoundException(uriString)
         }
-        return doStartIntent(request, routerDegradeIntent);
+        return doStartIntent(request, routerDegradeIntent)
     }
 
     /**
@@ -132,43 +95,37 @@ public class RouterCenter implements IComponentCenterRouter {
      *
      * @param request 路由请求对象
      */
-    @Nullable
     @UiThread
-    private Intent doOpenUri(@NonNull final RouterRequest request) throws Exception {
+    @Throws(Exception::class)
+    private fun doOpenUri(request: RouterRequest): Intent? {
         if (!Utils.isMainThread()) {
-            throw new NavigationFailException("Router must run on main thread");
-        }
-        if (request.uri == null) {
-            throw new NavigationFailException("target Uri is null");
+            throw NavigationFailException("Router must run on main thread")
         }
         // 参数检测完毕
-        RouterBean target = getTarget(request.uri);
+        val target = getTarget(request.uri)
         // router://component1/test?data=xxxx
-        String uriString = request.uri.toString();
+        val uriString = request.uri.toString()
         // 没有找到目标界面
         if (target == null) {
-            throw new TargetActivityNotFoundException(uriString);
+            throw TargetActivityNotFoundException(uriString)
         }
         if (request.context == null && request.fragment == null) {
-            throw new NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nRouter.with(Context) or Router.with(Fragment)");
+            throw NavigationFailException("one of the Context and Fragment must not be null,do you forget call method: \nRouter.with(Context) or Router.with(Fragment)")
         }
         // do startActivity
-        Context rawContext = request.getRawContext();
+        val rawContext = request.rawContext
+                ?: throw NavigationFailException("is your fragment or Activity is Destroyed? see ${Component.ROUTER_UES_NOTE}".trimIndent())
         // 如果 Context 和 Fragment 中的 Context 都是 null
-        if (rawContext == null) {
-            throw new NavigationFailException("is your fragment or Activity is Destroyed?\n" +
-                    "see " + Component.ROUTER_UES_NOTE);
-        }
-        Intent intent = null;
-        if (target.getTargetClass() != null) {
-            intent = new Intent(rawContext, target.getTargetClass());
-        } else if (target.getCustomerIntentCall() != null) {
-            intent = target.getCustomerIntentCall().get(request);
+        var intent: Intent? = null
+        if (target.targetClass != null) {
+            intent = Intent(rawContext, target.targetClass)
+        } else if (target.customerIntentCall != null) {
+            intent = target.customerIntentCall!![request]
         }
         if (intent == null) {
-            throw new TargetActivityNotFoundException(uriString);
+            throw TargetActivityNotFoundException(uriString)
         }
-        return doStartIntent(request, intent);
+        return doStartIntent(request, intent)
     }
 
     /**
@@ -178,290 +135,249 @@ public class RouterCenter implements IComponentCenterRouter {
      * @param intent  Intent
      * @return 如果是为了返回 Inten 来的
      */
-    @Nullable
     @UiThread
-    private Intent doStartIntent(@NonNull RouterRequest request,
-                                 Intent intent) throws Exception {
+    @Throws(Exception::class)
+    private fun doStartIntent(request: RouterRequest,
+                              intent: Intent): Intent? {
         // 前置工作
-
-        intent.putExtras(request.bundle);
+        intent.putExtras(request.bundle)
         // 把用户的 flags 和 categories 都设置进来
-        for (String intentCategory : request.intentCategories) {
-            intent.addCategory(intentCategory);
+        for (intentCategory in request.intentCategories) {
+            intent.addCategory(intentCategory)
         }
-        for (Integer intentFlag : request.intentFlags) {
-            intent.addFlags(intentFlag);
+        for (intentFlag in request.intentFlags) {
+            intent.addFlags(intentFlag)
         }
         if (request.intentConsumer != null) {
-            request.intentConsumer.accept(intent);
+            request.intentConsumer.accept(intent)
         }
-
-        if (request.context instanceof Application &&
-                Component.requiredConfig().isTipWhenUseApplication()) {
+        if (request.context is Application &&
+                requiredConfig().isTipWhenUseApplication) {
             LogUtil.logw(
                     Router.TAG,
                     "you use 'Application' to launch Activity. this is not recommended. you should not use 'Application' as far as possible"
-            );
+            )
         }
-
-        if (request.beforeStartAction != null) {
-            request.beforeStartAction.run();
-        }
+        request.beforeStartAction?.run()
 
         // ------------------------------- 启动界面核心代码 ------------------------------- START
-
         if (request.isForTargetIntent) {
-            return intent;
+            return intent
         }
 
         // 如果是普通的启动界面
         if (request.isForResult) { // 如果是 startActivity
             // 使用 context 跳转 startActivityForResult
             if (request.context != null) {
-                Fragment rxFragment = findFragment(request.context);
-                Activity rawAct = null;
-                if (rxFragment != null) {
-                    rxFragment.startActivityForResult(intent, request.requestCode, request.options);
-                } else if ((rawAct = Utils.getActivityFromContext(request.context)) != null) {
-                    rawAct.startActivityForResult(intent, request.requestCode, request.options);
-                } else {
-                    throw new NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method");
+                val rxFragment = findFragment(request.context)
+                var rawAct: Activity?
+                when {
+                    rxFragment != null -> {
+                        rxFragment.startActivityForResult(intent, request.requestCode!!, request.options)
+                    }
+                    Utils.getActivityFromContext(request.context).also { rawAct = it } != null -> {
+                        rawAct!!.startActivityForResult(intent, request.requestCode!!, request.options)
+                    }
+                    else -> {
+                        throw NavigationFailException("Context is not a Activity,so can't use 'startActivityForResult' method")
+                    }
                 }
             } else if (request.fragment != null) { // 使用 Fragment 跳转
-                Fragment rxFragment = findFragment(request.fragment);
+                val rxFragment = findFragment(request.fragment)
                 if (rxFragment != null) {
-                    rxFragment.startActivityForResult(intent, request.requestCode, request.options);
+                    rxFragment.startActivityForResult(intent, request.requestCode!!, request.options)
                 } else {
-                    request.fragment.startActivityForResult(intent, request.requestCode, request.options);
+                    request.fragment.startActivityForResult(intent, request.requestCode!!, request.options)
                 }
             } else {
-                throw new NavigationFailException("the context or fragment both are null");
+                throw NavigationFailException("the context or fragment both are null")
             }
         } else { // 不想要框架来获取 activityResult
             // 普通跳转
             if (request.requestCode == null) {
-                if (request.context != null) {
-                    request.context.startActivity(intent, request.options);
-                } else if (request.fragment != null) {
-                    request.fragment.startActivity(intent, request.options);
-                } else {
-                    throw new NavigationFailException("the context or fragment both are null");
+                when {
+                    request.context != null -> {
+                        request.context.startActivity(intent, request.options)
+                    }
+                    request.fragment != null -> {
+                        request.fragment.startActivity(intent, request.options)
+                    }
+                    else -> {
+                        throw NavigationFailException("the context or fragment both are null")
+                    }
                 }
             } else { // startActivityForResult
-                Activity rawAct = null;
-                if ((rawAct = Utils.getActivityFromContext(request.context)) != null) {
-                    rawAct.startActivityForResult(intent, request.requestCode, request.options);
-                } else if (request.fragment != null) {
-                    request.fragment.startActivityForResult(intent, request.requestCode, request.options);
-                } else {
-                    throw new NavigationFailException("the context or fragment both are null");
+                var rawAct: Activity? = null
+                when {
+                    Utils.getActivityFromContext(request.context).also { rawAct = it } != null -> {
+                        rawAct!!.startActivityForResult(intent, request.requestCode, request.options)
+                    }
+                    request.fragment != null -> {
+                        request.fragment.startActivityForResult(intent, request.requestCode, request.options)
+                    }
+                    else -> {
+                        throw NavigationFailException("the context or fragment both are null")
+                    }
                 }
             }
         }
 
         // ------------------------------- 启动界面核心代码 ------------------------------- END
-
-        if (request.afterStartAction != null) {
-            request.afterStartAction.run();
-        }
-
-        return null;
-
+        request.afterStartAction?.run()
+        return null
     }
 
-    @NonNull
-    @Override
-    public synchronized List<RouterInterceptor> listPageInterceptors(@NonNull Uri uri) {
+    @Synchronized
+    override fun listPageInterceptors(uri: Uri): List<RouterInterceptor> {
         // 获取目标对象
-        final RouterBean routerBean = getTarget(uri);
-        if (routerBean == null) {
-            return Collections.emptyList();
-        }
+        val routerBean = getTarget(uri) ?: return emptyList()
 
         // 如果没有拦截器直接返回 null
-        if (routerBean.getPageInterceptors().isEmpty()) {
-            return Collections.emptyList();
+        if (routerBean.pageInterceptors.isEmpty()) {
+            return emptyList()
         }
-
-        final List<RouterInterceptor> result = new ArrayList<>(routerBean.getPageInterceptors().size());
+        val result: MutableList<RouterInterceptor> = ArrayList(routerBean.pageInterceptors.size)
 
         // 排个序
-        List<PageInterceptorBean> pageInterceptors = routerBean.getPageInterceptors();
-        Collections.sort(pageInterceptors, new Comparator<PageInterceptorBean>() {
-            @Override
-            public int compare(PageInterceptorBean o1, PageInterceptorBean o2) {
-                return o2.getPriority() - o1.getPriority();
-            }
-        });
-
-        for (PageInterceptorBean pageInterceptorBean : pageInterceptors) {
-            String interceptorName = pageInterceptorBean.getStringInterceptor();
-            Class<? extends RouterInterceptor> interceptorClass = pageInterceptorBean.getClassInterceptor();
-            if (interceptorName != null && !interceptorName.isEmpty()) {
-                final RouterInterceptor interceptor = InterceptorCenter.getInstance().getByName(interceptorName);
-                if (interceptor == null) {
-                    throw new InterceptorNotFoundException("can't find the interceptor and it's name is " + interceptorName + ",target url is " + uri.toString());
-                }
-                result.add(interceptor);
+        val pageInterceptors = routerBean.pageInterceptors
+        pageInterceptors.sortWith { o1, o2 -> o2.priority - o1.priority }
+        for (pageInterceptorBean in pageInterceptors) {
+            val interceptorName = pageInterceptorBean.stringInterceptor
+            val interceptorClass = pageInterceptorBean.classInterceptor
+            if (!interceptorName.isNullOrEmpty()) {
+                val interceptor = InterceptorCenter.getInstance().getByName(interceptorName)
+                        ?: throw InterceptorNotFoundException("can't find the interceptor and it's name is $interceptorName,target url is $uri")
+                result.add(interceptor)
             } else if (interceptorClass != null) {
-                final RouterInterceptor interceptor = RouterInterceptorCache.getInterceptorByClass(interceptorClass);
-                if (interceptor == null) {
-                    throw new InterceptorNotFoundException("can't find the interceptor and it's className is " + interceptorClass + ",target url is " + uri.toString());
-                }
-                result.add(interceptor);
+                val interceptor = RouterInterceptorCache.getInterceptorByClass(interceptorClass)
+                        ?: throw InterceptorNotFoundException("can't find the interceptor and it's className is $interceptorClass,target url is $uri")
+                result.add(interceptor)
             } else {
-                throw new InterceptorNotFoundException("String interceptor and class interceptor are both null");
+                throw InterceptorNotFoundException("String interceptor and class interceptor are both null")
             }
         }
-
-        return result;
+        return result
     }
 
-    @NonNull
-    @Override
-    public synchronized List<RouterInterceptor> listDegradeInterceptors(@NonNull Uri uri) throws Exception {
-        return Collections.emptyList();
+    @Synchronized
+    @Throws(Exception::class)
+    override fun listDegradeInterceptors(uri: Uri): List<RouterInterceptor> {
+        return emptyList()
     }
 
-    @Nullable
-    private RouterBean getTarget(@NonNull Uri uri) {
-        String targetKey = getTargetRouterKey(uri);
-        if (targetKey == null) {
-            return null;
-        }
-        for (Map.Entry<String, RouterBean> entry : routerRegExMap.entrySet()) {
-            if (Pattern.matches(entry.getKey(), targetKey)) {
-                return entry.getValue();
+    private fun getTarget(uri: Uri): RouterBean? {
+        val targetKey = getTargetRouterKey(uri) ?: return null
+        for ((key, value) in routerRegExMap) {
+            if (Pattern.matches(key, targetKey)) {
+                return value
             }
         }
-        return routerMap.get(targetKey);
+        return routerMap[targetKey]
     }
 
     /**
      * scheme + "://" + host + path
      */
-    @Nullable
-    private String getTargetRouterKey(@NonNull Uri uri) {
+    private fun getTargetRouterKey(uri: Uri): String {
         // "/component1/test" 不含host
-        String targetPath = uri.getPath();
-        if (targetPath != null && targetPath.length() > 0) {
-            if (targetPath.charAt(0) != '/') {
-                targetPath = SEPARATOR + targetPath;
+        var targetPath = uri.path
+        return if (!targetPath.isNullOrEmpty()) {
+            if (targetPath[0] != '/') {
+                targetPath = ComponentConstants.SEPARATOR + targetPath
             }
-            return uri.getScheme() + "://" + uri.getHost() + targetPath;
+            uri.scheme + "://" + uri.host + targetPath
         } else {
-            return uri.getScheme() + "://" + uri.getHost();
+            uri.scheme + "://" + uri.host
         }
     }
 
     /**
      * 找到那个 Activity 中隐藏的一个 Fragment,如果找的到就会用这个 Fragment 拿来跳转
      */
-    @Nullable
-    private Fragment findFragment(@NonNull Context context) {
-        Fragment result = null;
-        Activity act = Utils.getActivityFromContext(context);
-        if (act instanceof FragmentActivity) {
-            FragmentManager ft = ((FragmentActivity) act).getSupportFragmentManager();
-            result = ft.findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
+    private fun findFragment(context: Context): Fragment? {
+        var result: Fragment? = null
+        val act = Utils.getActivityFromContext(context)
+        if (act is FragmentActivity) {
+            val ft = act.supportFragmentManager
+            result = ft.findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG)
         }
-        return result;
+        return result
     }
 
-    @Nullable
-    private Fragment findFragment(@NonNull Fragment fragment) {
-        return fragment.getChildFragmentManager().findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG);
+    private fun findFragment(fragment: Fragment): Fragment? {
+        return fragment.childFragmentManager.findFragmentByTag(ComponentConstants.ACTIVITY_RESULT_FRAGMENT_TAG)
     }
 
-    @Override
-    public void register(@NonNull IComponentHostRouter router) {
-        Utils.checkNullPointer(router);
-        if (!hostRouterMap.containsKey(router.getHost())) {
-            hostRouterMap.put(router.getHost(), router);
-            routerRegExMap.putAll(router.getRegExRouterMap());
-            routerMap.putAll(router.getRouterMap());
+    override fun register(router: IComponentHostRouter) {
+        Utils.checkNullPointer(router)
+        if (!hostRouterMap.containsKey(router.host)) {
+            hostRouterMap[router.host] = router
+            routerRegExMap.putAll(router.regExRouterMap)
+            routerMap.putAll(router.routerMap)
         }
     }
 
-    @Override
-    public void register(@NonNull String host) {
-        Utils.checkStringNullPointer(host, "host");
+    override fun register(host: String) {
+        Utils.checkStringNullPointer(host, "host")
         if (!hostRouterMap.containsKey(host)) {
-            IComponentHostRouter router = findUiRouter(host);
-            if (router != null) {
-                register(router);
-            }
+            val router = findUiRouter(host)
+            router?.let { register(it) }
         }
     }
 
-    @Override
-    public void unregister(@NonNull IComponentHostRouter hostRouter) {
-        Utils.checkNullPointer(hostRouter);
-        hostRouterMap.remove(hostRouter.getHost());
-        Map<String, RouterBean> childRouterMap = hostRouter.getRouterMap();
-        if (childRouterMap != null) {
-            // key = host/path
-            for (String key : childRouterMap.keySet()) {
-                routerMap.remove(key);
-            }
+    override fun unregister(hostRouter: IComponentHostRouter) {
+        Utils.checkNullPointer(hostRouter)
+        hostRouterMap.remove(hostRouter.host)
+        val childRouterMap = hostRouter.routerMap
+        // key = host/path
+        for (key in childRouterMap.keys) {
+            routerMap.remove(key)
         }
     }
 
-    @Override
-    public void unregister(@NonNull String host) {
-        Utils.checkStringNullPointer(host, "host");
-        IComponentHostRouter hostRouter = hostRouterMap.get(host);
-        if (hostRouter != null) {
-            unregister(hostRouter);
-        }
+    override fun unregister(host: String) {
+        Utils.checkStringNullPointer(host, "host")
+        val hostRouter = hostRouterMap[host]
+        hostRouter?.let { unregister(it) }
     }
 
     /**
      * 根据模块名称寻找子路由对象
      */
-    @Nullable
-    public IComponentHostRouter findUiRouter(String host) {
+    private fun findUiRouter(host: String?): IComponentHostRouter? {
         try {
-            if (Component.requiredConfig().isOptimizeInit()) {
-                return ASMUtil.findModuleRouterAsmImpl(
+            return if (requiredConfig().isOptimizeInit) {
+                ASMUtil.findModuleRouterAsmImpl(
                         ComponentUtil.transformHostForClass(host)
-                );
+                )
             } else {
-                Class<? extends IComponentHostRouter> clazz = null;
-                String className = ComponentUtil.genHostRouterClassName(host);
-                clazz = (Class<? extends IComponentHostRouter>) Class.forName(className);
-                return clazz.newInstance();
+                var clazz: Class<out IComponentHostRouter?>? = null
+                val className = ComponentUtil.genHostRouterClassName(host)
+                clazz = Class.forName(className) as Class<out IComponentHostRouter>
+                clazz.newInstance()
             }
-        } catch (Exception ignore) {
+        } catch (ignore: Exception) {
             // ignore
         }
-        return null;
+        return null
     }
 
     /**
      * 路由表重复的检查工作
      */
-    public void check() {
-        Set<String> routerSet = new HashSet<>();
-        Set<String> routerRegExSet = new HashSet<>();
-        for (Map.Entry<String, IComponentHostRouter> entry : hostRouterMap.entrySet()) {
-            IComponentHostRouter childRouter = entry.getValue();
-            if (childRouter == null) {
-                continue;
+    fun check() {
+        val routerSet: MutableSet<String> = HashSet()
+        val routerRegExSet: Set<String> = HashSet()
+        for ((_, value) in hostRouterMap) {
+            val childRouterRegexMap = value.regExRouterMap
+            for (key in childRouterRegexMap.keys) {
+                check(!routerRegExSet.contains(key)) { "the target regex is exist：$key" }
+                routerSet.add(key)
             }
-            Map<String, RouterBean> childRouterRegexMap = childRouter.getRegExRouterMap();
-            for (String key : childRouterRegexMap.keySet()) {
-                if (routerRegExSet.contains(key)) {
-                    throw new IllegalStateException("the target regex is exist：" + key);
-                }
-                routerSet.add(key);
-            }
-            Map<String, RouterBean> childRouterMap = childRouter.getRouterMap();
-            for (String key : childRouterMap.keySet()) {
-                if (routerSet.contains(key)) {
-                    throw new IllegalStateException("the target uri is exist：" + key);
-                }
-                routerSet.add(key);
+            val childRouterMap = value.routerMap
+            for (key in childRouterMap.keys) {
+                check(!routerSet.contains(key)) { "the target uri is exist：$key" }
+                routerSet.add(key)
             }
         }
     }

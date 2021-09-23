@@ -1215,7 +1215,7 @@ open class Navigator : RouterRequest.Builder, Call {
             val currentUri = chain.request().uri
             // 这个地址要执行的页面拦截器,这里取的时候一定要注意了,不能拿最原始的那个 request,因为上面的拦截器都能更改 request,
             // 导致最终跳转的界面和你拿到的页面拦截器不匹配,所以这里一定是拿上一个拦截器传给你的 request 对象
-            val targetPageInterceptors = RouterCenter.getInstance().listPageInterceptors(currentUri)
+            val targetPageInterceptors = RouterCenter.listPageInterceptors(currentUri)
             mAllInterceptors.add(
                 PageInterceptorUriCheckInterceptor(
                     mOriginalRequest,
@@ -1258,8 +1258,7 @@ open class Navigator : RouterRequest.Builder, Call {
             }
             val currentUri = chain.request().uri
             val isSameTarget = if (mBeforePageInterceptorUri != null) {
-                RouterCenter.getInstance()
-                    .isSameTarget(mBeforePageInterceptorUri, currentUri)
+                RouterCenter.isSameTarget(mBeforePageInterceptorUri, currentUri)
             } else {
                 false
             }
@@ -1310,7 +1309,7 @@ open class Navigator : RouterRequest.Builder, Call {
             var routeException: Exception? = null
             val targetIntent: Intent? = try {
                 // 真正执行跳转的逻辑, 失败的话, 备用计划就会启动
-                RouterCenter.getInstance().openUri(finalRequest)
+                RouterCenter.openUri(finalRequest)
             } catch (e: Exception) { // 错误的话继续下一个拦截器
                 routeException = e
                 // 继续下一个拦截器
@@ -1329,7 +1328,7 @@ open class Navigator : RouterRequest.Builder, Call {
                         ?: // 抛出异常走 try catch 的逻辑
                         throw NavigationFailException("degrade route fail, it's url is " + mOriginalRequest.uri.toString())
                     // 降级跳转
-                    val targetIntent: Intent? = RouterCenter.getInstance().routerDegrade(
+                    val targetIntent: Intent? = RouterCenter.routerDegrade(
                         finalRequest,
                         routerDegrade.onDegrade(finalRequest)
                     )

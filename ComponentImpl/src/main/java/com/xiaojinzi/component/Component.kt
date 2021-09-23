@@ -175,7 +175,7 @@ object Component {
     @NotAppUseAnno
     fun check() {
         if (isDebug && requiredConfig().isErrorCheck) {
-            RouterCenter.getInstance().check()
+            RouterCenter.check()
             InterceptorCenter.getInstance().check()
             FragmentCenter.getInstance().check()
         }

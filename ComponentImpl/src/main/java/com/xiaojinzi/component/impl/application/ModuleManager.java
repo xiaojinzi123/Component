@@ -80,7 +80,7 @@ public class ModuleManager implements IComponentCenterApplication {
             Runnable r = new Runnable() {
                 @Override
                 public void run() {
-                    RouterCenter.getInstance().register(moduleApp.getHost());
+                    RouterCenter.INSTANCE.register(moduleApp.getHost());
                     InterceptorCenter.getInstance().register(moduleApp.getHost());
                     RouterDegradeCenter.getInstance().register(moduleApp.getHost());
                     FragmentCenter.getInstance().register(moduleApp.getHost());
@@ -165,7 +165,7 @@ public class ModuleManager implements IComponentCenterApplication {
         Utils.postActionToWorkThread(new Runnable() {
             @Override
             public void run() {
-                RouterCenter.getInstance().unregister(moduleApp.getHost());
+                RouterCenter.INSTANCE.unregister(moduleApp.getHost());
                 InterceptorCenter.getInstance().unregister(moduleApp.getHost());
                 RouterDegradeCenter.getInstance().unregister(moduleApp.getHost());
                 FragmentCenter.getInstance().unregister(moduleApp.getHost());
