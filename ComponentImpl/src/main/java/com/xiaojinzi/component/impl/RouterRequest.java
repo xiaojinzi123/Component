@@ -557,7 +557,7 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder putByte(@NonNull String key, @Nullable byte value) {
+        public Builder putByte(@NonNull String key, byte value) {
             this.bundle.putByte(key, value);
             return this;
         }
@@ -567,7 +567,7 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder putChar(@NonNull String key, @Nullable char value) {
+        public Builder putChar(@NonNull String key, char value) {
             this.bundle.putChar(key, value);
             return this;
         }
@@ -577,7 +577,7 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder putBoolean(@NonNull String key, @Nullable boolean value) {
+        public Builder putBoolean(@NonNull String key, boolean value) {
             this.bundle.putBoolean(key, value);
             return this;
         }
@@ -602,7 +602,7 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder putShort(@NonNull String key, @Nullable short value) {
+        public Builder putShort(@NonNull String key, short value) {
             this.bundle.putShort(key, value);
             return this;
         }
@@ -612,7 +612,7 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder putInt(@NonNull String key, @Nullable int value) {
+        public Builder putInt(@NonNull String key, int value) {
             this.bundle.putInt(key, value);
             return this;
         }
@@ -627,7 +627,7 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder putLong(@NonNull String key, @Nullable long value) {
+        public Builder putLong(@NonNull String key, long value) {
             this.bundle.putLong(key, value);
             return this;
         }
@@ -637,7 +637,7 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder putFloat(@NonNull String key, @Nullable float value) {
+        public Builder putFloat(@NonNull String key, float value) {
             this.bundle.putFloat(key, value);
             return this;
         }
@@ -647,7 +647,7 @@ public class RouterRequest {
             return this;
         }
 
-        public Builder putDouble(@NonNull String key, @Nullable double value) {
+        public Builder putDouble(@NonNull String key, double value) {
             this.bundle.putDouble(key, value);
             return this;
         }
