@@ -56,43 +56,43 @@ class MainAct : AppCompatActivity() {
     }
 
     fun loadAppModule(v: View?) {
-        ModuleManager.getInstance().register(ModuleConfig.App.NAME)
+        ModuleManager.register(ModuleConfig.App.NAME)
     }
 
     fun unloadAppModule(v: View?) {
-        ModuleManager.getInstance().unregister(ModuleConfig.App.NAME)
+        ModuleManager.unregister(ModuleConfig.App.NAME)
     }
 
     fun loadUserModule(v: View?) {
-        ModuleManager.getInstance().register(ModuleConfig.User.NAME)
+        ModuleManager.register(ModuleConfig.User.NAME)
     }
 
     fun unloadUserModule(v: View?) {
-        ModuleManager.getInstance().unregister(ModuleConfig.User.NAME)
+        ModuleManager.unregister(ModuleConfig.User.NAME)
     }
 
     fun loadHelpModule(v: View?) {
-        ModuleManager.getInstance().register(ModuleConfig.Help.NAME)
+        ModuleManager.register(ModuleConfig.Help.NAME)
     }
 
     fun unloadHelpModule(v: View?) {
-        ModuleManager.getInstance().unregister(ModuleConfig.Help.NAME)
+        ModuleManager.unregister(ModuleConfig.Help.NAME)
     }
 
     fun loadModule1Module(v: View?) {
-        ModuleManager.getInstance().register(ModuleConfig.Module1.NAME)
+        ModuleManager.register(ModuleConfig.Module1.NAME)
     }
 
     fun unloadModule1Module(v: View?) {
-        ModuleManager.getInstance().unregister(ModuleConfig.Module1.NAME)
+        ModuleManager.unregister(ModuleConfig.Module1.NAME)
     }
 
     fun loadModule2Module(v: View?) {
-        ModuleManager.getInstance().register(ModuleConfig.Module2.NAME)
+        ModuleManager.register(ModuleConfig.Module2.NAME)
     }
 
     fun unloadModule2Module(v: View?) {
-        ModuleManager.getInstance().unregister(ModuleConfig.Module2.NAME)
+        ModuleManager.unregister(ModuleConfig.Module2.NAME)
     }
 
     fun testRouter(view: View?) {

@@ -25,7 +25,7 @@ public class App extends Application {
         RxErrorIgnoreUtil.ignoreError();
 
         // 装载各个业务组件
-        ModuleManager.getInstance().registerArr("module1App", ModuleConfig.Module1.NAME);
+        ModuleManager.INSTANCE.registerArr("module1App", ModuleConfig.Module1.NAME);
 
     }
 

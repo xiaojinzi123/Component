@@ -1,18 +1,14 @@
-package com.xiaojinzi.component.impl.service;
+package com.xiaojinzi.component.impl.service
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.service.IComponentCenterService;
-import com.xiaojinzi.component.service.IComponentHostService;
-import com.xiaojinzi.component.support.ASMUtil;
-import com.xiaojinzi.component.support.Utils;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.xiaojinzi.component.Component.getApplication
+import com.xiaojinzi.component.Component.requiredConfig
+import com.xiaojinzi.component.ComponentUtil
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno
+import com.xiaojinzi.component.service.IComponentCenterService
+import com.xiaojinzi.component.service.IComponentHostService
+import com.xiaojinzi.component.support.ASMUtil
+import com.xiaojinzi.component.support.Utils
+import java.util.*
 
 /**
  * 模块服务注册和卸载的总管
@@ -20,79 +16,54 @@ import java.util.Map;
  * @author xiaojinzi
  */
 @CheckClassNameAnno
-public class ServiceCenter implements IComponentCenterService {
+object ServiceCenter: IComponentCenterService {
 
-    private Map<String, IComponentHostService> moduleServiceMap = new HashMap<>();
+    private val moduleServiceMap: MutableMap<String, IComponentHostService> = HashMap()
 
-    private ServiceCenter() {
-    }
-
-    private static volatile ServiceCenter instance;
-
-    public static ServiceCenter getInstance() {
-        if (instance == null) {
-            synchronized (ServiceCenter.class) {
-                if (instance == null) {
-                    instance = new ServiceCenter();
-                }
-            }
-        }
-        return instance;
-    }
-
-    @Override
-    public void register(@NonNull IComponentHostService service) {
-        Utils.checkNullPointer(service);
-        if (!moduleServiceMap.containsKey(service.getHost())) {
-            moduleServiceMap.put(service.getHost(), service);
-            service.onCreate(Component.getApplication());
+    override fun register(service: IComponentHostService) {
+        Utils.checkNullPointer(service)
+        if (!moduleServiceMap.containsKey(service.host)) {
+            moduleServiceMap[service.host] = service
+            service.onCreate(getApplication())
         }
     }
 
-    @Override
-    public void register(@NonNull String host) {
-        Utils.checkStringNullPointer(host, "host");
+    override fun register(host: String) {
+        Utils.checkStringNullPointer(host, "host")
         if (!moduleServiceMap.containsKey(host)) {
-            IComponentHostService moduleService = findModuleService(host);
-            if (moduleService != null) {
-                register(moduleService);
-            }
+            val moduleService = findModuleService(host)
+            moduleService?.let { register(it) }
         }
     }
 
-    @Override
-    public void unregister(@NonNull IComponentHostService moduleService) {
-        Utils.checkNullPointer(moduleService);
-        moduleServiceMap.remove(moduleService.getHost());
-        moduleService.onDestroy();
+    override fun unregister(moduleService: IComponentHostService) {
+        Utils.checkNullPointer(moduleService)
+        moduleServiceMap.remove(moduleService.host)
+        moduleService.onDestroy()
     }
 
-    @Override
-    public void unregister(@NonNull String host) {
-        Utils.checkStringNullPointer(host, "host");
-        IComponentHostService moduleService = moduleServiceMap.get(host);
-        if (moduleService != null) {
-            unregister(moduleService);
-        }
+    override fun unregister(host: String) {
+        Utils.checkStringNullPointer(host, "host")
+        val moduleService = moduleServiceMap[host]
+        moduleService?.let { unregister(it) }
     }
 
-    @Nullable
-    public IComponentHostService findModuleService(@NonNull String host) {
+    private fun findModuleService(host: String): IComponentHostService? {
         try {
-            if (Component.requiredConfig().isOptimizeInit()) {
-                return ASMUtil.findModuleServiceAsmImpl(
+            return if (requiredConfig().isOptimizeInit) {
+                ASMUtil.findModuleServiceAsmImpl(
                         ComponentUtil.transformHostForClass(host)
-                );
+                )
             } else {
-                Class<? extends IComponentHostService> clazz = null;
-                String className = ComponentUtil.genHostServiceClassName(host);
-                clazz = (Class<? extends IComponentHostService>) Class.forName(className);
-                return clazz.newInstance();
+                var clazz: Class<out IComponentHostService?>? = null
+                val className = ComponentUtil.genHostServiceClassName(host)
+                clazz = Class.forName(className) as Class<out IComponentHostService>
+                clazz.newInstance()
             }
-        } catch (Exception ignore) {
+        } catch (ignore: Exception) {
             // ignore
         }
-        return null;
+        return null
     }
 
 }

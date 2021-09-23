@@ -73,7 +73,7 @@ object Component {
         // 注册
         mConfig!!.application.registerActivityLifecycleCallbacks(ComponentLifecycleCallback())
         if (mConfig!!.isOptimizeInit && mConfig!!.isAutoRegisterModule) {
-            ModuleManager.getInstance().autoRegister()
+            ModuleManager.autoRegister()
         }
         isInit = true
     }
