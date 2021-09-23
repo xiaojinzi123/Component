@@ -1,395 +1,350 @@
-package com.xiaojinzi.component.impl;
+package com.xiaojinzi.component.impl
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Parcelable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-import androidx.fragment.app.Fragment;
-import android.text.TextUtils;
-import android.util.SparseArray;
-
-import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.ComponentActivityStack;
-import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.bean.ActivityResult;
-import com.xiaojinzi.component.support.Action;
-import com.xiaojinzi.component.support.Consumer;
-import com.xiaojinzi.component.support.ParameterSupport;
-import com.xiaojinzi.component.support.Utils;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.os.Parcelable
+import android.text.TextUtils
+import android.util.SparseArray
+import androidx.annotation.UiThread
+import androidx.fragment.app.Fragment
+import com.xiaojinzi.component.Component.requiredConfig
+import com.xiaojinzi.component.ComponentActivityStack.getTopAliveActivity
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno
+import com.xiaojinzi.component.support.Action
+import com.xiaojinzi.component.support.Consumer
+import com.xiaojinzi.component.support.ParameterSupport
+import com.xiaojinzi.component.support.Utils
+import java.io.Serializable
+import java.util.*
 
 /**
  * 表示路由的一个请求类,构建时候如果参数不对是有异常会发生的,使用的时候注意这一点
- * 但是在拦截器 {@link RouterInterceptor} 中构建是不用关心错误的,
- * 因为拦截器的 {@link RouterInterceptor#intercept(RouterInterceptor.Chain)} 方法
+ * 但是在拦截器 [RouterInterceptor] 中构建是不用关心错误的,
+ * 因为拦截器的 [RouterInterceptor.intercept] 方法
  * 允许抛出异常
- * <p>
+ *
+ *
  * time   : 2018/11/29
  *
  * @author xiaojinzi
  */
 @CheckClassNameAnno
-public class RouterRequest {
+class RouterRequest private constructor(builder: Builder) {
 
-    public static final String KEY_SYNC_URI = "_componentSyncUri";
+    companion object {
+        const val KEY_SYNC_URI = "_componentSyncUri"
+    }
 
-    @Nullable
-    public final Context context;
+    @JvmField
+    val context: Context? = builder.context
 
-    @Nullable
-    public final Fragment fragment;
+    @JvmField
+    val fragment: Fragment? = builder.fragment
 
     /**
-     * 这是一个很重要的参数,一定不可以为空,如果这个为空了,一定不能继续下去,因为很多地方直接使用这个参数的,不做空判断的
+     * 这是一个很重要的参数, 一定不可以为空,如果这个为空了,一定不能继续下去,因为很多地方直接使用这个参数的,不做空判断的
      * 而且这个参数不可以为空的
      */
-    @NonNull
-    public final Uri uri;
+    @JvmField
+    val uri: Uri = builder.buildURI()
 
     /**
      * requestCode
      */
-    @Nullable
-    public final Integer requestCode;
+    @JvmField
+    val requestCode: Int? = builder.requestCode
 
     /**
-     * 框架是否帮助用户跳转拿 {@link ActivityResult}
+     * 框架是否帮助用户跳转拿 [com.xiaojinzi.component.bean.ActivityResult]
      * 有 requestCode 只能说明用户使用了某一个 requestCode,
-     * 会调用 {@link Activity#startActivityForResult(Intent, int)}.
-     * 但是不代表需要框架去帮你获取到 {@link ActivityResult}.
-     * 所以这个值就是标记是否需要框架帮助您去获取 {@link ActivityResult}
+     * 会调用 [Activity.startActivityForResult].
+     * 但是不代表需要框架去帮你获取到 [com.xiaojinzi.component.bean.ActivityResult].
+     * 所以这个值就是标记是否需要框架帮助您去获取 [com.xiaojinzi.component.bean.ActivityResult]
      */
-    public final boolean isForResult;
+    @JvmField
+    val isForResult: Boolean = builder.isForResult
 
     /**
      * 是否是为了目标 Intent 来的
      */
-    public final boolean isForTargetIntent;
+    @JvmField
+    val isForTargetIntent: Boolean = builder.isForTargetIntent
 
     /**
      * 跳转的时候 options 参数
      */
-    @Nullable
-    public final Bundle options;
+    @JvmField
+    val options: Bundle? = builder.options
 
     /**
      * Intent 的 flag, 集合不可更改
      */
-    @NonNull
-    public final List<Integer> intentFlags;
+    @JvmField
+    val intentFlags: List<Int> = Collections.unmodifiableList(builder.intentFlags)
 
     /**
      * Intent 的 类别, 集合不可更改
      */
-    @NonNull
-    public final List<String> intentCategories;
+    @JvmField
+    val intentCategories: List<String> = Collections.unmodifiableList(builder.intentCategories)
 
-    @NonNull
-    public final Bundle bundle = new Bundle();
+    @JvmField
+    val bundle: Bundle = Bundle().apply {
+        this.putAll(builder.bundle)
+    }
 
-    @Nullable
-    public final Consumer<Intent> intentConsumer;
+    @JvmField
+    val intentConsumer: Consumer<Intent>? = builder.intentConsumer
 
     /**
-     * 这个 {@link Action} 是在路由开始的时候调用的.
-     * 和 {@link Activity#startActivity(Intent)} 不是连着执行的.
+     * 这个 [Action] 是在路由开始的时候调用的.
+     * 和 [Activity.startActivity] 不是连着执行的.
      * 中间 post 到主线程的操作
      */
-    @Nullable
-    public final Action beforeAction;
+    @JvmField
+    val beforeAction: Action? = builder.beforeAction
 
     /**
-     * 这个 {@link Action} 是在 {@link Activity#startActivity(Intent)} 之前调用的.
-     * 和 {@link Activity#startActivity(Intent)} 是连着执行的.
+     * 这个 [Action] 是在 [Activity.startActivity] 之前调用的.
+     * 和 [Activity.startActivity] 是连着执行的.
      */
-    @Nullable
-    public final Action beforeStartAction;
+    @JvmField
+    val beforeStartAction: Action? = builder.beforeStartAction
 
     /**
-     * 这个 {@link Action} 是在 {@link Activity#startActivity(Intent)} 之后调用的.
-     * 和 {@link Activity#startActivity(Intent)} 是连着执行的.
+     * 这个 [Action] 是在 [Activity.startActivity] 之后调用的.
+     * 和 [Activity.startActivity] 是连着执行的.
      */
-    @Nullable
-    public final Action afterStartAction;
+    @JvmField
+    val afterStartAction: Action? = builder.afterStartAction
 
     /**
-     * 这个 {@link Action} 是在结束之后调用的.
-     * 和 {@link Activity#startActivity(Intent)} 不是连着执行的.
-     * 是在 {@link RouterInterceptor.Callback#onSuccess(RouterResult)}
+     * 这个 [Action] 是在结束之后调用的.
+     * 和 [Activity.startActivity] 不是连着执行的.
+     * 是在 [RouterInterceptor.Callback.onSuccess]
      * 方法中 post 到主线程完成的
      */
-    @Nullable
-    public final Action afterAction;
+    @JvmField
+    val afterAction: Action? = builder.afterAction
 
     /**
-     * 这个 {@link Action} 是在结束之后调用的.
-     * 和 {@link Activity#startActivity(Intent)} 不是连着执行的.
-     * 是在 {@link RouterInterceptor.Callback#onError(Throwable)}
+     * 这个 [Action] 是在结束之后调用的.
+     * 和 [Activity.startActivity] 不是连着执行的.
+     * 是在 [RouterInterceptor.Callback.onError]
      * 方法中 post 到主线程完成的
      */
-    @Nullable
-    public final Action afterErrorAction;
+    @JvmField
+    val afterErrorAction: Action? = builder.afterErrorAction
 
     /**
-     * 这个 {@link Action} 是在结束之后调用的.
-     * 和 {@link Activity#startActivity(Intent)} 不是连着执行的.
-     * 是在 {@link RouterInterceptor.Callback#onSuccess(RouterResult)} 或者
-     * {@link RouterInterceptor.Callback#onError(Throwable)}
+     * 这个 [Action] 是在结束之后调用的.
+     * 和 [Activity.startActivity] 不是连着执行的.
+     * 是在 [RouterInterceptor.Callback.onSuccess] 或者
+     * [RouterInterceptor.Callback.onError]
      * 方法中 post 到主线程完成的
      */
-    @Nullable
-    public final Action afterEventAction;
-
-    private RouterRequest(@NonNull Builder builder) {
-        this.uri = builder.buildURI();
-        context = builder.context;
-        fragment = builder.fragment;
-        requestCode = builder.requestCode;
-        isForResult = builder.isForResult;
-        isForTargetIntent = builder.isForTargetIntent;
-        options = builder.options;
-        // 这两个集合是不可以更改的
-        intentCategories = Collections.unmodifiableList(builder.intentCategories);
-        intentFlags = Collections.unmodifiableList(builder.intentFlags);
-        this.bundle.putAll(builder.bundle);
-        intentConsumer = builder.intentConsumer;
-        beforeAction = builder.beforeAction;
-        beforeStartAction = builder.beforeStartAction;
-        afterStartAction = builder.afterStartAction;
-        afterAction = builder.afterAction;
-        afterErrorAction = builder.afterErrorAction;
-        afterEventAction = builder.afterEventAction;
-    }
+    @JvmField
+    val afterEventAction: Action? = builder.afterEventAction
 
     /**
      * 同步 Query 到 Bundle 中
      */
-    public void syncUriToBundle() {
+    fun syncUriToBundle() {
         // 如果 URI 没有变化就不同步了
         if (bundle.getInt(KEY_SYNC_URI) == uri.hashCode()) {
-            return;
+            return
         }
-        ParameterSupport.syncUriToBundle(uri, bundle);
+        ParameterSupport.syncUriToBundle(uri, bundle)
         // 更新新的 hashCode
-        bundle.putInt(KEY_SYNC_URI, uri.hashCode());
-    }
+        bundle.putInt(KEY_SYNC_URI, uri.hashCode())
+    }// 如果是 Activity 并且已经销毁了返回 null// 如果不是 Activity 可能是 Application,所以直接返回
 
     /**
-     * 从 {@link Fragment} 和 {@link Context} 中获取上下文
-     * <p>
-     * 参数中的 {@link RouterRequest#context} 可能是一个 {@link android.app.Application} 或者是一个
-     * {@link android.content.ContextWrapper} 或者是一个 {@link Activity}
-     * 无论参数的类型是哪种, 此方法的返回值就只有两种类型：
-     * 1. {@link android.app.Application}
-     * 2. {@link Activity}
-     * <p>
-     * 如果返回的是 {@link Activity} 的 {@link Context},
-     * 当 {@link Activity} 销毁了就会返回 null
-     * 另外就是返回 {@link android.app.Application}
+     * 从 [Fragment] 和 [Context] 中获取上下文
      *
-     * @return {@link Context}, 可能为 null, null 就只有一种情况就是界面销毁了.
-     * 构建 {@link RouterRequest} 的时候已经保证了
+     *
+     * 参数中的 [RouterRequest.context] 可能是一个 [android.app.Application] 或者是一个
+     * [android.content.ContextWrapper] 或者是一个 [Activity]
+     * 无论参数的类型是哪种, 此方法的返回值就只有两种类型：
+     * 1. [android.app.Application]
+     * 2. [Activity]
+     *
+     *
+     * 如果返回的是 [Activity] 的 [Context],
+     * 当 [Activity] 销毁了就会返回 null
+     * 另外就是返回 [android.app.Application]
+     *
+     * @return [Context], 可能为 null, null 就只有一种情况就是界面销毁了.
+     * 构建 [RouterRequest] 的时候已经保证了
      */
-    @Nullable
-    public final Context getRawContext() {
-        Context rawContext = null;
-        if (context != null) {
-            rawContext = context;
-        } else if (fragment != null) {
-            rawContext = fragment.getContext();
-        }
-        Activity rawAct = Utils.getActivityFromContext(rawContext);
-        // 如果不是 Activity 可能是 Application,所以直接返回
-        if (rawAct == null) {
-            return rawContext;
-        } else {
-            // 如果是 Activity 并且已经销毁了返回 null
-            if (Utils.isActivityDestoryed(rawAct)) {
-                return null;
+    val rawContext: Context?
+        get() {
+            var rawContext: Context? = null
+            if (context != null) {
+                rawContext = context
+            } else if (fragment != null) {
+                rawContext = fragment.context
+            }
+            val rawAct = Utils.getActivityFromContext(rawContext)
+            // 如果不是 Activity 可能是 Application,所以直接返回
+            return if (rawAct == null) {
+                rawContext
             } else {
-                return rawContext;
+                // 如果是 Activity 并且已经销毁了返回 null
+                if (Utils.isActivityDestoryed(rawAct)) {
+                    null
+                } else {
+                    rawContext
+                }
             }
         }
-    }
 
     /**
-     * 从 {@link Context} 中获取 {@link Activity}, {@link Context} 可能是 {@link android.content.ContextWrapper}
+     * 从 [Context] 中获取 [Activity], [Context] 可能是 [android.content.ContextWrapper]
      *
      * @return 如果 Activity 销毁了就会返回 null
      */
-    @Nullable
-    public final Activity getActivity() {
-        if (context == null) {
-            return null;
+    val activity: Activity?
+        get() {
+            if (context == null) {
+                return null
+            }
+            val realActivity = Utils.getActivityFromContext(context)
+                    ?: return null
+            return if (Utils.isActivityDestoryed(realActivity)) {
+                null
+            } else realActivity
         }
-        Activity realActivity = Utils.getActivityFromContext(context);
-        if (realActivity == null) {
-            return null;
-        }
-        if (Utils.isActivityDestoryed(realActivity)) {
-            return null;
-        }
-        return realActivity;
-    }
 
     /**
-     * 从参数 {@link Fragment} 和 {@link Context} 获取 Activity,
+     * 从参数 [Fragment] 和 [Context] 获取 Activity,
      *
      * @return 如果 activity 已经销毁并且 fragment 销毁了就会返回 null
      */
-    @Nullable
-    public final Activity getRawActivity() {
-        Activity rawActivity = getActivity();
-        if (rawActivity == null) {
-            if (fragment != null) {
-                rawActivity = fragment.getActivity();
+    val rawActivity: Activity?
+        get() {
+            var rawActivity = activity
+            if (rawActivity == null) {
+                if (fragment != null) {
+                    rawActivity = fragment.activity
+                }
+            }
+            if (rawActivity == null) {
+                return null
+            }
+            return if (Utils.isActivityDestoryed(rawActivity)) {
+                null
+            } else {
+                // 如果不是为空返回的, 那么必定不是销毁的
+                rawActivity
             }
         }
-        if (rawActivity == null) {
-            return null;
-        }
-        if (Utils.isActivityDestoryed(rawActivity)) {
-            return null;
-        }
-        return rawActivity;
-    }
 
     /**
-     * 首先调用 {@link #getRawActivity()} 尝试获取此次用户传入的 Context 中是否有关联的 Activity
+     * 首先调用 [.getRawActivity] 尝试获取此次用户传入的 Context 中是否有关联的 Activity
      * 如果为空, 则尝试获取运行中的所有 Activity 中顶层的那个
      */
-    @Nullable
-    public final Activity getRawOrTopActivity() {
-        Activity result = getRawActivity();
-        if (result == null) {
-            // 如果不是为空返回的, 那么必定不是销毁的
-            result = ComponentActivityStack.INSTANCE.getTopAliveActivity();
+    val rawOrTopActivity: Activity?
+        get() {
+            var result = rawActivity
+            if (result == null) {
+                // 如果不是为空返回的, 那么必定不是销毁的
+                result = getTopAliveActivity()
+            }
+            return result
         }
-        return result;
-    }
 
     /**
-     * 这里转化的对象会比 {@link Builder} 对象中的参数少一个 {@link Builder#url}
+     * 这里转化的对象会比 [Builder] 对象中的参数少一个 [Builder.url]
      * 因为 uri 转化为了 scheme,host,path,queryMap 那么这时候就不需要 url 了
      */
-    @NonNull
-    public Builder toBuilder() {
-
-        Builder builder = new Builder();
+    fun toBuilder(): Builder {
+        val builder = Builder()
         // 有关界面的两个
-        builder.fragment = fragment;
-        builder.context = context;
+        builder.fragment = fragment
+        builder.context = context
 
         // 还原一个 Uri 为各个零散的参数
-        builder.scheme = uri.getScheme();
-        builder.host = uri.getHost();
-        builder.path = uri.getPath();
-        Set<String> queryParameterNames = uri.getQueryParameterNames();
+        builder.scheme = uri.scheme
+        builder.host = uri.host
+        builder.path = uri.path
+        val queryParameterNames = uri.queryParameterNames
         if (queryParameterNames != null) {
-            for (String queryParameterName : queryParameterNames) {
-                builder.queryMap.put(queryParameterName, uri.getQueryParameter(queryParameterName));
+            for (queryParameterName in queryParameterNames) {
+                builder.queryMap[queryParameterName!!] = uri.getQueryParameter(queryParameterName)!!
             }
         }
-
-        if (builder.bundle == null) {
-            builder.bundle = new Bundle();
-        }
-        builder.bundle.putAll(bundle);
-        builder.requestCode = requestCode;
-        builder.isForResult = isForResult;
-        builder.isForTargetIntent = isForTargetIntent;
-        builder.options = options;
+        builder.bundle.putAll(bundle)
+        builder.requestCode = requestCode
+        builder.isForResult = isForResult
+        builder.isForTargetIntent = isForTargetIntent
+        builder.options = options
         // 这里需要新创建一个是因为不可修改的集合不可以给别人
-        builder.intentCategories = new ArrayList<>(intentCategories);
-        builder.intentFlags = new ArrayList<>(intentFlags);
-
-        builder.intentConsumer = intentConsumer;
-        builder.beforeAction = beforeAction;
-        builder.beforeStartAction = beforeStartAction;
-        builder.afterStartAction = afterStartAction;
-        builder.afterAction = afterAction;
-        builder.afterErrorAction = afterErrorAction;
-        builder.afterEventAction = afterEventAction;
-        return builder;
+        builder.intentCategories = ArrayList(intentCategories)
+        builder.intentFlags = ArrayList(intentFlags)
+        builder.intentConsumer = intentConsumer
+        builder.beforeAction = beforeAction
+        builder.beforeStartAction = beforeStartAction
+        builder.afterStartAction = afterStartAction
+        builder.afterAction = afterAction
+        builder.afterErrorAction = afterErrorAction
+        builder.afterEventAction = afterEventAction
+        return builder
     }
 
     /**
-     * 构建一个路由请求对象 {@link RouterRequest} 对象的 Builder
+     * 构建一个路由请求对象 [RouterRequest] 对象的 Builder
      *
      * @author xiaojinzi
      */
-    public static class Builder extends URIBuilder {
+    open class Builder : URIBuilder() {
 
-        @Nullable
-        protected Bundle options;
+        var options: Bundle? = null
 
         /**
          * Intent 的 flag,允许修改的
          */
-        @NonNull
-        protected List<Integer> intentFlags = new ArrayList<>(2);
+        var intentFlags: MutableList<Int> = ArrayList(2)
 
         /**
          * Intent 的 类别,允许修改的
          */
-        @NonNull
-        protected List<String> intentCategories = new ArrayList<>(2);
+        var intentCategories: MutableList<String> = ArrayList(2)
 
-        @Nullable
-        protected Bundle bundle = new Bundle();
-
-        @Nullable
-        protected Context context;
-
-        @Nullable
-        protected Fragment fragment;
-
-        @Nullable
-        protected Integer requestCode;
+        var bundle: Bundle = Bundle()
+        var context: Context? = null
+        var fragment: Fragment? = null
+        var requestCode: Int? = null
 
         /**
-         * 是否是跳转拿 {@link ActivityResult} 的
+         * 是否是跳转拿 [com.xiaojinzi.component.bean.ActivityResult] 的
          */
-        protected boolean isForResult;
+        var isForResult = false
 
         /**
          * 是否是为了目标 Intent
          */
-        protected boolean isForTargetIntent;
+        var isForTargetIntent = false
 
-        @Nullable
-        protected Consumer<Intent> intentConsumer;
+        var intentConsumer: Consumer<Intent>? = null
 
         /**
          * 路由开始之前
          */
-        @Nullable
-        protected Action beforeAction;
+        var beforeAction: Action? = null
 
         /**
-         * 执行 {@link Activity#startActivity(Intent)} 之前
+         * 执行 [Activity.startActivity] 之前
          */
-        @Nullable
-        protected Action beforeStartAction;
+        var beforeStartAction: Action? = null
 
         /**
-         * 执行 {@link Activity#startActivity(Intent)} 之后
+         * 执行 [Activity.startActivity] 之后
          */
-        @Nullable
-        protected Action afterStartAction;
+        var afterStartAction: Action? = null
 
         /**
          * 跳转成功之后的 Callback
@@ -397,331 +352,312 @@ public class RouterRequest {
          * 假如你是跳转拿数据的, 当你跳转到 A 界面, 此回调就会回调了,
          * 当你拿到 Intent 的回调了, 和此回调已经没关系了
          */
-        @Nullable
-        protected Action afterAction;
+        var afterAction: Action? = null
 
         /**
          * 跳转失败之后的 Callback
          */
-        @Nullable
-        protected Action afterErrorAction;
+        var afterErrorAction: Action? = null
 
         /**
          * 跳转成功和失败之后的 Callback
          */
-        @Nullable
-        protected Action afterEventAction;
+        var afterEventAction: Action? = null
 
-        public Builder context(@Nullable Context context) {
-            this.context = context;
-            return this;
+        fun context(context: Context): Builder {
+            this.context = context
+            return this
         }
 
-        public Builder fragment(@Nullable Fragment fragment) {
-            this.fragment = fragment;
-            return this;
+        fun fragment(fragment: Fragment): Builder {
+            this.fragment = fragment
+            return this
         }
 
-        public Builder beforeAction(@Nullable @UiThread Action action) {
-            this.beforeAction = action;
-            return this;
+        open fun beforeAction(@UiThread action: Action?): Builder {
+            beforeAction = action
+            return this
         }
 
-        public Builder beforeStartAction(@Nullable @UiThread Action action) {
-            this.beforeStartAction = action;
-            return this;
+        open fun beforeStartAction(@UiThread action: Action?): Builder {
+            beforeStartAction = action
+            return this
         }
 
-        public Builder afterStartAction(@Nullable @UiThread Action action) {
-            this.afterStartAction = action;
-            return this;
+        open fun afterStartAction(@UiThread action: Action?): Builder {
+            afterStartAction = action
+            return this
         }
 
-        public Builder afterAction(@Nullable @UiThread Action action) {
-            this.afterAction = action;
-            return this;
+        open fun afterAction(@UiThread action: Action?): Builder {
+            afterAction = action
+            return this
         }
 
-        public Builder afterErrorAction(@Nullable @UiThread Action action) {
-            this.afterErrorAction = action;
-            return this;
+        open fun afterErrorAction(@UiThread action: Action?): Builder {
+            afterErrorAction = action
+            return this
         }
 
-        public Builder afterEventAction(@Nullable @UiThread Action action) {
-            this.afterEventAction = action;
-            return this;
+        open fun afterEventAction(@UiThread action: Action?): Builder {
+            afterEventAction = action
+            return this
         }
 
-        public Builder requestCode(@Nullable Integer requestCode) {
-            this.requestCode = requestCode;
-            return this;
+        open fun requestCode(requestCode: Int?): Builder {
+            this.requestCode = requestCode
+            return this
         }
 
         /**
          * 当不是自定义跳转的时候, Intent 由框架生成,所以可以回调这个接口
          * 当自定义跳转,这个回调不会回调的,这是需要注意的点
-         * <p>
-         * 其实目标界面可以完全的自定义路由,这个功能实际上没有存在的必要,因为你可以为同一个界面添加上多个 {@link com.xiaojinzi.component.anno.RouterAnno}
-         * 然后每一个 {@link com.xiaojinzi.component.anno.RouterAnno} 都可以有不同的行为.是可以完全的代替 {@link RouterRequest#intentConsumer} 方法的
+         *
+         *
+         * 其实目标界面可以完全的自定义路由,这个功能实际上没有存在的必要,因为你可以为同一个界面添加上多个 [com.xiaojinzi.component.anno.RouterAnno]
+         * 然后每一个 [com.xiaojinzi.component.anno.RouterAnno] 都可以有不同的行为.是可以完全的代替 [RouterRequest.intentConsumer] 方法的
          *
          * @param intentConsumer Intent 是框架自动构建完成的,里面有跳转需要的所有参数和数据,这里就是给用户一个
-         *                       更改的机会,最好别更改内部的参数等的信息,这里提供出来其实主要是可以让你调用Intent
-         *                       的 {@link Intent#addFlags(int)} 等方法,并不是给你修改内部的 bundle 的
+         * 更改的机会,最好别更改内部的参数等的信息,这里提供出来其实主要是可以让你调用Intent
+         * 的 [Intent.addFlags] 等方法,并不是给你修改内部的 bundle 的
          */
-        public Builder intentConsumer(@Nullable @UiThread Consumer<Intent> intentConsumer) {
-            this.intentConsumer = intentConsumer;
-            return this;
+        open fun intentConsumer(@UiThread intentConsumer: Consumer<Intent>?): Builder {
+            this.intentConsumer = intentConsumer
+            return this
         }
 
-        public Builder addIntentFlags(@Nullable Integer... flags) {
-            if (flags != null) {
-                this.intentFlags.addAll(Arrays.asList(flags));
-            }
-            return this;
+        open fun addIntentFlags(vararg flags: Int): Builder {
+            intentFlags.addAll(flags.toList())
+            return this
         }
 
-        public Builder addIntentCategories(@Nullable String... categories) {
-            if (categories != null) {
-                this.intentCategories.addAll(Arrays.asList(categories));
-            }
-            return this;
+        open fun addIntentCategories(vararg categories: String): Builder {
+            intentCategories.addAll(listOf(*categories))
+            return this
         }
 
         /**
-         * 用于 API >= 16 的时候,调用 {@link Activity#startActivity(Intent, Bundle)}
+         * 用于 API >= 16 的时候,调用 [Activity.startActivity]
          */
-        public Builder options(@Nullable Bundle options) {
-            this.options = options;
-            return this;
+        open fun options(options: Bundle?): Builder {
+            this.options = options
+            return this
         }
 
-        @Override
-        public Builder url(@NonNull String url) {
-            super.url(url);
-            return this;
+        override fun url(url: String): Builder {
+            super.url(url)
+            return this
         }
 
-        @Override
-        public Builder scheme(@NonNull String scheme) {
-            super.scheme(scheme);
-            return this;
+        override fun scheme(scheme: String): Builder {
+            super.scheme(scheme)
+            return this
         }
 
-        @Override
-        public Builder hostAndPath(@NonNull String hostAndPath) {
-            super.hostAndPath(hostAndPath);
-            return this;
+        override fun hostAndPath(hostAndPath: String): Builder {
+            super.hostAndPath(hostAndPath)
+            return this
         }
 
-        @Override
-        public Builder userInfo(@NonNull String userInfo) {
-            super.userInfo(userInfo);
-            return this;
+        override fun userInfo(userInfo: String): Builder {
+            super.userInfo(userInfo)
+            return this
         }
 
-        @Override
-        public Builder host(@NonNull String host) {
-            super.host(host);
-            return this;
+        override fun host(host: String): Builder {
+            super.host(host)
+            return this
         }
 
-        @Override
-        public Builder path(@NonNull String path) {
-            super.path(path);
-            return this;
+        override fun path(path: String): Builder {
+            super.path(path)
+            return this
         }
 
-        public Builder putAll(@NonNull Bundle bundle) {
-            Utils.checkNullPointer(bundle, "bundle");
-            this.bundle.putAll(bundle);
-            return this;
+        open fun putAll(bundle: Bundle): Builder {
+            Utils.checkNullPointer(bundle, "bundle")
+            this.bundle.putAll(bundle)
+            return this
         }
 
-        public Builder putBundle(@NonNull String key, @Nullable Bundle bundle) {
-            this.bundle.putBundle(key, bundle);
-            return this;
+        open fun putBundle(key: String, bundle: Bundle?): Builder {
+            this.bundle.putBundle(key, bundle)
+            return this
         }
 
-        public Builder putCharSequence(@NonNull String key, @Nullable CharSequence value) {
-            this.bundle.putCharSequence(key, value);
-            return this;
+        open fun putCharSequence(key: String, value: CharSequence?): Builder {
+            this.bundle.putCharSequence(key, value)
+            return this
         }
 
-        public Builder putCharSequenceArray(@NonNull String key, @Nullable CharSequence[] value) {
-            this.bundle.putCharSequenceArray(key, value);
-            return this;
+        open fun putCharSequenceArray(key: String, value: Array<CharSequence>?): Builder {
+            this.bundle.putCharSequenceArray(key, value)
+            return this
         }
 
-        public Builder putCharSequenceArrayList(@NonNull String key, @Nullable ArrayList<CharSequence> value) {
-            this.bundle.putCharSequenceArrayList(key, value);
-            return this;
+        open fun putCharSequenceArrayList(key: String, value: ArrayList<CharSequence>?): Builder {
+            this.bundle.putCharSequenceArrayList(key, value)
+            return this
         }
 
-        public Builder putByte(@NonNull String key, byte value) {
-            this.bundle.putByte(key, value);
-            return this;
+        open fun putByte(key: String, value: Byte): Builder {
+            this.bundle.putByte(key, value)
+            return this
         }
 
-        public Builder putByteArray(@NonNull String key, @Nullable byte[] value) {
-            this.bundle.putByteArray(key, value);
-            return this;
+        open fun putByteArray(key: String, value: ByteArray?): Builder {
+            this.bundle.putByteArray(key, value)
+            return this
         }
 
-        public Builder putChar(@NonNull String key, char value) {
-            this.bundle.putChar(key, value);
-            return this;
+        open fun putChar(key: String, value: Char): Builder {
+            this.bundle.putChar(key, value)
+            return this
         }
 
-        public Builder putCharArray(@NonNull String key, @Nullable char[] value) {
-            this.bundle.putCharArray(key, value);
-            return this;
+        open fun putCharArray(key: String, value: CharArray?): Builder {
+            this.bundle.putCharArray(key, value)
+            return this
         }
 
-        public Builder putBoolean(@NonNull String key, boolean value) {
-            this.bundle.putBoolean(key, value);
-            return this;
+        open fun putBoolean(key: String, value: Boolean): Builder {
+            this.bundle.putBoolean(key, value)
+            return this
         }
 
-        public Builder putBooleanArray(@NonNull String key, @Nullable boolean[] value) {
-            this.bundle.putBooleanArray(key, value);
-            return this;
+        open fun putBooleanArray(key: String, value: BooleanArray?): Builder {
+            this.bundle.putBooleanArray(key, value)
+            return this
         }
 
-        public Builder putString(@NonNull String key, @Nullable String value) {
-            this.bundle.putString(key, value);
-            return this;
+        open fun putString(key: String, value: String?): Builder {
+            this.bundle.putString(key, value)
+            return this
         }
 
-        public Builder putStringArray(@NonNull String key, @Nullable String[] value) {
-            this.bundle.putStringArray(key, value);
-            return this;
+        open fun putStringArray(key: String, value: Array<String>?): Builder {
+            this.bundle.putStringArray(key, value)
+            return this
         }
 
-        public Builder putStringArrayList(@NonNull String key, @Nullable ArrayList<String> value) {
-            this.bundle.putStringArrayList(key, value);
-            return this;
+        open fun putStringArrayList(key: String, value: ArrayList<String>?): Builder {
+            this.bundle.putStringArrayList(key, value)
+            return this
         }
 
-        public Builder putShort(@NonNull String key, short value) {
-            this.bundle.putShort(key, value);
-            return this;
+        open fun putShort(key: String, value: Short): Builder {
+            this.bundle.putShort(key, value)
+            return this
         }
 
-        public Builder putShortArray(@NonNull String key, @Nullable short[] value) {
-            this.bundle.putShortArray(key, value);
-            return this;
+        open fun putShortArray(key: String, value: ShortArray?): Builder {
+            this.bundle.putShortArray(key, value)
+            return this
         }
 
-        public Builder putInt(@NonNull String key, int value) {
-            this.bundle.putInt(key, value);
-            return this;
+        open fun putInt(key: String, value: Int): Builder {
+            this.bundle.putInt(key, value)
+            return this
         }
 
-        public Builder putIntArray(@NonNull String key, @Nullable int[] value) {
-            this.bundle.putIntArray(key, value);
-            return this;
+        open fun putIntArray(key: String, value: IntArray?): Builder {
+            this.bundle.putIntArray(key, value)
+            return this
         }
 
-        public Builder putIntegerArrayList(@NonNull String key, @Nullable ArrayList<Integer> value) {
-            this.bundle.putIntegerArrayList(key, value);
-            return this;
+        open fun putIntegerArrayList(key: String, value: ArrayList<Int>?): Builder {
+            this.bundle.putIntegerArrayList(key, value)
+            return this
         }
 
-        public Builder putLong(@NonNull String key, long value) {
-            this.bundle.putLong(key, value);
-            return this;
+        open fun putLong(key: String, value: Long): Builder {
+            this.bundle.putLong(key, value)
+            return this
         }
 
-        public Builder putLongArray(@NonNull String key, @Nullable long[] value) {
-            this.bundle.putLongArray(key, value);
-            return this;
+        open fun putLongArray(key: String, value: LongArray?): Builder {
+            this.bundle.putLongArray(key, value)
+            return this
         }
 
-        public Builder putFloat(@NonNull String key, float value) {
-            this.bundle.putFloat(key, value);
-            return this;
+        open fun putFloat(key: String, value: Float): Builder {
+            this.bundle.putFloat(key, value)
+            return this
         }
 
-        public Builder putFloatArray(@NonNull String key, @Nullable float[] value) {
-            this.bundle.putFloatArray(key, value);
-            return this;
+        open fun putFloatArray(key: String, value: FloatArray?): Builder {
+            this.bundle.putFloatArray(key, value)
+            return this
         }
 
-        public Builder putDouble(@NonNull String key, double value) {
-            this.bundle.putDouble(key, value);
-            return this;
+        open fun putDouble(key: String, value: Double): Builder {
+            this.bundle.putDouble(key, value)
+            return this
         }
 
-        public Builder putDoubleArray(@NonNull String key, @Nullable double[] value) {
-            this.bundle.putDoubleArray(key, value);
-            return this;
+        open fun putDoubleArray(key: String, value: DoubleArray?): Builder {
+            this.bundle.putDoubleArray(key, value)
+            return this
         }
 
-        public Builder putParcelable(@NonNull String key, @Nullable Parcelable value) {
-            this.bundle.putParcelable(key, value);
-            return this;
+        open fun putParcelable(key: String, value: Parcelable?): Builder {
+            this.bundle.putParcelable(key, value)
+            return this
         }
 
-        public Builder putParcelableArray(@NonNull String key, @Nullable Parcelable[] value) {
-            this.bundle.putParcelableArray(key, value);
-            return this;
+        open fun putParcelableArray(key: String, value: Array<Parcelable>?): Builder {
+            this.bundle.putParcelableArray(key, value)
+            return this
         }
 
-        public Builder putParcelableArrayList(@NonNull String key, @Nullable ArrayList<? extends Parcelable> value) {
-            this.bundle.putParcelableArrayList(key, value);
-            return this;
+        open fun putParcelableArrayList(key: String, value: ArrayList<out Parcelable>?): Builder {
+            this.bundle.putParcelableArrayList(key, value)
+            return this
         }
 
-        public Builder putSparseParcelableArray(@NonNull String key, @Nullable SparseArray<? extends Parcelable> value) {
-            this.bundle.putSparseParcelableArray(key, value);
-            return this;
+        open fun putSparseParcelableArray(key: String, value: SparseArray<out Parcelable>?): Builder {
+            this.bundle.putSparseParcelableArray(key, value)
+            return this
         }
 
-        public Builder putSerializable(@NonNull String key, @Nullable Serializable value) {
-            this.bundle.putSerializable(key, value);
-            return this;
+        open fun putSerializable(key: String, value: Serializable?): Builder {
+            this.bundle.putSerializable(key, value)
+            return this
         }
 
-        @Override
-        public Builder query(@NonNull String queryName, @NonNull String queryValue) {
-            super.query(queryName, queryValue);
-            return this;
+        override fun query(queryName: String, queryValue: String): Builder {
+            super.query(queryName, queryValue)
+            return this
         }
 
-        @Override
-        public Builder query(@NonNull String queryName, boolean queryValue) {
-            super.query(queryName, queryValue);
-            return this;
+        override fun query(queryName: String, queryValue: Boolean): Builder {
+            super.query(queryName, queryValue)
+            return this
         }
 
-        @Override
-        public Builder query(@NonNull String queryName, byte queryValue) {
-            super.query(queryName, queryValue);
-            return this;
+        override fun query(queryName: String, queryValue: Byte): Builder {
+            super.query(queryName, queryValue)
+            return this
         }
 
-        @Override
-        public Builder query(@NonNull String queryName, int queryValue) {
-            super.query(queryName, queryValue);
-            return this;
+        override fun query(queryName: String, queryValue: Int): Builder {
+            super.query(queryName, queryValue)
+            return this
         }
 
-        @Override
-        public Builder query(@NonNull String queryName, float queryValue) {
-            super.query(queryName, queryValue);
-            return this;
+        override fun query(queryName: String, queryValue: Float): Builder {
+            super.query(queryName, queryValue)
+            return this
         }
 
-        @Override
-        public Builder query(@NonNull String queryName, long queryValue) {
-            super.query(queryName, queryValue);
-            return this;
+        override fun query(queryName: String, queryValue: Long): Builder {
+            super.query(queryName, queryValue)
+            return this
         }
 
-        @Override
-        public Builder query(@NonNull String queryName, double queryValue) {
-            super.query(queryName, queryValue);
-            return this;
+        override fun query(queryName: String, queryValue: Double): Builder {
+            super.query(queryName, queryValue)
+            return this
         }
 
         /**
@@ -729,11 +665,9 @@ public class RouterRequest {
          *
          * @return 可能会抛出一个运行时异常, 由于您的参数在构建 uri 的时候出现的异常
          */
-        @NonNull
-        public RouterRequest build() {
-            return new RouterRequest(this);
+        open fun build(): RouterRequest {
+            return RouterRequest(this)
         }
-
     }
 
     /**
@@ -741,36 +675,25 @@ public class RouterRequest {
      *
      * @author xiaojinzi
      */
-    public static class URIBuilder {
+    open class URIBuilder {
 
-        @Nullable
-        protected String url;
+        var url: String? = null
+        var scheme: String? = null
+        private var userInfo: String? = null
+        var host: String? = null
+        var path: String? = null
+        var queryMap: MutableMap<String, String> = HashMap()
 
-        @Nullable
-        protected String scheme;
-
-        @Nullable
-        protected String userInfo;
-
-        @Nullable
-        protected String host;
-
-        @Nullable
-        protected String path;
-
-        @Nullable
-        protected Map<String, String> queryMap = new HashMap<>();
-
-        public URIBuilder url(@NonNull String url) {
-            Utils.checkStringNullPointer(url, "url");
-            this.url = url;
-            return this;
+        open fun url(url: String): URIBuilder {
+            Utils.checkStringNullPointer(url, "url")
+            this.url = url
+            return this
         }
 
-        public URIBuilder scheme(@NonNull String scheme) {
-            Utils.checkStringNullPointer(scheme, "scheme");
-            this.scheme = scheme;
-            return this;
+        open fun scheme(scheme: String): URIBuilder {
+            Utils.checkStringNullPointer(scheme, "scheme")
+            this.scheme = scheme
+            return this
         }
 
         /**
@@ -778,81 +701,80 @@ public class RouterRequest {
          *
          * @param hostAndPath xxx/xxx
          */
-        public URIBuilder hostAndPath(@NonNull String hostAndPath) {
-            Utils.checkNullPointer(hostAndPath, "hostAndPath");
-            int index = hostAndPath.indexOf("/");
+        open fun hostAndPath(hostAndPath: String): URIBuilder {
+            Utils.checkNullPointer(hostAndPath, "hostAndPath")
+            val index = hostAndPath.indexOf("/")
             if (index > 0) {
-                host(hostAndPath.substring(0, index));
-                path(hostAndPath.substring(index + 1));
+                host(hostAndPath.substring(0, index))
+                path(hostAndPath.substring(index + 1))
             } else {
-                Utils.debugThrowException(new IllegalArgumentException(hostAndPath + " is invalid"));
+                Utils.debugThrowException(IllegalArgumentException("$hostAndPath is invalid"))
             }
-            return this;
+            return this
         }
 
-        public URIBuilder userInfo(@NonNull String userInfo) {
-            Utils.checkStringNullPointer(userInfo, "userInfo");
-            this.userInfo = userInfo;
-            return this;
+        open fun userInfo(userInfo: String): URIBuilder {
+            Utils.checkStringNullPointer(userInfo, "userInfo")
+            this.userInfo = userInfo
+            return this
         }
 
-        public URIBuilder host(@NonNull String host) {
-            Utils.checkStringNullPointer(host, "host");
-            this.host = host;
-            return this;
+        open fun host(host: String): URIBuilder {
+            Utils.checkStringNullPointer(host, "host")
+            this.host = host
+            return this
         }
 
-        public URIBuilder path(@NonNull String path) {
-            Utils.checkStringNullPointer(path, "path");
-            this.path = path;
-            return this;
+        open fun path(path: String): URIBuilder {
+            Utils.checkStringNullPointer(path, "path")
+            this.path = path
+            return this
         }
 
-        public URIBuilder query(@NonNull String queryName, @NonNull String queryValue) {
-            Utils.checkStringNullPointer(queryName, "queryName");
-            Utils.checkStringNullPointer(queryValue, "queryValue");
-            queryMap.put(queryName, queryValue);
-            return this;
+        open fun query(queryName: String, queryValue: String): URIBuilder {
+            Utils.checkStringNullPointer(queryName, "queryName")
+            Utils.checkStringNullPointer(queryValue, "queryValue")
+            queryMap[queryName] = queryValue
+            return this
         }
 
-        public URIBuilder query(@NonNull String queryName, boolean queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+        open fun query(queryName: String, queryValue: Boolean): URIBuilder {
+            return query(queryName, queryValue.toString())
         }
 
-        public URIBuilder query(@NonNull String queryName, byte queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+        open fun query(queryName: String, queryValue: Byte): URIBuilder {
+            return query(queryName, queryValue.toString())
         }
 
-        public URIBuilder query(@NonNull String queryName, int queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+        open fun query(queryName: String, queryValue: Int): URIBuilder {
+            return query(queryName, queryValue.toString())
         }
 
-        public URIBuilder query(@NonNull String queryName, float queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+        open fun query(queryName: String, queryValue: Float): URIBuilder {
+            return query(queryName, queryValue.toString())
         }
 
-        public URIBuilder query(@NonNull String queryName, long queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+        open fun query(queryName: String, queryValue: Long): URIBuilder {
+            return query(queryName, queryValue.toString())
         }
 
-        public URIBuilder query(@NonNull String queryName, double queryValue) {
-            return query(queryName, String.valueOf(queryValue));
+        open fun query(queryName: String, queryValue: Double): URIBuilder {
+            return query(queryName, queryValue.toString())
         }
 
         /**
-         * 构建一个 {@link Uri},如果构建失败会抛出异常
+         * 构建一个 [Uri],如果构建失败会抛出异常
          */
-        @NonNull
-        public Uri buildURI() {
-            URIBuilder builder = this;
-            Uri result = null;
+        fun buildURI(): Uri {
+            val builder = this
+            var result: Uri?
             if (builder.url == null) {
-                Uri.Builder uriBuilder = new Uri.Builder();
-                StringBuffer authoritySB = new StringBuffer();
-                if (userInfo != null && !userInfo.isEmpty()) {
+                val uriBuilder = Uri.Builder()
+                val authoritySB = StringBuffer()
+                if (!userInfo.isNullOrEmpty()) {
                     authoritySB
                             .append(Uri.encode(userInfo))
-                            .append("@");
+                            .append("@")
                 }
                 authoritySB.append(
                         Uri.encode(
@@ -861,43 +783,39 @@ public class RouterRequest {
                                         "do you forget call host() to set host?"
                                 )
                         )
-                );
+                )
                 uriBuilder
-                        .scheme(TextUtils.isEmpty(builder.scheme) ?
-                                Component.requiredConfig().getDefaultScheme() : builder.scheme)
-                        // host 一定不能为空
+                        .scheme(if (TextUtils.isEmpty(builder.scheme)) requiredConfig().defaultScheme else builder.scheme) // host 一定不能为空
                         .encodedAuthority(authoritySB.toString())
                         .path(
                                 Utils.checkStringNullPointer(
                                         builder.path, "path",
                                         "do you forget call path() to set path?"
                                 )
-                        );
-                for (Map.Entry<String, String> entry : builder.queryMap.entrySet()) {
-                    uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
+                        )
+                for ((key, value) in builder.queryMap) {
+                    uriBuilder.appendQueryParameter(key, value)
                 }
-                result = uriBuilder.build();
+                result = uriBuilder.build()
             } else {
-                result = Uri.parse(builder.url);
-                if (builder.queryMap.size() > 0) {
-                    Uri.Builder uriBuilder = result.buildUpon();
-                    for (Map.Entry<String, String> entry : builder.queryMap.entrySet()) {
-                        uriBuilder.appendQueryParameter(entry.getKey(), entry.getValue());
+                result = Uri.parse(builder.url)
+                if (builder.queryMap.isNotEmpty()) {
+                    val uriBuilder = result.buildUpon()
+                    for ((key, value) in builder.queryMap) {
+                        uriBuilder.appendQueryParameter(key, value)
                     }
-                    result = uriBuilder.build();
+                    result = uriBuilder.build()
                 }
             }
-            return result;
+            return result
         }
 
         /**
          * 构建一个URL,如果构建失败会抛出异常
          */
-        @NonNull
-        public String buildURL() {
-            return buildURI().toString();
+        fun buildURL(): String {
+            return buildURI().toString()
         }
-
     }
 
 }

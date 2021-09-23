@@ -133,7 +133,7 @@ public class RxRouter {
         }
 
         @Override
-        public RxNavigator addIntentFlags(@Nullable Integer... flags) {
+        public RxNavigator addIntentFlags(@Nullable int... flags) {
             super.addIntentFlags(flags);
             return this;
         }

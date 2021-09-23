@@ -119,7 +119,7 @@ public class RouterCenter implements IComponentCenterRouter {
      */
     @Nullable
     @UiThread
-    public Intent routerDegrade(@NonNull RouterRequest request, @NonNull Intent routerDegradeIntent) throws Exception {
+    public Intent routerDegrade(@NonNull RouterRequest request, @Nullable Intent routerDegradeIntent) throws Exception {
         String uriString = request.uri.toString();
         if (routerDegradeIntent == null) {
             throw new TargetActivityNotFoundException(uriString);

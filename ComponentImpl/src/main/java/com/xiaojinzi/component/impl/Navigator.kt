@@ -28,6 +28,7 @@ import com.xiaojinzi.component.support.*
 import com.xiaojinzi.component.support.NavigationDisposable.ProxyNavigationDisposableImpl
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * 这个类一部分功能应该是 [Router] 的构建者对象的功能,但是这里面更多的为导航的功能
@@ -150,14 +151,15 @@ open class Navigator : RouterRequest.Builder, Call {
         Utils.checkNullPointer(bundle, "bundle")
         val reqUrl = bundle.getString(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_URL)
         val reqBundle = bundle.getBundle(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_BUNDLE)
-        val reqOptions = bundle.getBundle(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_OPTIONS)
-        val reqFlags = bundle.getIntegerArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_FLAGS)
+        val reqOptions: Bundle? = bundle.getBundle(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_OPTIONS)
+        val reqFlags: ArrayList<Int> = bundle
+                .getIntegerArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_FLAGS)?: ArrayList()
         val reqCategories =
             bundle.getStringArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_CATEGORIES)
         super.url(reqUrl!!)
         super.putAll(reqBundle!!)
         super.options(reqOptions)
-        super.addIntentFlags(*reqFlags!!.toTypedArray())
+        super.addIntentFlags(*reqFlags.toIntArray())
         super.addIntentCategories(*reqCategories!!.toTypedArray())
         return this
     }
@@ -167,12 +169,12 @@ open class Navigator : RouterRequest.Builder, Call {
         return this
     }
 
-    override fun addIntentFlags(vararg flags: Int?): Navigator {
+    override fun addIntentFlags(vararg flags: Int): Navigator {
         super.addIntentFlags(*flags)
         return this
     }
 
-    override fun addIntentCategories(vararg categories: String?): Navigator {
+    override fun addIntentCategories(vararg categories: String): Navigator {
         super.addIntentCategories(*categories)
         return this
     }
@@ -759,8 +761,8 @@ open class Navigator : RouterRequest.Builder, Call {
             host = null
             path = null
             requestCode = null
-            queryMap = null
-            bundle = null
+            queryMap.clear()
+            bundle.clear()
             intentConsumer = null
             beforeAction = null
             beforeStartAction = null
@@ -975,7 +977,7 @@ open class Navigator : RouterRequest.Builder, Call {
     ) {
 
         // 自定义拦截器,初始化拦截器的个数 8 个够用应该不会经常扩容
-        val allInterceptors: MutableList<RouterInterceptor> = ArrayList<RouterInterceptor>(10)
+        val allInterceptors: MutableList<RouterInterceptor> = ArrayList(10)
 
         // 此拦截器用于执行一些整个流程开始之前的事情
         allInterceptors.add(RouterInterceptor { chain -> // 执行跳转前的 Callback
@@ -1155,10 +1157,6 @@ open class Navigator : RouterRequest.Builder, Call {
                 try {
                     // 如果已经结束, 对不起就不执行了
                     if (callback().isEnd) {
-                        return@Runnable
-                    }
-                    if (request == null) {
-                        callback().onError(NavigationFailException("the request is null,you can't call 'proceed' method with null request, such as 'chain.proceed(null)'"))
                         return@Runnable
                     }
                     ++calls
