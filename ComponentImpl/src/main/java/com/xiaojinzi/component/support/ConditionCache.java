@@ -26,7 +26,7 @@ public class ConditionCache {
      */
     @Nullable
     public static synchronized Condition getByClass(@NonNull Class<? extends Condition> tClass) {
-        Condition t = ClassCache.get(tClass);
+        Condition t = ClassCache.INSTANCE.get(tClass);
         if (t != null) {
             return t;
         }
@@ -36,7 +36,7 @@ public class ConditionCache {
             if (t == null) {
                 throw new InstantiationException("do you write a default constructor");
             } else {
-                ClassCache.put(tClass, t);
+                ClassCache.INSTANCE.put(tClass, t);
             }
         } catch (Exception e) {
             if (Component.isDebug()) {

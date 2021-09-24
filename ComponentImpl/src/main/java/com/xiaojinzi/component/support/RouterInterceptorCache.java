@@ -40,7 +40,7 @@ public class RouterInterceptorCache {
     @Nullable
     @UiThread
     public static synchronized RouterInterceptor getInterceptorByClass(@NonNull Class<? extends RouterInterceptor> tClass) {
-        RouterInterceptor t = ClassCache.get(tClass);
+        RouterInterceptor t = ClassCache.INSTANCE.get(tClass);
         if (t != null) {
             return t;
         }
@@ -50,7 +50,7 @@ public class RouterInterceptorCache {
             if (t == null) {
                 throw new InstantiationException("do you write default constructor or a constructor with parameter 'Application' or  a constructor with parameter 'Context' ");
             } else {
-                ClassCache.put(tClass, t);
+                ClassCache.INSTANCE.put(tClass, t);
             }
         } catch (Exception e) {
             if (Component.isDebug()) {
@@ -85,7 +85,7 @@ public class RouterInterceptorCache {
     }
 
     public static synchronized void removeCache(@NonNull Class<? extends RouterInterceptor> tClass) {
-        ClassCache.remove(tClass);
+        ClassCache.INSTANCE.remove(tClass);
     }
 
 }

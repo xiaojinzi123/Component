@@ -6,14 +6,16 @@ package com.xiaojinzi.component.cache
  */
 interface Cache<K, V> {
 
-    interface Factory {
+    interface Factory<K, V> {
+
         /**
          * Returns a new cache
          *
          * @param type 框架中需要缓存的模块类型
          * @return [Cache]
          */
-        fun build(type: CacheType?): Cache<*, *>
+        fun build(type: CacheType): Cache<K, V>
+
     }
 
     /**

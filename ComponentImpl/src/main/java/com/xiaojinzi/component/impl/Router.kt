@@ -134,7 +134,7 @@ object Router {
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
     fun <T> withApi(@NonNull apiClass: Class<T>): T {
-        var t = ClassCache.get(apiClass) as? T
+        var t: T? = ClassCache.get(apiClass) as? T
         if (t == null) {
             val className: String  = ComponentUtil.genRouterApiImplClassName(apiClass)
             try {

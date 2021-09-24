@@ -4,17 +4,14 @@ import androidx.annotation.NonNull;
 
 import com.xiaojinzi.component.Component;
 
-public class DefaultCacheFactory implements Cache.Factory{
+public class DefaultCacheFactory<K, V> implements Cache.Factory<K, V>{
 
-    private DefaultCacheFactory() {
-    }
-
-    public static final DefaultCacheFactory INSTANCE = new DefaultCacheFactory();
+    public static final DefaultCacheFactory<Object, Object> INSTANCE = new DefaultCacheFactory();
 
     @NonNull
     @Override
-    public Cache build(CacheType type) {
-        return new LruCache(type.calculateCacheSize(Component.getApplication()));
+    public Cache<K, V> build(CacheType type) {
+        return new LruCache<K, V>(type.calculateCacheSize(Component.getApplication()));
     }
 
 }

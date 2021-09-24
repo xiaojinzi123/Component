@@ -1,40 +1,34 @@
-package com.xiaojinzi.component.cache;
+package com.xiaojinzi.component.cache
 
-
-import android.app.ActivityManager;
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.support.Utils;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno
+import com.xiaojinzi.component.cache.CacheType.Companion.CLASS_CACHE
 
 /**
  * Class 的缓存的工具类
  */
 @CheckClassNameAnno
-public class ClassCache {
+object ClassCache {
 
-    private static final Cache<Class, Object> classCache =
-            DefaultCacheFactory.INSTANCE.build(CacheType.Companion.getCLASS_CACHE());
+    private val classCache = DefaultCacheFactory.INSTANCE.build(CLASS_CACHE)
 
-    public static synchronized final void put(@NonNull Class clazz, @Nullable Object o) {
-        classCache.put(clazz, o);
+    @Synchronized
+    fun <T> put(clazz: Class<*>, o: T) {
+        classCache.put(clazz, o)
     }
 
-    @Nullable
-    public static synchronized final <T> T get(@NonNull Class clazz) {
-        return (T) classCache.get(clazz);
+    @Synchronized
+    operator fun <T> get(clazz: Class<*>): T? {
+        return classCache[clazz] as T?
     }
 
-    @Nullable
-    public static synchronized final <T> T remove(@NonNull Class clazz) {
-        return (T) classCache.remove(clazz);
+    @Synchronized
+    fun <T> remove(clazz: Class<*>): T? {
+        return classCache.remove(clazz) as T?
     }
 
-    public static synchronized final void clear() {
-        classCache.clear();
+    @Synchronized
+    fun clear() {
+        classCache.clear()
     }
 
 }

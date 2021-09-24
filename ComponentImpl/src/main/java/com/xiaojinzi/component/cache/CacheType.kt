@@ -44,6 +44,4 @@ interface CacheType {
      */
     fun calculateCacheSize(context: Context): Int
 
-
-
 }

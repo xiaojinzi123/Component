@@ -29,7 +29,7 @@ public class RouterDegradeCache {
      */
     @Nullable
     public static synchronized RouterDegrade getRouterDegradeByClass(@NonNull Class<? extends RouterDegrade> tClass) {
-        RouterDegrade t = ClassCache.get(tClass);
+        RouterDegrade t = ClassCache.INSTANCE.get(tClass);
         if (t != null) {
             return t;
         }
@@ -39,7 +39,7 @@ public class RouterDegradeCache {
             if (t == null) {
                 throw new InstantiationException("do you write default constructor or a constructor with parameter 'Application' or  a constructor with parameter 'Context' ");
             } else {
-                ClassCache.put(tClass, t);
+                ClassCache.INSTANCE.put(tClass, t);
             }
         } catch (Exception e) {
             if (Component.isDebug()) {
