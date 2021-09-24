@@ -1,17 +1,15 @@
-package com.xiaojinzi.component.cache;
+package com.xiaojinzi.component.cache
 
-import androidx.annotation.NonNull;
+import com.xiaojinzi.component.Component.getApplication
 
-import com.xiaojinzi.component.Component;
+class DefaultCacheFactory<K, V> : Cache.Factory<K, V> {
 
-public class DefaultCacheFactory<K, V> implements Cache.Factory<K, V>{
+    override fun build(type: CacheType): Cache<K, V> {
+        return LruCache(type.calculateCacheSize(getApplication()))
+    }
 
-    public static final DefaultCacheFactory<Object, Object> INSTANCE = new DefaultCacheFactory();
-
-    @NonNull
-    @Override
-    public Cache<K, V> build(CacheType type) {
-        return new LruCache<K, V>(type.calculateCacheSize(Component.getApplication()));
+    companion object {
+        val INSTANCE = DefaultCacheFactory<Any, Any>()
     }
 
 }

@@ -80,7 +80,7 @@ object ModuleManager: IComponentCenterApplication {
                 RouterCenter.register(moduleApp.host)
                 InterceptorCenter.getInstance().register(moduleApp.host)
                 RouterDegradeCenter.getInstance().register(moduleApp.host)
-                FragmentCenter.getInstance().register(moduleApp.host)
+                FragmentCenter.register(moduleApp.host)
                 notifyModuleChanged()
             }
             // 路由是否异步初始化
@@ -156,7 +156,7 @@ object ModuleManager: IComponentCenterApplication {
             RouterCenter.unregister(moduleApp.host)
             InterceptorCenter.getInstance().unregister(moduleApp.host)
             RouterDegradeCenter.getInstance().unregister(moduleApp.host)
-            FragmentCenter.getInstance().unregister(moduleApp.host)
+            FragmentCenter.unregister(moduleApp.host)
             // 清空缓存
             ClassCache.clear()
             notifyModuleChanged()

@@ -1,20 +1,14 @@
-package com.xiaojinzi.component.impl.fragment;
+package com.xiaojinzi.component.impl.fragment
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.fragment.IComponentCenterFragment;
-import com.xiaojinzi.component.fragment.IComponentHostFragment;
-import com.xiaojinzi.component.support.ASMUtil;
-import com.xiaojinzi.component.support.Utils;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import com.xiaojinzi.component.Component.getApplication
+import com.xiaojinzi.component.Component.requiredConfig
+import com.xiaojinzi.component.ComponentUtil
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno
+import com.xiaojinzi.component.fragment.IComponentCenterFragment
+import com.xiaojinzi.component.fragment.IComponentHostFragment
+import com.xiaojinzi.component.support.ASMUtil
+import com.xiaojinzi.component.support.Utils
+import java.util.*
 
 /**
  * 模块 Fragment 注册和卸载的总管
@@ -22,94 +16,66 @@ import java.util.Set;
  * @author xiaojinzi
  */
 @CheckClassNameAnno
-public class FragmentCenter implements IComponentCenterFragment {
+object FragmentCenter: IComponentCenterFragment {
 
-    private Map<String, IComponentHostFragment> moduleFragmentMap = new HashMap<>();
+    private val moduleFragmentMap: MutableMap<String, IComponentHostFragment> = HashMap()
 
-    private FragmentCenter() {
-    }
-
-    private static volatile FragmentCenter instance;
-
-    public static FragmentCenter getInstance() {
-        if (instance == null) {
-            synchronized (FragmentCenter.class) {
-                if (instance == null) {
-                    instance = new FragmentCenter();
-                }
-            }
-        }
-        return instance;
-    }
-
-    @Override
-    public void register(@NonNull IComponentHostFragment hostFragment) {
-        Utils.checkNullPointer(hostFragment);
-        if (!moduleFragmentMap.containsKey(hostFragment.getHost())) {
-            moduleFragmentMap.put(hostFragment.getHost(), hostFragment);
-            hostFragment.onCreate(Component.getApplication());
+    override fun register(hostFragment: IComponentHostFragment) {
+        Utils.checkNullPointer(hostFragment)
+        if (!moduleFragmentMap.containsKey(hostFragment.host)) {
+            moduleFragmentMap[hostFragment.host] = hostFragment
+            hostFragment.onCreate(getApplication())
         }
     }
 
-    @Override
-    public void register(@NonNull String host) {
-        Utils.checkStringNullPointer(host, "host");
+    override fun register(host: String) {
+        Utils.checkStringNullPointer(host, "host")
         if (!moduleFragmentMap.containsKey(host)) {
-            IComponentHostFragment moduleService = findModuleService(host);
-            if (moduleService != null) {
-                register(moduleService);
-            }
+            val moduleService = findModuleService(host)
+            moduleService?.let { register(it) }
         }
     }
 
-    @Override
-    public void unregister(@NonNull IComponentHostFragment hostFragment) {
-        Utils.checkNullPointer(hostFragment);
-        moduleFragmentMap.remove(hostFragment.getHost());
-        hostFragment.onDestroy();
+    override fun unregister(hostFragment: IComponentHostFragment) {
+        Utils.checkNullPointer(hostFragment)
+        moduleFragmentMap.remove(hostFragment.host)
+        hostFragment.onDestroy()
     }
 
-    @Override
-    public void unregister(@NonNull String host) {
-        Utils.checkStringNullPointer(host, "host");
-        IComponentHostFragment moduleService = moduleFragmentMap.get(host);
-        if (moduleService != null) {
-            unregister(moduleService);
-        }
+    override fun unregister(host: String) {
+        Utils.checkStringNullPointer(host, "host")
+        val moduleService = moduleFragmentMap[host]
+        moduleService?.let { unregister(it) }
     }
 
-    @Nullable
-    public IComponentHostFragment findModuleService(String host) {
+    fun findModuleService(host: String?): IComponentHostFragment? {
         try {
-            if (Component.requiredConfig().isOptimizeInit()) {
-                return ASMUtil.findModuleFragmentAsmImpl(
+            return if (requiredConfig().isOptimizeInit) {
+                ASMUtil.findModuleFragmentAsmImpl(
                         ComponentUtil.transformHostForClass(host)
-                );
+                )
             } else {
-                Class<? extends IComponentHostFragment> clazz = null;
-                String className = ComponentUtil.genHostFragmentClassName(host);
-                clazz = (Class<? extends IComponentHostFragment>) Class.forName(className);
-                return clazz.newInstance();
+                var clazz: Class<out IComponentHostFragment?>? = null
+                val className = ComponentUtil.genHostFragmentClassName(host)
+                clazz = Class.forName(className) as Class<out IComponentHostFragment>
+                clazz.newInstance()
             }
-        } catch (Exception ignore) {
+        } catch (ignore: Exception) {
             // ignore
         }
-        return null;
+        return null
     }
 
-    public void check() {
-        Set<String> set = new HashSet<>();
-        for (Map.Entry<String, IComponentHostFragment> entry : moduleFragmentMap.entrySet()) {
-            IComponentHostFragment childRouter = entry.getValue();
-            if (childRouter == null || childRouter.getFragmentNameSet() == null) {
-                continue;
+    fun check() {
+        val set: MutableSet<String> = HashSet()
+        for ((_, childRouter) in moduleFragmentMap) {
+            if (childRouter?.fragmentNameSet == null) {
+                continue
             }
-            Set<String> childRouterSet = childRouter.getFragmentNameSet();
-            for (String key : childRouterSet) {
-                if (set.contains(key)) {
-                    throw new IllegalStateException("the name of Fragment is exist：'" + key + "'");
-                }
-                set.add(key);
+            val childRouterSet = childRouter.fragmentNameSet
+            for (key in childRouterSet) {
+                check(!set.contains(key)) { "the name of Fragment is exist：'$key'" }
+                set.add(key)
             }
         }
     }
