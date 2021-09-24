@@ -1,40 +1,33 @@
-package com.xiaojinzi.component.support;
+package com.xiaojinzi.component.support
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-
-import com.xiaojinzi.component.impl.Callback;
-import com.xiaojinzi.component.impl.RouterErrorResult;
-import com.xiaojinzi.component.impl.RouterRequest;
-import com.xiaojinzi.component.impl.RouterResult;
+import androidx.annotation.UiThread
+import com.xiaojinzi.component.impl.Callback
+import com.xiaojinzi.component.impl.RouterErrorResult
+import com.xiaojinzi.component.impl.RouterRequest
+import com.xiaojinzi.component.impl.RouterResult
 
 /**
  * 接口的空实现
  */
-public class CallbackAdapter implements Callback {
+open class CallbackAdapter : Callback {
 
-    @Override
     @UiThread
-    public void onSuccess(@NonNull RouterResult result) {
+    override fun onSuccess(result: RouterResult) {
         // empty
     }
 
-    @Override
     @UiThread
-    public void onError(RouterErrorResult errorResult) {
+    override fun onError(errorResult: RouterErrorResult) {
         // empty
     }
 
-    @Override
     @UiThread
-    public void onEvent(@Nullable RouterResult successResult, @Nullable RouterErrorResult errorResult) {
+    override fun onEvent(successResult: RouterResult?, errorResult: RouterErrorResult?) {
         // empty
     }
 
-    @Override
     @UiThread
-    public void onCancel(@NonNull RouterRequest originalRequest) {
+    override fun onCancel(originalRequest: RouterRequest) {
         // empty
     }
 

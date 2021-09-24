@@ -1,16 +1,13 @@
-package com.xiaojinzi.component.support;
+package com.xiaojinzi.component.support
 
-import androidx.annotation.NonNull;
-
-import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno
 
 @CheckClassNameAnno
-public interface Function1<T, R> {
+interface Function1<T, R> {
 
     /**
      * 做一个转化,从一个对象变成另一个对象
      */
-    @NonNull
-    R apply(T t);
+    fun apply(t: T): R
 
 }

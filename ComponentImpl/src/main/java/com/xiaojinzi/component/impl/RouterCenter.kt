@@ -158,7 +158,7 @@ object RouterCenter : IComponentCenterRouter {
                     "you use 'Application' to launch Activity. this is not recommended. you should not use 'Application' as far as possible"
             )
         }
-        request.beforeStartAction?.run()
+        request.beforeStartAction?.invoke()
 
         // ------------------------------- 启动界面核心代码 ------------------------------- START
         if (request.isForTargetIntent) {
@@ -223,7 +223,7 @@ object RouterCenter : IComponentCenterRouter {
         }
 
         // ------------------------------- 启动界面核心代码 ------------------------------- END
-        request.afterStartAction?.run()
+        request.afterStartAction?.invoke()
         return null
     }
 

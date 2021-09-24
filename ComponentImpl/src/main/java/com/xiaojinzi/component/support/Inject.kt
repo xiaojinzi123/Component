@@ -1,28 +1,22 @@
-package com.xiaojinzi.component.support;
+package com.xiaojinzi.component.support
 
-import android.app.Activity;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
-import androidx.annotation.UiThread;
-
-import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno
+import androidx.annotation.UiThread
+import android.os.Bundle
 
 /**
  * 每一个生成的类都应该实现这个接口
  */
 @CheckClassNameAnno
-public interface Inject<T> {
+interface Inject<T> {
 
     /**
-     * 注入属性值, Bundle 从 {@link Activity#getIntent()} 和 {@link Fragment#getArguments()} 中来
+     * 注入属性值, Bundle 从 [android.app.Activity.getIntent] 和 [androidx.fragment.app.Fragment.getArguments] 中来
      *
      * @param target 目标
      */
     @UiThread
-    void injectAttrValue(@NonNull T target);
+    fun injectAttrValue(target: T)
 
     /**
      * 注入属性值
@@ -31,7 +25,7 @@ public interface Inject<T> {
      * @param bundle 数据源的 bundle
      */
     @UiThread
-    void injectAttrValue(@NonNull T target, @NonNull Bundle bundle);
+    fun injectAttrValue(target: T, bundle: Bundle)
 
     /**
      * 注入 Service
@@ -39,6 +33,6 @@ public interface Inject<T> {
      * @param target 目标
      */
     @UiThread
-    void injectService(@NonNull T target);
+    fun injectService(target: T)
 
 }

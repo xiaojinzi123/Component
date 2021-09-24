@@ -36,6 +36,8 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.functions.Cancellable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 /**
  * 使用这个可以结合 RxJava 中的
@@ -89,38 +91,81 @@ public class RxRouter {
             super(fragment);
         }
 
+        @NonNull
         @Override
-        public RxNavigator beforeAction(@NonNull @UiThread Action action) {
+        public RxNavigator beforeAction(@Nullable Action action) {
             super.beforeAction(action);
             return this;
         }
 
+        @NonNull
         @Override
-        public RxNavigator beforeStartAction(@NonNull @UiThread Action action) {
+        public Navigator beforeAction(@Nullable @UiThread Function0<Unit> action) {
+            super.beforeAction(action);
+            return this;
+        }
+
+        @NonNull
+        @Override
+        public RxNavigator beforeStartAction(@Nullable Action action) {
             super.beforeStartAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterStartAction(@NonNull @UiThread Action action) {
+        public RxNavigator beforeStartAction(@NonNull @UiThread Function0<Unit> action) {
+            super.beforeStartAction(action);
+            return this;
+        }
+
+        @NonNull
+        @Override
+        public RxNavigator afterStartAction(@Nullable Action action) {
             super.afterStartAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterAction(@NonNull @UiThread Action action) {
+        public RxNavigator afterStartAction(@NonNull @UiThread Function0<Unit> action) {
+            super.afterStartAction(action);
+            return this;
+        }
+
+        @NonNull
+        @Override
+        public RxNavigator afterAction(@Nullable Action action) {
             super.afterAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterErrorAction(@Nullable @UiThread Action action) {
+        public RxNavigator afterAction(@NonNull @UiThread Function0<Unit> action) {
+            super.afterAction(action);
+            return this;
+        }
+
+        @NonNull
+        @Override
+        public RxNavigator afterErrorAction(@Nullable Action action) {
             super.afterErrorAction(action);
             return this;
         }
 
         @Override
-        public RxNavigator afterEventAction(@Nullable @UiThread Action action) {
+        public RxNavigator afterErrorAction(@Nullable @UiThread Function0<Unit> action) {
+            super.afterErrorAction(action);
+            return this;
+        }
+
+        @NonNull
+        @Override
+        public RxNavigator afterEventAction(@Nullable Action action) {
+            super.afterEventAction(action);
+            return this;
+        }
+
+        @Override
+        public RxNavigator afterEventAction(@Nullable @UiThread Function0<Unit> action) {
             super.afterEventAction(action);
             return this;
         }

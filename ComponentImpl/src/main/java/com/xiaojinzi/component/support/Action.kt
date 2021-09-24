@@ -1,4 +1,4 @@
-package com.xiaojinzi.component.support;
+package com.xiaojinzi.component.support
 
 /**
  * 一个回调在主线程的 Action
@@ -6,13 +6,13 @@ package com.xiaojinzi.component.support;
  *
  * @author : xiaojinzi
  */
-public interface Action {
+interface Action {
 
     /**
      * 需要执行的动作
      *
      * @throws Exception 允许执行的时候抛出一个异常
      */
-    void run();
+    fun run()
 
 }

@@ -1,39 +1,36 @@
-package com.xiaojinzi.component.support;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
+package com.xiaojinzi.component.support
 
 /**
  * 模块管理中心注册的类
  */
-public interface IComponentCenter<T> {
+interface IComponentCenter<T> {
 
     /**
      * 注册
      *
      * @param t 注册的目标
      */
-    void register(@NonNull T t);
+    fun register(t: T)
 
     /**
      * 通过host注册
      *
      * @param host 需要注册的 host
      */
-    void register(@NonNull String host);
+    fun register(host: String)
 
     /**
      * 反注册
      *
      * @param t 反注册的目标
      */
-    void unregister(@NonNull T t);
+    fun unregister(t: T)
 
     /**
      * 通过 host 反注册
      *
      * @param host 反注册的 host
      */
-    void unregister(@NonNull String host);
+    fun unregister(host: String)
 
 }

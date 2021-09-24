@@ -105,21 +105,21 @@ class RouterRequest private constructor(builder: Builder) {
      * 中间 post 到主线程的操作
      */
     @JvmField
-    val beforeAction: Action? = builder.beforeAction
+    val beforeAction: (() -> Unit)? = builder.beforeAction
 
     /**
      * 这个 [Action] 是在 [Activity.startActivity] 之前调用的.
      * 和 [Activity.startActivity] 是连着执行的.
      */
     @JvmField
-    val beforeStartAction: Action? = builder.beforeStartAction
+    val beforeStartAction: (() -> Unit)? = builder.beforeStartAction
 
     /**
      * 这个 [Action] 是在 [Activity.startActivity] 之后调用的.
      * 和 [Activity.startActivity] 是连着执行的.
      */
     @JvmField
-    val afterStartAction: Action? = builder.afterStartAction
+    val afterStartAction: (() -> Unit)? = builder.afterStartAction
 
     /**
      * 这个 [Action] 是在结束之后调用的.
@@ -128,7 +128,7 @@ class RouterRequest private constructor(builder: Builder) {
      * 方法中 post 到主线程完成的
      */
     @JvmField
-    val afterAction: Action? = builder.afterAction
+    val afterAction: (() -> Unit)? = builder.afterAction
 
     /**
      * 这个 [Action] 是在结束之后调用的.
@@ -137,7 +137,7 @@ class RouterRequest private constructor(builder: Builder) {
      * 方法中 post 到主线程完成的
      */
     @JvmField
-    val afterErrorAction: Action? = builder.afterErrorAction
+    val afterErrorAction: (() -> Unit)? = builder.afterErrorAction
 
     /**
      * 这个 [Action] 是在结束之后调用的.
@@ -147,7 +147,7 @@ class RouterRequest private constructor(builder: Builder) {
      * 方法中 post 到主线程完成的
      */
     @JvmField
-    val afterEventAction: Action? = builder.afterEventAction
+    val afterEventAction: (() -> Unit)? = builder.afterEventAction
 
     /**
      * 同步 Query 到 Bundle 中
@@ -334,17 +334,17 @@ class RouterRequest private constructor(builder: Builder) {
         /**
          * 路由开始之前
          */
-        var beforeAction: Action? = null
+        var beforeAction: (() -> Unit)? = null
 
         /**
          * 执行 [Activity.startActivity] 之前
          */
-        var beforeStartAction: Action? = null
+        var beforeStartAction: (() -> Unit)? = null
 
         /**
          * 执行 [Activity.startActivity] 之后
          */
-        var afterStartAction: Action? = null
+        var afterStartAction: (() -> Unit)? = null
 
         /**
          * 跳转成功之后的 Callback
@@ -352,17 +352,17 @@ class RouterRequest private constructor(builder: Builder) {
          * 假如你是跳转拿数据的, 当你跳转到 A 界面, 此回调就会回调了,
          * 当你拿到 Intent 的回调了, 和此回调已经没关系了
          */
-        var afterAction: Action? = null
+        var afterAction: (() -> Unit)? = null
 
         /**
          * 跳转失败之后的 Callback
          */
-        var afterErrorAction: Action? = null
+        var afterErrorAction: (() -> Unit)? = null
 
         /**
          * 跳转成功和失败之后的 Callback
          */
-        var afterEventAction: Action? = null
+        var afterEventAction: (() -> Unit)? = null
 
         fun context(context: Context): Builder {
             this.context = context
@@ -375,31 +375,67 @@ class RouterRequest private constructor(builder: Builder) {
         }
 
         open fun beforeAction(@UiThread action: Action?): Builder {
+            return beforeAction(action = {
+                action?.run()
+            })
+        }
+
+        open fun beforeAction(@UiThread action: (() -> Unit)?): Builder {
             beforeAction = action
             return this
         }
 
         open fun beforeStartAction(@UiThread action: Action?): Builder {
+            return beforeStartAction(action = {
+                action?.run()
+            })
+        }
+
+        open fun beforeStartAction(@UiThread action: (() -> Unit)?): Builder {
             beforeStartAction = action
             return this
         }
 
         open fun afterStartAction(@UiThread action: Action?): Builder {
+            return afterStartAction(action = {
+                action?.run()
+            })
+        }
+
+        open fun afterStartAction(@UiThread action: (() -> Unit)?): Builder {
             afterStartAction = action
             return this
         }
 
         open fun afterAction(@UiThread action: Action?): Builder {
+            return afterAction(action = {
+                action?.run()
+            })
+        }
+
+        open fun afterAction(@UiThread action: (() -> Unit)?): Builder {
             afterAction = action
             return this
         }
 
         open fun afterErrorAction(@UiThread action: Action?): Builder {
+            return afterErrorAction(action = {
+                action?.run()
+            })
+        }
+
+        open fun afterErrorAction(@UiThread action: (() -> Unit)?): Builder {
             afterErrorAction = action
             return this
         }
 
         open fun afterEventAction(@UiThread action: Action?): Builder {
+            return afterEventAction(action = {
+                action?.run()
+            })
+        }
+
+        open fun afterEventAction(@UiThread action: (() -> Unit)?): Builder {
             afterEventAction = action
             return this
         }

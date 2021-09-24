@@ -1,8 +1,6 @@
-package com.xiaojinzi.component.support;
+package com.xiaojinzi.component.support
 
-import androidx.annotation.NonNull;
-
-import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno
 
 /**
  * 懒加载设计
@@ -11,14 +9,13 @@ import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
  * @author : xiaojinzi
  */
 @CheckClassNameAnno
-public interface Callable<T> {
+interface Callable<T> {
 
     /**
      * 获取实际的兑现
      *
      * @return 获取实现对象
      */
-    @NonNull
-    T get();
+    fun get(): T
 
 }

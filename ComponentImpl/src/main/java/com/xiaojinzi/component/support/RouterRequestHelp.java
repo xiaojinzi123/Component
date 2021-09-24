@@ -14,7 +14,7 @@ public class RouterRequestHelp {
     public static void executeBeforeAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
         if (request.beforeAction != null) {
-            request.beforeAction.run();
+            request.beforeAction.invoke();
         }
     }
 
@@ -22,7 +22,7 @@ public class RouterRequestHelp {
     public static void executeAfterAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
         if (request.afterAction != null) {
-            request.afterAction.run();
+            request.afterAction.invoke();
         }
         executeAfterEventAction(request);
     }
@@ -31,7 +31,7 @@ public class RouterRequestHelp {
     public static void executeAfterErrorAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
         if (request.afterErrorAction != null) {
-            request.afterErrorAction.run();
+            request.afterErrorAction.invoke();
         }
         executeAfterEventAction(request);
     }
@@ -40,7 +40,7 @@ public class RouterRequestHelp {
     public static void executeAfterEventAction(@NonNull RouterRequest request) throws Exception {
         Utils.checkNullPointer(request, "request");
         if (request.afterEventAction != null) {
-            request.afterEventAction.run();
+            request.afterEventAction.invoke();
         }
     }
 

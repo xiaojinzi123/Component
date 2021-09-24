@@ -179,7 +179,12 @@ open class Navigator : RouterRequest.Builder, Call {
         return this
     }
 
-    override fun beforeAction(@UiThread action: Action?): Navigator {
+    override fun beforeAction(action: Action?): Navigator {
+        super.beforeAction(action)
+        return this
+    }
+
+    override fun beforeAction(@UiThread action: (() -> Unit)?): Navigator {
         super.beforeAction(action)
         return this
     }
@@ -189,22 +194,47 @@ open class Navigator : RouterRequest.Builder, Call {
         return this
     }
 
+    override fun beforeStartAction(action: (() -> Unit)?): Navigator {
+        super.beforeStartAction(action)
+        return this
+    }
+
     override fun afterStartAction(action: Action?): Navigator {
         super.afterStartAction(action)
         return this
     }
 
-    override fun afterAction(@UiThread action: Action?): Navigator {
+    override fun afterStartAction(action: (() -> Unit)?): Navigator {
+        super.afterStartAction(action)
+        return this
+    }
+
+    override fun afterAction(action: Action?): Navigator {
         super.afterAction(action)
         return this
     }
 
-    override fun afterErrorAction(@UiThread action: Action?): Navigator {
+    override fun afterAction(@UiThread action: (() -> Unit)?): Navigator {
+        super.afterAction(action)
+        return this
+    }
+
+    override fun afterErrorAction(action: Action?): Navigator {
         super.afterErrorAction(action)
         return this
     }
 
-    override fun afterEventAction(@UiThread action: Action?): Navigator {
+    override fun afterErrorAction(@UiThread action: (() -> Unit)?): Navigator {
+        super.afterErrorAction(action)
+        return this
+    }
+
+    override fun afterEventAction(action: Action?): Navigator {
+        super.afterEventAction(action)
+        return this
+    }
+
+    override fun afterEventAction(@UiThread action: (() -> Unit)?): Navigator {
         super.afterEventAction(action)
         return this
     }
@@ -580,7 +610,7 @@ open class Navigator : RouterRequest.Builder, Call {
                 callback.onError(errorResult)
             }
 
-            override fun onCancel(originalRequest: RouterRequest?) {
+            override fun onCancel(originalRequest: RouterRequest) {
                 callback.onCancel(originalRequest)
             }
         })
@@ -855,12 +885,17 @@ open class Navigator : RouterRequest.Builder, Call {
                 override fun onSuccess(routerResult: RouterResult) {
                     super.onSuccess(routerResult)
                     // 设置ActivityResult回调的发射器,回调中一个路由拿数据的流程算是完毕了
+
                     rxFragment.addActivityResultConsumer(
-                            routerResult.originalRequest
-                    ) { result ->
-                        Help.removeRequestCode(routerResult.originalRequest)
-                        biCallbackWrap.onSuccess(routerResult, result)
-                    }
+                            routerResult.originalRequest,
+                            object : Consumer1<ActivityResult> {
+                                override fun accept(result: ActivityResult) {
+                                    Help.removeRequestCode(routerResult.originalRequest)
+                                    biCallbackWrap.onSuccess(routerResult, result)
+                                }
+                            }
+                    )
+
                 }
 
                 @UiThread

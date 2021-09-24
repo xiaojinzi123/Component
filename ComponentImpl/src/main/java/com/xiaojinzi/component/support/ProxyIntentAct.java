@@ -10,6 +10,9 @@ import com.xiaojinzi.component.ComponentActivityStack;
 import com.xiaojinzi.component.impl.ProxyIntentBuilder;
 import com.xiaojinzi.component.impl.Router;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+
 /**
  * 此界面是一个无界面的, 当使用者通过 {@link ProxyIntentBuilder}
  * 构建一个代理 {@link android.content.Intent} 之后. 此 `Intent` 可以交给
@@ -46,12 +49,13 @@ public class ProxyIntentAct extends FragmentActivity {
         // 发起跳转
         Router.with(launchActivity)
                 .proxyBundle(bundle)
-                .afterEventAction(new Action() {
+                .afterEventAction(new Function0<Unit>() {
                     @Override
-                    public void run() {
+                    public Unit invoke() {
                         if (isUseSelfActivity) {
                             finish();
                         }
+                        return Unit.INSTANCE;
                     }
                 })
                 .forward();

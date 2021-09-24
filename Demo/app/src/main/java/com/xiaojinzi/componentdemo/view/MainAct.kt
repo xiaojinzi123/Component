@@ -18,6 +18,7 @@ import com.xiaojinzi.component.anno.RouterAnno
 import com.xiaojinzi.component.forwardForTargetIntent
 import com.xiaojinzi.component.impl.Router
 import com.xiaojinzi.component.impl.application.ModuleManager
+import com.xiaojinzi.component.support.Action
 import com.xiaojinzi.componentdemo.R
 
 /**
@@ -97,7 +98,11 @@ class MainAct : AppCompatActivity() {
 
     fun testRouter(view: View?) {
         Router.withApi(AppApi::class.java)
-            .goToTestRouter { Toast.makeText(this@MainAct, "跳转后的提示", Toast.LENGTH_SHORT).show() }
+            .goToTestRouter(object : Action{
+                override fun run() {
+                    Toast.makeText(this@MainAct, "跳转后的提示", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     fun testRouterForFragment(view: View?) {

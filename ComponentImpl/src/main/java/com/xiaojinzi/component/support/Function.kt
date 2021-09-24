@@ -1,13 +1,11 @@
-package com.xiaojinzi.component.support;
+package com.xiaojinzi.component.support
 
-import androidx.annotation.NonNull;
+import java.lang.Exception
 
-public interface Function<T, R> {
-
+interface Function<T, R> {
     /**
      * 做一个转化,从一个对象变成另一个对象
      */
-    @NonNull
-    R apply(T t) throws Exception;
-
+    @Throws(Exception::class)
+    fun apply(t: T): R
 }
