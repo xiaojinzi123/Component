@@ -120,7 +120,7 @@ object RouterCenter : IComponentCenterRouter {
         if (target.targetClass != null) {
             intent = Intent(rawContext, target.targetClass)
         } else if (target.customerIntentCall != null) {
-            intent = target.customerIntentCall!![request]
+            intent = target.customerIntentCall?.get(request = request)
         }
         if (intent == null) {
             throw TargetActivityNotFoundException(uriString)

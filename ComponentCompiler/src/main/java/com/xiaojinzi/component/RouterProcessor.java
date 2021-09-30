@@ -360,7 +360,7 @@ public class RouterProcessor extends BaseHostProcessor {
                 initMapMethodSpecBuilder.addStatement("$N<$T> $N = new $N<$T>($L)",
                         ComponentConstants.JAVA_LIST, pageInterceptorBeanTypeElement, interceptorListName,
                         ComponentConstants.JAVA_ARRAYLIST, pageInterceptorBeanTypeElement, routerBean.getTotalInterceptorSize());
-                initMapMethodSpecBuilder.addStatement("$N.setPageInterceptors($N)", routerBeanName, interceptorListName);
+                // initMapMethodSpecBuilder.addStatement("$N.setPageInterceptors($N)", routerBeanName, interceptorListName);
 
                 // 拦截器的代码的生成
                 List<String> interceptors = routerBean.getInterceptors();

@@ -19,6 +19,6 @@ interface CustomerIntentCall {
      * @return
      */
     @Throws(Exception::class)
-    operator fun get(request: RouterRequest): Intent
+    fun get(request: RouterRequest): Intent
 
 }
