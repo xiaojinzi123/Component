@@ -173,7 +173,7 @@ suspend fun Call.activityResultAwait(): ActivityResult {
                 }
             }
 
-            override fun onCancel(originalRequest: RouterRequest) {
+            override fun onCancel(originalRequest: RouterRequest?) {
                 super.onCancel(originalRequest)
                 if (!cot.isCompleted) {
                     cot.cancel()
@@ -209,7 +209,7 @@ suspend fun Call.targetIntentAwait(): Intent {
                 }
             }
 
-            override fun onCancel(originalRequest: RouterRequest) {
+            override fun onCancel(originalRequest: RouterRequest?) {
                 super.onCancel(originalRequest)
                 if (!cot.isCompleted) {
                     cot.cancel()

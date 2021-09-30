@@ -7,6 +7,7 @@ import com.xiaojinzi.component.impl.RouterErrorResult
  * 被取消了回调接口
  */
 interface OnRouterError {
+
     /**
      * 当路由错误的时候回调
      *
@@ -14,4 +15,5 @@ interface OnRouterError {
      */
     @UiThread
     fun onError(errorResult: RouterErrorResult)
+
 }

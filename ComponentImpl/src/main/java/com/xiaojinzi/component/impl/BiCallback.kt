@@ -1,25 +1,24 @@
-package com.xiaojinzi.component.impl;
+package com.xiaojinzi.component.impl
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-
-import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.support.Function;
-import com.xiaojinzi.component.support.OnRouterCancel;
-import com.xiaojinzi.component.support.OnRouterError;
-import com.xiaojinzi.component.support.Utils;
+import androidx.annotation.CallSuper
+import androidx.annotation.UiThread
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno
+import com.xiaojinzi.component.support.Function
+import com.xiaojinzi.component.support.OnRouterCancel
+import com.xiaojinzi.component.support.OnRouterError
+import com.xiaojinzi.component.support.Utils
 
 /**
- * {@link Callback} 在这个基础上, 表示可以携带一个参数的回调
+ * [Callback] 在这个基础上, 表示可以携带一个参数的回调
  * 当整个流程完成的时候,回调这个接口
- * <p>
- * 详细的请查看 {@link Callback}
+ *
+ *
+ * 详细的请查看 [Callback]
  *
  * @author xiaojinzi
  */
 @CheckClassNameAnno
-public interface BiCallback<T> extends OnRouterCancel, OnRouterError {
+interface BiCallback<T> : OnRouterCancel, OnRouterError {
 
     /**
      * 当路由成功的时候,回调
@@ -28,41 +27,30 @@ public interface BiCallback<T> extends OnRouterCancel, OnRouterError {
      * @param t      返回的对象
      */
     @UiThread
-    void onSuccess(@NonNull RouterResult result, @NonNull T t);
+    fun onSuccess(result: RouterResult, t: T)
 
     /**
      * 做一个转化
      *
      * @param <T> T 转化为 R
      * @param <R> T 转化为 R
-     */
-    abstract class Map<T, R> implements BiCallback<T>, Function<T, R> {
+    </R></T> */
+    abstract class Map<T, R>(private val targetBiCallback: BiCallback<R>) : BiCallback<T>, Function<T, R> {
 
-        @NonNull
-        private BiCallback targetBiCallback;
-
-        public Map(@NonNull BiCallback targetBiCallback) {
-            Utils.checkNullPointer(targetBiCallback, "targetBiCallback");
-            this.targetBiCallback = targetBiCallback;
-        }
-
-        @Override
-        public void onSuccess(@NonNull RouterResult result, @NonNull T t) {
+        override fun onSuccess(result: RouterResult, t: T) {
             try {
-                targetBiCallback.onSuccess(result, Utils.checkNullPointer(apply(t), "apply(t)"));
-            } catch (Exception e) {
-                targetBiCallback.onError(new RouterErrorResult(e));
+                targetBiCallback.onSuccess(result, apply(t = t))
+            } catch (e: Exception) {
+                targetBiCallback.onError(RouterErrorResult(e))
             }
         }
 
-        @Override
-        public void onCancel(@Nullable RouterRequest originalRequest) {
-            targetBiCallback.onCancel(originalRequest);
+        override fun onCancel(originalRequest: RouterRequest?) {
+            targetBiCallback.onCancel(originalRequest)
         }
 
-        @Override
-        public void onError(@NonNull RouterErrorResult errorResult) {
-            targetBiCallback.onError(errorResult);
+        override fun onError(errorResult: RouterErrorResult) {
+            targetBiCallback.onError(errorResult)
         }
 
     }
@@ -70,20 +58,13 @@ public interface BiCallback<T> extends OnRouterCancel, OnRouterError {
     /**
      * 空白实现类
      */
-    class BiCallbackAdapter<T> implements BiCallback<T> {
-
-        @Override
-        public void onSuccess(@NonNull RouterResult result, @NonNull T t) {
-        }
-
-        @Override
-        public void onError(@NonNull RouterErrorResult errorResult) {
-        }
-
-        @Override
-        public void onCancel(@NonNull RouterRequest originalRequest) {
-        }
-
+    open class BiCallbackAdapter<T> : BiCallback<T> {
+        @CallSuper
+        override fun onSuccess(result: RouterResult, t: T) {}
+        @CallSuper
+        override fun onError(errorResult: RouterErrorResult) {}
+        @CallSuper
+        override fun onCancel(originalRequest: RouterRequest?) {}
     }
 
 }
