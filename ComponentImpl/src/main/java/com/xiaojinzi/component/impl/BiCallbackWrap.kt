@@ -1,50 +1,37 @@
-package com.xiaojinzi.component.impl;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.xiaojinzi.component.support.Utils;
+package com.xiaojinzi.component.impl
 
 /**
- * 为了实现 {@link BiCallback} 用户的这个 Callback 的各个方法最多只能执行一次
+ * 为了实现 [BiCallback] 用户的这个 Callback 的各个方法最多只能执行一次
  */
-class BiCallbackWrap<T> implements BiCallback<T> {
+class BiCallbackWrap<T>(private val targetBiCallback: BiCallback<T>) : BiCallback<T> {
 
     /**
      * 标记是否结束
      */
-    private boolean isEnd;
+    private var isEnd = false
 
-    @NonNull
-    private BiCallback<T> targetBiCallback;
-
-    public BiCallbackWrap(@NonNull BiCallback<T> targetBiCallback) {
-        Utils.checkNullPointer(targetBiCallback, "targetBiCallback");
-        this.targetBiCallback = targetBiCallback;
+    @Synchronized
+    override fun onSuccess(result: RouterResult, t: T) {
+        if (!isEnd) {
+            targetBiCallback.onSuccess(result, t)
+        }
+        isEnd = true
     }
 
-    @Override
-    public synchronized void onSuccess(@NonNull RouterResult result, @NonNull T t) {
+    @Synchronized
+    override fun onCancel(originalRequest: RouterRequest?) {
         if (!isEnd) {
-            targetBiCallback.onSuccess(result, t);
+            targetBiCallback.onCancel(originalRequest!!)
         }
-        isEnd = true;
+        isEnd = true
     }
 
-    @Override
-    public synchronized void onCancel(@Nullable RouterRequest originalRequest) {
+    @Synchronized
+    override fun onError(errorResult: RouterErrorResult) {
         if (!isEnd) {
-            targetBiCallback.onCancel(originalRequest);
+            targetBiCallback.onError(errorResult)
         }
-        isEnd = true;
-    }
-
-    @Override
-    public synchronized void onError(@NonNull RouterErrorResult errorResult) {
-        if (!isEnd) {
-            targetBiCallback.onError(errorResult);
-        }
-        isEnd = true;
+        isEnd = true
     }
 
 }

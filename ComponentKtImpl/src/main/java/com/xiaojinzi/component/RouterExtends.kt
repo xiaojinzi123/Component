@@ -45,7 +45,7 @@ fun Call.forward(
             errorCallback.invoke(errorResult)
         }
 
-        override fun onCancel(originalRequest: RouterRequest) {
+        override fun onCancel(originalRequest: RouterRequest?) {
             super.onCancel(originalRequest)
             cancelCallback.invoke(originalRequest)
         }
@@ -137,7 +137,7 @@ suspend fun Call.await() {
                 }
             }
 
-            override fun onCancel(originalRequest: RouterRequest) {
+            override fun onCancel(originalRequest: RouterRequest?) {
                 super.onCancel(originalRequest)
                 if (!cot.isCompleted) {
                     cot.cancel()

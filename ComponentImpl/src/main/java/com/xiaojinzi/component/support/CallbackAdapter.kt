@@ -27,7 +27,7 @@ open class CallbackAdapter : Callback {
     }
 
     @UiThread
-    override fun onCancel(originalRequest: RouterRequest) {
+    override fun onCancel(originalRequest: RouterRequest?) {
         // empty
     }
 

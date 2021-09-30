@@ -610,7 +610,7 @@ open class Navigator : RouterRequest.Builder, Call {
                 callback.onError(errorResult)
             }
 
-            override fun onCancel(originalRequest: RouterRequest) {
+            override fun onCancel(originalRequest: RouterRequest?) {
                 callback.onCancel(originalRequest)
             }
         })
@@ -907,9 +907,11 @@ open class Navigator : RouterRequest.Builder, Call {
                 }
 
                 @UiThread
-                override fun onCancel(originalRequest: RouterRequest) {
+                override fun onCancel(originalRequest: RouterRequest?) {
                     super.onCancel(originalRequest)
-                    rxFragment.removeActivityResultConsumer(originalRequest)
+                    originalRequest?.let {
+                        rxFragment.removeActivityResultConsumer(it)
+                    }
                     Help.removeRequestCode(originalRequest)
                     biCallbackWrap.onCancel(originalRequest)
                 }
@@ -974,7 +976,7 @@ open class Navigator : RouterRequest.Builder, Call {
                 }
 
                 @UiThread
-                override fun onCancel(originalRequest: RouterRequest) {
+                override fun onCancel(originalRequest: RouterRequest?) {
                     super.onCancel(originalRequest)
                     biCallbackWrap.onCancel(originalRequest)
                 }

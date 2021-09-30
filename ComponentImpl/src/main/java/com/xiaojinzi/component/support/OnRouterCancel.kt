@@ -17,6 +17,6 @@ interface OnRouterCancel {
      * 这时候就可以取消了,所以在真正取消的时候,一定会有这个参数的
      */
     @UiThread
-    fun onCancel(originalRequest: RouterRequest)
+    fun onCancel(originalRequest: RouterRequest?)
 
 }
