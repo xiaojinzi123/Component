@@ -9,7 +9,7 @@ import com.xiaojinzi.component.support.Utils
 import java.io.Serializable
 import java.util.ArrayList
 
-interface IBundleBuilder<T: IBundleBuilder<T>>: DelegateImplCallable<T> {
+interface IBundleBuilder<T : IBundleBuilder<T>> : DelegateImplCallable<T> {
 
     /**
      * 这时候的 Bundle
@@ -48,11 +48,17 @@ interface IBundleBuilder<T: IBundleBuilder<T>>: DelegateImplCallable<T> {
     fun putSerializable(key: String, value: Serializable?): T
 }
 
-open class
-IBundleBuilderImpl<T: IBundleBuilder<T>>(
-        override val bundle: Bundle = Bundle()
-): IBundleBuilder<T>, DelegateImplCallable<T>
-by DelegateImplCallableImpl() {
+class IBundleBuilderImpl<T : IBundleBuilder<T>>(
+        override val bundle: Bundle = Bundle(),
+        private val targetDelegateImpl: DelegateImplCallable<T> = DelegateImplCallableImpl(),
+) : IBundleBuilder<T>, //
+        DelegateImplCallable<T> by targetDelegateImpl {
+
+    override var delegateImplCallable: () -> T
+        get() = targetDelegateImpl.delegateImplCallable
+        set(value) {
+            targetDelegateImpl.delegateImplCallable = value
+        }
 
     private fun getRealDelegateImpl(): T {
         return delegateImplCallable.invoke()
@@ -213,7 +219,7 @@ by DelegateImplCallableImpl() {
 
 class BundleBuilder(
         private val bundleBuilder: IBundleBuilder<BundleBuilder> = IBundleBuilderImpl(),
-): IBundleBuilder<BundleBuilder> by bundleBuilder {
+) : IBundleBuilder<BundleBuilder> by bundleBuilder {
 
     init {
         bundleBuilder.delegateImplCallable = {
