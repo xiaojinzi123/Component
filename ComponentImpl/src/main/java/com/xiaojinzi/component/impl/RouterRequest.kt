@@ -581,7 +581,9 @@ class RouterRequest private constructor(builder: RouterRequestBuilderImpl<*>) {
      */
     open class IURIBuilderImpl<T : IURIBuilder<T>>(
             private val targetDelegateImplCallable: DelegateImplCallable<T> = DelegateImplCallableImpl(),
-    ) : IURIBuilder<T>, DelegateImplCallable<T> by targetDelegateImplCallable {
+    ) : IURIBuilder<T>, DelegateImplCallable<T> by targetDelegateImplCallable
+    // 占位
+    {
 
         var url: String? = null
         var scheme: String? = null
