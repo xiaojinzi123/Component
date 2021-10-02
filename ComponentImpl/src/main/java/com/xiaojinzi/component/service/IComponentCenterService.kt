@@ -1,6 +1,6 @@
-package com.xiaojinzi.component.service;
+package com.xiaojinzi.component.service
 
-import com.xiaojinzi.component.support.IComponentCenter;
+import com.xiaojinzi.component.support.IComponentCenter
 
 /**
  * 模块的服务接口
@@ -8,5 +8,4 @@ import com.xiaojinzi.component.support.IComponentCenter;
  *
  * @author : xiaojinzi
  */
-public interface IComponentCenterService extends IComponentCenter<IComponentHostService> {
-}
+interface IComponentCenterService : IComponentCenter<IComponentHostService>

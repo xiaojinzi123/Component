@@ -1,12 +1,8 @@
-package com.xiaojinzi.component.interceptor;
+package com.xiaojinzi.component.interceptor
 
-import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
-
-import com.xiaojinzi.component.impl.RouterInterceptor;
-import com.xiaojinzi.component.support.IComponentCenter;
-
-import java.util.List;
+import androidx.annotation.UiThread
+import com.xiaojinzi.component.impl.RouterInterceptor
+import com.xiaojinzi.component.support.IComponentCenter
 
 /**
  * 拦截器管理中心的接口
@@ -14,15 +10,14 @@ import java.util.List;
  *
  * @author : xiaojinzi
  */
-public interface IComponentCenterInterceptor extends IComponentInterceptor, IComponentCenter<IComponentHostInterceptor> {
+interface IComponentCenterInterceptor : IComponentInterceptor, IComponentCenter<IComponentHostInterceptor> {
 
     /**
      * 获取全局拦截器列表
      *
      * @return 全局的拦截器列表
      */
-    @NonNull
-    @UiThread
-    List<RouterInterceptor> getGlobalInterceptorList();
+    @get:UiThread
+    val globalInterceptorList: List<RouterInterceptor>
 
 }
