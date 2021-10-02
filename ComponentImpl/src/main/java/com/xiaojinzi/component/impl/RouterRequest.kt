@@ -14,6 +14,299 @@ import com.xiaojinzi.component.anno.support.CheckClassNameAnno
 import com.xiaojinzi.component.support.*
 import java.util.*
 
+interface IRouterRequestBuilder<T : IRouterRequestBuilder<T>> :
+        IURIBuilder<T>,
+        IBundleBuilder<T> {
+
+    val options: Bundle?
+    val intentFlags: List<Int>
+    val intentCategories: List<String>
+
+    val context: Context?
+    val fragment: Fragment?
+
+    /**
+     * 是否是跳转拿 [com.xiaojinzi.component.bean.ActivityResult] 的
+     */
+    val isForResult: Boolean
+
+    /**
+     * 是否是为了目标 Intent
+     */
+    val isForTargetIntent: Boolean
+
+    val requestCode: Int?
+
+    val intentConsumer: Consumer<Intent>?
+    val beforeAction: (() -> Unit)?
+    val beforeStartAction: (() -> Unit)?
+    val afterStartAction: (() -> Unit)?
+    val afterAction: (() -> Unit)?
+    val afterErrorAction: (() -> Unit)?
+    val afterEventAction: (() -> Unit)?
+
+    fun context(context: Context?): T
+    fun fragment(fragment: Fragment?): T
+    fun isForResult(isForResult: Boolean): T
+    fun isForTargetIntent(isForTargetIntent: Boolean): T
+    fun requestCode(requestCode: Int?): T
+    fun beforeAction(@UiThread action: Action?): T
+    fun beforeAction(@UiThread action: (() -> Unit)?): T
+    fun beforeStartAction(@UiThread action: Action?): T
+    fun beforeStartAction(@UiThread action: (() -> Unit)?): T
+    fun afterStartAction(@UiThread action: Action?): T
+    fun afterStartAction(@UiThread action: (() -> Unit)?): T
+    fun afterAction(@UiThread action: Action?): T
+    fun afterAction(@UiThread action: (() -> Unit)?): T
+    fun afterErrorAction(@UiThread action: Action?): T
+    fun afterErrorAction(@UiThread action: (() -> Unit)?): T
+    fun afterEventAction(@UiThread action: Action?): T
+    fun afterEventAction(@UiThread action: (() -> Unit)?): T
+    fun intentConsumer(@UiThread intentConsumer: Consumer<Intent>?): T
+    fun addIntentFlags(vararg flags: Int): T
+    fun addIntentCategories(vararg categories: String): T
+    fun options(options: Bundle?): T
+    fun build(): RouterRequest
+
+}
+
+open class RouterRequestBuilderImpl<T : IRouterRequestBuilder<T>>(
+        context: Context? = null,
+        fragment: Fragment? = null,
+        private val uriBuilder: IURIBuilder<T> = IURIBuilderImpl(),
+        private val bundleBuilder: IBundleBuilder<T> = IBundleBuilderImpl(),
+        private val targetDelegateImplCallable: DelegateImplCallable<T> = DelegateImplCallableImpl()
+) : IRouterRequestBuilder<T>,
+        IURIBuilder<T> by uriBuilder,
+        IBundleBuilder<T> by bundleBuilder,
+        DelegateImplCallable<T> by targetDelegateImplCallable {
+
+    override var options: Bundle? = null
+
+    /**
+     * Intent 的 flag,允许修改的
+     */
+    override val intentFlags: MutableList<Int> = mutableListOf()
+
+    /**
+     * Intent 的 类别,允许修改的
+     */
+    override val intentCategories: MutableList<String> = mutableListOf()
+
+    override var context: Context? = null
+    override var fragment: Fragment? = null
+
+    override var requestCode: Int? = null
+    override var isForResult = false
+    override var isForTargetIntent = false
+
+    override var intentConsumer: Consumer<Intent>? = null
+
+    /**
+     * 路由开始之前
+     */
+    override var beforeAction: (() -> Unit)? = null
+
+    /**
+     * 执行 [Activity.startActivity] 之前
+     */
+    override var beforeStartAction: (() -> Unit)? = null
+
+    /**
+     * 执行 [Activity.startActivity] 之后
+     */
+    override var afterStartAction: (() -> Unit)? = null
+
+    /**
+     * 跳转成功之后的 Callback
+     * 此时的跳转成功仅代表目标界面启动成功, 不代表跳转拿数据的回调被回调了
+     * 假如你是跳转拿数据的, 当你跳转到 A 界面, 此回调就会回调了,
+     * 当你拿到 Intent 的回调了, 和此回调已经没关系了
+     */
+    override var afterAction: (() -> Unit)? = null
+
+    /**
+     * 跳转失败之后的 Callback
+     */
+    override var afterErrorAction: (() -> Unit)? = null
+
+    /**
+     * 跳转成功和失败之后的 Callback
+     */
+    override var afterEventAction: (() -> Unit)? = null
+
+    override var delegateImplCallable: () -> T
+        get() = targetDelegateImplCallable.delegateImplCallable
+        set(value) {
+            uriBuilder.delegateImplCallable = value
+            bundleBuilder.delegateImplCallable = value
+            targetDelegateImplCallable.delegateImplCallable = value
+        }
+
+    private fun getRealDelegateImpl(): T {
+        return delegateImplCallable.invoke()
+    }
+
+    override fun context(context: Context?): T {
+        this.context = context
+        return getRealDelegateImpl()
+    }
+
+    override fun fragment(fragment: Fragment?): T {
+        this.fragment = fragment
+        return getRealDelegateImpl()
+    }
+
+    override fun isForResult(isForResult: Boolean): T {
+        this.isForResult = isForResult
+        return getRealDelegateImpl()
+    }
+
+    override fun isForTargetIntent(isForTargetIntent: Boolean): T {
+        this.isForTargetIntent = isForTargetIntent
+        return getRealDelegateImpl()
+    }
+
+    override fun requestCode(requestCode: Int?): T {
+        this.requestCode = requestCode
+        return getRealDelegateImpl()
+    }
+
+    override fun beforeAction(@UiThread action: Action?): T {
+        return beforeAction(action = {
+            action?.run()
+        })
+    }
+
+    override fun beforeAction(@UiThread action: (() -> Unit)?): T {
+        beforeAction = action
+        return getRealDelegateImpl()
+    }
+
+    override fun beforeStartAction(@UiThread action: Action?): T {
+        return beforeStartAction(action = {
+            action?.run()
+        })
+    }
+
+    override fun beforeStartAction(@UiThread action: (() -> Unit)?): T {
+        beforeStartAction = action
+        return getRealDelegateImpl()
+    }
+
+    override fun afterStartAction(@UiThread action: Action?): T {
+        return afterStartAction(action = {
+            action?.run()
+        })
+    }
+
+    override fun afterStartAction(@UiThread action: (() -> Unit)?): T {
+        afterStartAction = action
+        return getRealDelegateImpl()
+    }
+
+    override fun afterAction(@UiThread action: Action?): T {
+        return afterAction(action = {
+            action?.run()
+        })
+    }
+
+    override fun afterAction(@UiThread action: (() -> Unit)?): T {
+        afterAction = action
+        return getRealDelegateImpl()
+    }
+
+    override fun afterErrorAction(@UiThread action: Action?): T {
+        return afterErrorAction(action = {
+            action?.run()
+        })
+    }
+
+    override fun afterErrorAction(@UiThread action: (() -> Unit)?): T {
+        afterErrorAction = action
+        return getRealDelegateImpl()
+    }
+
+    override fun afterEventAction(@UiThread action: Action?): T {
+        return afterEventAction(action = {
+            action?.run()
+        })
+    }
+
+    override fun afterEventAction(@UiThread action: (() -> Unit)?): T {
+        afterEventAction = action
+        return getRealDelegateImpl()
+    }
+
+    /**
+     * 当不是自定义跳转的时候, Intent 由框架生成,所以可以回调这个接口
+     * 当自定义跳转,这个回调不会回调的,这是需要注意的点
+     *
+     *
+     * 其实目标界面可以完全的自定义路由,这个功能实际上没有存在的必要,因为你可以为同一个界面添加上多个 [com.xiaojinzi.component.anno.RouterAnno]
+     * 然后每一个 [com.xiaojinzi.component.anno.RouterAnno] 都可以有不同的行为.是可以完全的代替 [RouterRequest.intentConsumer] 方法的
+     *
+     * @param intentConsumer Intent 是框架自动构建完成的,里面有跳转需要的所有参数和数据,这里就是给用户一个
+     * 更改的机会,最好别更改内部的参数等的信息,这里提供出来其实主要是可以让你调用Intent
+     * 的 [Intent.addFlags] 等方法,并不是给你修改内部的 bundle 的
+     */
+    override fun intentConsumer(@UiThread intentConsumer: Consumer<Intent>?): T {
+        this.intentConsumer = intentConsumer
+        return getRealDelegateImpl()
+    }
+
+    override fun addIntentFlags(vararg flags: Int): T {
+        intentFlags.addAll(flags.toList())
+        return getRealDelegateImpl()
+    }
+
+    override fun addIntentCategories(vararg categories: String): T {
+        intentCategories.addAll(listOf(*categories))
+        return getRealDelegateImpl()
+    }
+
+    /**
+     * 用于 API >= 16 的时候,调用 [Activity.startActivity]
+     */
+    override fun options(options: Bundle?): T {
+        this.options = options
+        return getRealDelegateImpl()
+    }
+
+    /**
+     * 构建请求对象,这个构建是必须的,不能错误的,如果出错了,直接崩溃掉,因为连最基本的信息都不全没法进行下一步的操作
+     *
+     * @return 可能会抛出一个运行时异常, 由于您的参数在构建 uri 的时候出现的异常
+     */
+    override fun build(): RouterRequest {
+        return RouterRequest(this)
+    }
+
+    init {
+        this.context = context
+        this.fragment = fragment
+        delegateImplCallable = targetDelegateImplCallable.delegateImplCallable
+    }
+
+}
+
+/**
+ * 构建一个路由请求对象 [RouterRequest] 对象的 Builder
+ *
+ * @author xiaojinzi
+ */
+class RouterRequestBuilder(
+        private val routerRequestBuilder: IRouterRequestBuilder<RouterRequestBuilder> = RouterRequestBuilderImpl(),
+) : IRouterRequestBuilder<RouterRequestBuilder> by routerRequestBuilder {
+
+    init {
+        delegateImplCallable = {
+            this
+        }
+    }
+
+}
+
 /**
  * 表示路由的一个请求类,构建时候如果参数不对是有异常会发生的,使用的时候注意这一点
  * 但是在拦截器 [RouterInterceptor] 中构建是不用关心错误的,
@@ -26,7 +319,7 @@ import java.util.*
  * @author xiaojinzi
  */
 @CheckClassNameAnno
-class RouterRequest private constructor(builder: RouterRequestBuilderImpl<*>) {
+class RouterRequest(builder: IRouterRequestBuilder<*>) {
 
     companion object {
         const val KEY_SYNC_URI = "_componentSyncUri"
@@ -258,9 +551,10 @@ class RouterRequest private constructor(builder: RouterRequestBuilderImpl<*>) {
     fun toBuilder(): RouterRequestBuilder {
         val builder = RouterRequestBuilder()
 
+
         // 有关界面的两个
-        builder.fragment = fragment
-        builder.context = context
+        builder.context(context = context)
+        builder.fragment(fragment = fragment)
 
         // 还原一个 Uri 为各个零散的参数
         builder.scheme(scheme = uri.scheme!!)
@@ -273,9 +567,9 @@ class RouterRequest private constructor(builder: RouterRequestBuilderImpl<*>) {
             }
         }
         builder.bundle.putAll(bundle)
-        builder.requestCode = requestCode
-        builder.isForResult = isForResult
-        builder.isForTargetIntent = isForTargetIntent
+        builder.requestCode(requestCode = requestCode)
+        builder.isForResult(isForResult = isForResult)
+        builder.isForTargetIntent(isForTargetIntent = isForTargetIntent)
         builder.options(options = options)
         // 这里需要新创建一个是因为不可修改的集合不可以给别人
         builder.addIntentCategories(*intentCategories.toTypedArray())
@@ -288,260 +582,6 @@ class RouterRequest private constructor(builder: RouterRequestBuilderImpl<*>) {
         builder.afterErrorAction(action = afterErrorAction)
         builder.afterEventAction(action = afterEventAction)
         return builder
-    }
-
-    interface IRouterRequestBuilder<T : IRouterRequestBuilder<T>> :
-            IURIBuilder<T>,
-            IBundleBuilder<T> {
-
-        /**
-         * 是否是跳转拿 [com.xiaojinzi.component.bean.ActivityResult] 的
-         */
-        var isForResult: Boolean
-
-        /**
-         * 是否是为了目标 Intent
-         */
-        var isForTargetIntent: Boolean
-
-        var context: Context?
-        var fragment: Fragment?
-        var requestCode: Int?
-
-        fun requestCode(requestCode: Int?): T
-        fun beforeAction(@UiThread action: Action?): T
-        fun beforeAction(@UiThread action: (() -> Unit)?): T
-        fun beforeStartAction(@UiThread action: Action?): T
-        fun beforeStartAction(@UiThread action: (() -> Unit)?): T
-        fun afterStartAction(@UiThread action: Action?): T
-        fun afterStartAction(@UiThread action: (() -> Unit)?): T
-        fun afterAction(@UiThread action: Action?): T
-        fun afterAction(@UiThread action: (() -> Unit)?): T
-        fun afterErrorAction(@UiThread action: Action?): T
-        fun afterErrorAction(@UiThread action: (() -> Unit)?): T
-        fun afterEventAction(@UiThread action: Action?): T
-        fun afterEventAction(@UiThread action: (() -> Unit)?): T
-        fun intentConsumer(@UiThread intentConsumer: Consumer<Intent>?): T
-        fun addIntentFlags(vararg flags: Int): T
-        fun addIntentCategories(vararg categories: String): T
-        fun options(options: Bundle?): T
-        fun build(): RouterRequest
-
-    }
-
-    open class RouterRequestBuilderImpl<T : IRouterRequestBuilder<T>>(
-            context: Context? = null,
-            fragment: Fragment? = null,
-            private val uriBuilder: IURIBuilder<T> = IURIBuilderImpl(),
-            private val bundleBuilder: IBundleBuilder<T> = IBundleBuilderImpl(),
-            private val targetDelegateImplCallable: DelegateImplCallable<T> = DelegateImplCallableImpl()
-    ) : IRouterRequestBuilder<T>,
-            IURIBuilder<T> by uriBuilder,
-            IBundleBuilder<T> by bundleBuilder,
-            DelegateImplCallable<T> by targetDelegateImplCallable {
-
-        var options: Bundle? = null
-
-        /**
-         * Intent 的 flag,允许修改的
-         */
-        var intentFlags: MutableList<Int> = ArrayList(2)
-
-        /**
-         * Intent 的 类别,允许修改的
-         */
-        var intentCategories: MutableList<String> = ArrayList(2)
-
-        override var context: Context? = null
-        override var fragment: Fragment? = null
-        override var requestCode: Int? = null
-        override var isForResult = false
-        override var isForTargetIntent = false
-
-        var intentConsumer: Consumer<Intent>? = null
-
-        /**
-         * 路由开始之前
-         */
-        var beforeAction: (() -> Unit)? = null
-
-        /**
-         * 执行 [Activity.startActivity] 之前
-         */
-        var beforeStartAction: (() -> Unit)? = null
-
-        /**
-         * 执行 [Activity.startActivity] 之后
-         */
-        var afterStartAction: (() -> Unit)? = null
-
-        /**
-         * 跳转成功之后的 Callback
-         * 此时的跳转成功仅代表目标界面启动成功, 不代表跳转拿数据的回调被回调了
-         * 假如你是跳转拿数据的, 当你跳转到 A 界面, 此回调就会回调了,
-         * 当你拿到 Intent 的回调了, 和此回调已经没关系了
-         */
-        var afterAction: (() -> Unit)? = null
-
-        /**
-         * 跳转失败之后的 Callback
-         */
-        var afterErrorAction: (() -> Unit)? = null
-
-        /**
-         * 跳转成功和失败之后的 Callback
-         */
-        var afterEventAction: (() -> Unit)? = null
-
-        override var delegateImplCallable: () -> T
-            get() = targetDelegateImplCallable.delegateImplCallable
-            set(value) {
-                uriBuilder.delegateImplCallable = value
-                bundleBuilder.delegateImplCallable = value
-                targetDelegateImplCallable.delegateImplCallable = value
-            }
-
-        private fun getRealDelegateImpl(): T {
-            return delegateImplCallable.invoke()
-        }
-
-        override fun requestCode(requestCode: Int?): T {
-            this.requestCode = requestCode
-            return getRealDelegateImpl()
-        }
-
-        override fun beforeAction(@UiThread action: Action?): T {
-            return beforeAction(action = {
-                action?.run()
-            })
-        }
-
-        override fun beforeAction(@UiThread action: (() -> Unit)?): T {
-            beforeAction = action
-            return getRealDelegateImpl()
-        }
-
-        override fun beforeStartAction(@UiThread action: Action?): T {
-            return beforeStartAction(action = {
-                action?.run()
-            })
-        }
-
-        override fun beforeStartAction(@UiThread action: (() -> Unit)?): T {
-            beforeStartAction = action
-            return getRealDelegateImpl()
-        }
-
-        override fun afterStartAction(@UiThread action: Action?): T {
-            return afterStartAction(action = {
-                action?.run()
-            })
-        }
-
-        override fun afterStartAction(@UiThread action: (() -> Unit)?): T {
-            afterStartAction = action
-            return getRealDelegateImpl()
-        }
-
-        override fun afterAction(@UiThread action: Action?): T {
-            return afterAction(action = {
-                action?.run()
-            })
-        }
-
-        override fun afterAction(@UiThread action: (() -> Unit)?): T {
-            afterAction = action
-            return getRealDelegateImpl()
-        }
-
-        override fun afterErrorAction(@UiThread action: Action?): T {
-            return afterErrorAction(action = {
-                action?.run()
-            })
-        }
-
-        override fun afterErrorAction(@UiThread action: (() -> Unit)?): T {
-            afterErrorAction = action
-            return getRealDelegateImpl()
-        }
-
-        override fun afterEventAction(@UiThread action: Action?): T {
-            return afterEventAction(action = {
-                action?.run()
-            })
-        }
-
-        override fun afterEventAction(@UiThread action: (() -> Unit)?): T {
-            afterEventAction = action
-            return getRealDelegateImpl()
-        }
-
-        /**
-         * 当不是自定义跳转的时候, Intent 由框架生成,所以可以回调这个接口
-         * 当自定义跳转,这个回调不会回调的,这是需要注意的点
-         *
-         *
-         * 其实目标界面可以完全的自定义路由,这个功能实际上没有存在的必要,因为你可以为同一个界面添加上多个 [com.xiaojinzi.component.anno.RouterAnno]
-         * 然后每一个 [com.xiaojinzi.component.anno.RouterAnno] 都可以有不同的行为.是可以完全的代替 [RouterRequest.intentConsumer] 方法的
-         *
-         * @param intentConsumer Intent 是框架自动构建完成的,里面有跳转需要的所有参数和数据,这里就是给用户一个
-         * 更改的机会,最好别更改内部的参数等的信息,这里提供出来其实主要是可以让你调用Intent
-         * 的 [Intent.addFlags] 等方法,并不是给你修改内部的 bundle 的
-         */
-        override fun intentConsumer(@UiThread intentConsumer: Consumer<Intent>?): T {
-            this.intentConsumer = intentConsumer
-            return getRealDelegateImpl()
-        }
-
-        override fun addIntentFlags(vararg flags: Int): T {
-            intentFlags.addAll(flags.toList())
-            return getRealDelegateImpl()
-        }
-
-        override fun addIntentCategories(vararg categories: String): T {
-            intentCategories.addAll(listOf(*categories))
-            return getRealDelegateImpl()
-        }
-
-        /**
-         * 用于 API >= 16 的时候,调用 [Activity.startActivity]
-         */
-        override fun options(options: Bundle?): T {
-            this.options = options
-            return getRealDelegateImpl()
-        }
-
-        /**
-         * 构建请求对象,这个构建是必须的,不能错误的,如果出错了,直接崩溃掉,因为连最基本的信息都不全没法进行下一步的操作
-         *
-         * @return 可能会抛出一个运行时异常, 由于您的参数在构建 uri 的时候出现的异常
-         */
-        override fun build(): RouterRequest {
-            return RouterRequest(this)
-        }
-
-        init {
-            this.context = context
-            this.fragment = fragment
-        }
-
-    }
-
-    /**
-     * 构建一个路由请求对象 [RouterRequest] 对象的 Builder
-     *
-     * @author xiaojinzi
-     */
-    class RouterRequestBuilder(
-            private val routerRequestBuilder: IRouterRequestBuilder<RouterRequestBuilder> = RouterRequestBuilderImpl(),
-    ) : IRouterRequestBuilder<RouterRequestBuilder> by routerRequestBuilder {
-
-        init {
-            routerRequestBuilder.delegateImplCallable = {
-                this
-            }
-        }
-
     }
 
 }

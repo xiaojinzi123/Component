@@ -28,7 +28,7 @@ import com.xiaojinzi.component.support.NavigationDisposable.ProxyNavigationDispo
 import java.util.*
 import kotlin.collections.ArrayList
 
-interface INavigator<T : INavigator<T>> : RouterRequest.IRouterRequestBuilder<T>, Call {
+interface INavigator<T : INavigator<T>> : IRouterRequestBuilder<T>, Call {
 
     fun interceptors(vararg interceptorArr: RouterInterceptor): T
     fun interceptors(vararg interceptorClassArr: Class<out RouterInterceptor>): T
@@ -152,16 +152,15 @@ open class InterceptorChain(
  * 这个类一部分功能应该是 [Router] 的构建者对象的功能,但是这里面更多的为导航的功能
  * 写了很多代码,所以名字就不叫 Builder 了
  */
-@CheckClassNameAnno
 open class NavigatorImpl<T : INavigator<T>>
 @JvmOverloads constructor(
         context: Context? = null,
         fragment: Fragment? = null,
-        private val routerRequestBuilder: RouterRequest.IRouterRequestBuilder<T> = RouterRequest.RouterRequestBuilderImpl(
+        private val routerRequestBuilder: IRouterRequestBuilder<T> = RouterRequestBuilderImpl(
                 context = context,
                 fragment = fragment,
         ),
-) : RouterRequest.IRouterRequestBuilder<T> by routerRequestBuilder,
+) : IRouterRequestBuilder<T> by routerRequestBuilder,
         INavigator<T>, Call {
 
     /**
@@ -226,7 +225,7 @@ open class NavigatorImpl<T : INavigator<T>>
      * requestCode 会随机的生成
      */
     override fun requestCodeRandom(): T {
-        requestCode = RANDOM_REQUEST_CODE
+        requestCode(requestCode = RANDOM_REQUEST_CODE)
         return getRealDelegateImpl()
     }
 
@@ -307,7 +306,7 @@ open class NavigatorImpl<T : INavigator<T>>
     private fun useDefaultContext() {
         // 如果 Context 和 Fragment 都是空的,使用默认的 Application
         if (context == null && fragment == null) {
-            context = Component.getApplication()
+            context(context = Component.getApplication())
             // 配套加上 New_Task 的标志, 当用户自己传的 Application 需要自己添加这个 flag
             // 起到更好的提示用户是使用 Application 跳的
             addIntentFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -647,7 +646,7 @@ open class NavigatorImpl<T : INavigator<T>>
         // 直接 gg
         Utils.checkNullPointer(biCallback, "biCallback")
         // 标记此次是需要框架帮助获取 ActivityResult 的
-        isForResult = true
+        isForResult(isForResult = true)
         // 做一个包裹实现至多只能调用一次内部的其中一个方法
         val biCallbackWrap: BiCallback<ActivityResult> = BiCallbackWrap(biCallback)
         // disposable 对象
@@ -744,7 +743,7 @@ open class NavigatorImpl<T : INavigator<T>>
         // 直接 gg
         Utils.checkNullPointer(biCallback, "biCallback")
         // 标记此次是需要框架帮助获取目标 Intent 的
-        isForTargetIntent = true
+        isForTargetIntent(isForTargetIntent = true)
         // 做一个包裹实现至多只能调用一次内部的其中一个方法
         val biCallbackWrap: BiCallback<Intent> = BiCallbackWrap(biCallback)
         // disposable 对象
@@ -1116,7 +1115,6 @@ open class NavigatorImpl<T : INavigator<T>>
          */
         @NeedOptimizeAnno
         fun randomlyGenerateRequestCode(request: RouterRequest): RouterRequest {
-            Utils.checkNullPointer(request, "request")
             // 如果不是想要随机生成,就直接返回
             if (RANDOM_REQUEST_CODE != request.requestCode) {
                 return request
@@ -1125,7 +1123,8 @@ open class NavigatorImpl<T : INavigator<T>>
             val requestBuilder = request.toBuilder()
             var generateRequestCode = r.nextInt(256) + 1
             // 如果生成的这个 requestCode 存在,就重新生成
-            while (isExist(
+            while (
+                    isExist(
                             Utils.getActivityFromContext(requestBuilder.context),
                             requestBuilder.fragment,
                             generateRequestCode
@@ -1135,7 +1134,7 @@ open class NavigatorImpl<T : INavigator<T>>
             }
             return requestBuilder
                     .apply {
-                        this.requestCode = generateRequestCode
+                        this.requestCode(requestCode = generateRequestCode)
                     }
                     .build()
         }
@@ -1261,6 +1260,7 @@ open class NavigatorImpl<T : INavigator<T>>
     }
 }
 
+@CheckClassNameAnno
 class Navigator(
         context: Context? = null,
         fragment: Fragment? = null,
