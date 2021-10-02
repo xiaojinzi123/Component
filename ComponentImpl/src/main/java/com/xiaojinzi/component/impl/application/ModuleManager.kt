@@ -12,7 +12,6 @@ import com.xiaojinzi.component.application.IComponentHostApplication
 import com.xiaojinzi.component.cache.ClassCache
 import com.xiaojinzi.component.impl.RouterCenter
 import com.xiaojinzi.component.impl.RouterDegradeCenter
-import com.xiaojinzi.component.impl.application.ModuleManager
 import com.xiaojinzi.component.impl.fragment.FragmentCenter
 import com.xiaojinzi.component.impl.interceptor.InterceptorCenter
 import com.xiaojinzi.component.impl.service.ServiceCenter
@@ -79,7 +78,7 @@ object ModuleManager : IComponentCenterApplication {
             val r = Runnable {
                 RouterCenter.register(moduleApp.host)
                 InterceptorCenter.register(moduleApp.host)
-                RouterDegradeCenter.getInstance().register(moduleApp.host)
+                RouterDegradeCenter.register(moduleApp.host)
                 FragmentCenter.register(moduleApp.host)
                 notifyModuleChanged()
             }
@@ -100,8 +99,7 @@ object ModuleManager : IComponentCenterApplication {
         } else {
             val moduleApplication = findModuleApplication(host)
             if (moduleApplication == null) {
-                LogUtil.log("""模块 '$host' 加载失败, 请根据链接中的内容自行排查! 
- ${Component.COMMON_ERROR_ISSUE}""")
+                LogUtil.log("模块 '$host' 加载失败, 请根据链接中的内容自行排查! ${Component.COMMON_ERROR_ISSUE}")
             } else {
                 register(moduleApplication)
             }
@@ -152,7 +150,7 @@ object ModuleManager : IComponentCenterApplication {
         Utils.postActionToWorkThread {
             RouterCenter.unregister(moduleApp.host)
             InterceptorCenter.unregister(moduleApp.host)
-            RouterDegradeCenter.getInstance().unregister(moduleApp.host)
+            RouterDegradeCenter.unregister(moduleApp.host)
             FragmentCenter.unregister(moduleApp.host)
             // 清空缓存
             ClassCache.clear()

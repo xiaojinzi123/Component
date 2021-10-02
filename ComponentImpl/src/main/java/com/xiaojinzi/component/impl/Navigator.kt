@@ -1081,8 +1081,7 @@ open class NavigatorImpl<T : INavigator<T>>
          */
         private fun getRouterDegrade(finalRequest: RouterRequest): RouterDegrade? {
             // 获取所有降级类
-            val routerDegradeList = RouterDegradeCenter.getInstance()
-                    .globalRouterDegradeList
+            val routerDegradeList = RouterDegradeCenter.globalRouterDegradeList
             var result: RouterDegrade? = null
             for (i in routerDegradeList.indices) {
                 val routerDegrade = routerDegradeList[i]
