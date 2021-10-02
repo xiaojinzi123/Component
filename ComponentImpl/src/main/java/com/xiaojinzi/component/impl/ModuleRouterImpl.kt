@@ -15,18 +15,21 @@ import java.util.HashMap
  */
 internal abstract class ModuleRouterImpl : IComponentHostRouter {
 
+    protected val realRegExRouterMap: Map<String, RouterBean> = HashMap()
+    protected val realRouterMap: Map<String, RouterBean> = HashMap()
+
     /**
      * 正则匹配的集合
      */
-    override val regExRouterMap: Map<String, RouterBean> = HashMap()
+    override val regExRouterMap: Map<String, RouterBean>
         get() {
             if (!hasInitMap) {
                 initMap()
             }
-            return if (field.isEmpty()) {
+            return if (realRegExRouterMap.isEmpty()) {
                 emptyMap()
             } else {
-                HashMap(field)
+                HashMap(realRegExRouterMap)
             }
         }
 
@@ -34,15 +37,15 @@ internal abstract class ModuleRouterImpl : IComponentHostRouter {
      * router://component/test
      * 保存映射关系的map集合
      */
-    override val routerMap: Map<String, RouterBean> = HashMap()
+    override val routerMap: Map<String, RouterBean>
         get() {
             if (!hasInitMap) {
                 initMap()
             }
-            return if (field.isEmpty()) {
+            return if (realRouterMap.isEmpty()) {
                 emptyMap()
             } else {
-                HashMap(field)
+                HashMap(realRouterMap)
             }
         }
 

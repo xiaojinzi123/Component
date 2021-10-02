@@ -245,7 +245,7 @@ object RouterCenter : IComponentCenterRouter {
             val interceptorName = pageInterceptorBean.stringInterceptor
             val interceptorClass = pageInterceptorBean.classInterceptor
             if (!interceptorName.isNullOrEmpty()) {
-                val interceptor = InterceptorCenter.getInstance().getByName(interceptorName)
+                val interceptor = InterceptorCenter.getByName(interceptorName)
                         ?: throw InterceptorNotFoundException("can't find the interceptor and it's name is $interceptorName,target url is $uri")
                 result.add(interceptor)
             } else if (interceptorClass != null) {
@@ -309,7 +309,6 @@ object RouterCenter : IComponentCenterRouter {
     }
 
     override fun register(router: IComponentHostRouter) {
-        Utils.checkNullPointer(router)
         if (!hostRouterMap.containsKey(router.host)) {
             hostRouterMap[router.host] = router
             routerRegExMap.putAll(router.regExRouterMap)

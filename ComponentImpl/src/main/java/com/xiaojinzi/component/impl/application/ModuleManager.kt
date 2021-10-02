@@ -28,7 +28,7 @@ import java.util.*
  *
  * @author xiaojinzi
  */
-object ModuleManager: IComponentCenterApplication {
+object ModuleManager : IComponentCenterApplication {
 
     private val moduleApplicationMap: MutableMap<String, IComponentHostApplication> = HashMap()
 
@@ -78,7 +78,7 @@ object ModuleManager: IComponentCenterApplication {
             // 路由的部分的注册, 可选的异步还是同步
             val r = Runnable {
                 RouterCenter.register(moduleApp.host)
-                InterceptorCenter.getInstance().register(moduleApp.host)
+                InterceptorCenter.register(moduleApp.host)
                 RouterDegradeCenter.getInstance().register(moduleApp.host)
                 FragmentCenter.register(moduleApp.host)
                 notifyModuleChanged()
@@ -117,7 +117,7 @@ object ModuleManager: IComponentCenterApplication {
             LogUtil.logw("you can't use this method to register module. Because you not turn on 'optimizeInit' by calling method 'Config.Builder.optimizeInit(true)' when you init")
         }
         val moduleNames = ASMUtil.getModuleNames()
-        if (moduleNames != null && !moduleNames.isEmpty()) {
+        if (moduleNames.isNotEmpty()) {
             registerArr(*moduleNames.toTypedArray())
         }
     }
@@ -127,34 +127,31 @@ object ModuleManager: IComponentCenterApplication {
      *
      * @param hosts host 的名称数组
      */
-    fun registerArr(vararg hosts: String?) {
-        if (hosts != null) {
-            val appList: MutableList<IComponentHostApplication> = ArrayList(hosts.size)
-            for (host in hosts) {
-                val moduleApplication = findModuleApplication(host!!)
-                if (moduleApplication == null) {
-                    LogUtil.log("模块 '$host' 加载失败, 请根据链接中的内容自行排查! ${Component.COMMON_ERROR_ISSUE}")
-                } else {
-                    appList.add(moduleApplication)
-                }
+    fun registerArr(vararg hosts: String) {
+        val appList: MutableList<IComponentHostApplication> = ArrayList(hosts.size)
+        for (host in hosts) {
+            val moduleApplication = findModuleApplication(host!!)
+            if (moduleApplication == null) {
+                LogUtil.log("模块 '$host' 加载失败, 请根据链接中的内容自行排查! ${Component.COMMON_ERROR_ISSUE}")
+            } else {
+                appList.add(moduleApplication)
             }
-            // 处理优先级, 数值大的先加载
-            appList.sortWith { o1, o2 -> o2.priority - o1.priority }
-            for (moduleApplication in appList) {
-                register(moduleApplication)
-            }
+        }
+        // 处理优先级, 数值大的先加载
+        appList.sortWith { o1, o2 -> o2.priority - o1.priority }
+        for (moduleApplication in appList) {
+            register(moduleApplication)
         }
     }
 
     @UiThread
     override fun unregister(moduleApp: IComponentHostApplication) {
-        Utils.checkNullPointer(moduleApp)
         moduleApplicationMap.remove(moduleApp.host)
         moduleApp.onDestroy()
         ServiceCenter.unregister(moduleApp.host)
         Utils.postActionToWorkThread {
             RouterCenter.unregister(moduleApp.host)
-            InterceptorCenter.getInstance().unregister(moduleApp.host)
+            InterceptorCenter.unregister(moduleApp.host)
             RouterDegradeCenter.getInstance().unregister(moduleApp.host)
             FragmentCenter.unregister(moduleApp.host)
             // 清空缓存

@@ -1,29 +1,18 @@
-package com.xiaojinzi.component.impl.interceptor;
+package com.xiaojinzi.component.impl.interceptor
 
-import androidx.annotation.AnyThread;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-
-import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.ComponentUtil;
-import com.xiaojinzi.component.anno.support.CheckClassNameAnno;
-import com.xiaojinzi.component.error.InterceptorNameExistException;
-import com.xiaojinzi.component.impl.RouterInterceptor;
-import com.xiaojinzi.component.interceptor.IComponentCenterInterceptor;
-import com.xiaojinzi.component.interceptor.IComponentHostInterceptor;
-import com.xiaojinzi.component.support.ASMUtil;
-import com.xiaojinzi.component.support.RouterInterceptorCache;
-import com.xiaojinzi.component.support.Utils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import androidx.annotation.AnyThread
+import androidx.annotation.UiThread
+import com.xiaojinzi.component.Component.requiredConfig
+import com.xiaojinzi.component.ComponentUtil
+import com.xiaojinzi.component.anno.support.CheckClassNameAnno
+import com.xiaojinzi.component.error.InterceptorNameExistException
+import com.xiaojinzi.component.impl.RouterInterceptor
+import com.xiaojinzi.component.interceptor.IComponentCenterInterceptor
+import com.xiaojinzi.component.interceptor.IComponentHostInterceptor
+import com.xiaojinzi.component.support.ASMUtil
+import com.xiaojinzi.component.support.RouterInterceptorCache
+import com.xiaojinzi.component.support.Utils
+import java.util.*
 
 /**
  * 中央拦截器
@@ -32,200 +21,152 @@ import java.util.Set;
  * @author : xiaojinzi
  */
 @CheckClassNameAnno
-public class InterceptorCenter implements IComponentCenterInterceptor {
-
-    private InterceptorCenter() {
-    }
-
-    /**
-     * 单例对象
-     */
-    private static volatile InterceptorCenter instance;
-
-    /**
-     * 获取单例对象
-     *
-     * @return
-     */
-    public static InterceptorCenter getInstance() {
-        if (instance == null) {
-            synchronized (InterceptorCenter.class) {
-                if (instance == null) {
-                    instance = new InterceptorCenter();
-                }
-            }
-        }
-        return instance;
-    }
+object InterceptorCenter: IComponentCenterInterceptor {
 
     /**
      * 子拦截器对象管理 map
      */
-    private Map<String, IComponentHostInterceptor> moduleInterceptorMap = new HashMap<>();
+    private val moduleInterceptorMap: MutableMap<String, IComponentHostInterceptor> = HashMap()
 
     /**
      * 公共的拦截器列表
      */
-    private List<RouterInterceptor> mGlobalInterceptorList = new ArrayList<>();
+    private val mGlobalInterceptorList: MutableList<RouterInterceptor> = ArrayList()
 
     /**
      * 每个业务组件的拦截器 name --> Class 映射关系的总的集合
-     * 这种拦截器不是全局拦截器,是随时随地使用的拦截器,见 {@link com.xiaojinzi.component.impl.Navigator#interceptorNames(String...)}
+     * 这种拦截器不是全局拦截器,是随时随地使用的拦截器,见 [com.xiaojinzi.component.impl.Navigator.interceptorNames]
      */
-    private Map<String, Class<? extends RouterInterceptor>> mInterceptorMap = new HashMap<>();
+    private val mInterceptorMap: MutableMap<String, Class<out RouterInterceptor>> = HashMap()
 
     /**
      * 是否公共的拦截器列表发生变化
      */
-    private boolean isInterceptorListHaveChange = false;
+    private var isInterceptorListHaveChange = false
 
     /**
      * 获取全局拦截器
      */
-    @UiThread
-    public List<RouterInterceptor> getGlobalInterceptorList() {
-        if (isInterceptorListHaveChange) {
-            loadAllGlobalInterceptor();
-            isInterceptorListHaveChange = false;
-        }
-        return mGlobalInterceptorList;
-    }
-
-    @Override
-    public void register(@NonNull IComponentHostInterceptor hostInterceptor) {
-        Utils.checkNullPointer(hostInterceptor);
-        if (!moduleInterceptorMap.containsKey(hostInterceptor.getHost())) {
-            isInterceptorListHaveChange = true;
-            moduleInterceptorMap.put(hostInterceptor.getHost(), hostInterceptor);
-            // 子拦截器列表
-            Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = hostInterceptor.getInterceptorMap();
-            mInterceptorMap.putAll(childInterceptorMap);
-        }
-    }
-
-    @Override
-    public void register(@NonNull String host) {
-        Utils.checkStringNullPointer(host, "host");
-        if (!moduleInterceptorMap.containsKey(host)) {
-            IComponentHostInterceptor moduleInterceptor = findModuleInterceptor(host);
-            if (moduleInterceptor != null) {
-                register(moduleInterceptor);
+    @get:UiThread
+    override val globalInterceptorList: List<RouterInterceptor>
+        get() {
+            if (isInterceptorListHaveChange) {
+                loadAllGlobalInterceptor()
+                isInterceptorListHaveChange = false
             }
+            return mGlobalInterceptorList
+        }
+
+    override fun register(hostInterceptor: IComponentHostInterceptor) {
+        Utils.checkNullPointer(hostInterceptor)
+        if (!moduleInterceptorMap.containsKey(hostInterceptor.host)) {
+            isInterceptorListHaveChange = true
+            moduleInterceptorMap[hostInterceptor.host] = hostInterceptor
+            // 子拦截器列表
+            val childInterceptorMap = hostInterceptor.interceptorMap
+            mInterceptorMap.putAll(childInterceptorMap)
         }
     }
 
-    @Override
-    public void unregister(@NonNull IComponentHostInterceptor hostInterceptor) {
-        Utils.checkNullPointer(hostInterceptor);
-        moduleInterceptorMap.remove(hostInterceptor.getHost());
-        isInterceptorListHaveChange = true;
+    override fun register(host: String) {
+        Utils.checkStringNullPointer(host, "host")
+        if (!moduleInterceptorMap.containsKey(host)) {
+            val moduleInterceptor = findModuleInterceptor(host)
+            moduleInterceptor?.let { register(it) }
+        }
+    }
+
+    override fun unregister(hostInterceptor: IComponentHostInterceptor) {
+        Utils.checkNullPointer(hostInterceptor)
+        moduleInterceptorMap.remove(hostInterceptor.host)
+        isInterceptorListHaveChange = true
         // 子拦截器列表
-        Map<String, Class<? extends RouterInterceptor>> childInterceptorMap = hostInterceptor.getInterceptorMap();
-        for (Map.Entry<String, Class<? extends RouterInterceptor>> entry : childInterceptorMap.entrySet()) {
-            mInterceptorMap.remove(entry.getKey());
-            RouterInterceptorCache.removeCache(entry.getValue());
+        val childInterceptorMap: Map<String, Class<out RouterInterceptor?>?> = hostInterceptor.interceptorMap
+        for ((key, value) in childInterceptorMap) {
+            mInterceptorMap.remove(key)
+            RouterInterceptorCache.removeCache(value!!)
         }
     }
 
-    @Override
-    public void unregister(@NonNull String host) {
-        Utils.checkStringNullPointer(host, "host");
-        IComponentHostInterceptor moduleInterceptor = moduleInterceptorMap.get(host);
-        if (moduleInterceptor != null) {
-            unregister(moduleInterceptor);
-        }
+    override fun unregister(host: String) {
+        Utils.checkStringNullPointer(host, "host")
+        val moduleInterceptor = moduleInterceptorMap[host]
+        moduleInterceptor?.let { unregister(it) }
     }
 
     /**
      * 按顺序弄好所有全局拦截器
      */
     @UiThread
-    private void loadAllGlobalInterceptor() {
-        mGlobalInterceptorList.clear();
-        List<InterceptorBean> totalList = new ArrayList<>();
+    private fun loadAllGlobalInterceptor() {
+        mGlobalInterceptorList.clear()
+        val totalList: MutableList<InterceptorBean> = ArrayList()
         // 加载各个子拦截器对象中的拦截器列表
-        for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
-            List<InterceptorBean> list = entry.getValue().globalInterceptorList();
-            totalList.addAll(list);
+        for ((_, value) in moduleInterceptorMap) {
+            val list = value.globalInterceptorList()
+            totalList.addAll(list)
         }
         // 排序所有的拦截器对象,按照优先级排序
-        Collections.sort(totalList, new Comparator<InterceptorBean>() {
-            @Override
-            public int compare(InterceptorBean o1, InterceptorBean o2) {
-                if (o1.getPriority() == o2.getPriority()) {
-                    return 0;
-                } else if (o1.getPriority() > o2.getPriority()) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            }
-        });
-        for (InterceptorBean interceptorBean : totalList) {
-            mGlobalInterceptorList.add(interceptorBean.getInterceptor());
+        totalList.sortByDescending { it.priority }
+        for ((interceptor) in totalList) {
+            mGlobalInterceptorList.add(interceptor)
         }
     }
 
-    @Nullable
     @AnyThread
-    public IComponentHostInterceptor findModuleInterceptor(String host) {
+    fun findModuleInterceptor(host: String): IComponentHostInterceptor? {
         try {
-            if (Component.requiredConfig().isOptimizeInit()) {
-                return ASMUtil.findModuleInterceptorAsmImpl(
+            return if (requiredConfig().isOptimizeInit) {
+                ASMUtil.findModuleInterceptorAsmImpl(
                         ComponentUtil.transformHostForClass(host)
-                );
+                )
             } else {
-                Class<? extends IComponentHostInterceptor> clazz = null;
-                String className = ComponentUtil.genHostInterceptorClassName(host);
-                clazz = (Class<? extends IComponentHostInterceptor>) Class.forName(className);
-                return clazz.newInstance();
+                var clazz: Class<out IComponentHostInterceptor?>? = null
+                val className = ComponentUtil.genHostInterceptorClassName(host)
+                clazz = Class.forName(className) as Class<out IComponentHostInterceptor?>
+                clazz.newInstance()
             }
-        } catch (Exception ignore) {
+        } catch (ignore: Exception) {
             // ignore
         }
-        return null;
+        return null
     }
 
-    @Nullable
-    @Override
     @UiThread
-    public RouterInterceptor getByName(@Nullable String interceptorName) {
+    override fun getByName(interceptorName: String): RouterInterceptor? {
         if (interceptorName == null) {
-            return null;
+            return null
         }
         // 先到缓存中找
-        RouterInterceptor result = null;
+        var result: RouterInterceptor? = null
         // 拿到拦截器的 Class 对象
-        Class<? extends RouterInterceptor> interceptorClass = mInterceptorMap.get(interceptorName);
-        if (interceptorClass == null) {
-            result = null;
+        val interceptorClass = mInterceptorMap[interceptorName]
+        result = if (interceptorClass == null) {
+            null
         } else {
-            result = RouterInterceptorCache.getInterceptorByClass(interceptorClass);
+            RouterInterceptorCache.getInterceptorByClass(interceptorClass)
         }
-        return result;
+        return result
     }
 
     /**
      * 做拦截器的名称是否重复的工作
      */
     @UiThread
-    public void check() {
-        Utils.checkMainThread();
-        Set<String> set = new HashSet<>();
-        for (Map.Entry<String, IComponentHostInterceptor> entry : moduleInterceptorMap.entrySet()) {
-            IComponentHostInterceptor childInterceptor = entry.getValue();
-            if (childInterceptor == null) {
-                continue;
-            }
-            Set<String> childInterceptorNames = childInterceptor.getInterceptorNames();
+    fun check() {
+        Utils.checkMainThread()
+        val set: MutableSet<String> = HashSet()
+        for ((_, value) in moduleInterceptorMap) {
+            val childInterceptor = value ?: continue
+            val childInterceptorNames = childInterceptor.interceptorNames
             if (childInterceptorNames.isEmpty()) {
-                continue;
+                continue
             }
-            for (String interceptorName : childInterceptorNames) {
+            for (interceptorName in childInterceptorNames) {
                 if (set.contains(interceptorName)) {
-                    throw new InterceptorNameExistException("the interceptor's name is exist：" + interceptorName);
+                    throw InterceptorNameExistException("the interceptor's name is exist：$interceptorName")
                 }
-                set.add(interceptorName);
+                set.add(interceptorName)
             }
         }
     }

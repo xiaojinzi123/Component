@@ -828,7 +828,7 @@ open class NavigatorImpl<T : INavigator<T>>
         }
         // 添加共有拦截器
         allInterceptors.addAll(
-                InterceptorCenter.getInstance().globalInterceptorList
+                InterceptorCenter.globalInterceptorList
         )
         // 添加用户自定义的拦截器
         allInterceptors.addAll(
@@ -1247,7 +1247,7 @@ open class NavigatorImpl<T : INavigator<T>>
                         result.add(interceptor)
                     }
                 } else if (customInterceptor is String) {
-                    val interceptor = InterceptorCenter.getInstance().getByName(customInterceptor)
+                    val interceptor = InterceptorCenter.getByName(customInterceptor)
                     if (interceptor == null) {
                         throw InterceptorNotFoundException("can't find the interceptor and it's name is " + customInterceptor + ",target url is " + originalRequest.uri.toString())
                     } else {

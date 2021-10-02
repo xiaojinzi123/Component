@@ -176,7 +176,7 @@ object Component {
     fun check() {
         if (isDebug && requiredConfig().isErrorCheck) {
             RouterCenter.check()
-            InterceptorCenter.getInstance().check()
+            InterceptorCenter.check()
             FragmentCenter.check()
         }
     }

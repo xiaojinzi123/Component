@@ -394,15 +394,15 @@ public class RouterProcessor extends BaseHostProcessor {
                     // 存进 map 集合的代码
                     if (scheme == null || "".equals(scheme)) {
                         initMapMethodSpecBuilder.addStatement(
-                                "getRouterMap().put(defaultScheme + $S,$N)",
+                                "getRealRouterMap().put(defaultScheme + $S,$N)",
                                 "://" + routerBean.hostAndPath(), routerBeanName
                         );
                     } else  {
                         String key = scheme + "://" + routerBean.hostAndPath();
-                        initMapMethodSpecBuilder.addStatement("getRouterMap().put($S,$N)", key, routerBeanName);
+                        initMapMethodSpecBuilder.addStatement("getRealRouterMap().put($S,$N)", key, routerBeanName);
                     }
                 } else {
-                    initMapMethodSpecBuilder.addStatement("getRegExRouterMap().put($S,$N)", regexStr, routerBeanName);
+                    initMapMethodSpecBuilder.addStatement("getRealRegExRouterMap().put($S,$N)", regexStr, routerBeanName);
                 }
                 initMapMethodSpecBuilder.addCode("\n");
             }
