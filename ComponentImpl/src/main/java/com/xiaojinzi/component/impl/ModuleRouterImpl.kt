@@ -18,13 +18,33 @@ internal abstract class ModuleRouterImpl : IComponentHostRouter {
     /**
      * 正则匹配的集合
      */
-    protected val regExRouterBeanMap: Map<String, RouterBean> = HashMap()
+    override val regExRouterMap: Map<String, RouterBean> = HashMap()
+        get() {
+            if (!hasInitMap) {
+                initMap()
+            }
+            return if (field.isEmpty()) {
+                emptyMap()
+            } else {
+                HashMap(field)
+            }
+        }
 
     /**
      * router://component/test
      * 保存映射关系的map集合
      */
-    protected val routerBeanMap: Map<String, RouterBean> = HashMap()
+    override val routerMap: Map<String, RouterBean> = HashMap()
+        get() {
+            if (!hasInitMap) {
+                initMap()
+            }
+            return if (field.isEmpty()) {
+                emptyMap()
+            } else {
+                HashMap(field)
+            }
+        }
 
     /**
      * 是否初始化了map,懒加载
@@ -37,27 +57,6 @@ internal abstract class ModuleRouterImpl : IComponentHostRouter {
     @CallSuper
     protected open fun initMap() {
         hasInitMap = true
-    }
-
-    override fun getRegExRouterMap(): Map<String, RouterBean> {
-        if (!hasInitMap) {
-            initMap()
-        }
-        return if (regExRouterBeanMap.isEmpty()) {
-            emptyMap()
-        } else HashMap(regExRouterBeanMap)
-    }
-
-    /**
-     * 获取路由表
-     */
-    override fun getRouterMap(): Map<String, RouterBean> {
-        if (!hasInitMap) {
-            initMap()
-        }
-        return if (routerBeanMap.isEmpty()) {
-            emptyMap()
-        } else HashMap(routerBeanMap)
     }
 
 }

@@ -1,6 +1,6 @@
-package com.xiaojinzi.component.router;
+package com.xiaojinzi.component.router
 
-import com.xiaojinzi.component.support.IComponentCenter;
+import com.xiaojinzi.component.support.IComponentCenter
 
 /**
  * 模块的UI路由的接口
@@ -8,5 +8,4 @@ import com.xiaojinzi.component.support.IComponentCenter;
  *
  * @author : xiaojinzi
  */
-public interface IComponentCenterRouter extends IComponentRouter, IComponentCenter<IComponentHostRouter> {
-}
+interface IComponentCenterRouter : IComponentRouter, IComponentCenter<IComponentHostRouter>

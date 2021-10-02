@@ -1,30 +1,25 @@
-package com.xiaojinzi.component.router;
+package com.xiaojinzi.component.router
 
-import androidx.annotation.NonNull;
-
-import com.xiaojinzi.component.bean.RouterBean;
-import com.xiaojinzi.component.support.IHost;
-
-import java.util.Map;
+import com.xiaojinzi.component.bean.RouterBean
+import com.xiaojinzi.component.support.IHost
 
 /**
  * 组件之间实现跳转的接口
- * <p>
+ *
+ *
  * time   : 2018/07/26
  * @author : xiaojinzi
  */
-public interface IComponentHostRouter extends IHost {
+interface IComponentHostRouter : IHost {
 
     /**
      * 获取正则匹配的路由表
      */
-    @NonNull
-    Map<String, RouterBean> getRegExRouterMap();
+    val regExRouterMap: Map<String, RouterBean>
 
     /**
      * 获取路由表
      */
-    @NonNull
-    Map<String, RouterBean> getRouterMap();
+    val routerMap: Map<String, RouterBean>
 
 }

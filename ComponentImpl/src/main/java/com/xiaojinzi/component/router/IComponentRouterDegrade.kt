@@ -1,26 +1,24 @@
-package com.xiaojinzi.component.router;
+package com.xiaojinzi.component.router
 
-import androidx.annotation.NonNull;
-
-import com.xiaojinzi.component.impl.RouterDegrade;
-
-import java.util.List;
+import com.xiaojinzi.component.impl.RouterDegrade
+import java.lang.Exception
 
 /**
  * 路由的降级处理
- * <p>
+ *
+ *
  * time   : 2018/07/26
  *
  * @author : xiaojinzi
  */
-public interface IComponentRouterDegrade {
+interface IComponentRouterDegrade {
 
     /**
      * 获取所有的降级处理, 数据需要排过序的
      *
      * @throws Exception
      */
-    @NonNull
-    List<RouterDegrade> getGlobalRouterDegradeList() throws Exception;
+    @get:Throws(Exception::class)
+    val globalRouterDegradeList: List<RouterDegrade>
 
 }

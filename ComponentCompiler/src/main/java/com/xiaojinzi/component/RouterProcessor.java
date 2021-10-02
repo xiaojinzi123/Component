@@ -399,10 +399,10 @@ public class RouterProcessor extends BaseHostProcessor {
                         );
                     } else  {
                         String key = scheme + "://" + routerBean.hostAndPath();
-                        initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
+                        initMapMethodSpecBuilder.addStatement("getRouterMap().put($S,$N)", key, routerBeanName);
                     }
                 } else {
-                    initMapMethodSpecBuilder.addStatement("getRegExRouterBeanMap().put($S,$N)", regexStr, routerBeanName);
+                    initMapMethodSpecBuilder.addStatement("getRegExRouterMap().put($S,$N)", regexStr, routerBeanName);
                 }
                 initMapMethodSpecBuilder.addCode("\n");
             }
