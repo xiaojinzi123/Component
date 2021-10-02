@@ -1,20 +1,12 @@
-package com.xiaojinzi.component.impl.interceptor;
+package com.xiaojinzi.component.impl.interceptor
 
-import android.app.Application;
-import androidx.annotation.CallSuper;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-
-import com.xiaojinzi.component.impl.RouterInterceptor;
-import com.xiaojinzi.component.interceptor.IComponentHostInterceptor;
-import com.xiaojinzi.component.support.RouterInterceptorCache;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import android.app.Application
+import com.xiaojinzi.component.interceptor.IComponentHostInterceptor
+import com.xiaojinzi.component.impl.RouterInterceptor
+import androidx.annotation.UiThread
+import androidx.annotation.CallSuper
+import com.xiaojinzi.component.support.RouterInterceptorCache
+import java.util.HashMap
 
 /**
  * 拦截器的代码生成类的基本实现
@@ -22,79 +14,63 @@ import java.util.Set;
  *
  * @author : xiaojinzi
  */
-abstract class ModuleInterceptorImpl implements IComponentHostInterceptor {
+internal abstract class ModuleInterceptorImpl : IComponentHostInterceptor {
 
-    protected Map<String, Class<? extends RouterInterceptor>> interceptorMap = new HashMap<>();
+    private var isInitMap = false
 
-    private boolean isInitMap = false;
+    override var interceptorMap: Map<String, Class<out RouterInterceptor>> = HashMap()
+        get() {
+            if (!isInitMap) {
+                initInterceptorMap()
+            }
+            return HashMap(field)
+        }
 
-    /**
-     * 用作销毁一些缓存
-     *
-     * @param app {@link Application}
-     */
-    @Override
-    public void onCreate(@NonNull Application app) {
-        // empty
-    }
-
-    /**
-     * 用作销毁一些缓存
-     */
-    @Override
-    public void onDestroy() {
-        // empty
-    }
-
-    @Override
-    @NonNull
-    @UiThread
-    public List<InterceptorBean> globalInterceptorList() {
-        return Collections.emptyList();
-    }
+    override val interceptorNames: Set<String>
+        get() {
+            if (!isInitMap) {
+                initInterceptorMap()
+            }
+            return interceptorMap.keys
+        }
 
     /**
      * 初始化拦截器的集合
      */
     @CallSuper
     @UiThread
-    protected void initInterceptorMap() {
-        isInitMap = true;
+    protected open fun initInterceptorMap() {
+        isInitMap = true
     }
 
-    @NonNull
-    @Override
-    public Set<String> getInterceptorNames() {
-        if (!isInitMap) {
-            initInterceptorMap();
-        }
-        return interceptorMap.keySet();
+    /**
+     * 用作销毁一些缓存
+     *
+     * @param app [Application]
+     */
+    override fun onCreate(app: Application) {
+        // empty
     }
 
-    @NonNull
-    @Override
-    public Map<String, Class<? extends RouterInterceptor>> getInterceptorMap() {
-        if (!isInitMap) {
-            initInterceptorMap();
-        }
-        return new HashMap<>(interceptorMap);
+    /**
+     * 用作销毁一些缓存
+     */
+    override fun onDestroy() {
+        // empty
     }
 
-    @Override
-    @Nullable
     @UiThread
-    public RouterInterceptor getByName(@Nullable String name) {
-        if (name == null) {
-            return null;
-        }
+    override fun globalInterceptorList(): List<InterceptorBean> {
+        return emptyList()
+    }
+
+    @UiThread
+    override fun getByName(name: String): RouterInterceptor? {
         if (!isInitMap) {
-            initInterceptorMap();
+            initInterceptorMap()
         }
-        Class<? extends RouterInterceptor> interceptorClass = interceptorMap.get(name);
-        if (interceptorClass == null) {
-            return null;
-        }
-        return RouterInterceptorCache.getInterceptorByClass(interceptorClass);
+        val interceptorClass = interceptorMap[name] ?: return null
+        return RouterInterceptorCache.getInterceptorByClass(interceptorClass)
     }
 
 }
