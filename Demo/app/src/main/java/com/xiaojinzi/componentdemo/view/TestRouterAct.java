@@ -33,6 +33,7 @@ import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.RouterRequest;
 import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.RxRouter;
+import com.xiaojinzi.component.impl.URIBuilder;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.componentdemo.R;
 
@@ -349,14 +350,14 @@ public class TestRouterAct extends BaseAct {
 
     public void openUrl(View view) {
 
-        Uri uri = new RouterRequest.URIBuilder()
+        Uri uri = new URIBuilder()
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_QUERY)
                 .query("name", "openUrlName")
                 .query("pass", "openUrlPassword")
                 .buildURI();
 
-        final String url = new RouterRequest.URIBuilder()
+        final String url = new URIBuilder()
                 .host(ModuleConfig.Module1.NAME)
                 .path(ModuleConfig.Module1.TEST_QUERY)
                 .query("name", "openUrlName")

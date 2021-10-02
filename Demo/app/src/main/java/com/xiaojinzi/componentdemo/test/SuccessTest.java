@@ -14,6 +14,7 @@ import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.RouterRequest;
 import com.xiaojinzi.component.impl.RouterResult;
 import com.xiaojinzi.component.impl.RxRouter;
+import com.xiaojinzi.component.impl.URIBuilder;
 import com.xiaojinzi.component.support.CallbackAdapter;
 import com.xiaojinzi.componentdemo.view.TestQualityAct;
 
@@ -399,7 +400,7 @@ public class SuccessTest implements TestExecutor {
         return mTestContext.testWrap(new TestContext.TestBack() {
             @Override
             public void run(CompletableEmitter emitter) {
-                final String url = new RouterRequest.URIBuilder()
+                final String url = new URIBuilder()
                         .host(ModuleConfig.Module1.NAME)
                         .path(ModuleConfig.Module1.TEST_QUERY)
                         .query("name", "openUrlName")

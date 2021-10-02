@@ -5,9 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.SparseArray;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.SparseArray;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.support.ProxyIntentAct;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * 用于构建一个 {@link Intent}, 详情请看 {@link Navigator#proxyBundle(Bundle)}
  */
-public class ProxyIntentBuilder extends RouterRequest.IURIBuilderImpl {
+public class ProxyIntentBuilder extends IURIBuilderImpl {
 
     @Nullable
     protected Bundle options;
