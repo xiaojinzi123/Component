@@ -18,9 +18,9 @@ import java.util.Set;
  * 1. 用作跳转的
  * 2. 用作接受 {@link Fragment#onActivityResult(int, int, Intent)} 的回调的值
  * <p>
- * 当发出多个路由的之后, 有可能多个 {@link RouterRequest} 对象中的 {@link RouterRequest#requestCode}
+ * 当发出多个路由的之后, 有可能多个 {@link RouterRequest} 对象中的 {@link RouterRequest#getRequestCode()}
  * 是一致的, 那么就会造成 {@link ActivityResult} 回调的时候出现不对应的问题.
- * 这个问题在 {@link com.xiaojinzi.component.impl.Navigator.Help#isExist(RouterRequest)} 方法中
+ * 这个问题在 {@link com.xiaojinzi.component.impl.NavigatorImpl.Help#isExist(RouterRequest)} 方法中
  * 得以保证
  * <p>
  * time   : 2018/11/03
@@ -63,7 +63,7 @@ public final class RouterFragment extends Fragment {
         // 找出 requestCode 一样的那个
         Set<RouterRequest> keySet = singleEmitterMap.keySet();
         for (RouterRequest request : keySet) {
-            if (request.requestCode != null && request.requestCode.equals(requestCode)) {
+            if (request.getRequestCode() != null && request.getRequestCode().equals(requestCode)) {
                 findRequest = request;
                 break;
             }

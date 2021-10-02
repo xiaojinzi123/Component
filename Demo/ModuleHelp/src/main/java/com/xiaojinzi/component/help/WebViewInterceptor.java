@@ -16,7 +16,7 @@ public class WebViewInterceptor implements RouterInterceptor {
 
     @Override
     public void intercept(Chain chain) throws Exception {
-        Uri uri = chain.request().uri;
+        Uri uri = chain.request().getUri();
         String scheme = uri.getScheme();
         if (ModuleConfig.HTTP_SCHEME.equalsIgnoreCase(scheme) || ModuleConfig.HTTPS_SCHEME.equalsIgnoreCase(scheme)) {
             // 改变 request 对象路由到 网页的 Activity 去

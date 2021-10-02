@@ -52,7 +52,7 @@ class RouterUtil {
         if (request == null) {
             LogUtil.log(TAG, "route canceled, request is null!");
         }else {
-            LogUtil.log(TAG, "route canceled：" + request.uri.toString());
+            LogUtil.log(TAG, "route canceled：" + request.getUri().toString());
         }
         if (callback == null) {
             return;
@@ -81,10 +81,10 @@ class RouterUtil {
         if (errorResult.getOriginalRequest() == null) {
             LogUtil.log(TAG, "route fail：routerRequest has not been created, errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ":" + Utils.getRealMessage(errorResult.getError()));
         } else {
-            LogUtil.log(TAG, "route fail：" + errorResult.getOriginalRequest().uri.toString() + " and errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
+            LogUtil.log(TAG, "route fail：" + errorResult.getOriginalRequest().getUri().toString() + " and errorClass is " + Utils.getRealThrowable(errorResult.getError()).getClass().getSimpleName() + ",errorMsg is '" + Utils.getRealMessage(errorResult.getError()) + "'");
         }
         // 如果发起了一个路由但是现在已经 GG 了, 那就不执行了回调了
-        if (errorResult.getOriginalRequest() != null && isRequestUnavailabled(errorResult.getOriginalRequest())) {
+        if (errorResult.getOriginalRequest() != null && isRequestUnavailable(errorResult.getOriginalRequest())) {
             return;
         }
         // 执行 Request 中 的 errorCallback
@@ -120,9 +120,9 @@ class RouterUtil {
     private static void successCallbackOnMainThread(@Nullable final Callback callback,
                                                     @NonNull final RouterResult result) {
         Utils.checkNullPointer(result, "result");
-        LogUtil.log(TAG, "route success：" + result.getOriginalRequest().uri.toString());
+        LogUtil.log(TAG, "route success：" + result.getOriginalRequest().getUri().toString());
         // 如果请求的界面已经 GG 了
-        if (isRequestUnavailabled(result.getOriginalRequest())) {
+        if (isRequestUnavailable(result.getOriginalRequest())) {
             return;
         }
         // 执行 Request 中 的 afterCallback
@@ -176,9 +176,9 @@ class RouterUtil {
      * @param originalRequest 路由请求对象
      * @return Request 是不可用的
      */
-    private static boolean isRequestUnavailabled(@NonNull RouterRequest originalRequest) {
-        Context context = originalRequest.context;
-        Fragment fragment = originalRequest.fragment;
+    private static boolean isRequestUnavailable(@NonNull RouterRequest originalRequest) {
+        Context context = originalRequest.getContext();
+        Fragment fragment = originalRequest.getFragment();
         Activity act = Utils.getActivityFromContext(context);
         if (act != null) {
             if (isActivityUnavailabled(act)) {

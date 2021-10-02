@@ -34,7 +34,7 @@ public class CustomerRouterImpl {
     )
     @NonNull
     public static Intent callPhoneIntent(@NonNull RouterRequest request, @NonNull RouterRequest request1) {
-        String tel = ParameterSupport.getString(request.bundle, "tel");
+        String tel = ParameterSupport.getString(request.getBundle(), "tel");
         if (TextUtils.isEmpty(tel)) {
             throw new NullPointerException("the tel is empty");
         }

@@ -35,7 +35,7 @@ public class LoginForTestInterceptor implements RouterInterceptor {
     public void intercept(final Chain chain) throws Exception {
         final Context context = chain.request().getRawOrTopActivity();
         UserService userService = ServiceManager.get(UserService.class, "user1");
-        if (chain.request().uri.toString().contains("user/login")) {
+        if (chain.request().getUri().toString().contains("user/login")) {
             chain.proceed(chain.request());
             return;
         }

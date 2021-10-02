@@ -25,7 +25,7 @@ public class AppModuleApplication implements IApplicationLifecycle, IModuleNotif
         @Override
         public void onSuccess(@NonNull RouterResult successResult) throws Exception {
             RouterRequest originalRequest = successResult.getOriginalRequest();
-            Log.e(TAG, "路由成功：" + originalRequest.uri.toString() + ",requestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode));
+            Log.e(TAG, "路由成功：" + originalRequest.getUri().toString() + ",requestCode is " + (originalRequest.getRequestCode() == null ? "null" : originalRequest.getRequestCode()));
         }
 
         @Override
@@ -34,16 +34,16 @@ public class AppModuleApplication implements IApplicationLifecycle, IModuleNotif
             if (originalRequest == null) {
                 Log.e(TAG, "路由失败：errorMsg = " + Utils.getRealMessage(errorResult.getError()));
             } else {
-                Log.e(TAG, "路由失败：" + originalRequest.uri.toString()
+                Log.e(TAG, "路由失败：" + originalRequest.getUri().toString()
                         + " ,errorMsg = " + Utils.getRealMessage(errorResult.getError())
-                        + "\nrequestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode)
+                        + "\nrequestCode is " + (originalRequest.getRequestCode() == null ? "null" : originalRequest.getRequestCode())
                 );
             }
         }
 
         @Override
         public void onCancel(@NonNull RouterRequest originalRequest) throws Exception {
-            Log.e(TAG, "路由被取消：" + originalRequest.uri.toString() + ",requestCode is " + (originalRequest.requestCode == null ? "null" : originalRequest.requestCode));
+            Log.e(TAG, "路由被取消：" + originalRequest.getUri().toString() + ",requestCode is " + (originalRequest.getRequestCode() == null ? "null" : originalRequest.getRequestCode()));
         }
     };
 

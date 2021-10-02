@@ -14,7 +14,7 @@ public class UserModuleRouterDegrade implements RouterDegrade {
 
     @Override
     public boolean isMatch(@NonNull RouterRequest request) {
-        return ModuleConfig.User.NAME.equals(request.uri.getHost());
+        return ModuleConfig.User.NAME.equals(request.getUri().getHost());
     }
 
     @NonNull

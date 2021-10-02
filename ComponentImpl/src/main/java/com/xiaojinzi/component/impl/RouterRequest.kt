@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import androidx.annotation.Keep
 import androidx.annotation.UiThread
 import androidx.fragment.app.Fragment
 import com.xiaojinzi.component.Component.requiredConfig
@@ -279,7 +280,28 @@ class RouterRequestBuilderImpl<T : IRouterRequestBuilder<T>>(
      * @return 可能会抛出一个运行时异常, 由于您的参数在构建 uri 的时候出现的异常
      */
     override fun build(): RouterRequest {
-        return RouterRequest(this)
+        val builder = this
+        return RouterRequest(
+                context = builder.context,
+                fragment = builder.fragment,
+                uri = builder.buildURI(),
+                requestCode = builder.requestCode,
+                isForResult = builder.isForResult,
+                isForTargetIntent = builder.isForTargetIntent,
+                options = builder.options,
+                intentFlags = Collections.unmodifiableList(builder.intentFlags),
+                intentCategories = Collections.unmodifiableList(builder.intentCategories),
+                bundle = Bundle().apply {
+                    this.putAll(builder.bundle)
+                },
+                intentConsumer = builder.intentConsumer,
+                beforeAction = builder.beforeAction,
+                beforeStartAction = builder.beforeStartAction,
+                afterStartAction = builder.afterStartAction,
+                afterAction = builder.afterAction,
+                afterErrorAction = builder.afterErrorAction,
+                afterEventAction = builder.afterEventAction,
+        )
     }
 
     init {
@@ -318,123 +340,93 @@ class RouterRequestBuilder(
  *
  * @author xiaojinzi
  */
+@Keep
 @CheckClassNameAnno
-class RouterRequest(builder: IRouterRequestBuilder<*>) {
+data class RouterRequest(
+        val context: Context?,
+        val fragment: Fragment?,
+        /**
+         * 这是一个很重要的参数, 一定不可以为空,如果这个为空了,一定不能继续下去,因为很多地方直接使用这个参数的,不做空判断的
+         * 而且这个参数不可以为空的
+         */
+        val uri: Uri,
+        val requestCode: Int? = null,
+        /**
+         * 框架是否帮助用户跳转拿 [com.xiaojinzi.component.bean.ActivityResult]
+         * 有 requestCode 只能说明用户使用了某一个 requestCode,
+         * 会调用 [Activity.startActivityForResult].
+         * 但是不代表需要框架去帮你获取到 [com.xiaojinzi.component.bean.ActivityResult].
+         * 所以这个值就是标记是否需要框架帮助您去获取 [com.xiaojinzi.component.bean.ActivityResult]
+         */
+        val isForResult: Boolean,
+        /**
+         * 是否是为了目标 Intent 来的
+         */
+        val isForTargetIntent: Boolean,
+        /**
+         * 跳转的时候 options 参数
+         */
+        val options: Bundle?,
+        /**
+         * Intent 的 flag, 集合不可更改
+         */
+        val intentFlags: List<Int>,
+        /**
+         * Intent 的 类别, 集合不可更改
+         */
+        val intentCategories: List<String>,
+        /**
+         * 携带的数据
+         */
+        val bundle: Bundle,
+        /**
+         * Intent 的回调, 可以让你做一些事情
+         */
+        val intentConsumer: Consumer<Intent>?,
+        /**
+         * 这个 [Action] 是在路由开始的时候调用的.
+         * 和 [Activity.startActivity] 不是连着执行的.
+         * 中间 post 到主线程的操作
+         */
+        val beforeAction: (() -> Unit)?,
+        /**
+         * 这个 [Action] 是在 [Activity.startActivity] 之前调用的.
+         * 和 [Activity.startActivity] 是连着执行的.
+         */
+        val beforeStartAction: (() -> Unit)?,
+        /**
+         * 这个 [Action] 是在 [Activity.startActivity] 之后调用的.
+         * 和 [Activity.startActivity] 是连着执行的.
+         */
+        val afterStartAction: (() -> Unit)?,
+        /**
+         * 这个 [Action] 是在结束之后调用的.
+         * 和 [Activity.startActivity] 不是连着执行的.
+         * 是在 [RouterInterceptor.Callback.onSuccess]
+         * 方法中 post 到主线程完成的
+         */
+        val afterAction: (() -> Unit)?,
+        /**
+         * 这个 [Action] 是在结束之后调用的.
+         * 和 [Activity.startActivity] 不是连着执行的.
+         * 是在 [RouterInterceptor.Callback.onError]
+         * 方法中 post 到主线程完成的
+         */
+        val afterErrorAction: (() -> Unit)?,
+        /**
+         * 这个 [Action] 是在结束之后调用的.
+         * 和 [Activity.startActivity] 不是连着执行的.
+         * 是在 [RouterInterceptor.Callback.onSuccess] 或者
+         * [RouterInterceptor.Callback.onError]
+         * 方法中 post 到主线程完成的
+         */
+        val afterEventAction: (() -> Unit)?,
+) // 占位
+{
 
     companion object {
         const val KEY_SYNC_URI = "_componentSyncUri"
     }
-
-    @JvmField
-    val context: Context? = builder.context
-
-    @JvmField
-    val fragment: Fragment? = builder.fragment
-
-    /**
-     * 这是一个很重要的参数, 一定不可以为空,如果这个为空了,一定不能继续下去,因为很多地方直接使用这个参数的,不做空判断的
-     * 而且这个参数不可以为空的
-     */
-    @JvmField
-    val uri: Uri = builder.buildURI()
-
-    /**
-     * requestCode
-     */
-    @JvmField
-    val requestCode: Int? = builder.requestCode
-
-    /**
-     * 框架是否帮助用户跳转拿 [com.xiaojinzi.component.bean.ActivityResult]
-     * 有 requestCode 只能说明用户使用了某一个 requestCode,
-     * 会调用 [Activity.startActivityForResult].
-     * 但是不代表需要框架去帮你获取到 [com.xiaojinzi.component.bean.ActivityResult].
-     * 所以这个值就是标记是否需要框架帮助您去获取 [com.xiaojinzi.component.bean.ActivityResult]
-     */
-    @JvmField
-    val isForResult: Boolean = builder.isForResult
-
-    /**
-     * 是否是为了目标 Intent 来的
-     */
-    @JvmField
-    val isForTargetIntent: Boolean = builder.isForTargetIntent
-
-    /**
-     * 跳转的时候 options 参数
-     */
-    @JvmField
-    val options: Bundle? = builder.options
-
-    /**
-     * Intent 的 flag, 集合不可更改
-     */
-    @JvmField
-    val intentFlags: List<Int> = Collections.unmodifiableList(builder.intentFlags)
-
-    /**
-     * Intent 的 类别, 集合不可更改
-     */
-    @JvmField
-    val intentCategories: List<String> = Collections.unmodifiableList(builder.intentCategories)
-
-    @JvmField
-    val bundle: Bundle = Bundle().apply {
-        this.putAll(builder.bundle)
-    }
-
-    @JvmField
-    val intentConsumer: Consumer<Intent>? = builder.intentConsumer
-
-    /**
-     * 这个 [Action] 是在路由开始的时候调用的.
-     * 和 [Activity.startActivity] 不是连着执行的.
-     * 中间 post 到主线程的操作
-     */
-    @JvmField
-    val beforeAction: (() -> Unit)? = builder.beforeAction
-
-    /**
-     * 这个 [Action] 是在 [Activity.startActivity] 之前调用的.
-     * 和 [Activity.startActivity] 是连着执行的.
-     */
-    @JvmField
-    val beforeStartAction: (() -> Unit)? = builder.beforeStartAction
-
-    /**
-     * 这个 [Action] 是在 [Activity.startActivity] 之后调用的.
-     * 和 [Activity.startActivity] 是连着执行的.
-     */
-    @JvmField
-    val afterStartAction: (() -> Unit)? = builder.afterStartAction
-
-    /**
-     * 这个 [Action] 是在结束之后调用的.
-     * 和 [Activity.startActivity] 不是连着执行的.
-     * 是在 [RouterInterceptor.Callback.onSuccess]
-     * 方法中 post 到主线程完成的
-     */
-    @JvmField
-    val afterAction: (() -> Unit)? = builder.afterAction
-
-    /**
-     * 这个 [Action] 是在结束之后调用的.
-     * 和 [Activity.startActivity] 不是连着执行的.
-     * 是在 [RouterInterceptor.Callback.onError]
-     * 方法中 post 到主线程完成的
-     */
-    @JvmField
-    val afterErrorAction: (() -> Unit)? = builder.afterErrorAction
-
-    /**
-     * 这个 [Action] 是在结束之后调用的.
-     * 和 [Activity.startActivity] 不是连着执行的.
-     * 是在 [RouterInterceptor.Callback.onSuccess] 或者
-     * [RouterInterceptor.Callback.onError]
-     * 方法中 post 到主线程完成的
-     */
-    @JvmField
-    val afterEventAction: (() -> Unit)? = builder.afterEventAction
 
     /**
      * 同步 Query 到 Bundle 中

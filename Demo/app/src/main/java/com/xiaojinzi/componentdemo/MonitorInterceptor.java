@@ -27,7 +27,7 @@ public class MonitorInterceptor implements RouterInterceptor {
                     .query("tel", "15857913622")
                     .build();
         }*/
-        String uriStr = request.uri.toString();
+        String uriStr = request.getUri().toString();
         Log.d("全局监控的拦截器", "uri = " + uriStr);
         chain.proceed(request);
     }
