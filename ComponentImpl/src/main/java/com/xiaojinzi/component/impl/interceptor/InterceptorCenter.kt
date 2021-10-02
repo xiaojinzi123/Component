@@ -134,14 +134,9 @@ object InterceptorCenter: IComponentCenterInterceptor {
 
     @UiThread
     override fun getByName(interceptorName: String): RouterInterceptor? {
-        if (interceptorName == null) {
-            return null
-        }
-        // 先到缓存中找
-        var result: RouterInterceptor? = null
         // 拿到拦截器的 Class 对象
         val interceptorClass = mInterceptorMap[interceptorName]
-        result = if (interceptorClass == null) {
+        var result: RouterInterceptor? = if (interceptorClass == null) {
             null
         } else {
             RouterInterceptorCache.getInterceptorByClass(interceptorClass)

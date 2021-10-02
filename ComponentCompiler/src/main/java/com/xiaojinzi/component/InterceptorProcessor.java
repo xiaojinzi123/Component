@@ -225,10 +225,10 @@ public class InterceptorProcessor extends BaseHostProcessor {
                         List<Object> conditionsArgs = new ArrayList<>(2 * conditionsImplClassNames.size());
                         Utils.generateCondition(mElements, mConditionCacheTypeElement, conditionsSB, conditionsArgs, conditionsImplClassNames);
                         normalInterceptorInitMapMethodSpecBuilder.beginControlFlow("if(" + conditionsSB.toString() + ")", conditionsArgs.toArray());
-                        normalInterceptorInitMapMethodSpecBuilder.addStatement("getInterceptorMap().put($S, $T.class)", interceptorBean.name, implTypeElement);
+                        normalInterceptorInitMapMethodSpecBuilder.addStatement("getRealInterceptorMap().put($S, $T.class)", interceptorBean.name, implTypeElement);
                         normalInterceptorInitMapMethodSpecBuilder.endControlFlow();
                     } else {
-                        normalInterceptorInitMapMethodSpecBuilder.addStatement("getInterceptorMap().put($S, $T.class)", interceptorBean.name, implTypeElement);
+                        normalInterceptorInitMapMethodSpecBuilder.addStatement("getRealInterceptorMap().put($S, $T.class)", interceptorBean.name, implTypeElement);
                     }
                 }
             });

@@ -18,12 +18,14 @@ internal abstract class ModuleInterceptorImpl : IComponentHostInterceptor {
 
     private var isInitMap = false
 
-    override var interceptorMap: Map<String, Class<out RouterInterceptor>> = HashMap()
+    protected val realInterceptorMap: Map<String, Class<out RouterInterceptor>> = mutableMapOf()
+
+    override val interceptorMap: Map<String, Class<out RouterInterceptor>>
         get() {
             if (!isInitMap) {
                 initInterceptorMap()
             }
-            return HashMap(field)
+            return HashMap(realInterceptorMap)
         }
 
     override val interceptorNames: Set<String>
@@ -31,7 +33,7 @@ internal abstract class ModuleInterceptorImpl : IComponentHostInterceptor {
             if (!isInitMap) {
                 initInterceptorMap()
             }
-            return interceptorMap.keys
+            return realInterceptorMap.keys
         }
 
     /**
