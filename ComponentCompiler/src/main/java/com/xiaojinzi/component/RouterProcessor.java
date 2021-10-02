@@ -394,7 +394,7 @@ public class RouterProcessor extends BaseHostProcessor {
                     // 存进 map 集合的代码
                     if (scheme == null || "".equals(scheme)) {
                         initMapMethodSpecBuilder.addStatement(
-                                "routerBeanMap.put(defaultScheme + $S,$N)",
+                                "getRouterMap().put(defaultScheme + $S,$N)",
                                 "://" + routerBean.hostAndPath(), routerBeanName
                         );
                     } else  {
@@ -402,7 +402,7 @@ public class RouterProcessor extends BaseHostProcessor {
                         initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
                     }
                 } else {
-                    initMapMethodSpecBuilder.addStatement("regExRouterBeanMap.put($S,$N)", regexStr, routerBeanName);
+                    initMapMethodSpecBuilder.addStatement("getRegExRouterBeanMap().put($S,$N)", regexStr, routerBeanName);
                 }
                 initMapMethodSpecBuilder.addCode("\n");
             }

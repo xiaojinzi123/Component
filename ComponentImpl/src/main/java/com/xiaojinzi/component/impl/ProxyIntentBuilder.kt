@@ -6,7 +6,6 @@ import android.os.Bundle
 import com.xiaojinzi.component.Component.getApplication
 import com.xiaojinzi.component.support.ProxyIntentAct
 import com.xiaojinzi.component.support.Utils
-import java.util.*
 
 /**
  * 用于构建一个 {@link Intent}, 详情请看 {@link Navigator#proxyBundle(Bundle)}
