@@ -5,19 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.TextUtils
-import android.util.SparseArray
 import androidx.annotation.UiThread
 import androidx.fragment.app.Fragment
 import com.xiaojinzi.component.Component.requiredConfig
 import com.xiaojinzi.component.ComponentActivityStack.getTopAliveActivity
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno
-import com.xiaojinzi.component.support.Action
-import com.xiaojinzi.component.support.Consumer
-import com.xiaojinzi.component.support.ParameterSupport
-import com.xiaojinzi.component.support.Utils
-import java.io.Serializable
+import com.xiaojinzi.component.support.*
 import java.util.*
 
 /**
@@ -32,7 +26,7 @@ import java.util.*
  * @author xiaojinzi
  */
 @CheckClassNameAnno
-class RouterRequest private constructor(builder: Builder) {
+class RouterRequest private constructor(builder: RouterRequestBuilderImpl<*>) {
 
     companion object {
         const val KEY_SYNC_URI = "_componentSyncUri"
@@ -258,49 +252,93 @@ class RouterRequest private constructor(builder: Builder) {
         }
 
     /**
-     * 这里转化的对象会比 [Builder] 对象中的参数少一个 [Builder.url]
+     * 这里转化的对象会比 [RouterRequestBuilder] 对象中的参数少一个 [RouterRequestBuilder.url]
      * 因为 uri 转化为了 scheme,host,path,queryMap 那么这时候就不需要 url 了
      */
-    fun toBuilder(): Builder {
-        val builder = Builder()
+    fun toBuilder(): RouterRequestBuilder {
+        val builder = RouterRequestBuilder()
+
         // 有关界面的两个
         builder.fragment = fragment
         builder.context = context
 
         // 还原一个 Uri 为各个零散的参数
-        builder.scheme = uri.scheme
-        builder.host = uri.host
-        builder.path = uri.path
+        builder.scheme(scheme = uri.scheme!!)
+        builder.host(host = uri.host!!)
+        builder.path(path = uri.path!!)
         val queryParameterNames = uri.queryParameterNames
         if (queryParameterNames != null) {
             for (queryParameterName in queryParameterNames) {
-                builder.queryMap[queryParameterName!!] = uri.getQueryParameter(queryParameterName)!!
+                builder.query(queryName = queryParameterName, queryValue = uri.getQueryParameter(queryParameterName)!!)
             }
         }
         builder.bundle.putAll(bundle)
         builder.requestCode = requestCode
         builder.isForResult = isForResult
         builder.isForTargetIntent = isForTargetIntent
-        builder.options = options
+        builder.options(options = options)
         // 这里需要新创建一个是因为不可修改的集合不可以给别人
-        builder.intentCategories = ArrayList(intentCategories)
-        builder.intentFlags = ArrayList(intentFlags)
-        builder.intentConsumer = intentConsumer
-        builder.beforeAction = beforeAction
-        builder.beforeStartAction = beforeStartAction
-        builder.afterStartAction = afterStartAction
-        builder.afterAction = afterAction
-        builder.afterErrorAction = afterErrorAction
-        builder.afterEventAction = afterEventAction
+        builder.addIntentCategories(*intentCategories.toTypedArray())
+        builder.addIntentFlags(*intentFlags.toIntArray())
+        builder.intentConsumer(intentConsumer = intentConsumer)
+        builder.beforeAction(action = beforeAction)
+        builder.beforeStartAction(action = beforeStartAction)
+        builder.afterStartAction(action = afterStartAction)
+        builder.afterAction(action = afterAction)
+        builder.afterErrorAction(action = afterErrorAction)
+        builder.afterEventAction(action = afterEventAction)
         return builder
     }
 
-    /**
-     * 构建一个路由请求对象 [RouterRequest] 对象的 Builder
-     *
-     * @author xiaojinzi
-     */
-    open class Builder : URIBuilder() {
+    interface IRouterRequestBuilder<T : IRouterRequestBuilder<T>> :
+            IURIBuilder<T>,
+            IBundleBuilder<T> {
+
+        /**
+         * 是否是跳转拿 [com.xiaojinzi.component.bean.ActivityResult] 的
+         */
+        var isForResult: Boolean
+
+        /**
+         * 是否是为了目标 Intent
+         */
+        var isForTargetIntent: Boolean
+
+        var context: Context?
+        var fragment: Fragment?
+        var requestCode: Int?
+
+        fun requestCode(requestCode: Int?): T
+        fun beforeAction(@UiThread action: Action?): T
+        fun beforeAction(@UiThread action: (() -> Unit)?): T
+        fun beforeStartAction(@UiThread action: Action?): T
+        fun beforeStartAction(@UiThread action: (() -> Unit)?): T
+        fun afterStartAction(@UiThread action: Action?): T
+        fun afterStartAction(@UiThread action: (() -> Unit)?): T
+        fun afterAction(@UiThread action: Action?): T
+        fun afterAction(@UiThread action: (() -> Unit)?): T
+        fun afterErrorAction(@UiThread action: Action?): T
+        fun afterErrorAction(@UiThread action: (() -> Unit)?): T
+        fun afterEventAction(@UiThread action: Action?): T
+        fun afterEventAction(@UiThread action: (() -> Unit)?): T
+        fun intentConsumer(@UiThread intentConsumer: Consumer<Intent>?): T
+        fun addIntentFlags(vararg flags: Int): T
+        fun addIntentCategories(vararg categories: String): T
+        fun options(options: Bundle?): T
+        fun build(): RouterRequest
+
+    }
+
+    open class RouterRequestBuilderImpl<T : IRouterRequestBuilder<T>>(
+            context: Context? = null,
+            fragment: Fragment? = null,
+            private val uriBuilder: IURIBuilder<T> = IURIBuilderImpl(),
+            private val bundleBuilder: IBundleBuilder<T> = IBundleBuilderImpl(),
+            private val targetDelegateImplCallable: DelegateImplCallable<T> = DelegateImplCallableImpl()
+    ) : IRouterRequestBuilder<T>,
+            IURIBuilder<T> by uriBuilder,
+            IBundleBuilder<T> by bundleBuilder,
+            DelegateImplCallable<T> by targetDelegateImplCallable {
 
         var options: Bundle? = null
 
@@ -314,20 +352,11 @@ class RouterRequest private constructor(builder: Builder) {
          */
         var intentCategories: MutableList<String> = ArrayList(2)
 
-        var bundle: Bundle = Bundle()
-        var context: Context? = null
-        var fragment: Fragment? = null
-        var requestCode: Int? = null
-
-        /**
-         * 是否是跳转拿 [com.xiaojinzi.component.bean.ActivityResult] 的
-         */
-        var isForResult = false
-
-        /**
-         * 是否是为了目标 Intent
-         */
-        var isForTargetIntent = false
+        override var context: Context? = null
+        override var fragment: Fragment? = null
+        override var requestCode: Int? = null
+        override var isForResult = false
+        override var isForTargetIntent = false
 
         var intentConsumer: Consumer<Intent>? = null
 
@@ -364,85 +393,87 @@ class RouterRequest private constructor(builder: Builder) {
          */
         var afterEventAction: (() -> Unit)? = null
 
-        fun context(context: Context): Builder {
-            this.context = context
-            return this
+        override var delegateImplCallable: () -> T
+            get() = targetDelegateImplCallable.delegateImplCallable
+            set(value) {
+                uriBuilder.delegateImplCallable = value
+                bundleBuilder.delegateImplCallable = value
+                targetDelegateImplCallable.delegateImplCallable = value
+            }
+
+        private fun getRealDelegateImpl(): T {
+            return delegateImplCallable.invoke()
         }
 
-        fun fragment(fragment: Fragment): Builder {
-            this.fragment = fragment
-            return this
+        override fun requestCode(requestCode: Int?): T {
+            this.requestCode = requestCode
+            return getRealDelegateImpl()
         }
 
-        open fun beforeAction(@UiThread action: Action?): Builder {
+        override fun beforeAction(@UiThread action: Action?): T {
             return beforeAction(action = {
                 action?.run()
             })
         }
 
-        open fun beforeAction(@UiThread action: (() -> Unit)?): Builder {
+        override fun beforeAction(@UiThread action: (() -> Unit)?): T {
             beforeAction = action
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun beforeStartAction(@UiThread action: Action?): Builder {
+        override fun beforeStartAction(@UiThread action: Action?): T {
             return beforeStartAction(action = {
                 action?.run()
             })
         }
 
-        open fun beforeStartAction(@UiThread action: (() -> Unit)?): Builder {
+        override fun beforeStartAction(@UiThread action: (() -> Unit)?): T {
             beforeStartAction = action
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun afterStartAction(@UiThread action: Action?): Builder {
+        override fun afterStartAction(@UiThread action: Action?): T {
             return afterStartAction(action = {
                 action?.run()
             })
         }
 
-        open fun afterStartAction(@UiThread action: (() -> Unit)?): Builder {
+        override fun afterStartAction(@UiThread action: (() -> Unit)?): T {
             afterStartAction = action
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun afterAction(@UiThread action: Action?): Builder {
+        override fun afterAction(@UiThread action: Action?): T {
             return afterAction(action = {
                 action?.run()
             })
         }
 
-        open fun afterAction(@UiThread action: (() -> Unit)?): Builder {
+        override fun afterAction(@UiThread action: (() -> Unit)?): T {
             afterAction = action
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun afterErrorAction(@UiThread action: Action?): Builder {
+        override fun afterErrorAction(@UiThread action: Action?): T {
             return afterErrorAction(action = {
                 action?.run()
             })
         }
 
-        open fun afterErrorAction(@UiThread action: (() -> Unit)?): Builder {
+        override fun afterErrorAction(@UiThread action: (() -> Unit)?): T {
             afterErrorAction = action
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun afterEventAction(@UiThread action: Action?): Builder {
+        override fun afterEventAction(@UiThread action: Action?): T {
             return afterEventAction(action = {
                 action?.run()
             })
         }
 
-        open fun afterEventAction(@UiThread action: (() -> Unit)?): Builder {
+        override fun afterEventAction(@UiThread action: (() -> Unit)?): T {
             afterEventAction = action
-            return this
-        }
-
-        open fun requestCode(requestCode: Int?): Builder {
-            this.requestCode = requestCode
-            return this
+            return getRealDelegateImpl()
         }
 
         /**
@@ -457,243 +488,27 @@ class RouterRequest private constructor(builder: Builder) {
          * 更改的机会,最好别更改内部的参数等的信息,这里提供出来其实主要是可以让你调用Intent
          * 的 [Intent.addFlags] 等方法,并不是给你修改内部的 bundle 的
          */
-        open fun intentConsumer(@UiThread intentConsumer: Consumer<Intent>?): Builder {
+        override fun intentConsumer(@UiThread intentConsumer: Consumer<Intent>?): T {
             this.intentConsumer = intentConsumer
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun addIntentFlags(vararg flags: Int): Builder {
+        override fun addIntentFlags(vararg flags: Int): T {
             intentFlags.addAll(flags.toList())
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun addIntentCategories(vararg categories: String): Builder {
+        override fun addIntentCategories(vararg categories: String): T {
             intentCategories.addAll(listOf(*categories))
-            return this
+            return getRealDelegateImpl()
         }
 
         /**
          * 用于 API >= 16 的时候,调用 [Activity.startActivity]
          */
-        open fun options(options: Bundle?): Builder {
+        override fun options(options: Bundle?): T {
             this.options = options
-            return this
-        }
-
-        override fun url(url: String): Builder {
-            super.url(url)
-            return this
-        }
-
-        override fun scheme(scheme: String): Builder {
-            super.scheme(scheme)
-            return this
-        }
-
-        override fun hostAndPath(hostAndPath: String): Builder {
-            super.hostAndPath(hostAndPath)
-            return this
-        }
-
-        override fun userInfo(userInfo: String): Builder {
-            super.userInfo(userInfo)
-            return this
-        }
-
-        override fun host(host: String): Builder {
-            super.host(host)
-            return this
-        }
-
-        override fun path(path: String): Builder {
-            super.path(path)
-            return this
-        }
-
-        open fun putAll(bundle: Bundle): Builder {
-            Utils.checkNullPointer(bundle, "bundle")
-            this.bundle.putAll(bundle)
-            return this
-        }
-
-        open fun putBundle(key: String, bundle: Bundle?): Builder {
-            this.bundle.putBundle(key, bundle)
-            return this
-        }
-
-        open fun putCharSequence(key: String, value: CharSequence?): Builder {
-            this.bundle.putCharSequence(key, value)
-            return this
-        }
-
-        open fun putCharSequenceArray(key: String, value: Array<CharSequence>?): Builder {
-            this.bundle.putCharSequenceArray(key, value)
-            return this
-        }
-
-        open fun putCharSequenceArrayList(key: String, value: ArrayList<CharSequence>?): Builder {
-            this.bundle.putCharSequenceArrayList(key, value)
-            return this
-        }
-
-        open fun putByte(key: String, value: Byte): Builder {
-            this.bundle.putByte(key, value)
-            return this
-        }
-
-        open fun putByteArray(key: String, value: ByteArray?): Builder {
-            this.bundle.putByteArray(key, value)
-            return this
-        }
-
-        open fun putChar(key: String, value: Char): Builder {
-            this.bundle.putChar(key, value)
-            return this
-        }
-
-        open fun putCharArray(key: String, value: CharArray?): Builder {
-            this.bundle.putCharArray(key, value)
-            return this
-        }
-
-        open fun putBoolean(key: String, value: Boolean): Builder {
-            this.bundle.putBoolean(key, value)
-            return this
-        }
-
-        open fun putBooleanArray(key: String, value: BooleanArray?): Builder {
-            this.bundle.putBooleanArray(key, value)
-            return this
-        }
-
-        open fun putString(key: String, value: String?): Builder {
-            this.bundle.putString(key, value)
-            return this
-        }
-
-        open fun putStringArray(key: String, value: Array<String>?): Builder {
-            this.bundle.putStringArray(key, value)
-            return this
-        }
-
-        open fun putStringArrayList(key: String, value: ArrayList<String>?): Builder {
-            this.bundle.putStringArrayList(key, value)
-            return this
-        }
-
-        open fun putShort(key: String, value: Short): Builder {
-            this.bundle.putShort(key, value)
-            return this
-        }
-
-        open fun putShortArray(key: String, value: ShortArray?): Builder {
-            this.bundle.putShortArray(key, value)
-            return this
-        }
-
-        open fun putInt(key: String, value: Int): Builder {
-            this.bundle.putInt(key, value)
-            return this
-        }
-
-        open fun putIntArray(key: String, value: IntArray?): Builder {
-            this.bundle.putIntArray(key, value)
-            return this
-        }
-
-        open fun putIntegerArrayList(key: String, value: ArrayList<Int>?): Builder {
-            this.bundle.putIntegerArrayList(key, value)
-            return this
-        }
-
-        open fun putLong(key: String, value: Long): Builder {
-            this.bundle.putLong(key, value)
-            return this
-        }
-
-        open fun putLongArray(key: String, value: LongArray?): Builder {
-            this.bundle.putLongArray(key, value)
-            return this
-        }
-
-        open fun putFloat(key: String, value: Float): Builder {
-            this.bundle.putFloat(key, value)
-            return this
-        }
-
-        open fun putFloatArray(key: String, value: FloatArray?): Builder {
-            this.bundle.putFloatArray(key, value)
-            return this
-        }
-
-        open fun putDouble(key: String, value: Double): Builder {
-            this.bundle.putDouble(key, value)
-            return this
-        }
-
-        open fun putDoubleArray(key: String, value: DoubleArray?): Builder {
-            this.bundle.putDoubleArray(key, value)
-            return this
-        }
-
-        open fun putParcelable(key: String, value: Parcelable?): Builder {
-            this.bundle.putParcelable(key, value)
-            return this
-        }
-
-        open fun putParcelableArray(key: String, value: Array<Parcelable>?): Builder {
-            this.bundle.putParcelableArray(key, value)
-            return this
-        }
-
-        open fun putParcelableArrayList(key: String, value: ArrayList<out Parcelable>?): Builder {
-            this.bundle.putParcelableArrayList(key, value)
-            return this
-        }
-
-        open fun putSparseParcelableArray(key: String, value: SparseArray<out Parcelable>?): Builder {
-            this.bundle.putSparseParcelableArray(key, value)
-            return this
-        }
-
-        open fun putSerializable(key: String, value: Serializable?): Builder {
-            this.bundle.putSerializable(key, value)
-            return this
-        }
-
-        override fun query(queryName: String, queryValue: String): Builder {
-            super.query(queryName, queryValue)
-            return this
-        }
-
-        override fun query(queryName: String, queryValue: Boolean): Builder {
-            super.query(queryName, queryValue)
-            return this
-        }
-
-        override fun query(queryName: String, queryValue: Byte): Builder {
-            super.query(queryName, queryValue)
-            return this
-        }
-
-        override fun query(queryName: String, queryValue: Int): Builder {
-            super.query(queryName, queryValue)
-            return this
-        }
-
-        override fun query(queryName: String, queryValue: Float): Builder {
-            super.query(queryName, queryValue)
-            return this
-        }
-
-        override fun query(queryName: String, queryValue: Long): Builder {
-            super.query(queryName, queryValue)
-            return this
-        }
-
-        override fun query(queryName: String, queryValue: Double): Builder {
-            super.query(queryName, queryValue)
-            return this
+            return getRealDelegateImpl()
         }
 
         /**
@@ -701,9 +516,62 @@ class RouterRequest private constructor(builder: Builder) {
          *
          * @return 可能会抛出一个运行时异常, 由于您的参数在构建 uri 的时候出现的异常
          */
-        open fun build(): RouterRequest {
+        override fun build(): RouterRequest {
             return RouterRequest(this)
         }
+
+        init {
+            this.context = context
+            this.fragment = fragment
+        }
+
+    }
+
+    /**
+     * 构建一个路由请求对象 [RouterRequest] 对象的 Builder
+     *
+     * @author xiaojinzi
+     */
+    class RouterRequestBuilder(
+            private val routerRequestBuilder: IRouterRequestBuilder<RouterRequestBuilder> = RouterRequestBuilderImpl(),
+    ) : IRouterRequestBuilder<RouterRequestBuilder> by routerRequestBuilder {
+
+        init {
+            routerRequestBuilder.delegateImplCallable = {
+                this
+            }
+        }
+
+    }
+
+    interface IURIBuilder<T : IURIBuilder<T>> : DelegateImplCallable<T> {
+
+        fun url(url: String): T
+        fun scheme(scheme: String): T
+        fun hostAndPath(hostAndPath: String): T
+        fun userInfo(userInfo: String): T
+        fun host(host: String): T
+        fun path(path: String): T
+        fun query(queryName: String, queryValue: String): T
+        fun query(queryName: String, queryValue: Boolean): T
+        fun query(queryName: String, queryValue: Byte): T
+        fun query(queryName: String, queryValue: Int): T
+        fun query(queryName: String, queryValue: Float): T
+        fun query(queryName: String, queryValue: Long): T
+        fun query(queryName: String, queryValue: Double): T
+
+        /**
+         * 构建一个 [Uri],如果构建失败会抛出异常
+         */
+        fun buildURI(): Uri
+
+        /**
+         * 构建一个URL,如果构建失败会抛出异常
+         */
+        fun buildURL(): String {
+            return buildURI().toString()
+        }
+
     }
 
     /**
@@ -711,25 +579,35 @@ class RouterRequest private constructor(builder: Builder) {
      *
      * @author xiaojinzi
      */
-    open class URIBuilder {
+    open class IURIBuilderImpl<T : IURIBuilder<T>>(
+            private val targetDelegateImplCallable: DelegateImplCallable<T> = DelegateImplCallableImpl(),
+    ) : IURIBuilder<T>, DelegateImplCallable<T> by targetDelegateImplCallable {
 
         var url: String? = null
         var scheme: String? = null
         private var userInfo: String? = null
         var host: String? = null
         var path: String? = null
-        var queryMap: MutableMap<String, String> = HashMap()
+        private var queryMap: MutableMap<String, String> = HashMap()
 
-        open fun url(url: String): URIBuilder {
-            Utils.checkStringNullPointer(url, "url")
-            this.url = url
-            return this
+        override var delegateImplCallable: () -> T
+            get() = targetDelegateImplCallable.delegateImplCallable
+            set(value) {
+                targetDelegateImplCallable.delegateImplCallable = value
+            }
+
+        private fun getRealDelegateImpl(): T {
+            return delegateImplCallable.invoke()
         }
 
-        open fun scheme(scheme: String): URIBuilder {
-            Utils.checkStringNullPointer(scheme, "scheme")
+        override fun url(url: String): T {
+            this.url = url
+            return getRealDelegateImpl()
+        }
+
+        override fun scheme(scheme: String): T {
             this.scheme = scheme
-            return this
+            return getRealDelegateImpl()
         }
 
         /**
@@ -737,7 +615,7 @@ class RouterRequest private constructor(builder: Builder) {
          *
          * @param hostAndPath xxx/xxx
          */
-        open fun hostAndPath(hostAndPath: String): URIBuilder {
+        override fun hostAndPath(hostAndPath: String): T {
             Utils.checkNullPointer(hostAndPath, "hostAndPath")
             val index = hostAndPath.indexOf("/")
             if (index > 0) {
@@ -746,62 +624,59 @@ class RouterRequest private constructor(builder: Builder) {
             } else {
                 Utils.debugThrowException(IllegalArgumentException("$hostAndPath is invalid"))
             }
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun userInfo(userInfo: String): URIBuilder {
+        override fun userInfo(userInfo: String): T {
             Utils.checkStringNullPointer(userInfo, "userInfo")
             this.userInfo = userInfo
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun host(host: String): URIBuilder {
+        override fun host(host: String): T {
             Utils.checkStringNullPointer(host, "host")
             this.host = host
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun path(path: String): URIBuilder {
+        override fun path(path: String): T {
             Utils.checkStringNullPointer(path, "path")
             this.path = path
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun query(queryName: String, queryValue: String): URIBuilder {
+        override fun query(queryName: String, queryValue: String): T {
             Utils.checkStringNullPointer(queryName, "queryName")
             Utils.checkStringNullPointer(queryValue, "queryValue")
             queryMap[queryName] = queryValue
-            return this
+            return getRealDelegateImpl()
         }
 
-        open fun query(queryName: String, queryValue: Boolean): URIBuilder {
+        override fun query(queryName: String, queryValue: Boolean): T {
             return query(queryName, queryValue.toString())
         }
 
-        open fun query(queryName: String, queryValue: Byte): URIBuilder {
+        override fun query(queryName: String, queryValue: Byte): T {
             return query(queryName, queryValue.toString())
         }
 
-        open fun query(queryName: String, queryValue: Int): URIBuilder {
+        override fun query(queryName: String, queryValue: Int): T {
             return query(queryName, queryValue.toString())
         }
 
-        open fun query(queryName: String, queryValue: Float): URIBuilder {
+        override fun query(queryName: String, queryValue: Float): T {
             return query(queryName, queryValue.toString())
         }
 
-        open fun query(queryName: String, queryValue: Long): URIBuilder {
+        override fun query(queryName: String, queryValue: Long): T {
             return query(queryName, queryValue.toString())
         }
 
-        open fun query(queryName: String, queryValue: Double): URIBuilder {
+        override fun query(queryName: String, queryValue: Double): T {
             return query(queryName, queryValue.toString())
         }
 
-        /**
-         * 构建一个 [Uri],如果构建失败会抛出异常
-         */
-        fun buildURI(): Uri {
+        override fun buildURI(): Uri {
             val builder = this
             var result: Uri?
             if (builder.url == null) {
@@ -846,12 +721,24 @@ class RouterRequest private constructor(builder: Builder) {
             return result
         }
 
-        /**
-         * 构建一个URL,如果构建失败会抛出异常
-         */
-        fun buildURL(): String {
-            return buildURI().toString()
+    }
+
+    class URIBuilder(
+            private val uriBuilder: IURIBuilder<URIBuilder> = IURIBuilderImpl(),
+    ) : IURIBuilder<URIBuilder> by uriBuilder {
+
+        override var delegateImplCallable: () -> URIBuilder
+            get() = uriBuilder.delegateImplCallable
+            set(value) {
+                uriBuilder.delegateImplCallable = value
+            }
+
+        init {
+            delegateImplCallable = {
+                this
+            }
         }
+
     }
 
 }

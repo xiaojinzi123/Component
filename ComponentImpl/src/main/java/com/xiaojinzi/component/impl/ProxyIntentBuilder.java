@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * 用于构建一个 {@link Intent}, 详情请看 {@link Navigator#proxyBundle(Bundle)}
  */
-public class ProxyIntentBuilder extends RouterRequest.URIBuilder {
+public class ProxyIntentBuilder extends RouterRequest.IURIBuilderImpl {
 
     @Nullable
     protected Bundle options;

@@ -2,6 +2,7 @@ package com.xiaojinzi.component.support;
 
 import androidx.annotation.NonNull;
 
+import com.xiaojinzi.component.impl.InterceptorChain;
 import com.xiaojinzi.component.impl.Navigator;
 import com.xiaojinzi.component.impl.RouterInterceptor;
 import com.xiaojinzi.component.impl.RouterRequest;
@@ -55,7 +56,7 @@ public class RetryRouterInterceptor implements RouterInterceptor {
 
     }
 
-    private class RetryInterceptorChain extends Navigator.InterceptorChain {
+    private class RetryInterceptorChain extends InterceptorChain {
 
         private Callback mRetryCallback = new Callback() {
 

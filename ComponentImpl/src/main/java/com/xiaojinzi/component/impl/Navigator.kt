@@ -7,8 +7,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
-import android.util.SparseArray
 import androidx.annotation.AnyThread
 import androidx.annotation.CheckResult
 import androidx.annotation.UiThread
@@ -18,6 +16,7 @@ import androidx.fragment.app.FragmentManager
 import com.xiaojinzi.component.Component
 import com.xiaojinzi.component.ComponentConstants
 import com.xiaojinzi.component.anno.support.CheckClassNameAnno
+import com.xiaojinzi.component.anno.support.NeedOptimizeAnno
 import com.xiaojinzi.component.bean.ActivityResult
 import com.xiaojinzi.component.error.ignore.ActivityResultException
 import com.xiaojinzi.component.error.ignore.InterceptorNotFoundException
@@ -26,16 +25,144 @@ import com.xiaojinzi.component.impl.interceptor.InterceptorCenter
 import com.xiaojinzi.component.impl.interceptor.OpenOnceInterceptor
 import com.xiaojinzi.component.support.*
 import com.xiaojinzi.component.support.NavigationDisposable.ProxyNavigationDisposableImpl
-import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
+
+interface INavigator<T : INavigator<T>> : RouterRequest.IRouterRequestBuilder<T>, Call {
+
+    fun interceptors(vararg interceptorArr: RouterInterceptor): T
+    fun interceptors(vararg interceptorClassArr: Class<out RouterInterceptor>): T
+    fun interceptorNames(vararg interceptorNameArr: String): T
+    fun requestCodeRandom(): T
+    fun autoCancel(autoCancel: Boolean): T
+    fun useRouteRepeatCheck(useRouteRepeatCheck: Boolean): T
+    fun proxyBundle(bundle: Bundle): T
+
+}
+
+/**
+ * 拦截器多个连接着走的执行器,源代码来源于 OkHTTP
+ * 这个原理就是, 本身是一个 执行器 (Chain),当你调用 proceed 方法的时候,会创建下一个拦截器的执行对象
+ * 然后调用当前拦截器的 intercept 方法
+ * @param mInterceptors 拦截器列表,所有要执行的拦截器列表
+ * @param mIndex        拦截器的下标
+ * @param mRequest      第一次这个对象是不需要的
+ * @param mCallback     这个是拦截器的回调,这个用户不能自定义,一直都是一个对象
+ */
+open class InterceptorChain(
+        private val mInterceptors: List<RouterInterceptor?>,
+        private val mIndex: Int,
+        /**
+         * 每一个拦截器执行器 [RouterInterceptor.Chain]
+         * 都会有上一个拦截器给的 request 对象或者初始化的一个 request,用于在下一个拦截器
+         * 中获取到 request 对象,并且支持拦截器自定义修改 request 对象或者直接创建一个新的传给下一个拦截器执行器
+         */
+        private val mRequest: RouterRequest,
+        private val mCallback: RouterInterceptor.Callback
+) : RouterInterceptor.Chain {
+
+    /**
+     * 调用的次数,如果超过1次就做相应的错误处理
+     */
+    private var calls = 0
+
+    /**
+     * 拦截器是否是否已经走完
+     */
+    @Synchronized
+    protected fun isCompletedProcess(): Boolean {
+        return mIndex >= mInterceptors.size
+    }
+
+    protected fun index(): Int {
+        return mIndex
+    }
+
+    protected fun interceptors(): List<RouterInterceptor?> {
+        return mInterceptors
+    }
+
+    protected fun rawCallback(): RouterInterceptor.Callback {
+        return mCallback
+    }
+
+    override fun request(): RouterRequest {
+        // 第一个拦截器的
+        return mRequest
+    }
+
+    override fun callback(): RouterInterceptor.Callback {
+        return rawCallback()
+    }
+
+    override fun proceed(request: RouterRequest) {
+        proceed(request, callback())
+    }
+
+    private fun proceed(request: RouterRequest, callback: RouterInterceptor.Callback) {
+        // ui 线程上执行
+        Utils.postActionToMainThreadAnyway(Runnable {
+            try {
+                // 如果已经结束, 对不起就不执行了
+                if (callback().isEnd()) {
+                    return@Runnable
+                }
+                ++calls
+                when {
+                    isCompletedProcess() -> {
+                        callback().onError(
+                                NavigationFailException(
+                                        IndexOutOfBoundsException(
+                                                "size = " + mInterceptors.size + ",index = " + mIndex
+                                        )
+                                )
+                        )
+                    }
+                    calls > 1 -> { // 调用了两次
+                        callback().onError(
+                                NavigationFailException(
+                                        "interceptor " + mInterceptors[mIndex - 1]
+                                                + " must call proceed() exactly once"
+                                )
+                        )
+                    }
+                    else -> {
+                        // current Interceptor
+                        val interceptor = mInterceptors[mIndex]
+                        // 当拦截器最后一个的时候,就不是这个类了,是 DoActivityStartInterceptor 了
+                        val next = InterceptorChain(
+                                mInterceptors, mIndex + 1,
+                                request, callback
+                        )
+                        // 提前同步 Query 到 Bundle
+                        next.request().syncUriToBundle()
+                        // 用户自定义的部分,必须在主线程
+                        interceptor!!.intercept(next)
+                    }
+                }
+            } catch (e: Exception) {
+                callback().onError(e)
+            }
+        })
+    }
+
+}
 
 /**
  * 这个类一部分功能应该是 [Router] 的构建者对象的功能,但是这里面更多的为导航的功能
  * 写了很多代码,所以名字就不叫 Builder 了
  */
 @CheckClassNameAnno
-open class Navigator : RouterRequest.Builder, Call {
+open class NavigatorImpl<T : INavigator<T>>
+@JvmOverloads constructor(
+        context: Context? = null,
+        fragment: Fragment? = null,
+        private val routerRequestBuilder: RouterRequest.IRouterRequestBuilder<T> = RouterRequest.RouterRequestBuilderImpl(
+                context = context,
+                fragment = fragment,
+        ),
+) : RouterRequest.IRouterRequestBuilder<T> by routerRequestBuilder,
+        INavigator<T>, Call {
 
     /**
      * 自定义的拦截器列表,为了保证顺序才用一个集合的
@@ -61,16 +188,8 @@ open class Navigator : RouterRequest.Builder, Call {
      */
     private var useRouteRepeatCheck = Component.requiredConfig().isUseRouteRepeatCheckInterceptor
 
-    constructor()
-
-    constructor(context: Context) {
-        Utils.checkNullPointer(context, "context")
-        context(context)
-    }
-
-    constructor(fragment: Fragment) {
-        Utils.checkNullPointer(fragment, "fragment")
-        fragment(fragment)
+    private fun getRealDelegateImpl(): T {
+        return delegateImplCallable.invoke()
     }
 
     /**
@@ -82,42 +201,43 @@ open class Navigator : RouterRequest.Builder, Call {
         }
     }
 
-    open fun interceptors(vararg interceptorArr: RouterInterceptor): Navigator {
+    override fun interceptors(vararg interceptorArr: RouterInterceptor): T {
         Utils.debugCheckNullPointer(interceptorArr, "interceptorArr")
         lazyInitCustomInterceptors(interceptorArr.size)
         customInterceptors!!.addAll(interceptorArr.toList())
-        return this
+        return getRealDelegateImpl()
     }
 
-    open fun interceptors(vararg interceptorClassArr: Class<out RouterInterceptor>): Navigator {
+    override fun interceptors(vararg interceptorClassArr: Class<out RouterInterceptor>): T {
         Utils.debugCheckNullPointer(interceptorClassArr, "interceptorClassArr")
         lazyInitCustomInterceptors(interceptorClassArr.size)
         customInterceptors!!.addAll(interceptorClassArr.toList())
-        return this
+        return getRealDelegateImpl()
     }
 
-    open fun interceptorNames(vararg interceptorNameArr: String): Navigator {
+    override fun interceptorNames(vararg interceptorNameArr: String): T {
         Utils.debugCheckNullPointer(interceptorNameArr, "interceptorNameArr")
         lazyInitCustomInterceptors(interceptorNameArr.size)
         customInterceptors!!.addAll(interceptorNameArr.toList())
-        return this
+        return getRealDelegateImpl()
     }
 
     /**
      * requestCode 会随机的生成
      */
-    open fun requestCodeRandom(): Navigator {
-        return requestCode(RANDOM_REQUEST_CODE)
+    override fun requestCodeRandom(): T {
+        requestCode = RANDOM_REQUEST_CODE
+        return getRealDelegateImpl()
     }
 
-    open fun autoCancel(autoCancel: Boolean): Navigator {
+    override fun autoCancel(autoCancel: Boolean): T {
         this.autoCancel = autoCancel
-        return this
+        return getRealDelegateImpl()
     }
 
-    open fun useRouteRepeatCheck(useRouteRepeatCheck: Boolean): Navigator {
+    override fun useRouteRepeatCheck(useRouteRepeatCheck: Boolean): T {
         this.useRouteRepeatCheck = useRouteRepeatCheck
-        return this
+        return getRealDelegateImpl()
     }
 
     /**
@@ -147,7 +267,7 @@ open class Navigator : RouterRequest.Builder, Call {
      *
      * @see ProxyIntentAct
      */
-    fun proxyBundle(bundle: Bundle): Navigator {
+    override fun proxyBundle(bundle: Bundle): T {
         Utils.checkNullPointer(bundle, "bundle")
         val reqUrl = bundle.getString(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_URL)
         val reqBundle = bundle.getBundle(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_BUNDLE)
@@ -156,319 +276,16 @@ open class Navigator : RouterRequest.Builder, Call {
                 .getIntegerArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_FLAGS) ?: ArrayList()
         val reqCategories =
                 bundle.getStringArrayList(ProxyIntentAct.EXTRA_ROUTER_PROXY_INTENT_CATEGORIES)
-        super.url(reqUrl!!)
-        super.putAll(reqBundle!!)
-        super.options(reqOptions)
-        super.addIntentFlags(*reqFlags.toIntArray())
-        super.addIntentCategories(*reqCategories!!.toTypedArray())
-        return this
-    }
-
-    override fun intentConsumer(@UiThread intentConsumer: Consumer<Intent>?): Navigator {
-        super.intentConsumer(intentConsumer)
-        return this
-    }
-
-    override fun addIntentFlags(vararg flags: Int): Navigator {
-        super.addIntentFlags(*flags)
-        return this
-    }
-
-    override fun addIntentCategories(vararg categories: String): Navigator {
-        super.addIntentCategories(*categories)
-        return this
-    }
-
-    override fun beforeAction(action: Action?): Navigator {
-        super.beforeAction(action)
-        return this
-    }
-
-    override fun beforeAction(@UiThread action: (() -> Unit)?): Navigator {
-        super.beforeAction(action)
-        return this
-    }
-
-    override fun beforeStartAction(action: Action?): Navigator {
-        super.beforeStartAction(action)
-        return this
-    }
-
-    override fun beforeStartAction(action: (() -> Unit)?): Navigator {
-        super.beforeStartAction(action)
-        return this
-    }
-
-    override fun afterStartAction(action: Action?): Navigator {
-        super.afterStartAction(action)
-        return this
-    }
-
-    override fun afterStartAction(action: (() -> Unit)?): Navigator {
-        super.afterStartAction(action)
-        return this
-    }
-
-    override fun afterAction(action: Action?): Navigator {
-        super.afterAction(action)
-        return this
-    }
-
-    override fun afterAction(@UiThread action: (() -> Unit)?): Navigator {
-        super.afterAction(action)
-        return this
-    }
-
-    override fun afterErrorAction(action: Action?): Navigator {
-        super.afterErrorAction(action)
-        return this
-    }
-
-    override fun afterErrorAction(@UiThread action: (() -> Unit)?): Navigator {
-        super.afterErrorAction(action)
-        return this
-    }
-
-    override fun afterEventAction(action: Action?): Navigator {
-        super.afterEventAction(action)
-        return this
-    }
-
-    override fun afterEventAction(@UiThread action: (() -> Unit)?): Navigator {
-        super.afterEventAction(action)
-        return this
-    }
-
-    override fun requestCode(requestCode: Int?): Navigator {
-        super.requestCode(requestCode)
-        return this
-    }
-
-    override fun options(options: Bundle?): Navigator {
-        super.options(options)
-        return this
-    }
-
-    override fun url(url: String): Navigator {
-        super.url(url)
-        return this
-    }
-
-    override fun scheme(scheme: String): Navigator {
-        super.scheme(scheme)
-        return this
-    }
-
-    override fun hostAndPath(hostAndPath: String): Navigator {
-        super.hostAndPath(hostAndPath)
-        return this
-    }
-
-    override fun userInfo(userInfo: String): Navigator {
-        super.userInfo(userInfo)
-        return this
-    }
-
-    override fun host(host: String): Navigator {
-        super.host(host)
-        return this
-    }
-
-    override fun path(path: String): Navigator {
-        super.path(path)
-        return this
-    }
-
-    override fun putAll(bundle: Bundle): Navigator {
-        super.putAll(bundle)
-        return this
-    }
-
-    override fun putBundle(key: String, bundle: Bundle?): Navigator {
-        super.putBundle(key, bundle)
-        return this
-    }
-
-    override fun putCharSequence(key: String, value: CharSequence?): Navigator {
-        super.putCharSequence(key, value)
-        return this
-    }
-
-    override fun putCharSequenceArray(key: String, value: Array<CharSequence>?): Navigator {
-        super.putCharSequenceArray(key, value)
-        return this
-    }
-
-    override fun putCharSequenceArrayList(key: String, value: ArrayList<CharSequence>?): Navigator {
-        super.putCharSequenceArrayList(key, value)
-        return this
-    }
-
-    override fun putByte(key: String, value: Byte): Navigator {
-        super.putByte(key, value)
-        return this
-    }
-
-    override fun putByteArray(key: String, value: ByteArray?): Navigator {
-        super.putByteArray(key, value)
-        return this
-    }
-
-    override fun putChar(key: String, value: Char): Navigator {
-        super.putChar(key, value)
-        return this
-    }
-
-    override fun putCharArray(key: String, value: CharArray?): Navigator {
-        super.putCharArray(key, value)
-        return this
-    }
-
-    override fun putBoolean(key: String, value: Boolean): Navigator {
-        super.putBoolean(key, value)
-        return this
-    }
-
-    override fun putBooleanArray(key: String, value: BooleanArray?): Navigator {
-        super.putBooleanArray(key, value)
-        return this
-    }
-
-    override fun putString(key: String, value: String?): Navigator {
-        super.putString(key, value)
-        return this
-    }
-
-    override fun putStringArray(key: String, value: Array<String>?): Navigator {
-        super.putStringArray(key, value)
-        return this
-    }
-
-    override fun putStringArrayList(key: String, value: ArrayList<String>?): Navigator {
-        super.putStringArrayList(key, value)
-        return this
-    }
-
-    override fun putShort(key: String, value: Short): Navigator {
-        super.putShort(key, value)
-        return this
-    }
-
-    override fun putShortArray(key: String, value: ShortArray?): Navigator {
-        super.putShortArray(key, value)
-        return this
-    }
-
-    override fun putInt(key: String, value: Int): Navigator {
-        super.putInt(key, value)
-        return this
-    }
-
-    override fun putIntArray(key: String, value: IntArray?): Navigator {
-        super.putIntArray(key, value)
-        return this
-    }
-
-    override fun putIntegerArrayList(key: String, value: ArrayList<Int>?): Navigator {
-        super.putIntegerArrayList(key, value)
-        return this
-    }
-
-    override fun putLong(key: String, value: Long): Navigator {
-        super.putLong(key, value)
-        return this
-    }
-
-    override fun putLongArray(key: String, value: LongArray?): Navigator {
-        super.putLongArray(key, value)
-        return this
-    }
-
-    override fun putFloat(key: String, value: Float): Navigator {
-        super.putFloat(key, value)
-        return this
-    }
-
-    override fun putFloatArray(key: String, value: FloatArray?): Navigator {
-        super.putFloatArray(key, value)
-        return this
-    }
-
-    override fun putDouble(key: String, value: Double): Navigator {
-        super.putDouble(key, value)
-        return this
-    }
-
-    override fun putDoubleArray(key: String, value: DoubleArray?): Navigator {
-        super.putDoubleArray(key, value)
-        return this
-    }
-
-    override fun putParcelable(key: String, value: Parcelable?): Navigator {
-        super.putParcelable(key, value)
-        return this
-    }
-
-    override fun putParcelableArray(key: String, value: Array<Parcelable>?): Navigator {
-        super.putParcelableArray(key, value)
-        return this
-    }
-
-    override fun putParcelableArrayList(key: String, value: ArrayList<out Parcelable>?): Navigator {
-        super.putParcelableArrayList(key, value)
-        return this
-    }
-
-    override fun putSparseParcelableArray(
-            key: String,
-            value: SparseArray<out Parcelable>?
-    ): Navigator {
-        super.putSparseParcelableArray(key, value)
-        return this
-    }
-
-    override fun putSerializable(key: String, value: Serializable?): Navigator {
-        super.putSerializable(key, value)
-        return this
-    }
-
-    override fun query(queryName: String, queryValue: String): Navigator {
-        super.query(queryName, queryValue)
-        return this
-    }
-
-    override fun query(queryName: String, queryValue: Boolean): Navigator {
-        super.query(queryName, queryValue)
-        return this
-    }
-
-    override fun query(queryName: String, queryValue: Byte): Navigator {
-        super.query(queryName, queryValue)
-        return this
-    }
-
-    override fun query(queryName: String, queryValue: Int): Navigator {
-        super.query(queryName, queryValue)
-        return this
-    }
-
-    override fun query(queryName: String, queryValue: Float): Navigator {
-        super.query(queryName, queryValue)
-        return this
-    }
-
-    override fun query(queryName: String, queryValue: Long): Navigator {
-        super.query(queryName, queryValue)
-        return this
-    }
-
-    override fun query(queryName: String, queryValue: Double): Navigator {
-        super.query(queryName, queryValue)
-        return this
+        routerRequestBuilder.url(reqUrl!!)
+        routerRequestBuilder.putAll(reqBundle!!)
+        routerRequestBuilder.options(reqOptions)
+        routerRequestBuilder.addIntentFlags(*reqFlags.toIntArray())
+        routerRequestBuilder.addIntentCategories(*reqCategories!!.toTypedArray())
+        return getRealDelegateImpl()
     }
 
     override fun build(): RouterRequest {
-        var routerRequest = super.build()
+        var routerRequest = routerRequestBuilder.build()
         // 如果是随机的 requestCode, 则生成
         routerRequest = Help.randomlyGenerateRequestCode(routerRequest)
         // 现在可以检测 requestCode 是否重复
@@ -780,26 +597,6 @@ open class Navigator : RouterRequest.Builder, Call {
                 // 也会让整个路由终止
                 interceptorCallback.onError(e)
             }
-        } finally {
-            // 释放资源
-            originalRequest = null
-            interceptorCallback = null
-            context = null
-            fragment = null
-            scheme = null
-            url = null
-            host = null
-            path = null
-            requestCode = null
-            queryMap.clear()
-            bundle.clear()
-            intentConsumer = null
-            beforeAction = null
-            beforeStartAction = null
-            afterStartAction = null
-            afterAction = null
-            afterErrorAction = null
-            afterEventAction = null
         }
         return Router.emptyNavigationDisposable
     }
@@ -1133,113 +930,6 @@ open class Navigator : RouterRequest.Builder, Call {
     }
 
     /**
-     * 拦截器多个连接着走的执行器,源代码来源于 OkHTTP
-     * 这个原理就是, 本身是一个 执行器 (Chain),当你调用 proceed 方法的时候,会创建下一个拦截器的执行对象
-     * 然后调用当前拦截器的 intercept 方法
-     * @param mInterceptors 拦截器列表,所有要执行的拦截器列表
-     * @param mIndex        拦截器的下标
-     * @param mRequest      第一次这个对象是不需要的
-     * @param mCallback     这个是拦截器的回调,这个用户不能自定义,一直都是一个对象
-     */
-    open class InterceptorChain(
-            private val mInterceptors: List<RouterInterceptor?>,
-            private val mIndex: Int,
-            /**
-             * 每一个拦截器执行器 [RouterInterceptor.Chain]
-             * 都会有上一个拦截器给的 request 对象或者初始化的一个 request,用于在下一个拦截器
-             * 中获取到 request 对象,并且支持拦截器自定义修改 request 对象或者直接创建一个新的传给下一个拦截器执行器
-             */
-            private val mRequest: RouterRequest,
-            private val mCallback: RouterInterceptor.Callback
-    ) : RouterInterceptor.Chain {
-
-        /**
-         * 调用的次数,如果超过1次就做相应的错误处理
-         */
-        private var calls = 0
-
-        /**
-         * 拦截器是否是否已经走完
-         */
-        @Synchronized
-        protected fun isCompletedProcess(): Boolean {
-            return mIndex >= mInterceptors.size
-        }
-
-        protected fun index(): Int {
-            return mIndex
-        }
-
-        protected fun interceptors(): List<RouterInterceptor?> {
-            return mInterceptors
-        }
-
-        protected fun rawCallback(): RouterInterceptor.Callback {
-            return mCallback
-        }
-
-        override fun request(): RouterRequest {
-            // 第一个拦截器的
-            return mRequest
-        }
-
-        override fun callback(): RouterInterceptor.Callback {
-            return rawCallback()
-        }
-
-        override fun proceed(request: RouterRequest) {
-            proceed(request, callback())
-        }
-
-        private fun proceed(request: RouterRequest, callback: RouterInterceptor.Callback) {
-            // ui 线程上执行
-            Utils.postActionToMainThreadAnyway(Runnable {
-                try {
-                    // 如果已经结束, 对不起就不执行了
-                    if (callback().isEnd()) {
-                        return@Runnable
-                    }
-                    ++calls
-                    when {
-                        isCompletedProcess() -> {
-                            callback().onError(
-                                    NavigationFailException(
-                                            IndexOutOfBoundsException(
-                                                    "size = " + mInterceptors.size + ",index = " + mIndex
-                                            )
-                                    )
-                            )
-                        }
-                        calls > 1 -> { // 调用了两次
-                            callback().onError(
-                                    NavigationFailException(
-                                            "interceptor " + mInterceptors[mIndex - 1]
-                                                    + " must call proceed() exactly once"
-                                    )
-                            )
-                        }
-                        else -> {
-                            // current Interceptor
-                            val interceptor = mInterceptors[mIndex]
-                            // 当拦截器最后一个的时候,就不是这个类了,是 DoActivityStartInterceptor 了
-                            val next = InterceptorChain(
-                                    mInterceptors, mIndex + 1,
-                                    request, callback
-                            )
-                            // 提前同步 Query 到 Bundle
-                            next.request().syncUriToBundle()
-                            // 用户自定义的部分,必须在主线程
-                            interceptor!!.intercept(next)
-                        }
-                    }
-                } catch (e: Exception) {
-                    callback().onError(e)
-                }
-            })
-        }
-    }
-
-    /**
      * 处理页面拦截器的. 因为页面拦截器可能会更改 [Uri]. 导致目标改变.
      * 那么新的页面拦截器也应该被加载执行.
      * 最后确认 [Uri] 的目标没被改变的时候
@@ -1424,6 +1114,7 @@ open class Navigator : RouterRequest.Builder, Call {
          *
          * @return [1, 256]
          */
+        @NeedOptimizeAnno
         fun randomlyGenerateRequestCode(request: RouterRequest): RouterRequest {
             Utils.checkNullPointer(request, "request")
             // 如果不是想要随机生成,就直接返回
@@ -1442,7 +1133,11 @@ open class Navigator : RouterRequest.Builder, Call {
             ) {
                 generateRequestCode = r.nextInt(256) + 1
             }
-            return requestBuilder.requestCode(generateRequestCode).build()
+            return requestBuilder
+                    .apply {
+                        this.requestCode = generateRequestCode
+                    }
+                    .build()
         }
 
         /**
@@ -1564,4 +1259,18 @@ open class Navigator : RouterRequest.Builder, Call {
             return result
         }
     }
+}
+
+class Navigator(
+        context: Context? = null,
+        fragment: Fragment? = null,
+        private val navigator: INavigator<Navigator> = NavigatorImpl(context = context, fragment = fragment)
+) : INavigator<Navigator> by navigator {
+
+    init {
+        navigator.delegateImplCallable = {
+            this
+        }
+    }
+
 }

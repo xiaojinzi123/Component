@@ -17,7 +17,7 @@ object ClassCache {
     }
 
     @Synchronized
-    operator fun <T> get(clazz: Class<*>): T? {
+    fun <T> get(clazz: Class<*>): T? {
         return classCache[clazz] as T?
     }
 

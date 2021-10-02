@@ -14,19 +14,19 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
 
 inline fun Fragment.withHost(host: String): Navigator {
-    return Router.with(this).host(host)
+    return Router.with(this).host(host = host)
 }
 
 inline fun Fragment.withHostAndPath(hostAndPath: String): Navigator {
-    return Router.with(this).hostAndPath(hostAndPath)
+    return Router.with(this).hostAndPath(hostAndPath = hostAndPath)
 }
 
 inline fun Context.withHost(host: String): Navigator {
-    return Router.with(this).host(host)
+    return Router.with(this).host(host = host)
 }
 
 inline fun Context.withHostAndPath(hostAndPath: String): Navigator {
-    return Router.with(this).hostAndPath(hostAndPath)
+    return Router.with(this).hostAndPath(hostAndPath = hostAndPath)
 }
 
 fun Call.forward(

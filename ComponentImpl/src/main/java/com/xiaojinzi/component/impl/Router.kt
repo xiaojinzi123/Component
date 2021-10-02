@@ -114,13 +114,13 @@ object Router {
     @AnyThread
     fun with(context: Context): Navigator {
         Utils.checkNullPointer(context, "context")
-        return Navigator(context)
+        return Navigator(context = context)
     }
 
     @JvmStatic
     @AnyThread
     fun with(fragment: Fragment): Navigator {
-        return Navigator(fragment)
+        return Navigator(fragment = fragment)
     }
 
     /**

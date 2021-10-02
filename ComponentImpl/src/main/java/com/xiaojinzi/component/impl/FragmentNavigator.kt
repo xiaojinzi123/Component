@@ -1,21 +1,14 @@
 package com.xiaojinzi.component.impl
 
 import com.xiaojinzi.component.impl.fragment.FragmentManager.get
-import android.os.Bundle
-import com.xiaojinzi.component.impl.FragmentNavigator
-import android.os.Parcelable
-import android.util.SparseArray
 import androidx.fragment.app.Fragment
-import com.xiaojinzi.component.support.IBundle
-import com.xiaojinzi.component.support.IBundleImpl
-import com.xiaojinzi.component.support.Utils
-import java.io.Serializable
-import java.util.ArrayList
+import com.xiaojinzi.component.support.IBundleBuilder
+import com.xiaojinzi.component.support.IBundleBuilderImpl
 
 /**
  * 一个为 [Fragment] 设计的导航器
  */
-class FragmentNavigator(private val fragmentFlag: String): IBundle<FragmentNavigator> by IBundleImpl() {
+class FragmentNavigator(private val fragmentFlag: String): IBundleBuilder<FragmentNavigator> by IBundleBuilderImpl() {
 
     fun navigate(): Fragment? {
         return get(fragmentFlag, bundle)

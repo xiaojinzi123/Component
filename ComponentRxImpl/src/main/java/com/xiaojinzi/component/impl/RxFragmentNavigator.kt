@@ -2,11 +2,11 @@ package com.xiaojinzi.component.impl
 
 import androidx.fragment.app.Fragment
 import com.xiaojinzi.component.impl.fragment.RxFragmentManager
-import com.xiaojinzi.component.support.IBundle
-import com.xiaojinzi.component.support.IBundleImpl
+import com.xiaojinzi.component.support.IBundleBuilder
+import com.xiaojinzi.component.support.IBundleBuilderImpl
 import io.reactivex.Single
 
-class RxFragmentNavigator(private val fragmentFlag: String): IBundle<FragmentNavigator> by IBundleImpl() {
+class RxFragmentNavigator(private val fragmentFlag: String): IBundleBuilder<RxFragmentNavigator> by IBundleBuilderImpl() {
 
     fun call(): Single<Fragment> {
         return RxFragmentManager.with(fragmentFlag, bundle)

@@ -41,6 +41,10 @@ class MainAct : AppCompatActivity() {
         supportActionBar!!.title = "组件化方案:(路由、服务、生命周期)"
         createNotificationChannel()
         startProxyRouter(intent.extras)
+
+        // val target: RouterRequest.IRouterRequestBuilder<RouterRequest.RouterRequestBuilder> = RouterRequest.RouterRequestBuilder()
+        // target.userInfo("123")
+
     }
 
     override fun onNewIntent(intent: Intent) {
