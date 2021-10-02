@@ -1,11 +1,9 @@
-package com.xiaojinzi.component.support;
+package com.xiaojinzi.component.support
 
-import androidx.annotation.AnyThread;
-
-import androidx.annotation.NonNull;
-import android.util.Log;
-
-import com.xiaojinzi.component.Component;
+import android.util.Log
+import com.xiaojinzi.component.Component.isDebug
+import androidx.annotation.AnyThread
+import com.xiaojinzi.component.support.LogUtil
 
 /**
  * 用于打印日志
@@ -13,46 +11,49 @@ import com.xiaojinzi.component.Component;
  *
  * @author : xiaojinzi
  */
-public class LogUtil {
+object LogUtil {
 
-    public static final String TAG = "-------- Component --------";
+    private const val TAG = "-------- Component --------"
 
-    private LogUtil() {
+    @AnyThread
+    @JvmStatic
+    fun loge(message: String) {
+        loge(TAG, message)
     }
 
     @AnyThread
-    public static void loge(@NonNull String message) {
-        loge(TAG, message);
-    }
-
-    @AnyThread
-    public static void loge(@NonNull String tag, @NonNull String message) {
-        if (Component.isDebug()) {
-            Log.e(tag, message);
+    @JvmStatic
+    fun loge(tag: String, message: String) {
+        if (isDebug) {
+            Log.e(tag, message)
         }
     }
 
     @AnyThread
-    public static void logw(@NonNull String message) {
-        logw(TAG, message);
+    @JvmStatic
+    fun logw(message: String) {
+        logw(TAG, message)
     }
 
     @AnyThread
-    public static void logw(@NonNull String tag, @NonNull String message) {
-        if (Component.isDebug()) {
-            Log.w(tag, message);
+    @JvmStatic
+    fun logw(tag: String, message: String) {
+        if (isDebug) {
+            Log.w(tag, message)
         }
     }
 
     @AnyThread
-    public static void log(@NonNull String message) {
-        log(TAG, message);
+    @JvmStatic
+    fun log(message: String) {
+        log(TAG, message)
     }
 
     @AnyThread
-    public static void log(@NonNull String tag, @NonNull String message) {
-        if (Component.isDebug()) {
-            Log.d(tag, message);
+    @JvmStatic
+    fun log(tag: String, message: String) {
+        if (isDebug) {
+            Log.d(tag, message)
         }
     }
 
