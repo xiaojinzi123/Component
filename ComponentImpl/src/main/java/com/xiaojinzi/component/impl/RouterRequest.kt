@@ -70,7 +70,7 @@ interface IRouterRequestBuilder<T : IRouterRequestBuilder<T>> :
 
 }
 
-open class RouterRequestBuilderImpl<T : IRouterRequestBuilder<T>>(
+class RouterRequestBuilderImpl<T : IRouterRequestBuilder<T>>(
         context: Context? = null,
         fragment: Fragment? = null,
         private val uriBuilder: IURIBuilder<T> = IURIBuilderImpl(),
