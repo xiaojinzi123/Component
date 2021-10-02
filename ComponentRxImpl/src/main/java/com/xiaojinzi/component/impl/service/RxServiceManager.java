@@ -56,7 +56,7 @@ public class RxServiceManager {
             @Override
             public void subscribe(SingleEmitter<T> emitter) throws Exception {
                 try {
-                    final T serviceImpl = ServiceManager.get(tClass);
+                    final T serviceImpl = ServiceManager.INSTANCE.get(tClass);
                     if (serviceImpl == null) {
                         throw new ServiceNotFoundException(tClass.getName());
                     }
