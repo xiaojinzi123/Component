@@ -444,10 +444,10 @@ class RouterRequest(builder: IRouterRequestBuilder<*>) {
         if (bundle.getInt(KEY_SYNC_URI) == uri.hashCode()) {
             return
         }
-        ParameterSupport.syncUriToBundle(uri, bundle)
+        ParameterSupport.syncUriToBundle(uri = uri, bundle = bundle)
         // 更新新的 hashCode
         bundle.putInt(KEY_SYNC_URI, uri.hashCode())
-    }// 如果是 Activity 并且已经销毁了返回 null// 如果不是 Activity 可能是 Application,所以直接返回
+    }
 
     /**
      * 从 [Fragment] 和 [Context] 中获取上下文
