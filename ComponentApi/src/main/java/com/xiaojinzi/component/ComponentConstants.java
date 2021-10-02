@@ -55,7 +55,6 @@ public class ComponentConstants {
     public static final String SINGLETON_CALLABLE_CLASS_NAME = "com.xiaojinzi.component.support.SingletonCallable";
     public static final String DECORATOR_CALLABLE_CLASS_NAME = "com.xiaojinzi.component.support.DecoratorCallable";
     public static final String FUNCTION1_CLASS_NAME = "com.xiaojinzi.component.support.Function1";
-    public static final String SINGLETON_FUNCTION1_CLASS_NAME = "com.xiaojinzi.component.support.SingletonFunction1";
 
     public static final String ANDROID_PARCELABLE = "android.os.Parcelable";
     public static final String ANDROID_APPLICATION = "android.app.Application";

@@ -46,7 +46,6 @@ public class FragmentProcessor extends BaseHostProcessor {
 
     private ClassName classNameFragmentContainer;
     private ClassName function1ClassName;
-    private ClassName singletonFunction1ClassName;
     private TypeElement bundleTypeElement;
     private TypeName bundleTypeName;
 
@@ -56,9 +55,7 @@ public class FragmentProcessor extends BaseHostProcessor {
         final TypeElement typeElementFragmentContainer = mElements.getTypeElement(ComponentConstants.FRAGMENT_MANAGER_CALL_CLASS_NAME);
         classNameFragmentContainer = ClassName.get(typeElementFragmentContainer);
         final TypeElement function1TypeElement = mElements.getTypeElement(ComponentConstants.FUNCTION1_CLASS_NAME);
-        final TypeElement singletonFunctionTypeElement = mElements.getTypeElement(ComponentConstants.SINGLETON_FUNCTION1_CLASS_NAME);
         function1ClassName = ClassName.get(function1TypeElement);
-        singletonFunction1ClassName = ClassName.get(singletonFunctionTypeElement);
         bundleTypeElement = mElements.getTypeElement(ComponentConstants.ANDROID_BUNDLE);
         bundleTypeName = TypeName.get(bundleTypeElement.asType());
     }

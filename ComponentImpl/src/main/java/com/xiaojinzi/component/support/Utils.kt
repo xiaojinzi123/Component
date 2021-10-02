@@ -1,23 +1,20 @@
-package com.xiaojinzi.component.support;
+package com.xiaojinzi.component.support
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import androidx.annotation.AnyThread;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-
-import com.xiaojinzi.component.Component;
-import com.xiaojinzi.component.error.RouterRuntimeException;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+import android.app.Activity
+import com.xiaojinzi.component.Component.isDebug
+import android.os.Looper
+import androidx.annotation.AnyThread
+import androidx.annotation.UiThread
+import android.app.ActivityManager
+import android.content.Context
+import android.content.ContextWrapper
+import android.os.Build
+import android.os.Handler
+import com.xiaojinzi.component.error.RouterRuntimeException
+import java.lang.NullPointerException
+import java.lang.RuntimeException
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * 一个工具类
@@ -25,73 +22,75 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author : xiaojinzi
  */
-public class Utils {
+object Utils {
 
-    public static final AtomicInteger COUNTER = new AtomicInteger(0);
-
-    private static final String STR_PARAMETER = "parameter '";
-    private static final String STR_CAN_NOT_BE_NULL = "' can't be null";
-    private static final String MAIN_THREAD_ERROR_MSG = "Component mainThreadCall method timeout, A deadlock was happened. see: https://github.com/xiaojinzi123/Component/issues/79";
-    private static final long MAIN_THREAD_TIME_OUT = 3000;
+    val COUNTER = AtomicInteger(0)
+    private const val STR_PARAMETER = "parameter '"
+    private const val STR_CAN_NOT_BE_NULL = "' can't be null"
+    private const val MAIN_THREAD_ERROR_MSG = "Component mainThreadCall method timeout, A deadlock was happened. see: https://github.com/xiaojinzi123/Component/issues/79"
+    private const val MAIN_THREAD_TIME_OUT: Long = 3000
 
     // 单线程的线程池
-    private static final ExecutorService workPool = Executors.newSingleThreadExecutor();
-
-    private Utils() {
-    }
+    private val workPool = Executors.newSingleThreadExecutor()
 
     /**
      * 主线程的Handler
      */
-    private static Handler h = new Handler(Looper.getMainLooper());
+    private val h = Handler(Looper.getMainLooper())
 
     /**
      * 在主线程延迟执行任务
      */
     @AnyThread
-    public static void postDelayActionToMainThread(@NonNull @UiThread Runnable r, long delayMillis) {
-        h.postDelayed(r, delayMillis);
+    @JvmStatic
+    fun postDelayActionToMainThread(@UiThread r: Runnable, delayMillis: Long) {
+        h.postDelayed(r, delayMillis)
     }
 
     @AnyThread
-    public static void postActionToWorkThread(@NonNull final Runnable r) {
-        workPool.submit(r);
+    @JvmStatic
+    fun postActionToWorkThread(r: Runnable) {
+        workPool.submit(r)
     }
 
     /**
      * 在主线程执行任务
      */
     @AnyThread
-    public static void postActionToMainThread(@NonNull Runnable r) {
+    @JvmStatic
+    fun postActionToMainThread(r: Runnable) {
         if (isMainThread()) {
-            r.run();
+            r.run()
         } else {
-            h.post(r);
+            h.post(r)
         }
     }
 
     /**
      * 在主线程执行任务,和上面的方法唯一的区别就是一定是post过去的
      */
-    public static void postActionToMainThreadAnyway(@NonNull Runnable r) {
-        h.post(r);
+    @JvmStatic
+    fun postActionToMainThreadAnyway(r: Runnable) {
+        h.post(r)
     }
 
     /**
      * 是否是主线程
      */
-    public static boolean isMainThread() {
-        return Thread.currentThread() == Looper.getMainLooper().getThread();
+    @JvmStatic
+    fun isMainThread(): Boolean {
+        return Thread.currentThread() == Looper.getMainLooper().thread
     }
 
     /**
      * Activity 是否被销毁了
      */
-    public static boolean isActivityDestoryed(@NonNull Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return activity.isFinishing() || activity.isDestroyed();
+    @JvmStatic
+    fun isActivityDestoryed(activity: Activity): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            activity.isFinishing || activity.isDestroyed
         } else {
-            return activity.isFinishing();
+            activity.isFinishing
         }
     }
 
@@ -100,145 +99,152 @@ public class Utils {
      *
      * @param throwable
      */
-    @Nullable
-    public static String getRealMessage(@NonNull Throwable throwable) {
-        while (throwable.getCause() != null) {
-            throwable = throwable.getCause();
+    @JvmStatic
+    fun getRealMessage(throwable: Throwable): String? {
+        var throwable = throwable
+        while (throwable.cause != null) {
+            throwable = throwable.cause!!
         }
-        return throwable.getMessage();
+        return throwable.message
     }
 
     /**
-     * 获取真实的错误对象,有时候一个 {@link Throwable#getCause()} 就是自己本身,下面的代码看上去是死循环了
-     * 但是 {@link Throwable#getCause()} 方法内部做了判断
+     * 获取真实的错误对象,有时候一个 [Throwable.getCause] 就是自己本身,下面的代码看上去是死循环了
+     * 但是 [Throwable.getCause] 方法内部做了判断
      */
-    @NonNull
-    public static Throwable getRealThrowable(@NonNull Throwable throwable) {
-        Utils.checkNullPointer(throwable);
-        while (throwable.getCause() != null) {
-            throwable = throwable.getCause();
+    @JvmStatic
+    fun getRealThrowable(throwable: Throwable): Throwable {
+        var throwable = throwable
+        checkNullPointer(throwable)
+        while (throwable.cause != null) {
+            throwable = throwable.cause!!
         }
-        return throwable;
+        return throwable
     }
 
     /**
      * 是否是由于某一个错误引起的
      */
-    public static boolean isCauseBy(@NonNull Throwable throwable, @NonNull Class<? extends Throwable> clazz) {
-        Utils.checkNullPointer(throwable);
-        if (throwable.getClass() == clazz) {
-            return true;
+    @JvmStatic
+    fun isCauseBy(throwable: Throwable, clazz: Class<out Throwable>): Boolean {
+        var throwable = throwable
+        checkNullPointer(throwable)
+        if (throwable.javaClass == clazz) {
+            return true
         }
-        while (throwable.getCause() != null) {
-            throwable = throwable.getCause();
-            if (throwable.getClass() == clazz) {
-                return true;
+        while (throwable.cause != null) {
+            throwable = throwable.cause!!
+            if (throwable.javaClass == clazz) {
+                return true
             }
         }
-        return false;
+        return false
     }
-
     /**
      * 检查字符串是否为空
      */
-    public static String checkStringNullPointer(@Nullable String value, @NonNull String parameterName) {
-        return checkStringNullPointer(value, parameterName, null);
-    }
-
     /**
      * 检查字符串是否为空
      */
-    public static String checkStringNullPointer(@Nullable String value,
-                                                @NonNull String parameterName,
-                                                @Nullable String desc) {
+    @JvmStatic
+    @JvmOverloads
+    fun checkStringNullPointer(value: String?,
+                               parameterName: String,
+                               desc: String? = null): String {
         if (value == null || value.isEmpty()) {
-            throw new NullPointerException(
-                    STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL + (desc == null ? "" : "," + desc)
-            );
+            throw NullPointerException(
+                    STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL + if (desc == null) "" else ",$desc"
+            )
         }
-        return value;
+        return value
     }
 
     /**
      * 检查对象是否为空
      */
-    public static <T> T checkNullPointer(@Nullable T value) {
-        if (Component.isDebug() && value == null) {
-            throw new NullPointerException();
+    @JvmStatic
+    fun <T> checkNullPointer(value: T?): T {
+        if (isDebug && value == null) {
+            throw NullPointerException()
         }
-        return value;
+        return value!!
     }
 
     /**
      * 检查对象是否为空
      */
-    public static <T> T checkNullPointer(@Nullable T value, @NonNull String parameterName) {
-        if (Component.isDebug() && value == null) {
-            throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL);
+    @JvmStatic
+    fun <T> checkNullPointer(value: T?, parameterName: String): T {
+        if (isDebug && value == null) {
+            throw NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL)
         }
-        return value;
+        return value!!
     }
 
     /**
      * 检查对象是否为空,如果为空就在 debug 的时候崩溃,release 不崩溃但是路由失败
      */
-    public static <T> T debugCheckNullPointer(@Nullable T value, @NonNull String parameterName) {
-        if (Component.isDebug() && value == null) {
-            throw new NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL);
+    @JvmStatic
+    fun <T> debugCheckNullPointer(value: T?, parameterName: String): T {
+        if (isDebug && value == null) {
+            throw NullPointerException(STR_PARAMETER + parameterName + STR_CAN_NOT_BE_NULL)
         }
-        return value;
+        return value!!
     }
 
     /**
      * 是否内存过低
      */
-    public static boolean isLowMemoryDevice(@NonNull ActivityManager activityManager) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return activityManager.isLowRamDevice();
+    @JvmStatic
+    fun isLowMemoryDevice(activityManager: ActivityManager): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            activityManager.isLowRamDevice
         } else {
-            return true;
+            true
         }
     }
 
     /**
-     * 从一个 {@link Context} 中获取 {@link Activity}
-     * 由于 {@link Context} 有可能是 {@link ContextWrapper} 包装的,所以一直要从 {@link ContextWrapper#getBaseContext()}
-     * 方法中获取 {@link Context} 并判断是否是 {@link Activity}
+     * 从一个 [Context] 中获取 [Activity]
+     * 由于 [Context] 有可能是 [ContextWrapper] 包装的,所以一直要从 [ContextWrapper.getBaseContext]
+     * 方法中获取 [Context] 并判断是否是 [Activity]
      *
      * @param context 上下文的参数
-     * @return 如果 {@link Context} 最开始是 {@link Activity} 的话会返回一个 {@link Activity},否则返回 null
+     * @return 如果 [Context] 最开始是 [Activity] 的话会返回一个 [Activity],否则返回 null
      */
-    @Nullable
-    public static Activity getActivityFromContext(@Nullable Context context) {
+    @JvmStatic
+    fun getActivityFromContext(context: Context?): Activity? {
         if (context == null) {
-            return null;
+            return null
         }
-        Activity realActivity = null;
-        if (context instanceof Activity) {
-            realActivity = (Activity) context;
+        var realActivity: Activity? = null
+        if (context is Activity) {
+            realActivity = context
         } else {
             // 最终结束的条件是 realContext = null 或者 realContext 不是一个 ContextWrapper
-            Context realContext = context;
-            while (realContext instanceof ContextWrapper) {
-                realContext = ((ContextWrapper) realContext).getBaseContext();
-                if (realContext instanceof Activity) {
-                    realActivity = (Activity) realContext;
-                    break;
+            var realContext = context
+            while (realContext is ContextWrapper) {
+                realContext = realContext.baseContext
+                if (realContext is Activity) {
+                    realActivity = realContext
+                    break
                 }
             }
         }
-        return realActivity;
+        return realActivity
     }
 
-    public static void debugThrowException(@NonNull RuntimeException e) {
-        if (Component.isDebug()) {
-            throw e;
+    @JvmStatic
+    fun debugThrowException(e: RuntimeException) {
+        if (isDebug) {
+            throw e
         }
     }
 
-    public static void checkMainThread() {
+    @JvmStatic
+    fun checkMainThread() {
         if (!isMainThread()) {
-            throw new RouterRuntimeException("the thread is not main thread!");
+            throw RouterRuntimeException("the thread is not main thread!")
         }
     }
 
