@@ -135,7 +135,7 @@
     - `Module2`             --> `Kotlin` 业务模块
     - `ModuleHelp`          --> `Help` 业务模块, 一些有关通用的或者系统相关的放这里
     - `ModuleUser`          --> `User` 业务模块
-    - `ModuleBase`          --> 各个业务模块的基础模块, 上述的没一个业务模块都需要依赖
+    - `ModuleBase`          --> 各个业务模块的基础模块, 上述的每一个业务模块都需要依赖
 - 实现库源码
     - `ComponentApi`        --> `Api` 库
     - `ComponentCompiler`   --> 注解驱动器库
