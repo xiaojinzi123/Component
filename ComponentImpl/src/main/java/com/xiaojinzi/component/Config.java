@@ -15,19 +15,18 @@ import com.xiaojinzi.component.support.Utils;
 public class Config {
 
     @NonNull
-    private Application application;
+    private final Application application;
     @NonNull
-    private String defaultScheme;
-
-    private boolean isErrorCheck;
-    private boolean isInitRouterAsync;
-    private boolean isOptimizeInit;
-    private boolean isAutoRegisterModule;
-    private boolean isTipWhenUseApplication;
-    private boolean isUseRouteRepeatCheckInterceptor = true;
-    private long routeRepeatCheckDuration = 1000;
-    private ObjectToJsonConverter objectToJsonConverter;
-    private long notifyModuleChangedDelayTime;
+    private final String defaultScheme;
+    private final boolean isErrorCheck;
+    private final boolean isInitRouterAsync;
+    private final boolean isOptimizeInit;
+    private final boolean isAutoRegisterModule;
+    private final boolean isTipWhenUseApplication;
+    private final boolean isUseRouteRepeatCheckInterceptor;
+    private final long routeRepeatCheckDuration;
+    private final ObjectToJsonConverter objectToJsonConverter;
+    private final long notifyModuleChangedDelayTime;
 
     private Config(@NonNull Builder builder) {
         this.application = builder.application;
@@ -101,7 +100,8 @@ public class Config {
         private String defaultScheme = "router";
         // 是否进行检查, 默认是打开的, 仅在 debug 的时候有效
         private boolean isErrorCheck = true;
-        private boolean isInitRouterAsync = false;
+        // 默认路由部分的初始化是异步的
+        private boolean isInitRouterAsync = true;
         private boolean isOptimizeInit = false;
         private boolean isAutoRegisterModule = false;
         private boolean isTipWhenUseApplication = true;

@@ -1,3 +1,6 @@
+#### [v1.9.2.1](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.2.1)
+- 优化 Gradle Plugin 引起的 defined multiple times 的问题
+
 #### [v1.9.2](https://github.com/xiaojinzi123/Component/releases/tag/v1.9.2)
 - 统一 Kotlin 相关的版本
 - 修复 v1.9.1-beta1 版本支持 scheme 改出来页面拦截器失效的问题
