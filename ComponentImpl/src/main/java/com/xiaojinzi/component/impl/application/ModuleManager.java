@@ -70,10 +70,14 @@ public class ModuleManager implements IComponentCenterApplication {
         if (moduleApplicationMap.containsKey(moduleApp.getHost())) {
             LogUtil.loge("The module \"" + moduleApp.getHost() + "\" is already registered");
         } else {
+            // 标记已经注册
             moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
+            // 模块的 Application 的 onCreate 执行
             moduleApp.onCreate(Component.getApplication());
+            // 服务发现的注册. 这个不能异步, 因为有可能下一行就被用到了
             ServiceCenter.getInstance().register(moduleApp.getHost());
-            Utils.postActionToWorkThread(new Runnable() {
+            // 路由的部分的注册, 可选的异步还是同步
+            Runnable r = new Runnable() {
                 @Override
                 public void run() {
                     RouterCenter.getInstance().register(moduleApp.getHost());
@@ -82,7 +86,13 @@ public class ModuleManager implements IComponentCenterApplication {
                     FragmentCenter.getInstance().register(moduleApp.getHost());
                     notifyModuleChanged();
                 }
-            });
+            };
+            // 路由是否异步初始化
+            if (Component.getConfig().isInitRouterAsync()) {
+                Utils.postActionToWorkThread(r);
+            } else {
+                r.run();
+            }
         }
     }
 
