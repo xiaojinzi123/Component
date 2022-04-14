@@ -12,7 +12,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 // 配置业务模块的模块名称
-                arguments = ["HOST": "module1App"]
+                arguments = ["ModuleName": "module1App"]
             }
         }
     }

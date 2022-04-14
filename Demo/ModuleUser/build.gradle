@@ -14,7 +14,7 @@ android {
             annotationProcessorOptions {
                 // arguments = ["HOST": "user"]
                 arguments = [
-                        "HOST"           : "user",
+                        "ModuleName"     : "user",
                         "RouterDocFolder": project.property("component_router_doc_folder"),
                         "RouterDocEnable": String.valueOf(project.property("component_router_doc_enable"))
                 ]

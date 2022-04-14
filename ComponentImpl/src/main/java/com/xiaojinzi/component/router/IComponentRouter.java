@@ -49,6 +49,7 @@ public interface IComponentRouter {
      * 比较两个 {@link Uri} 是否是同一个目标.
      * 这两个 {@link Uri#equals(Object)} 不一定相等的.
      * 因为这里比较的是内部的信息是否指向了同一个目标
+     * 当两个都为null的时候, 内部也会返回 true 的, 这点请注意
      *
      * @param uri1 第一个 {@link Uri}
      * @param uri2 第二个 {@link Uri}

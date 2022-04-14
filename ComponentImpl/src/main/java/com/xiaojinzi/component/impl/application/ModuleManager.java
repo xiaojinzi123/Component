@@ -1,5 +1,6 @@
 package com.xiaojinzi.component.impl.application;
 
+import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -9,6 +10,12 @@ import com.xiaojinzi.component.ComponentUtil;
 import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.application.IComponentCenterApplication;
 import com.xiaojinzi.component.application.IComponentHostApplication;
+import com.xiaojinzi.component.cache.ClassCache;
+import com.xiaojinzi.component.impl.RouterCenter;
+import com.xiaojinzi.component.impl.RouterDegradeCenter;
+import com.xiaojinzi.component.impl.fragment.FragmentCenter;
+import com.xiaojinzi.component.impl.interceptor.InterceptorCenter;
+import com.xiaojinzi.component.impl.service.ServiceCenter;
 import com.xiaojinzi.component.impl.service.ServiceManager;
 import com.xiaojinzi.component.support.ASMUtil;
 import com.xiaojinzi.component.support.LogUtil;
@@ -57,14 +64,35 @@ public class ModuleManager implements IComponentCenterApplication {
     private static Map<String, IComponentHostApplication> moduleApplicationMap = new HashMap<>();
 
     @Override
-    public void register(@NonNull IComponentHostApplication moduleApp) {
+    @UiThread
+    public void register(@NonNull final IComponentHostApplication moduleApp) {
         Utils.checkNullPointer(moduleApp);
         if (moduleApplicationMap.containsKey(moduleApp.getHost())) {
             LogUtil.loge("The module \"" + moduleApp.getHost() + "\" is already registered");
         } else {
+            // 标记已经注册
             moduleApplicationMap.put(moduleApp.getHost(), moduleApp);
+            // 模块的 Application 的 onCreate 执行
             moduleApp.onCreate(Component.getApplication());
-            notifyModuleChanged();
+            // 服务发现的注册. 这个不能异步, 因为有可能下一行就被用到了
+            ServiceCenter.getInstance().register(moduleApp.getHost());
+            // 路由的部分的注册, 可选的异步还是同步
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    RouterCenter.getInstance().register(moduleApp.getHost());
+                    InterceptorCenter.getInstance().register(moduleApp.getHost());
+                    RouterDegradeCenter.getInstance().register(moduleApp.getHost());
+                    FragmentCenter.getInstance().register(moduleApp.getHost());
+                    notifyModuleChanged();
+                }
+            };
+            // 路由是否异步初始化
+            if (Component.getConfig().isInitRouterAsync()) {
+                Utils.postActionToWorkThread(r);
+            } else {
+                r.run();
+            }
         }
     }
 
@@ -128,11 +156,24 @@ public class ModuleManager implements IComponentCenterApplication {
     }
 
     @Override
-    public void unregister(@NonNull IComponentHostApplication moduleApp) {
+    @UiThread
+    public void unregister(@NonNull final IComponentHostApplication moduleApp) {
         Utils.checkNullPointer(moduleApp);
         moduleApplicationMap.remove(moduleApp.getHost());
         moduleApp.onDestroy();
-        notifyModuleChanged();
+        ServiceCenter.getInstance().unregister(moduleApp.getHost());
+        Utils.postActionToWorkThread(new Runnable() {
+            @Override
+            public void run() {
+                RouterCenter.getInstance().unregister(moduleApp.getHost());
+                InterceptorCenter.getInstance().unregister(moduleApp.getHost());
+                RouterDegradeCenter.getInstance().unregister(moduleApp.getHost());
+                FragmentCenter.getInstance().unregister(moduleApp.getHost());
+                // 清空缓存
+                ClassCache.clear();
+                notifyModuleChanged();
+            }
+        });
     }
 
     @Override
@@ -185,8 +226,9 @@ public class ModuleManager implements IComponentCenterApplication {
         return result;
     }
 
-    @UiThread
+    @AnyThread
     private void notifyModuleChanged() {
+        // 当前的值
         final int compareValue = Utils.COUNTER.incrementAndGet();
         Utils.postDelayActionToMainThread(new Runnable() {
             @Override
@@ -207,6 +249,8 @@ public class ModuleManager implements IComponentCenterApplication {
         for (IComponentHostApplication hostApplication : moduleApplicationMap.values()) {
             hostApplication.onModuleChanged(Component.getApplication());
         }
+        // 内部有 debug 判断
+        Component.check();
         // 触发自动初始化
         Utils.postActionToWorkThread(new Runnable() {
             @Override
@@ -214,16 +258,6 @@ public class ModuleManager implements IComponentCenterApplication {
                 ServiceManager.autoInitService();
             }
         });
-    }
-
-    /**
-     * 请使用 {@link Component#check()}
-     *
-     * @deprecated 未来版本会删除
-     */
-    @Deprecated
-    public void check() {
-        Component.check();
     }
 
 }
