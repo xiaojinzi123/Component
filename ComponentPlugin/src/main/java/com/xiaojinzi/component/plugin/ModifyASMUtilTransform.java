@@ -81,6 +81,10 @@ public class ModifyASMUtilTransform extends BaseTransform {
     public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation);
 
+        if (!transformInvocation.isIncremental()) {
+            transformInvocation.getOutputProvider().deleteAll();
+        }
+
         filterAllNames(transformInvocation);
 
         // 消费型输入，可以从中获取jar包和class文件夹路径。需要输出给下一个任务
