@@ -118,7 +118,7 @@ public class ServiceManager {
                 map = new HashMap<>();
                 serviceDecoratorMap.put(tClass, map);
             }
-            if (serviceDecoratorMap.containsKey(uid)) {
+            if (map.containsKey(uid)) {
                 throw new RuntimeException(tClass.getSimpleName() + " the key of '" + uid + "' is exist");
             }
             map.put(uid, callable);
