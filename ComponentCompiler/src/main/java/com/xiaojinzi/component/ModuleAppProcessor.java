@@ -142,9 +142,12 @@ public class ModuleAppProcessor extends BaseHostProcessor {
             JavaFile
                     .builder(pkg, typeSpec)
                     .indent("    ")
-                    .build().writeTo(mFiler);
+                    .build()
+                    .writeTo(mFiler);
         } catch (IOException e) {
             throw new ProcessException(e);
+        } catch (Exception e) {
+            // ignore
         }
     }
 

@@ -42,7 +42,7 @@ public class TestInjectAct4 extends BaseAct {
 
         if (compareStr.equals(name)) {
             returnData();
-        }else {
+        } else {
             compareStr = name;
         }
 

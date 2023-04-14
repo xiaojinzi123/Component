@@ -18,7 +18,8 @@
             android:name="host_app"
             android:value="app" />
 
-        <activity android:name=".view.ProxyAct">
+        <activity android:name=".view.ProxyAct"
+            android:exported="true">
             <intent-filter>
                 <data android:scheme="component" />
                 <action android:name="android.intent.action.VIEW" />
@@ -37,7 +38,8 @@
         <activity android:name=".view.TestFragmentRouterAct" />
         <activity
             android:name=".view.MainAct"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,30 +1,48 @@
-apply plugin: 'java-library'
-apply plugin: 'com.github.dcendents.android-maven'
-
-group = 'com.github.xiaojinzi123'
-
-archivesBaseName = "component-compiler"
-
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
 }
 
-sourceCompatibility = "8"
-targetCompatibility = "8"
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
-dependencies {
-    implementation 'com.google.auto.service:auto-service:1.0'
-    implementation 'com.squareup:javapoet:1.13.0'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'org.apache.commons:commons-collections4:4.4'
-    implementation 'com.google.code.gson:gson:2.8.7'
-    if (rootProject.ext.isDependMavenOnline) {
-        implementation androidxLibs.component_annotation
-    } else {
-        implementation project(':ComponentApi')
+group = 'com.github.xiaojinzi123'
+archivesBaseName = "component-compiler"
+
+// 配置模块的 freeCompilerArgs 参数
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        freeCompilerArgs += [
+                "-Xjvm-default=all",
+        ]
     }
 }
 
-repositories {
-    mavenCentral()
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.google.auto.service:auto-service:1.0.1'
+    implementation 'com.squareup:javapoet:1.13.0'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation project(':ComponentApi')
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId project.group
+            artifactId archivesBaseName
+            version project.version
+            from components.java
+        }
+    }
 }

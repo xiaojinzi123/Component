@@ -3,7 +3,8 @@
   <groupId>com.xiaojinzi.component</groupId>
   <artifactId>component-plugin</artifactId>
   <versioning>
-    <release>1.9.2.1</release>
+    <latest>1.9.2.2-incremental1</latest>
+    <release>1.9.2.2-incremental1</release>
     <versions>
       <version>1.7.7.3</version>
       <version>1.7.8</version>
@@ -34,7 +35,10 @@
       <version>1.9.1-beta2</version>
       <version>1.9.2</version>
       <version>1.9.2.1</version>
+      <version>1.9.2.2</version>
+      <version>1.9.2.1-incremental1</version>
+      <version>1.9.2.2-incremental1</version>
     </versions>
-    <lastUpdated>20220414024154</lastUpdated>
+    <lastUpdated>20230415133713</lastUpdated>
   </versioning>
 </metadata>

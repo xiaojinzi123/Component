@@ -1,30 +1,36 @@
 ext.versions = [
         // 系统级别的版本号
-        android_compile_sdk                 : 30,
+        android_compile_sdk                 : 33,
         android_min_sdk                     : 16,
-        android_target_sdk                  : 30,
+        android_target_sdk                  : 33,
         version_code                        : 1000,
         version_name                        : "1.0",
         support_lib                         : "28.0.0",
+        constraintLayout                    : "2.0.4",
+        appcompat                           : "1.6.1",
         // 第三方控件的版本号
-        constraintLayout                    : '2.0.4',
         rxjava                              : '2.2.21',
         rxandroid                           : "2.1.1",
-        component_version                   : "1.9.2.1",
-        component_plugin_upload_version     : "1.9.2.1"
+        component_version                   : "1.9.2.2-incremental1",
+        component_plugin_upload_version     : "1.9.2.2-incremental1"
 ]
 
 ext.libs = [
-        kt_coroutines_core  : "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3",
+
+        kt_coroutines_core      : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version",
         // Google 提供的
-        support_v4          : "com.android.support:support-v4:$versions.support_lib",
-        appcompat_v7        : "com.android.support:appcompat-v7:${versions.support_lib}",
-        recyclerview        : "com.android.support:recyclerview-v7:${versions.support_lib}",
-        cardview            : "com.android.support:cardview-v7:${versions.support_lib}",
-        constraintLayout    : "com.android.support.constraint:constraint-layout:${versions.constraintLayout}",
-        design              : "com.android.support:design:${versions.support_lib}",
-        commons_codec       : "commons-codec:commons-codec:1.11",
-        rxjava              : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
-        rxandroid           : "io.reactivex.rxjava2:rxandroid:$versions.rxandroid",
-        gson                : "com.google.code.gson:gson:2.8.6",
+        commons_codec           : "commons-codec:commons-codec:1.11",
+        rxjava                  : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
+        rxandroid               : "io.reactivex.rxjava2:rxandroid:$versions.rxandroid",
+        gson                    : "com.google.code.gson:gson:2.8.6",
+
+        appcompat               : "androidx.appcompat:appcompat:${versions.appcompat}",
+        constraintLayout        : "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}",
+
+        component_annotation    : "com.github.xiaojinzi123.Component:component-annotation:${versions.component_version}-androidx-java8",
+        component_compiler      : "com.github.xiaojinzi123.Component:component-compiler:${versions.component_version}-androidx-java8",
+        component_impl          : "com.github.xiaojinzi123.Component:component-impl:${versions.component_version}-androidx-java8",
+        component_impl_rx       : "com.github.xiaojinzi123.Component:component-impl-rx:${versions.component_version}-androidx-java8",
+        component_impl_ktx      : "com.github.xiaojinzi123.Component:component-impl-ktx:${versions.component_version}-androidx-java8"
+
 ]

@@ -1,13 +1,12 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
 
 group = 'com.github.xiaojinzi123'
-
 archivesBaseName = "component-impl-ktx"
 
 android {
+
     compileSdkVersion versions.android_compile_sdk
     defaultConfig {
         minSdkVersion versions.android_min_sdk
@@ -22,15 +21,55 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+
+    publishing {
+        singleVariant("release") {
+            // if you don't want sources/javadoc, remove these lines
+            withSourcesJar()
+        }
+    }
+
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compileOnly libs.kt_coroutines_core
-    compileOnly androidxLibs.appcompat
-    if (rootProject.ext.isDependMavenOnline) {
-        api libs.component_impl
-    }else {
-        api project(':ComponentImpl')
+    compileOnly libs.appcompat
+    api project(':ComponentImpl')
+}
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives androidSourcesJar
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+
+                // You can then customize attributes of the publication as shown below.
+                groupId = group
+                artifactId = archivesBaseName
+                version = version
+            }
+        }
     }
 }

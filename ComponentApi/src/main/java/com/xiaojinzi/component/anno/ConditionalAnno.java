@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 public @interface ConditionalAnno {
 
     /**
-     * 指定多个条件的类,指定的这些类必须实现 {@link com.xiaojinzi.component.support.Condition} 接口
+     * 指定多个条件的类,指定的这些类必须实现 com.xiaojinzi.component.support.Condition 接口
      * 所有都返回了 true 才表示条件成立
      */
     Class[] conditions();

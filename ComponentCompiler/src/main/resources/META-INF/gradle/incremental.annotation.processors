@@ -1,0 +1,8 @@
+com.xiaojinzi.component.ModuleAppProcessor,aggregating
+com.xiaojinzi.component.RouterProcessor,aggregating
+com.xiaojinzi.component.RouterDegradeProcessor,aggregating
+com.xiaojinzi.component.InterceptorProcessor,aggregating
+com.xiaojinzi.component.ServiceProcessor,aggregating
+com.xiaojinzi.component.FragmentProcessor,aggregating
+com.xiaojinzi.component.AutowireProcessor,aggregating
+com.xiaojinzi.component.RouterApiProcessor,aggregating

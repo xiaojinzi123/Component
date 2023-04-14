@@ -73,6 +73,7 @@ public class ModuleConfig {
 
         public static final String NAME = "component2";
         public static final String MAIN = "main";
+        public static final String MAIN1 = "main1";
 
     }
 

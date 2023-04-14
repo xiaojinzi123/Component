@@ -18,13 +18,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -397,7 +394,7 @@ public class RouterProcessor extends BaseHostProcessor {
                                 "routerBeanMap.put(defaultScheme + $S,$N)",
                                 "://" + routerBean.hostAndPath(), routerBeanName
                         );
-                    } else  {
+                    } else {
                         String key = scheme + "://" + routerBean.hostAndPath();
                         initMapMethodSpecBuilder.addStatement("routerBeanMap.put($S,$N)", key, routerBeanName);
                     }
@@ -543,7 +540,7 @@ public class RouterProcessor extends BaseHostProcessor {
             // 添加一个匿名内部类
             methodSpecBuilder.addStatement("$N.setCustomerIntentCall($L)", routerBeanName, intentCallTypeSpec);
         } else { // 自定义跳转的
-            throw new ProcessException("the return type of method(" + customerIntentOrJumpPath + ") must be 'Intent' ");
+            throw new ProcessException("the return type of method(" + customerIntentOrJumpPath + ") must be '" + ComponentConstants.ANDROID_INTENT + "', now is " + customerReturnType.toString() + "!");
         }
     }
 

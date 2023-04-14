@@ -1,9 +1,11 @@
 package com.xiaojinzi.component2.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Parcelable
 import android.util.SparseArray
+import androidx.annotation.NonNull
 import com.xiaojinzi.base.ModuleConfig
 import com.xiaojinzi.base.bean.SubParcelable
 import com.xiaojinzi.base.bean.User
@@ -17,9 +19,21 @@ import com.xiaojinzi.component.anno.RouterAnno
 import com.xiaojinzi.component.anno.ServiceAutowiredAnno
 import com.xiaojinzi.component.forward
 import com.xiaojinzi.component.impl.Router
+import com.xiaojinzi.component.impl.RouterRequest
 import com.xiaojinzi.component2.R
 import kotlinx.android.synthetic.main.component2_act.*
 import java.util.*
+
+@RouterAnno(
+    path = ModuleConfig.Module2.MAIN1,
+    desc = "业务组件2的主界面"
+)
+fun component2ActIntent1(request: RouterRequest): Intent {
+    return Intent(
+        request.context,
+        Component2Act::class.java,
+    )
+}
 
 @RouterAnno(
         path = ModuleConfig.Module2.MAIN,
