@@ -1,0 +1,83 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.xiaojinzi.component",
+    "module": "component-plugin",
+    "version": "1.9.2.2-incremental2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.5"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "component-plugin-1.9.2.2-incremental2.jar",
+          "url": "component-plugin-1.9.2.2-incremental2.jar",
+          "size": 25728,
+          "sha512": "b8d2f66f3fe8c9c9be69e3e5ebe07fec90708328e5050cf2e06d12790b9d62440e8fdcb7f5c7f59cbd1c89c4e550948b770590096fb9d04ab276491ed63875c5",
+          "sha256": "329b4ebb97ea9f3ec2e8f98007d32d0deb48adec69764447a44cfff5ba5df793",
+          "sha1": "ac3159dfd12cef32d00c95efb7af51967b3804e3",
+          "md5": "9ab012eeea74f4fc31e1c775aefc74a4"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.ow2.asm",
+          "module": "asm-all",
+          "version": {
+            "requires": "5.2"
+          }
+        },
+        {
+          "group": "com.android.tools.build",
+          "module": "gradle",
+          "version": {
+            "requires": "3.3.0"
+          }
+        },
+        {
+          "group": "com.google.code.gson",
+          "module": "gson",
+          "version": {
+            "requires": "2.10.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "component-plugin-1.9.2.2-incremental2.jar",
+          "url": "component-plugin-1.9.2.2-incremental2.jar",
+          "size": 25728,
+          "sha512": "b8d2f66f3fe8c9c9be69e3e5ebe07fec90708328e5050cf2e06d12790b9d62440e8fdcb7f5c7f59cbd1c89c4e550948b770590096fb9d04ab276491ed63875c5",
+          "sha256": "329b4ebb97ea9f3ec2e8f98007d32d0deb48adec69764447a44cfff5ba5df793",
+          "sha1": "ac3159dfd12cef32d00c95efb7af51967b3804e3",
+          "md5": "9ab012eeea74f4fc31e1c775aefc74a4"
+        }
+      ]
+    }
+  ]
+}
