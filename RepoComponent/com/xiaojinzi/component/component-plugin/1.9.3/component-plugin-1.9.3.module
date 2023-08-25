@@ -1,0 +1,83 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.xiaojinzi.component",
+    "module": "component-plugin",
+    "version": "1.9.3",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.5"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "component-plugin-1.9.3.jar",
+          "url": "component-plugin-1.9.3.jar",
+          "size": 25728,
+          "sha512": "31a58f0cef6a3f99cd01fa62b63c3f594d3ca64c72926d80f33839681c57a84b3447f8836faa3641fd31ce12a68aca94cc1ab83330d7b42e8239cea44035b458",
+          "sha256": "7b8d1c0705679ab1bf2c8c8aa72cfaf4a5532830921e0c9b8973bceebcb9d35a",
+          "sha1": "fdc5b07858da37a0456a2c6445c5256fd6a4f72d",
+          "md5": "10b92b985f82fd1dab7d0eb400956582"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.ow2.asm",
+          "module": "asm-all",
+          "version": {
+            "requires": "5.2"
+          }
+        },
+        {
+          "group": "com.android.tools.build",
+          "module": "gradle",
+          "version": {
+            "requires": "3.3.0"
+          }
+        },
+        {
+          "group": "com.google.code.gson",
+          "module": "gson",
+          "version": {
+            "requires": "2.10.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "component-plugin-1.9.3.jar",
+          "url": "component-plugin-1.9.3.jar",
+          "size": 25728,
+          "sha512": "31a58f0cef6a3f99cd01fa62b63c3f594d3ca64c72926d80f33839681c57a84b3447f8836faa3641fd31ce12a68aca94cc1ab83330d7b42e8239cea44035b458",
+          "sha256": "7b8d1c0705679ab1bf2c8c8aa72cfaf4a5532830921e0c9b8973bceebcb9d35a",
+          "sha1": "fdc5b07858da37a0456a2c6445c5256fd6a4f72d",
+          "md5": "10b92b985f82fd1dab7d0eb400956582"
+        }
+      ]
+    }
+  ]
+}
