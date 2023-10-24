@@ -24,11 +24,14 @@ import java.util.List;
  */
 public class ComponentPlugin implements Plugin<Project> {
 
+    public static final String TAG = "ComponentPlugin";
+
     public static final String ROUTER_FOLDER = "component_router_doc_folder";
     public static final String ROUTER_ENABLE = "component_router_doc_enable";
 
     @Override
     public void apply(final Project project) {
+
         BaseAppModuleExtension appModuleExtension = (BaseAppModuleExtension) project.getProperties().get("android");
         Object asmDisable = project.findProperty("component_asm_disable");
         Object asmUtilOutputPath = project.findProperty("component_asm_util_class_output_path");
@@ -48,49 +51,42 @@ public class ComponentPlugin implements Plugin<Project> {
         // 生成文档功能的
         routerDocTask(project);
         cleanTask(project);
+
     }
 
     private void routerDocTask(final Project project) {
-        Task task = project.task("routerDoc", new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                task.doLast(new Action<Task>() {
-                    @Override
-                    public void execute(Task task) {
-                        if (!project.hasProperty(ROUTER_ENABLE)) {
-                            return;
-                        }
-                        Object routerEnableObj = project.property(ROUTER_ENABLE);
-                        if (!(routerEnableObj instanceof Boolean)){
-                            return;
-                        }
-                        boolean routerEnable = (boolean) routerEnableObj;
-                        if (!routerEnable) {
-                            return;
-                        }
-                        if (!project.hasProperty(ROUTER_FOLDER)) {
-                            return;
-                        }
-                        Object folderObj = project.property(ROUTER_FOLDER);
-                        if (!(folderObj instanceof String)) {
-                            return;
-                        }
-                        String folderStr = (String) folderObj;
-                        if (folderStr.isEmpty()) {
-                            return;
-                        }
-                        File folder = new File(folderStr);
-                        if (folder.exists() && folder.isDirectory()) {
-                            try {
-                                generateRouterDoc(folder);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });
+        Task task = project.task("routerDoc", task1 -> task1.doLast(task11 -> {
+            if (!project.hasProperty(ROUTER_ENABLE)) {
+                return;
             }
-        });
+            Object routerEnableObj = project.property(ROUTER_ENABLE);
+            if (!(routerEnableObj instanceof Boolean)) {
+                return;
+            }
+            boolean routerEnable = (boolean) routerEnableObj;
+            if (!routerEnable) {
+                return;
+            }
+            if (!project.hasProperty(ROUTER_FOLDER)) {
+                return;
+            }
+            Object folderObj = project.property(ROUTER_FOLDER);
+            if (!(folderObj instanceof String)) {
+                return;
+            }
+            String folderStr = (String) folderObj;
+            if (folderStr.isEmpty()) {
+                return;
+            }
+            File folder = new File(folderStr);
+            if (folder.exists() && folder.isDirectory()) {
+                try {
+                    generateRouterDoc(folder);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
         task.setGroup("component");
     }
 

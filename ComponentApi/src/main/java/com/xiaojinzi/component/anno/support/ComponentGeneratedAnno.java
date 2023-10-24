@@ -12,4 +12,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 public @interface ComponentGeneratedAnno {
     String value() default "";
+
 }

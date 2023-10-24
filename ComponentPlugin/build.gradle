@@ -1,25 +1,44 @@
-apply plugin: 'groovy'
-apply plugin: 'maven-publish'
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
+    id 'org.gradle.kotlin.kotlin-dsl' version '2.3.3'
+}
 
-task sourceJar(type: Jar) {
-    archiveClassifier.set('sources')
-    from sourceSets.main.allJava
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+group = 'com.xiaojinzi.component'
+archivesBaseName = 'component-plugin'
+version = "${versions.component_plugin_upload_version}"
+
+// 配置模块的 freeCompilerArgs 参数
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        freeCompilerArgs += [
+                "-Xjvm-default=all",
+        ]
+    }
 }
 
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
-    implementation group: 'org.ow2.asm', name: 'asm-all', version: '5.2'
-    implementation 'com.android.tools.build:gradle:3.3.0'
+    implementation "org.ow2.asm:asm-commons:9.4"
+    implementation "org.ow2.asm:asm-util:9.4"
+    implementation 'com.android.tools.build:gradle:7.4.2'
+    // implementation 'com.android.tools.build:gradle:8.0.1'
     implementation 'com.google.code.gson:gson:2.10.1'
+    implementation "com.joom.grip:grip:0.9.1"
+    implementation "org.javassist:javassist:3.26.0-GA"
 }
 
-sourceCompatibility = "11"
-targetCompatibility = "11"
-
-group='com.xiaojinzi.component'
-archivesBaseName='component-plugin'
-version=versions.component_plugin_upload_version
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
 
 publishing {
     publications {

@@ -20,6 +20,12 @@ public class ComponentConstants {
     public static final String COMPONENT_CLASS_NAME = "com.xiaojinzi.component.Component";
     public static final String UTILS_CLASS_NAME = "com.xiaojinzi.component.support.Utils";
     public static final String COMPONENT_GENERATED_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.support.ComponentGeneratedAnno";
+    public static final String MODULE_APPLICATION_GENERATED_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.support.ModuleApplicationGeneratedAnno";
+    public static final String INTERCEPTOR_GENERATED_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.support.InterceptorGeneratedAnno";
+    public static final String ROUTER_GENERATED_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.support.RouterGeneratedAnno";
+    public static final String ROUTER_DEGRADE_GENERATED_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.support.RouterDeGradeGeneratedAnno";
+    public static final String SERVICE_GENERATED_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.support.ServiceGeneratedAnno";
+    public static final String FRAGMENT_GENERATED_ANNO_CLASS_NAME = "com.xiaojinzi.component.anno.support.FragmentGeneratedAnno";
     public static final String APPLICATION_LIFECYCLE_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.application.IApplicationLifecycle";
     public static final String INTERCEPTOR_INTERFACE_CLASS_NAME = "com.xiaojinzi.component.impl.RouterInterceptor";
     public static final String ROUTERCENTER_CLASS_NAME = "com.xiaojinzi.component.impl.RouterCenter";

@@ -63,6 +63,12 @@ public abstract class BaseProcessor extends AbstractProcessor {
     protected Elements mElements;
 
     protected TypeElement mTypeElementComponentGeneratedAnno;
+    protected TypeElement mTypeElementModuleApplicationGeneratedAnno;
+    protected TypeElement mTypeElementInterceptorGeneratedAnno;
+    protected TypeElement mTypeElementRouterGeneratedAnno;
+    protected TypeElement mTypeElementRouterDeGradeGeneratedAnno;
+    protected TypeElement mTypeElementServiceGeneratedAnno;
+    protected TypeElement mTypeElementFragmentGeneratedAnno;
     protected TypeElement mConditionCacheTypeElement;
     protected TypeElement mTypeElementString;
     protected TypeElement mTypeElementInteger;
@@ -73,6 +79,12 @@ public abstract class BaseProcessor extends AbstractProcessor {
     protected TypeElement mTypeElementHashSet;
 
     protected ClassName mClassNameComponentGeneratedAnno;
+    protected ClassName mClassNameModuleApplicationGeneratedAnno;
+    protected ClassName mClassNameInterceptorGeneratedAnno;
+    protected ClassName mClassNameRouterGeneratedAnno;
+    protected ClassName mClassNameRouterDeGradeGeneratedAnno;
+    protected ClassName mClassNameServiceGeneratedAnno;
+    protected ClassName mClassNameFragmentGeneratedAnno;
     protected ClassName mClassNameString;
     protected ClassName mClassNameList;
     protected ClassName mClassNameArrayList;
@@ -102,6 +114,18 @@ public abstract class BaseProcessor extends AbstractProcessor {
         try {
             mTypeElementComponentGeneratedAnno = mElements.getTypeElement(ComponentConstants.COMPONENT_GENERATED_ANNO_CLASS_NAME);
             mClassNameComponentGeneratedAnno = ClassName.get(mTypeElementComponentGeneratedAnno);
+            mTypeElementModuleApplicationGeneratedAnno = mElements.getTypeElement(ComponentConstants.MODULE_APPLICATION_GENERATED_ANNO_CLASS_NAME);
+            mClassNameModuleApplicationGeneratedAnno = ClassName.get(mTypeElementModuleApplicationGeneratedAnno);
+            mTypeElementInterceptorGeneratedAnno = mElements.getTypeElement(ComponentConstants.INTERCEPTOR_GENERATED_ANNO_CLASS_NAME);
+            mClassNameInterceptorGeneratedAnno = ClassName.get(mTypeElementInterceptorGeneratedAnno);
+            mTypeElementRouterGeneratedAnno = mElements.getTypeElement(ComponentConstants.ROUTER_GENERATED_ANNO_CLASS_NAME);
+            mClassNameRouterGeneratedAnno = ClassName.get(mTypeElementRouterGeneratedAnno);
+            mTypeElementRouterDeGradeGeneratedAnno = mElements.getTypeElement(ComponentConstants.ROUTER_DEGRADE_GENERATED_ANNO_CLASS_NAME);
+            mClassNameRouterDeGradeGeneratedAnno = ClassName.get(mTypeElementRouterDeGradeGeneratedAnno);
+            mTypeElementServiceGeneratedAnno = mElements.getTypeElement(ComponentConstants.SERVICE_GENERATED_ANNO_CLASS_NAME);
+            mClassNameServiceGeneratedAnno = ClassName.get(mTypeElementServiceGeneratedAnno);
+            mTypeElementFragmentGeneratedAnno = mElements.getTypeElement(ComponentConstants.FRAGMENT_GENERATED_ANNO_CLASS_NAME);
+            mClassNameFragmentGeneratedAnno = ClassName.get(mTypeElementFragmentGeneratedAnno);
         } catch (Exception e) {
             throw IMPL_NOT_BE_DEPENDENT_ON;
         }

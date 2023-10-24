@@ -11,9 +11,12 @@ import java.util.Set;
 
 public class ASMUtilClassGen implements Opcodes {
 
-    public static byte[] getBytes(Map<String, String> applicationMap, Map<String, String> interceptorMap,
-                                  Map<String, String> routerMap, Map<String, String> routerDegradeMap, Map<String, String> serviceMap
-            , Map<String, String> fragmentMap
+    public static byte[] getBytes(Map<String, String> applicationMap,
+                                  Map<String, String> interceptorMap,
+                                  Map<String, String> routerMap,
+                                  Map<String, String> routerDegradeMap,
+                                  Map<String, String> serviceMap,
+                                  Map<String, String> fragmentMap
     ) {
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);

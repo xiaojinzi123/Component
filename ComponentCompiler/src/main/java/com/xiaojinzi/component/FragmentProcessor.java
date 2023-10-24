@@ -120,6 +120,7 @@ public class FragmentProcessor extends BaseHostProcessor {
         MethodSpec onGetFragmentMapMethod = generateGetFragmentMapMethod();
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 .addAnnotation(mClassNameKeep)
+                .addAnnotation(mClassNameFragmentGeneratedAnno)
                 .addAnnotation(mClassNameComponentGeneratedAnno)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)

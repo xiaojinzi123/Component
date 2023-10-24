@@ -134,6 +134,7 @@ public class ServiceProcessor extends BaseHostProcessor {
         MethodSpec onDestroyMethod = generateOnDestroyMethod();
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 .addAnnotation(mClassNameKeep)
+                .addAnnotation(mClassNameServiceGeneratedAnno)
                 .addAnnotation(mClassNameComponentGeneratedAnno)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)

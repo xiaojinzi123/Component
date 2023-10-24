@@ -130,6 +130,7 @@ public class ModuleAppProcessor extends BaseHostProcessor {
         TypeSpec typeSpec = TypeSpec.classBuilder(cn)
                 .addAnnotation(mClassNameKeep)
                 .addAnnotation(mClassNameComponentGeneratedAnno)
+                .addAnnotation(mClassNameModuleApplicationGeneratedAnno)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL)
                 .superclass(superClass)
