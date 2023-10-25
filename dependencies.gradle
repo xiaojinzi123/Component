@@ -11,8 +11,8 @@ ext.versions = [
         // 第三方控件的版本号
         rxjava                              : '2.2.21',
         rxandroid                           : "2.1.1",
-        component_version                   : "1.9.3",
-        component_plugin_upload_version     : "1.9.3"
+        component_version                   : "1.9.4",
+        component_plugin_upload_version     : "1.9.4"
 ]
 
 ext.libs = [
