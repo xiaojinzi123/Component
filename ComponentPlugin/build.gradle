@@ -26,8 +26,8 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
-    implementation "org.ow2.asm:asm-commons:9.4"
-    implementation "org.ow2.asm:asm-util:9.4"
+    implementation "org.ow2.asm:asm-commons:9.6"
+    implementation "org.ow2.asm:asm-util:9.6"
     implementation 'com.android.tools.build:gradle:7.4.2'
     // implementation 'com.android.tools.build:gradle:8.0.1'
     implementation 'com.google.code.gson:gson:2.10.1'
