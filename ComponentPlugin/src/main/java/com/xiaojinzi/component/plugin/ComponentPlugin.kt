@@ -264,8 +264,9 @@ class ComponentPlugin : Plugin<Project> {
                 val jarFile = JarFile(file.asFile)
                 jarFile.entries().iterator().forEach { jarEntry ->
                     if ("com/xiaojinzi/component/support/ASMUtil.class" == jarEntry.name) {
-                        println("${ComponentPlugin.TAG}, 找到目标 ASMUtil.class 11")
+                        println("${ComponentPlugin.TAG}, 找到目标 ASMUtil.class 111")
                         val asmUtilClassBytes = try {
+                            // 这里有问题
                             ASMUtilClassGen.getBytes(
                                 moduleNameMap,
                                 interceptorMap,
@@ -278,7 +279,7 @@ class ComponentPlugin : Plugin<Project> {
                             e.printStackTrace(System.out)
                             throw e
                         }
-                        println("${ComponentPlugin.TAG}, 找到目标 ASMUtil.class 22")
+                        println("${ComponentPlugin.TAG}, 找到目标 ASMUtil.class 222")
                         runCatching {
                             File("./Temp/ASMUtil.class")
                                 .outputStream()

@@ -6,12 +6,27 @@ apply plugin: 'kotlin-kapt'
 android {
     namespace "com.xiaojinzi.componentdemo"
     compileSdkVersion versions.android_compile_sdk
+    signingConfigs {
+        debug {
+            storeFile file('./sign')
+            storePassword "xiaojinzi"
+            keyAlias "xiaojinzi"
+            keyPassword "xiaojinzi"
+        }
+        release {
+            storeFile file('./sign')
+            storePassword "xiaojinzi"
+            keyAlias "xiaojinzi"
+            keyPassword "xiaojinzi"
+        }
+    }
     defaultConfig {
         applicationId "com.xiaojinzi.componentdemo"
         minSdkVersion versions.android_min_sdk
         targetSdkVersion versions.android_target_sdk
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -29,10 +44,12 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled = false
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -72,5 +89,6 @@ dependencies {
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
 
     implementation "org.java-websocket:Java-WebSocket:1.5.5"
+    implementation 'androidx.multidex:multidex:2.0.1'
 
 }

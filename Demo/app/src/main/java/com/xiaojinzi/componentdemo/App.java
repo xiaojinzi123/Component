@@ -1,13 +1,13 @@
 package com.xiaojinzi.componentdemo;
 
-import android.app.Application;
+import androidx.multidex.MultiDexApplication;
 
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.Config;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
-public class App extends Application {
+public class App extends MultiDexApplication {
 
     @Override
     public void onCreate() {

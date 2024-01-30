@@ -30,10 +30,10 @@
 # 所有本包下面的类和接口都不混淆
 -keep class com.xiaojinzi.component.** {*;}
 -keep interface com.xiaojinzi.component.** {*;}
-#这两条是让路由 Api 不混淆
+# 这两条是让路由 Api 不混淆
 -keep @com.xiaojinzi.component.anno.router.RouterApiAnno interface * {*;}
 -keep class **.**RouterApiGenerated {*;}
-#几个用户自定义或者自动生成到其他包下的应该不混淆
+# 几个用户自定义或者自动生成到其他包下的应该不混淆
 -keep class * implements com.xiaojinzi.component.impl.RouterInterceptor{*;}
 -keep class * implements com.xiaojinzi.component.support.IBaseLifecycle{*;}
 -keep class * implements com.xiaojinzi.component.application.IApplicationLifecycle{*;}

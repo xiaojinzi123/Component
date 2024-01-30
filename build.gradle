@@ -13,6 +13,7 @@ buildscript {
     // 注解生成器生成的文件 json 信息都
     ext.component_router_doc_folder = "./Doc"
     ext.component_router_doc_enable = false
+    ext.component_isMergeOutputFile = true
 
     repositories {
         google()

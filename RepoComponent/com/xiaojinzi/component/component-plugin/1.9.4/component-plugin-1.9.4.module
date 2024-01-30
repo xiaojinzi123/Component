@@ -29,11 +29,11 @@
         {
           "name": "component-plugin-1.9.4.jar",
           "url": "component-plugin-1.9.4.jar",
-          "size": 42485,
-          "sha512": "799331ce263662a4aaea750d02ffa370b63986df1f7cbd2254fb774c43b977bd26399422a9c7a95143e571fa3c56bf466050c40ea29cab1dbea29057652d7d71",
-          "sha256": "3a8a023cfd4bbd872908d2ac539db50266e49748f75dd998b66e7672df1f0b43",
-          "sha1": "d1becf19d8aee77d31c0aa2920445f386028dcef",
-          "md5": "ea83d6b89724fe63b60953f6149efaa5"
+          "size": 42471,
+          "sha512": "383774abd14ff5745eceec56210ffdecfa6d0e005f857abb1868c783fb81508d7fbd633192c3f20f1e9f2619319e233cf33d11c30fa601b3779fb28b64c68c46",
+          "sha256": "f25730ba3f49a5a5d0b7f71de94f460371002b3c57abc444d7314035881dd48e",
+          "sha1": "ce14ed34155fa3adbbd38fd0c046b74ed6eaea04",
+          "md5": "9d1892b2cfd77e41b4489b3fd40f2d63"
         }
       ]
     },
@@ -96,11 +96,11 @@
         {
           "name": "component-plugin-1.9.4.jar",
           "url": "component-plugin-1.9.4.jar",
-          "size": 42485,
-          "sha512": "799331ce263662a4aaea750d02ffa370b63986df1f7cbd2254fb774c43b977bd26399422a9c7a95143e571fa3c56bf466050c40ea29cab1dbea29057652d7d71",
-          "sha256": "3a8a023cfd4bbd872908d2ac539db50266e49748f75dd998b66e7672df1f0b43",
-          "sha1": "d1becf19d8aee77d31c0aa2920445f386028dcef",
-          "md5": "ea83d6b89724fe63b60953f6149efaa5"
+          "size": 42471,
+          "sha512": "383774abd14ff5745eceec56210ffdecfa6d0e005f857abb1868c783fb81508d7fbd633192c3f20f1e9f2619319e233cf33d11c30fa601b3779fb28b64c68c46",
+          "sha256": "f25730ba3f49a5a5d0b7f71de94f460371002b3c57abc444d7314035881dd48e",
+          "sha1": "ce14ed34155fa3adbbd38fd0c046b74ed6eaea04",
+          "md5": "9d1892b2cfd77e41b4489b3fd40f2d63"
         }
       ]
     }

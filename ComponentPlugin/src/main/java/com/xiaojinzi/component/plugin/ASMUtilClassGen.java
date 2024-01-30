@@ -21,7 +21,7 @@ public class ASMUtilClassGen implements Opcodes {
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         cw.visit(
-                V11, ACC_PUBLIC | ACC_SUPER,
+                V17, ACC_PUBLIC | ACC_SUPER,
                 "com/xiaojinzi/component/support/ASMUtil", null,
                 "java/lang/Object", null
         );

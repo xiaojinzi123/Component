@@ -148,7 +148,7 @@ public class MainAct extends AppCompatActivity {
                 .setSmallIcon(R.mipmap.app_icon)
                 .setContentTitle("测试点击跳转")
                 .setContentText("使用默认代理Activity, 点我跳转到用户中心, 框架自动完成登陆过程")
-                .setContentIntent(PendingIntent.getActivity(getApplication(), 0, intent, 0))
+                .setContentIntent(PendingIntent.getActivity(getApplication(), 0, intent, PendingIntent.FLAG_IMMUTABLE))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         notificationManager.notify(1, builder.build());
     }
@@ -166,7 +166,7 @@ public class MainAct extends AppCompatActivity {
                 .setSmallIcon(R.mipmap.app_icon)
                 .setContentTitle("测试点击跳转")
                 .setContentText("使用 MainAct 为代理界面, 点我跳转到用户中心, 框架自动完成登陆过程")
-                .setContentIntent(PendingIntent.getActivity(getApplication(), 0, intent, 0))
+                .setContentIntent(PendingIntent.getActivity(getApplication(), 0, intent, PendingIntent.FLAG_IMMUTABLE))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         notificationManager.notify(2, builder.build());
     }
