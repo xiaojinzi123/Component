@@ -2,8 +2,10 @@ package com.xiaojinzi.componentdemo;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.xiaojinzi.base.ModuleConfig;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.Config;
+import com.xiaojinzi.component.impl.application.ModuleManager;
 import com.xiaojinzi.component.support.LogUtil;
 import com.xiaojinzi.component.support.RxErrorIgnoreUtil;
 
@@ -45,6 +47,15 @@ public class App extends MultiDexApplication {
         // 如果你依赖了 rx 版本, 请加上这句配置. 忽略一些不想处理的错误
         // 如果不是 rx 的版本, 请忽略
         RxErrorIgnoreUtil.ignoreError();
+
+        // 手动加载
+        ModuleManager.getInstance().registerArr(
+                ModuleConfig.App.NAME,
+                ModuleConfig.User.NAME,
+                ModuleConfig.Help.NAME,
+                ModuleConfig.Module1.NAME,
+                ModuleConfig.Module2.NAME
+        );
 
     }
 
