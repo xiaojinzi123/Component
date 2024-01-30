@@ -49,7 +49,7 @@ import javax.lang.model.type.TypeMirror;
  * 针对注入的两个注解起作用
  */
 @AutoService(Processor.class)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 // 针对指定注解起作用
 @SupportedAnnotationTypes({
         ComponentUtil.ATTR_VALUE_AUTOWIREDANNO_CLASS_NAME,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.xiaojinzi.component.help">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application>
         <meta-data
             android:name="HOST_help"
@@ -14,5 +14,5 @@
             android:name="com.xiaojinzi.component.help.view.TestRouterWebAct"
             android:theme="@style/AppTheme.TestRouter" />
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>

@@ -38,7 +38,7 @@ import javax.lang.model.element.TypeElement;
  */
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedAnnotationTypes(ComponentUtil.FRAGMENTANNO_CLASS_NAME)
 public class FragmentProcessor extends BaseHostProcessor {
 

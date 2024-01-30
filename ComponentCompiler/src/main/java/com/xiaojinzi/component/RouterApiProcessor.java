@@ -58,7 +58,7 @@ import javax.lang.model.type.TypeMirror;
  * 支持基本版本和 Rx 版本
  */
 @AutoService(Processor.class)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 // 针对指定注解起作用
 @SupportedAnnotationTypes({ComponentUtil.ROUTERAPIANNO_CLASS_NAME})
 public class RouterApiProcessor extends BaseProcessor {

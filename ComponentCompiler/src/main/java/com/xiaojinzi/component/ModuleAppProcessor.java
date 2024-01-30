@@ -36,7 +36,7 @@ import javax.lang.model.type.TypeMirror;
  */
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedAnnotationTypes({com.xiaojinzi.component.ComponentUtil.MODULE_APP_ANNO_CLASS_NAME})
 public class ModuleAppProcessor extends BaseHostProcessor {
 

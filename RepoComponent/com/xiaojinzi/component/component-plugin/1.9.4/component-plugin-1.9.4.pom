@@ -13,19 +13,19 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-commons</artifactId>
-      <version>9.4</version>
+      <version>9.6</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-util</artifactId>
-      <version>9.4</version>
+      <version>9.6</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.android.tools.build</groupId>
       <artifactId>gradle</artifactId>
-      <version>7.4.2</version>
+      <version>8.2.2</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>

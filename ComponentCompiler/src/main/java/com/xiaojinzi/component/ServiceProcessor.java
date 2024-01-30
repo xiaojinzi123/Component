@@ -43,7 +43,7 @@ import javax.lang.model.type.TypeMirror;
  */
 @AutoService(Processor.class)
 @SupportedOptions("HOST")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedAnnotationTypes({
         ComponentUtil.SERVICE_ANNO_CLASS_NAME,
         ComponentUtil.SERVICE_DECORATOR_ANNO_CLASS_NAME,

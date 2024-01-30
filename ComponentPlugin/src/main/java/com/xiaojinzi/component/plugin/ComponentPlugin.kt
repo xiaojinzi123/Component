@@ -38,7 +38,7 @@ import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 
-class ComponentPlugin1 : Plugin<Project> {
+class ComponentPlugin : Plugin<Project> {
 
     companion object {
         const val TAG = "ComponentPlugin"
@@ -63,21 +63,24 @@ class ComponentPlugin1 : Plugin<Project> {
         @get:CompileClasspath
         abstract var classpath: FileCollection
 
+        private var isMergeOutputFileStr = project
+            .properties["component_isMergeOutputFile"]
+            ?.toString() ?: ""
+
         @TaskAction
         fun taskAction() {
 
             // 读取配置的属性 isMergeOutputFile
-
             val isMergeOutputFile = runCatching {
-                project.properties["component_isMergeOutputFile"].toString().toBoolean()
+                isMergeOutputFileStr.toBoolean()
             }.getOrNull() ?: false
 
             // /Users/hhkj/Documents/code/android/github/Component/Demo/app2/build/intermediates/classes/debug/ALL/classes.jar
             val outputFile = output.asFile.get()
             val allJarList = allJars.get()
 
-            println("${ComponentPlugin1.TAG}, isMergeOutputFile = $isMergeOutputFile")
-            println("${ComponentPlugin1.TAG}, output = ${outputFile.path}, outputFileIsExist = ${outputFile.exists()}")
+            println("${ComponentPlugin.TAG}, isMergeOutputFile = $isMergeOutputFile")
+            println("${ComponentPlugin.TAG}, output = ${outputFile.path}, outputFileIsExist = ${outputFile.exists()}")
 
             // 输入的 jar、aar、源码
             val inputs = (allJarList + allDirectories.get()).map { it.asFile.toPath() }
@@ -101,7 +104,7 @@ class ComponentPlugin1 : Plugin<Project> {
                         "componentOutput",
                         ".${outputFile.extension}"
                     )
-                    println("${ComponentPlugin1.TAG}, tempFile = ${tempFile.path}")
+                    println("${ComponentPlugin.TAG}, tempFile = ${tempFile.path}")
                     outputFile.copyTo(
                         target = tempFile,
                         overwrite = true,
@@ -261,7 +264,7 @@ class ComponentPlugin1 : Plugin<Project> {
                 val jarFile = JarFile(file.asFile)
                 jarFile.entries().iterator().forEach { jarEntry ->
                     if ("com/xiaojinzi/component/support/ASMUtil.class" == jarEntry.name) {
-                        println("${ComponentPlugin1.TAG}, 找到目标 ASMUtil.class 1")
+                        println("${ComponentPlugin.TAG}, 找到目标 ASMUtil.class 11")
                         val asmUtilClassBytes = try {
                             ASMUtilClassGen.getBytes(
                                 moduleNameMap,
@@ -275,7 +278,7 @@ class ComponentPlugin1 : Plugin<Project> {
                             e.printStackTrace(System.out)
                             throw e
                         }
-                        println("${ComponentPlugin1.TAG}, 找到目标 ASMUtil.class 2")
+                        println("${ComponentPlugin.TAG}, 找到目标 ASMUtil.class 22")
                         runCatching {
                             File("./Temp/ASMUtil.class")
                                 .outputStream()
@@ -438,13 +441,14 @@ class ComponentPlugin1 : Plugin<Project> {
     private fun routerDocTask(project: Project) {
         val task = project.task("routerDoc") {
             this.doLast {
-                val routerEnable = project.property(ComponentPlugin1.ROUTER_ENABLE) as? Boolean ?: false
-                println("${ComponentPlugin1.TAG}, routerEnable = $routerEnable")
+                val routerEnable =
+                    project.property(ComponentPlugin.ROUTER_ENABLE) as? Boolean ?: false
+                println("${ComponentPlugin.TAG}, routerEnable = $routerEnable")
                 if (!routerEnable) {
                     return@doLast
                 }
-                val folderStr = project.property(ComponentPlugin1.ROUTER_FOLDER) as? String
-                println("${ComponentPlugin1.TAG}, folderStr = $folderStr")
+                val folderStr = project.property(ComponentPlugin.ROUTER_FOLDER) as? String
+                println("${ComponentPlugin.TAG}, folderStr = $folderStr")
                 if (folderStr.isNullOrEmpty()) {
                     return@doLast
                 }
@@ -452,7 +456,7 @@ class ComponentPlugin1 : Plugin<Project> {
                 if (!folder.exists()) {
                     folder.mkdirs()
                 }
-                println("${ComponentPlugin1.TAG}, folder = $folder")
+                println("${ComponentPlugin.TAG}, folder = $folder")
                 if (folder.isDirectory) {
                     try {
                         generateRouterDoc(
@@ -471,7 +475,8 @@ class ComponentPlugin1 : Plugin<Project> {
         val task = project.task("routerDocClean") {
             this.doLast {
                 if (project.hasProperty(ComponentPlugin.ROUTER_FOLDER)) {
-                    val folderStr = project.property(ComponentPlugin.ROUTER_FOLDER) as? String ?: ""
+                    val folderStr =
+                        project.property(ComponentPlugin.ROUTER_FOLDER) as? String ?: ""
                     if (folderStr.isNotEmpty()) {
                         val folder = File(folderStr)
                         deleteFile(folder)

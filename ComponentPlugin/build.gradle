@@ -2,12 +2,20 @@ plugins {
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm'
     id 'maven-publish'
-    id 'org.gradle.kotlin.kotlin-dsl' version '2.3.3'
+    id 'org.gradle.kotlin.kotlin-dsl' version '4.2.1'
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_17.toString()))
+    }
+}
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_17.toString()))
+    }
 }
 
 group = 'com.xiaojinzi.component'
@@ -15,29 +23,24 @@ archivesBaseName = 'component-plugin'
 version = "${versions.component_plugin_upload_version}"
 
 // 配置模块的 freeCompilerArgs 参数
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+/*tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
         freeCompilerArgs += [
                 "-Xjvm-default=all",
         ]
     }
-}
+}*/
 
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
     implementation "org.ow2.asm:asm-commons:9.6"
     implementation "org.ow2.asm:asm-util:9.6"
-    implementation 'com.android.tools.build:gradle:7.4.2'
-    // implementation 'com.android.tools.build:gradle:8.0.1'
+    // implementation 'com.android.tools.build:gradle:7.4.2'
+    implementation 'com.android.tools.build:gradle:8.2.2'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation "com.joom.grip:grip:0.9.1"
     implementation "org.javassist:javassist:3.26.0-GA"
-}
-
-java {
-    withSourcesJar()
-    withJavadocJar()
 }
 
 publishing {

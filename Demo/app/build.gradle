@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.xiaojinzi.component.plugin'
+// apply plugin: 'com.xiaojinzi.component.plugin'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
+    namespace "com.xiaojinzi.componentdemo"
     compileSdkVersion versions.android_compile_sdk
     defaultConfig {
         applicationId "com.xiaojinzi.componentdemo"
@@ -38,8 +38,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     dexOptions {
@@ -71,6 +71,6 @@ dependencies {
     // 内存检测的
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
 
-    implementation "org.java-websocket:Java-WebSocket:1.5.1"
+    implementation "org.java-websocket:Java-WebSocket:1.5.5"
 
 }
