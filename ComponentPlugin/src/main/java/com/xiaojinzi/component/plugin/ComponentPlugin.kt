@@ -264,23 +264,16 @@ class ComponentPlugin : Plugin<Project> {
                 val jarFile = JarFile(file.asFile)
                 jarFile.entries().iterator().forEach { jarEntry ->
                     if ("com/xiaojinzi/component/support/ASMUtil.class" == jarEntry.name) {
-                        println("${ComponentPlugin.TAG}, 找到目标 ASMUtil.class 111")
-                        val asmUtilClassBytes = try {
-                            // 这里有问题
-                            ASMUtilClassGen.getBytes(
-                                moduleNameMap,
-                                interceptorMap,
-                                routerMap,
-                                routerDegradeMap,
-                                serviceMap,
-                                fragmentMap,
-                            )
-                        } catch (e: Exception) {
-                            e.printStackTrace(System.out)
-                            throw e
-                        }
-                        println("${ComponentPlugin.TAG}, 找到目标 ASMUtil.class 222")
-                        runCatching {
+                        println("${ComponentPlugin.TAG}, 找到目标 ASMUtil.class")
+                        val asmUtilClassBytes = ASMUtilClassUtil.getClassBytes(
+                            moduleNameMap = moduleNameMap,
+                            interceptorMap = interceptorMap,
+                            routerMap = routerMap,
+                            routerDegradeMap = routerDegradeMap,
+                            serviceMap = serviceMap,
+                            fragmentMap = fragmentMap,
+                        )
+                        /*runCatching {
                             File("./Temp/ASMUtil.class")
                                 .outputStream()
                                 .use { outputStream ->
@@ -288,7 +281,7 @@ class ComponentPlugin : Plugin<Project> {
                                         asmUtilClassBytes
                                     )
                                 }
-                        }
+                        }*/
                         jarOutput.putNextEntry(JarEntry(jarEntry.name))
                         jarOutput.write(asmUtilClassBytes)
                         jarOutput.closeEntry()
