@@ -3,7 +3,7 @@
   "component": {
     "group": "com.xiaojinzi.component",
     "module": "component-plugin",
-    "version": "1.9.4",
+    "version": "1.9.5-rc1",
     "attributes": {
       "org.gradle.status": "release"
     }
@@ -27,13 +27,13 @@
       },
       "files": [
         {
-          "name": "component-plugin-1.9.4.jar",
-          "url": "component-plugin-1.9.4.jar",
+          "name": "component-plugin-1.9.5-rc1.jar",
+          "url": "component-plugin-1.9.5-rc1.jar",
           "size": 48286,
-          "sha512": "ed13303c1581e55d74397ffa7449b811716a9a56e5b167aec42b41748435123aa1b4fff1a12de549ef7fda50ae44cd4d59609d3da4eec1295741cf5bbfa1a552",
-          "sha256": "b0600d0e59ae71036cfb96d00a4ac8eec82906cdb7c1bea29e74071178239f11",
-          "sha1": "feedbfc8861e983f72aa3b9bf34628869730e85a",
-          "md5": "470b3c05e3f9a17f366fb6236313c42c"
+          "sha512": "f44245524425556dae365dac77b08f1afc3f0800f9b6585e8856741a2fbb4d03455d483d9398b236b55c865ef8e89fbca58f0fc2478e29f804208d7f4ee3deb8",
+          "sha256": "4d0fe039987a4fdbeb1a0bb093ac109483f21fcdeac003b1ec0778c8db84f4aa",
+          "sha1": "81518054bdf59e09e19438d79e9ed32d30e90d42",
+          "md5": "fbda71680bc46d322d90e333ef7afdb3"
         }
       ]
     },
@@ -94,13 +94,13 @@
       ],
       "files": [
         {
-          "name": "component-plugin-1.9.4.jar",
-          "url": "component-plugin-1.9.4.jar",
+          "name": "component-plugin-1.9.5-rc1.jar",
+          "url": "component-plugin-1.9.5-rc1.jar",
           "size": 48286,
-          "sha512": "ed13303c1581e55d74397ffa7449b811716a9a56e5b167aec42b41748435123aa1b4fff1a12de549ef7fda50ae44cd4d59609d3da4eec1295741cf5bbfa1a552",
-          "sha256": "b0600d0e59ae71036cfb96d00a4ac8eec82906cdb7c1bea29e74071178239f11",
-          "sha1": "feedbfc8861e983f72aa3b9bf34628869730e85a",
-          "md5": "470b3c05e3f9a17f366fb6236313c42c"
+          "sha512": "f44245524425556dae365dac77b08f1afc3f0800f9b6585e8856741a2fbb4d03455d483d9398b236b55c865ef8e89fbca58f0fc2478e29f804208d7f4ee3deb8",
+          "sha256": "4d0fe039987a4fdbeb1a0bb093ac109483f21fcdeac003b1ec0778c8db84f4aa",
+          "sha1": "81518054bdf59e09e19438d79e9ed32d30e90d42",
+          "md5": "fbda71680bc46d322d90e333ef7afdb3"
         }
       ]
     }

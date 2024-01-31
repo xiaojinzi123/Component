@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.xiaojinzi.component</groupId>
   <artifactId>component-plugin</artifactId>
-  <version>1.9.4</version>
+  <version>1.9.5-rc1</version>
   <dependencies>
     <dependency>
       <groupId>org.ow2.asm</groupId>

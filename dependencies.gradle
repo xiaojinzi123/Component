@@ -11,8 +11,8 @@ ext.versions = [
         // 第三方控件的版本号
         rxjava                              : '2.2.21',
         rxandroid                           : "2.1.1",
-        component_version                   : "1.9.4",
-        component_plugin_upload_version     : "1.9.4"
+        component_version                   : "1.9.5-rc1",
+        component_plugin_upload_version     : "1.9.5-rc1"
 ]
 
 ext.libs = [
@@ -27,10 +27,10 @@ ext.libs = [
         appcompat               : "androidx.appcompat:appcompat:${versions.appcompat}",
         constraintLayout        : "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}",
 
-        component_annotation    : "com.github.xiaojinzi123.Component:component-annotation:${versions.component_version}-androidx-java8",
-        component_compiler      : "com.github.xiaojinzi123.Component:component-compiler:${versions.component_version}-androidx-java8",
-        component_impl          : "com.github.xiaojinzi123.Component:component-impl:${versions.component_version}-androidx-java8",
-        component_impl_rx       : "com.github.xiaojinzi123.Component:component-impl-rx:${versions.component_version}-androidx-java8",
-        component_impl_ktx      : "com.github.xiaojinzi123.Component:component-impl-ktx:${versions.component_version}-androidx-java8"
+        component_annotation    : "com.github.xiaojinzi123.Component:component-annotation:${versions.component_version}",
+        component_compiler      : "com.github.xiaojinzi123.Component:component-compiler:${versions.component_version}",
+        component_impl          : "com.github.xiaojinzi123.Component:component-impl:${versions.component_version}",
+        component_impl_rx       : "com.github.xiaojinzi123.Component:component-impl-rx:${versions.component_version}",
+        component_impl_ktx      : "com.github.xiaojinzi123.Component:component-impl-ktx:${versions.component_version}"
 
 ]
